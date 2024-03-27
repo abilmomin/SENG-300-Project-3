@@ -219,10 +219,10 @@ public class PaymentHandler {
 
 		BigDecimal amountDispensed = new BigDecimal("0.0");
 		BigDecimal remainingAmount = changeValue;
-		List<BigDecimal> coinDenominations = this.checkoutSystem.coinDenominations;
+		List<BigDecimal> coinDenominations = this.checkoutSystem.getCoinDenominations();
 		Collections.sort(coinDenominations);
 		Collections.reverse(coinDenominations);
-		List<BigDecimal> bankNoteDenominations = Arrays.stream(this.checkoutSystem.banknoteDenominations)
+		List<BigDecimal> bankNoteDenominations = Arrays.stream(this.checkoutSystem.getBanknoteDenominations())
 				.collect(Collectors.toList());
 		Collections.sort(bankNoteDenominations);
 		Collections.reverse(bankNoteDenominations);
@@ -237,7 +237,7 @@ public class PaymentHandler {
 			BigDecimal lowestBankNote = bankNoteDenominations.get(bankNoteDenominations.size() - 1);
 			BigDecimal lowestVal = lowestCoin.min(lowestBankNote);
 			if (remainingAmount.compareTo(lowestVal) < 0 && remainingAmount.compareTo(BigDecimal.ZERO) > 0) {
-				this.checkoutSystem.coinDispensers.get(lowestVal).emit();
+				this.checkoutSystem.getCoinDispensers().get(lowestVal).emit();
 				amountDispensed = changeValue;
 				remainingAmount = BigDecimal.ZERO;
 				break;
@@ -246,8 +246,8 @@ public class PaymentHandler {
 			boolean dispensed = false;
 			// Try using banknotes first
 			for (BigDecimal bankNote : bankNoteDenominations) {
-				if (remainingAmount.compareTo(bankNote) >= 0 && checkoutSystem.banknoteDispensers.get(bankNote).size() > 0) {
-					checkoutSystem.banknoteDispensers.get(bankNote).emit();
+				if (remainingAmount.compareTo(bankNote) >= 0 && checkoutSystem.getBanknoteDispensers().get(bankNote).size() > 0) {
+					checkoutSystem.getBanknoteDispensers().get(bankNote).emit();
 					amountDispensed = amountDispensed.add(bankNote);
 					remainingAmount = remainingAmount.subtract(bankNote);
 					dispensed = true;
@@ -258,10 +258,10 @@ public class PaymentHandler {
 			// If no banknotes are available or insufficient, try using coins
 			if (!dispensed) {
 				for (BigDecimal coin : coinDenominations) {
-					if (remainingAmount.compareTo(coin) >= 0 && checkoutSystem.coinDispensers.get(coin).size() > 0) {
-						System.out.println(checkoutSystem.coinDispensers.get(coin).size());
+					if (remainingAmount.compareTo(coin) >= 0 && checkoutSystem.getCoinDispensers().get(coin).size() > 0) {
+						System.out.println(checkoutSystem.getCoinDispensers().get(coin).size());
 						System.out.println(coin);
-						checkoutSystem.coinDispensers.get(coin).emit();
+						checkoutSystem.getCoinDispensers().get(coin).emit();
 						amountDispensed = amountDispensed.add(coin);
 						remainingAmount = remainingAmount.subtract(coin);
 						dispensed = true;
@@ -302,12 +302,12 @@ public class PaymentHandler {
 	 * @throws CashOverloadException If the cash storage is overloaded.
 	 */
 	public void acceptInsertedCoin(Coin coin) throws DisabledException, CashOverloadException {
-		if(this.checkoutSystem.coinStorage.hasSpace()) {
-			this.checkoutSystem.coinSlot.enable();
-			this.checkoutSystem.coinSlot.receive(coin);
+		if(this.checkoutSystem.getCoinStorage().hasSpace()) {
+			this.checkoutSystem.getCoinSlot().enable();
+			this.checkoutSystem.getCoinSlot().receive(coin);
 		}
 		else {
-			this.checkoutSystem.coinSlot.disable();
+			this.checkoutSystem.getCoinSlot().disable();
 		}
 	}
 
@@ -319,15 +319,15 @@ public class PaymentHandler {
 	 * @throws CashOverloadException if the banknote storage is overloaded
 	 */
 	public void acceptInsertedBanknote(Banknote banknote) throws DisabledException, CashOverloadException {
-		if(this.checkoutSystem.banknoteInput.hasDanglingBanknotes()) {
-			this.checkoutSystem.banknoteInput.removeDanglingBanknote();
+		if(this.checkoutSystem.getBanknoteInput().hasDanglingBanknotes()) {
+			this.checkoutSystem.getBanknoteInput().removeDanglingBanknote();
 		}
-		if(this.checkoutSystem.banknoteStorage.hasSpace()) {
-			this.checkoutSystem.banknoteInput.enable();
-			this.checkoutSystem.banknoteInput.receive(banknote);
+		if(this.checkoutSystem.getBanknoteStorage().hasSpace()) {
+			this.checkoutSystem.getBanknoteInput().enable();
+			this.checkoutSystem.getBanknoteInput().receive(banknote);
 		}
 		else {
-			this.checkoutSystem.banknoteInput.disable();
+			this.checkoutSystem.getBanknoteInput().disable();
 		}
 	}
 
@@ -403,7 +403,7 @@ public class PaymentHandler {
 			}
 			BigDecimal v = c.getValue();
 			try {
-				this.checkoutSystem.coinDispensers.get(v).load(c);
+				this.checkoutSystem.getCoinDispensers().get(v).load(c);
 			} catch (CashOverloadException e) {
 				throw new CashOverloadException("Coin Dispenser for coins of value " + v.doubleValue() + " is full.");
 			} catch (NullPointerException e) {
@@ -429,7 +429,7 @@ public class PaymentHandler {
 			}
 			BigDecimal v = ((Banknote) b).getDenomination();
 			try {
-				this.checkoutSystem.banknoteDispensers.get(v).load(b);
+				this.checkoutSystem.getBanknoteDispensers().get(v).load(b);
 			} catch (CashOverloadException e) {
 				throw new CashOverloadException("BankNote Dispenser for banknote of value " + v.doubleValue() + " is full.");
 			} catch (NullPointerException e) {
