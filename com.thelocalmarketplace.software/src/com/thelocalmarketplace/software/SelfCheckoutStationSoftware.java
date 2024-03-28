@@ -257,4 +257,8 @@ public class SelfCheckoutStationSoftware {
 	public boolean isOrderEmpty() {
 		return order.isEmpty();
 	}
+	
+	public void notifyUserOfOverload() {
+		System.out.println("Scale Overload. Please remove some items.");
+	}
 }
