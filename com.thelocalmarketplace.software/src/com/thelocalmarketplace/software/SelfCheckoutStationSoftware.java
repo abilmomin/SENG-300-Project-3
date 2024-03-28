@@ -58,11 +58,12 @@ import com.thelocalmarketplace.hardware.CoinTray;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 
 /**
- * This class is for the software required for the self-checkout station session
+ * This class acts as the central unit that communicates with 
+ * all other functionalities and listeners of the software.
  */
 public class SelfCheckoutStationSoftware {
 	// Things to listen to (hardware)
-	public AbstractSelfCheckoutStation selfCheckoutStation;
+	public AbstractSelfCheckoutStation station;
 	public IElectronicScale baggingArea;
 	public IReusableBagDispenser reusableBagDispenser;
 	public IReceiptPrinter printer;
@@ -93,15 +94,15 @@ public class SelfCheckoutStationSoftware {
 	 * @param selfCheckoutStation
 	 * 		The self checkout station that requires the software.
 	 */
-	public SelfCheckoutStationSoftware(AbstractSelfCheckoutStation selfCheckoutStation) {
-		this.selfCheckoutStation = selfCheckoutStation;
+	public SelfCheckoutStationSoftware(AbstractSelfCheckoutStation station) {
+		this.station = station;
+		
+		// Get all the hardware the listeners need to listen to
+		this.mainScanner = station.getMainScanner();
+		this.handheldScanner = station.getHandheldScanner();
 		
 		// Make the listener objects
 		this.scannerListener = new ScannerListener(this);
-		
-		// Get all the hardware the listeners need to listen to
-		this.mainScanner = selfCheckoutStation.getMainScanner();
-		this.handheldScanner = selfCheckoutStation.getHandheldScanner();
 		
 		// Attach the listeners to the hardware
 		mainScanner.register(scannerListener);
@@ -163,6 +164,15 @@ public class SelfCheckoutStationSoftware {
 
 		setStationActive(true);
 
+	}
+	
+	/**
+	 * Resets the current order monitored by the software.
+	 */
+	public void resetOrder() {
+		this.order = new ArrayList<Item>();
+		this.totalOrderWeight = 0;
+		this.totalOrderPrice = 0;
 	}
 	
 	/**
