@@ -83,6 +83,10 @@ public class SelfCheckoutStationSoftware {
 	private boolean blocked = false;
 	private boolean active = false;
 	
+	// bulky item code also goes in this class i can do it later. Button needed in GUI -Tara
+	// request attendants attention also goes here. Button needed in GUI
+	// safe to say most things go here
+	
 	/**
 	 * Creates an instance of the software for a self checkout station.
 	 * 
