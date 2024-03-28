@@ -26,49 +26,115 @@ package com.thelocalmarketplace.software;
 
 import ca.ucalgary.seng300.simulation.InvalidStateSimulationException;
 import static com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation.resetConfigurationToDefaults;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+
+import com.jjjwelectronics.Item;
+import com.jjjwelectronics.Mass;
+import com.jjjwelectronics.bag.IReusableBagDispenser;
+import com.jjjwelectronics.card.ICardReader;
+import com.jjjwelectronics.printer.IReceiptPrinter;
+import com.jjjwelectronics.scale.IElectronicScale;
+import com.jjjwelectronics.scanner.Barcode;
+import com.jjjwelectronics.scanner.BarcodedItem;
+import com.jjjwelectronics.scanner.IBarcodeScanner;
+import com.jjjwelectronics.screen.ITouchScreen;
+import com.tdc.banknote.BanknoteDispensationSlot;
+import com.tdc.banknote.BanknoteInsertionSlot;
+import com.tdc.banknote.BanknoteStorageUnit;
+import com.tdc.banknote.BanknoteValidator;
+import com.tdc.banknote.IBanknoteDispenser;
+import com.tdc.coin.CoinSlot;
+import com.tdc.coin.CoinStorageUnit;
+import com.tdc.coin.CoinValidator;
+import com.tdc.coin.ICoinDispenser;
+import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
+import com.thelocalmarketplace.hardware.BarcodedProduct;
+import com.thelocalmarketplace.hardware.CoinTray;
+import com.thelocalmarketplace.hardware.external.ProductDatabases;
 
 /**
  * This class is for the software required for the self-checkout station session
  */
 public class SelfCheckoutStationSoftware {
+	// Things to listen to (hardware)
+	public AbstractSelfCheckoutStation selfCheckoutStation;
+	public IElectronicScale baggingArea;
+	public IReusableBagDispenser reusableBagDispenser;
+	public IReceiptPrinter printer;
+	public ICardReader cardReader;
+	public IBarcodeScanner mainScanner;
+	public IBarcodeScanner handheldScanner;
+	public CoinSlot coinSlot;
+	
+	// Listeners
+	public BaggingAreaListener baggingAreaListener;
+	public ScannerListener scannerListener;
 
-	/**
-	 * Boolean variable that is used to track whether user interaction is blocked
-	 */
-	private static boolean blocked = false;
+	// Order stuff
+	private ArrayList<Item> order;
+	private double totalOrderWeight;
+	private long totalOrderPrice;
 
+	private boolean blocked = false;
+	private boolean active = false;
+	
 	/**
-	 * Boolean variable to track if a current session is active or not. 
+	 * Creates an instance of the software for a self checkout station.
+	 * 
+	 * @param selfCheckoutStation
+	 * 		The self checkout station that requires the software.
 	 */
-	private static boolean active = false;
+	public SelfCheckoutStationSoftware(AbstractSelfCheckoutStation selfCheckoutStation) {
+		this.selfCheckoutStation = selfCheckoutStation;
+		
+		// Make the listener objects
+		this.scannerListener = new ScannerListener(this);
+		
+		// Get all the hardware the listeners need to listen to
+		this.mainScanner = selfCheckoutStation.getMainScanner();
+		this.handheldScanner = selfCheckoutStation.getHandheldScanner();
+		
+		// Attach the listeners to the hardware
+		mainScanner.register(scannerListener);
+		handheldScanner.register(scannerListener);
+		
+		// Initialize a new order and all its info
+		this.order = new ArrayList<Item>();
+		this.totalOrderWeight = 0;
+		this.totalOrderPrice = 0;
+	}
 
 	/**
 	 * Set function to change the blocked variable value.
 	 * @param value The new value for station block status
 	 */
-	public static void setStationBlock(boolean value) {
+	public void setStationBlock(boolean value) {
 		blocked = value;
 	}
 
 	/**
 	 * Get function to get the blocked station status.
 	 */
-	public static boolean getStationBlock() {
+	public boolean getStationBlock() {
 		return blocked;
 	}
 	
 	/**
 	 * Set function to change the active variable value.
 	 */
-	public static void setStationActive(boolean value) {
+	public void setStationActive(boolean value) {
 		active = value;
 	}
 
 	/**
 	 * Get function to get the blocked station status.
 	 */
-	public static boolean getStationActive() {
+	public boolean getStationActive() {
 		return active;
 	}
 	
@@ -82,7 +148,7 @@ public class SelfCheckoutStationSoftware {
 			throw new InvalidStateSimulationException("Session already started.");
 		}
 		
-		resetConfigurationToDefaults(); // Reset all self-checkout station configurations to default.
+		resetConfigurationToDefaults();
 		
 
 		// Prompt the user to touch anywhere to start and wait for an input.
@@ -91,7 +157,104 @@ public class SelfCheckoutStationSoftware {
 		// assume the user gives some kind of input.
 		scanner.nextLine();
 
-		setStationActive(true); // Set the current session to active.
+		setStationActive(true);
 
+	}
+	
+	/**
+	 * Adds an item to the order.
+	 *
+	 * @param item The item to add to the order.
+	 */
+	public void addItemToOrder(Item item) {
+		this.order.add(item);
+	}
+	
+	/**
+	 * Removes an item from the order.
+	 *
+	 * @param item The item to remove from order.
+	 * @return true if the item was successfully removed, false otherwise.
+	 */
+	public boolean removeItemFromOrder(BarcodedItem item) {
+		if (this.order.contains(item)) {
+			this.order.remove(item);
+			
+			setStationBlock(true);
+			
+			Barcode barcode = item.getBarcode();
+			BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+			if (product != null) {
+				double productWeight = product.getExpectedWeight();
+				long productPrice = product.getPrice();
+				
+				removeTotalOrderWeightInGrams(productWeight);
+				removeTotalOrderPrice(productPrice);
+				
+				System.out.println("Please remove item from the bagging area");
+			}
+			return true;
+			
+		} else {
+			System.out.println("Item not found in the order.");
+			return false;
+		}
+	}
+
+	
+	/**
+	 * Gets the order.
+	 *
+	 * @return The order.
+	 */
+	public ArrayList<Item> getOrder() {
+		return this.order;
+	}
+
+	/**
+	 * Gets the total weight of the order (in grams).
+	 * 
+	 * @return The total weight of order (in grams).
+	 */
+	public double getTotalOrderWeightInGrams() {
+		return this.totalOrderWeight;
+	}
+
+	/**
+	 * Gets the total price of the order
+	 * 
+	 * @return The total price of order.
+	 */
+	public long getTotalOrderPrice() {
+		return this.totalOrderPrice;
+	}
+	
+	/**
+	 * Updates the total weight of the order (in grams)
+	 */
+	public void addTotalOrderWeightInGrams(double weight) {
+		this.totalOrderWeight += weight;
+	}
+	public void removeTotalOrderWeightInGrams(double weight) {
+		this.totalOrderWeight -= weight;
+	}
+	
+	/**
+	 * Updates the total price of the order
+	 */
+	public void addTotalOrderPrice(long price) {
+		this.totalOrderPrice += price;
+	}
+	public void removeTotalOrderPrice(long price) {
+		this.totalOrderPrice -= price;
+	}
+
+	/**
+	 * Checks whether the order is empty or not.
+	 * 
+	 * @return true if the order contains no items, false otherwise.
+	 */
+	public boolean isOrderEmpty() {
+		return order.isEmpty();
 	}
 }
