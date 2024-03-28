@@ -10,7 +10,6 @@ import com.jjjwelectronics.scale.IElectronicScale;
 
 public class ScaleListener implements ElectronicScaleListener {
 	private SelfCheckoutStationSoftware software;
-	private static double value;
 	
 	public ScaleListener (SelfCheckoutStationSoftware software) {
 		 this.software = software;
@@ -49,7 +48,7 @@ public class ScaleListener implements ElectronicScaleListener {
 	    try {
 	    	AbstractElectronicScale allScales = (AbstractElectronicScale) scale;
 	        actual = allScales.getCurrentMassOnTheScale();
-	        expected = new Mass(value);
+	        expected = new Mass(software.getTotalOrderWeightInGrams());
 	        tolerance = allScales.getSensitivityLimit().inMicrograms().longValue() / 2;
 
 	        long actualInMicrograms = actual.inMicrograms().longValue();
