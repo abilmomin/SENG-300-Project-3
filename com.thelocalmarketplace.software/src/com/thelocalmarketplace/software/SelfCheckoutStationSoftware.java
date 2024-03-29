@@ -40,6 +40,7 @@ import com.jjjwelectronics.scanner.IBarcodeScanner;
 import com.tdc.coin.CoinSlot;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
+import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.funds.PaymentHandler;
 import com.thelocalmarketplace.software.oldCode.BaggingAreaListener;
@@ -52,15 +53,8 @@ import com.thelocalmarketplace.software.product.ScannerListener;
  */
 public class SelfCheckoutStationSoftware {
 	// Things to listen to (hardware)
-	private AbstractSelfCheckoutStation station;
-	private IElectronicScale baggingArea;
-	private IReusableBagDispenser reusableBagDispenser;
-	private IReceiptPrinter printer;
-	private ICardReader cardReader;
-	private IBarcodeScanner mainScanner;
-	private IBarcodeScanner handheldScanner;
-	private CoinSlot coinSlot;
-	
+	private ISelfCheckoutStation stationHardware;
+
 	// Listeners
 	public BaggingAreaListener baggingAreaListener;
 	public ScannerListener scannerListener;
@@ -71,8 +65,8 @@ public class SelfCheckoutStationSoftware {
 	private long totalOrderPrice;
 	
 	// Facades
-	public PaymentHandler funds;
-	public ProductHandler products;
+	private PaymentHandler funds;
+	private ProductHandler products;
 
 	private boolean blocked = false;
 	private boolean active = false;
@@ -80,14 +74,13 @@ public class SelfCheckoutStationSoftware {
 	/**
 	 * Creates an instance of the software for a self checkout station.
 	 * 
-	 * @param selfCheckoutStation
-	 * 		The self checkout station that requires the software.
+	 * @param station The self-checkout station that requires the software.
 	 */
-	public SelfCheckoutStationSoftware(AbstractSelfCheckoutStation station) {
+	public SelfCheckoutStationSoftware(ISelfCheckoutStation station) {
 		if (station == null) {
 			throw new NullPointerException("Station is null");		// IS THIS IS THE RIGHT ERROR TO THROW HERE
 		}
-		this.station = station;
+		this.stationHardware = station;
 
 		// activate power grid and then just activate the entire hardware
 
@@ -98,7 +91,7 @@ public class SelfCheckoutStationSoftware {
 		
 		// Make facades
 		funds = new PaymentHandler(this);
-		products = new ProductHandler(this, station);
+		products = new ProductHandler(this, stationHardware);
 
 		setStationActive(false);
 
@@ -269,36 +262,8 @@ public class SelfCheckoutStationSoftware {
 		System.out.println("Scale Overload. Please remove some items.");
 	}
 
-	public AbstractSelfCheckoutStation getStation() {
-		return station;
-	}
-
-	public IElectronicScale getBaggingArea() {
-		return baggingArea;
-	}
-
-	public IReusableBagDispenser getReusableBagDispenser() {
-		return reusableBagDispenser;
-	}
-
-	public IReceiptPrinter getPrinter() {
-		return printer;
-	}
-
-	public ICardReader getCardReader() {
-		return cardReader;
-	}
-
-	public IBarcodeScanner getMainScanner() {
-		return mainScanner;
-	}
-
-	public IBarcodeScanner getHandheldScanner() {
-		return handheldScanner;
-	}
-
-	public CoinSlot getCoinSlot() {
-		return coinSlot;
+	public ISelfCheckoutStation getStationHardware() {
+		return stationHardware;
 	}
 
 }
