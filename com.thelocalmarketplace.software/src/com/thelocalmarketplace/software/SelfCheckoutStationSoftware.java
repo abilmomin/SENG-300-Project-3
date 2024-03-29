@@ -69,10 +69,10 @@ public class SelfCheckoutStationSoftware {
 	private ProductHandler products;
 
 	private boolean blocked = false;
-	private boolean active = false;
+	private boolean activeSession = false;
 
 	/**
-	 * Creates an instance of the software for a self checkout station.
+	 * Creates an instance of the software for a self-checkout station.
 	 * 
 	 * @param station The self-checkout station that requires the software.
 	 */
@@ -82,8 +82,6 @@ public class SelfCheckoutStationSoftware {
 		}
 		this.stationHardware = station;
 
-		// activate power grid and then just activate the entire hardware
-
 		// Initialize a new order and all its info
 		this.order = new ArrayList<Item>();
 		this.totalOrderWeight = 0;
@@ -91,7 +89,7 @@ public class SelfCheckoutStationSoftware {
 		
 		// Make facades
 		funds = new PaymentHandler(this);
-		products = new ProductHandler(this, stationHardware);
+		products = new ProductHandler(this);
 
 		setStationActive(false);
 
@@ -116,14 +114,14 @@ public class SelfCheckoutStationSoftware {
 	 * Set function to change the active variable value.
 	 */
 	public void setStationActive(boolean value) {
-		active = value;
+		activeSession = value;
 	}
 
 	/**
 	 * Get function to get the blocked station status.
 	 */
 	public boolean getStationActive() {
-		return active;
+		return activeSession;
 	}
 	
 	/**
@@ -132,7 +130,7 @@ public class SelfCheckoutStationSoftware {
 	 * @throws InvalidStateSimulationException If a session is already active.
 	 */
 	public void startSession(Scanner scanner) {
-		if (active) {
+		if (activeSession) {
 			throw new InvalidStateSimulationException("Session already started.");
 		}
 		

@@ -457,8 +457,6 @@ public class PaymentHandler {
 				return -1;
 			}
 
-			cardReader.plugIn(PowerGrid.instance());
-			cardReader.turnOn();
 			CardData data = cardReader.swipe(card);
 
 			long holdNumber = cardIssuer.authorizeHold(data.getNumber(), amountCharged);

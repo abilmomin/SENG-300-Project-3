@@ -4,13 +4,14 @@ import com.jjjwelectronics.bag.IReusableBagDispenser;
 import com.jjjwelectronics.scale.IElectronicScale;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
+import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.oldCode.Order;
 
 public class ProductHandler {
 	// Things to listen to (hardware)
 	public SelfCheckoutStationSoftware software;
-	public AbstractSelfCheckoutStation station;
+	public ISelfCheckoutStation station;
 	public IElectronicScale baggingArea;
 	public IReusableBagDispenser reusableBagDispenser;
 	public IBarcodeScanner mainScanner;
@@ -26,12 +27,10 @@ public class ProductHandler {
 	 * 
 	 * @param software
 	 * 		The main software hub.
-	 * @param station
-	 * 		The hardware of the self checkout station.
 	 */
-	public ProductHandler(SelfCheckoutStationSoftware software, AbstractSelfCheckoutStation station) {
+	public ProductHandler(SelfCheckoutStationSoftware software) {
 		this.software = software;
-		this.station = station;
+		this.station = software.getStationHardware();
 		
 		// Get all the hardware the listeners need to listen to
 		this.mainScanner = station.getMainScanner();
