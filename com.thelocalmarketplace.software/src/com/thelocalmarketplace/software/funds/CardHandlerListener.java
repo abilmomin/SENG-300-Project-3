@@ -6,13 +6,13 @@ import com.jjjwelectronics.card.Card.CardData;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.jjjwelectronics.card.CardReaderListener;
 
-public class CardListener implements CardReaderListener {
+public class CardHandlerListener implements CardReaderListener {
 	// In order to access the hardware of the SelfCheckoutStation, use software.getHARDWARE_YOU_WANNA_GET()
 	
 	private SelfCheckoutStationSoftware software;
 	private PaymentHandler handler;
 	
-	public CardListener(SelfCheckoutStationSoftware software, PaymentHandler handler) {
+	public CardHandlerListener(SelfCheckoutStationSoftware software, PaymentHandler handler) {
 		this.software = software;
 		this.handler = handler;	
 	}

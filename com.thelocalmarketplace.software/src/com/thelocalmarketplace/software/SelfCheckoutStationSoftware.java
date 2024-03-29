@@ -78,7 +78,7 @@ public class SelfCheckoutStationSoftware {
 	 */
 	public SelfCheckoutStationSoftware(ISelfCheckoutStation station) {
 		if (station == null) {
-			throw new NullPointerException("Station is null");		// IS THIS IS THE RIGHT ERROR TO THROW HERE
+			throw new IllegalArgumentException("The station cannot be null");		// IS THIS IS THE RIGHT ERROR TO THROW HERE
 		}
 		this.stationHardware = station;
 
