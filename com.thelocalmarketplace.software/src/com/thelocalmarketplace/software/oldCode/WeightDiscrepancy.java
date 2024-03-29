@@ -22,7 +22,7 @@
  * Nami Marwah (UCID: 30178528)
  */
 
-package com.thelocalmarketplace.software;
+package com.thelocalmarketplace.software.oldCode;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -30,7 +30,8 @@ import java.util.List;
 import com.jjjwelectronics.Item;
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.OverloadedDevice;
-import com.jjjwelectronics.scale.AbstractElectronicScale; 
+import com.jjjwelectronics.scale.AbstractElectronicScale;
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware; 
 
 public class WeightDiscrepancy {
 	

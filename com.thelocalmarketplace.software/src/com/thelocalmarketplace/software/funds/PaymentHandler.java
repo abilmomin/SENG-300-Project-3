@@ -22,7 +22,7 @@
  * Nami Marwah (UCID: 30178528)
  */
 
-package com.thelocalmarketplace.software;
+package com.thelocalmarketplace.software.funds;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -58,6 +58,8 @@ import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
 import com.thelocalmarketplace.hardware.external.CardIssuer;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.thelocalmarketplace.software.oldCode.Order;
 
 import ca.ucalgary.seng300.simulation.NullPointerSimulationException;
 import powerutility.PowerGrid;

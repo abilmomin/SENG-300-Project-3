@@ -22,7 +22,7 @@
  * Nami Marwah (UCID: 30178528)
  */
 
-package com.thelocalmarketplace.software;
+package com.thelocalmarketplace.software.product;
 
 import com.jjjwelectronics.IDevice;
 import com.jjjwelectronics.IDeviceListener;
@@ -33,11 +33,12 @@ import com.jjjwelectronics.scanner.BarcodedItem;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 public class ScannerListener implements BarcodeScannerListener {
-	private SelfCheckoutStationSoftware software;
+	private ProductHandler software;
 	
-	public ScannerListener(SelfCheckoutStationSoftware software) {
+	public ScannerListener(ProductHandler software) {
 		this.software = software;
 	}
 	

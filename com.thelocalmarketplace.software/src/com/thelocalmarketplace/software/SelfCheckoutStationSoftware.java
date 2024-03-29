@@ -56,6 +56,10 @@ import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.CoinTray;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
+import com.thelocalmarketplace.software.funds.PaymentHandler;
+import com.thelocalmarketplace.software.oldCode.BaggingAreaListener;
+import com.thelocalmarketplace.software.product.ProductHandler;
+import com.thelocalmarketplace.software.product.ScannerListener;
 
 /**
  * This class acts as the central unit that communicates with 
@@ -80,6 +84,10 @@ public class SelfCheckoutStationSoftware {
 	private ArrayList<Item> order;
 	private double totalOrderWeight;
 	private long totalOrderPrice;
+	
+	// Facades
+	public PaymentHandler funds;
+	public ProductHandler products;
 
 	private boolean blocked = false;
 	private boolean active = false;
@@ -112,6 +120,10 @@ public class SelfCheckoutStationSoftware {
 		this.order = new ArrayList<Item>();
 		this.totalOrderWeight = 0;
 		this.totalOrderPrice = 0;
+		
+		// Make facades
+		funds = new PaymentHandler(this);
+		products = new ProductHandler(this);
 	}
 
 	/**

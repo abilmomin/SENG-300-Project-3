@@ -1,4 +1,4 @@
-package com.thelocalmarketplace.software;
+package com.thelocalmarketplace.software.product;
 
 import com.jjjwelectronics.IDevice;
 import com.jjjwelectronics.IDeviceListener;
@@ -7,11 +7,12 @@ import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.jjjwelectronics.scale.ElectronicScaleListener;
 import com.jjjwelectronics.scale.IElectronicScale;
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 public class ScaleListener implements ElectronicScaleListener {
-	private SelfCheckoutStationSoftware software;
+	private ProductHandler software;
 	
-	public ScaleListener (SelfCheckoutStationSoftware software) {
+	public ScaleListener (ProductHandler software) {
 		 this.software = software;
 		
 	}
