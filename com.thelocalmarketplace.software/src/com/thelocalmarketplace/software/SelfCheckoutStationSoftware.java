@@ -26,15 +26,9 @@ package com.thelocalmarketplace.software;
 
 import ca.ucalgary.seng300.simulation.InvalidStateSimulationException;
 import static com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation.resetConfigurationToDefaults;
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
-
 import com.jjjwelectronics.Item;
-import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.bag.IReusableBagDispenser;
 import com.jjjwelectronics.card.ICardReader;
 import com.jjjwelectronics.printer.IReceiptPrinter;
@@ -42,19 +36,9 @@ import com.jjjwelectronics.scale.IElectronicScale;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
-import com.jjjwelectronics.screen.ITouchScreen;
-import com.tdc.banknote.BanknoteDispensationSlot;
-import com.tdc.banknote.BanknoteInsertionSlot;
-import com.tdc.banknote.BanknoteStorageUnit;
-import com.tdc.banknote.BanknoteValidator;
-import com.tdc.banknote.IBanknoteDispenser;
 import com.tdc.coin.CoinSlot;
-import com.tdc.coin.CoinStorageUnit;
-import com.tdc.coin.CoinValidator;
-import com.tdc.coin.ICoinDispenser;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
-import com.thelocalmarketplace.hardware.CoinTray;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.funds.PaymentHandler;
 import com.thelocalmarketplace.software.oldCode.BaggingAreaListener;
