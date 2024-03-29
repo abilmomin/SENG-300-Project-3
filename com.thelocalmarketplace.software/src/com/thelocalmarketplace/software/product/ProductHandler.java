@@ -48,7 +48,12 @@ public class ProductHandler {
 		mainScanner.register(scannerListener);
 		handheldScanner.register(scannerListener);
 	}
-	
+	/**
+	 * Handle bulky item 
+	 * 
+	 * @param productWeight
+	 * 			The weight of the bulky item 
+	 * */
 	public void handleBulkyItem(double productWeight) {
 		software.setStationBlock(true);
 		System.out.println("No-bagging request is in progress.");
