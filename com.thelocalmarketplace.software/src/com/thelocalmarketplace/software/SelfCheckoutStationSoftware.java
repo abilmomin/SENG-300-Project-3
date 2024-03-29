@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import com.jjjwelectronics.Item;
 import com.jjjwelectronics.bag.IReusableBagDispenser;
+import com.jjjwelectronics.card.AbstractCardReader;
 import com.jjjwelectronics.card.ICardReader;
 import com.jjjwelectronics.printer.IReceiptPrinter;
 import com.jjjwelectronics.scale.IElectronicScale;
@@ -75,7 +76,7 @@ public class SelfCheckoutStationSoftware {
 
 	private boolean blocked = false;
 	private boolean active = false;
-	
+
 	/**
 	 * Creates an instance of the software for a self checkout station.
 	 * 
@@ -83,16 +84,24 @@ public class SelfCheckoutStationSoftware {
 	 * 		The self checkout station that requires the software.
 	 */
 	public SelfCheckoutStationSoftware(AbstractSelfCheckoutStation station) {
+		if (station == null) {
+			throw new NullPointerException("Station is null");		// IS THIS IS THE RIGHT ERROR TO THROW HERE
+		}
 		this.station = station;
-		
+
+		// activate power grid and then just activate the entire hardware
+
 		// Initialize a new order and all its info
 		this.order = new ArrayList<Item>();
 		this.totalOrderWeight = 0;
 		this.totalOrderPrice = 0;
 		
 		// Make facades
-		funds = new PaymentHandler(this, station);
+		funds = new PaymentHandler(this);
 		products = new ProductHandler(this, station);
+
+		setStationActive(false);
+
 	}
 
 	/**
