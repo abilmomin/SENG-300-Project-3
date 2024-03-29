@@ -1,17 +1,18 @@
-package com.thelocalmarketplace.software.product;
+package com.thelocalmarketplace.software.funds;
 
 import com.jjjwelectronics.IDevice;
 import com.jjjwelectronics.IDeviceListener;
-import com.jjjwelectronics.bag.ReusableBagDispenserListener;
+import com.jjjwelectronics.card.Card.CardData;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.jjjwelectronics.card.CardReaderListener;
 
-public class BaggingListener implements ReusableBagDispenserListener {
+public class CardListener implements CardReaderListener {
 	// In order to access the hardware of the SelfCheckoutStation, use software.getHARDWARE_YOU_WANNA_GET()
 	
 	private SelfCheckoutStationSoftware software;
-	private ProductHandler handler;
+	private PaymentHandler handler;
 	
-	public BaggingListener(SelfCheckoutStationSoftware software, ProductHandler handler) {
+	public CardListener(SelfCheckoutStationSoftware software, PaymentHandler handler) {
 		this.software = software;
 		this.handler = handler;	
 	}
@@ -41,19 +42,31 @@ public class BaggingListener implements ReusableBagDispenserListener {
 	}
 
 	@Override
-	public void aBagHasBeenDispensedByTheDispenser() {
+	public void aCardHasBeenInserted() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void theDispenserIsOutOfBags() {
+	public void theCardHasBeenRemoved() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void bagsHaveBeenLoadedIntoTheDispenser(int count) {
+	public void aCardHasBeenTapped() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void aCardHasBeenSwiped() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void theDataFromACardHasBeenRead(CardData data) {
 		// TODO Auto-generated method stub
 		
 	}

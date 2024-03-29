@@ -39,9 +39,9 @@ public class ProductHandler {
 		this.reusableBagDispenser = station.getReusableBagDispenser();
 		
 		// Make the listener objects
-		this.scannerListener = new ScannerListener(this);
-		this.scaleListener = new ScaleListener(this);
-		this.baggingListener = new BaggingListener(this);
+		this.scannerListener = new ScannerListener(software, this);
+		this.scaleListener = new ScaleListener(software, this);
+		this.baggingListener = new BaggingListener(software, this);
 		
 		// Attach the listeners to the hardware
 		mainScanner.register(scannerListener);

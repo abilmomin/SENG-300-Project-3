@@ -36,10 +36,14 @@ import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 public class ScannerListener implements BarcodeScannerListener {
-	private ProductHandler software;
+	// In order to access the hardware of the SelfCheckoutStation, use software.getHARDWARE_YOU_WANNA_GET()
 	
-	public ScannerListener(ProductHandler software) {
+	private SelfCheckoutStationSoftware software;
+	private ProductHandler handler;
+	
+	public ScannerListener(SelfCheckoutStationSoftware software, ProductHandler handler) {
 		this.software = software;
+		this.handler = handler;
 	}
 	
 	/**

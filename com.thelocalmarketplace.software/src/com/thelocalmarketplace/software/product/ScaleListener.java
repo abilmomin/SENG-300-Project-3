@@ -10,11 +10,14 @@ import com.jjjwelectronics.scale.IElectronicScale;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 public class ScaleListener implements ElectronicScaleListener {
-	private ProductHandler software;
+	// In order to access the hardware of the SelfCheckoutStation, use software.HARDWARE_YOU_WANNA_GET
 	
-	public ScaleListener (ProductHandler software) {
-		 this.software = software;
-		
+	private SelfCheckoutStationSoftware software;
+	private ProductHandler handler;
+	
+	public ScaleListener (SelfCheckoutStationSoftware software, ProductHandler handler) {
+		this.software = software;
+		this.handler = handler;	
 	}
 	@Override
 	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {

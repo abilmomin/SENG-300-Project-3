@@ -69,19 +69,22 @@ import powerutility.PowerGrid;
  * Handles coin insertion, validation, and change dispensing.
  */
 public class PaymentHandler {
+	public SelfCheckoutStationSoftware software;
+	public AbstractSelfCheckoutStation station;
 
 	public BigDecimal amountSpent;
 	public BigDecimal changeRemaining = BigDecimal.ZERO;
 	public BigDecimal totalPrice = new BigDecimal(0);
 	public BigDecimal amountInserted;
 	private AbstractSelfCheckoutStation checkoutSystem = null;
-	private ArrayList<Item> allItemOrders;
+	private ArrayList<Item> order;
 	private ReceiptPrinterBronze printerBronze;
 
-	private Order order; // Represents the customer order
 	// Consider adapting the other methods to reflect this global variable.
 	
-	public PaymentHandler(AbstractSelfCheckoutStation station, Order order) throws EmptyDevice, OverloadedDevice {
+	public PaymentHandler(SelfCheckoutStationSoftware software, AbstractSelfCheckoutStation station) {
+		if (software == null)
+			throw new NullPointerException("No argument may be null.");
 		if (station == null)
 			throw new NullPointerException("No argument may be null.");
 		if (station instanceof SelfCheckoutStationBronze)
@@ -90,15 +93,25 @@ public class PaymentHandler {
 			this.checkoutSystem = (SelfCheckoutStationSilver) station;
 		else if (station instanceof SelfCheckoutStationGold)
 			this.checkoutSystem = (SelfCheckoutStationGold) station;
-		this.allItemOrders = order.getOrder();
-		this.totalPrice = BigDecimal.valueOf(order.getTotalPrice());
+		
+		this.software = software;
+		this.station = station;
+		this.totalPrice = BigDecimal.valueOf(software.getTotalOrderPrice());
 		this.printerBronze = new ReceiptPrinterBronze();
 		this.printerBronze.plugIn(PowerGrid.instance());
 		this.printerBronze.turnOn();
-		this.printerBronze.addInk(ReceiptPrinterBronze.MAXIMUM_INK);
-		this.printerBronze.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
-
-		this.order = order;
+		try {
+			this.printerBronze.addInk(ReceiptPrinterBronze.MAXIMUM_INK);
+		} catch (OverloadedDevice e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			this.printerBronze.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
+		} catch (OverloadedDevice e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public AbstractSelfCheckoutStation getStation() {
@@ -130,7 +143,7 @@ public class PaymentHandler {
 	 */
 	public boolean processPaymentWithCoins(ArrayList<Coin> coinsList)
 			throws DisabledException, CashOverloadException, NoCashAvailableException, EmptyDevice, OverloadedDevice {
-		if (SelfCheckoutStationSoftware.getStationBlock()) {
+		if (software.getStationBlock()) {
 			System.out.println("Blocked. Please add your item to the bagging area.");
 			return false;
 		}
@@ -164,7 +177,7 @@ public class PaymentHandler {
 	public boolean processPaymentWithBanknotes(ArrayList<Banknote> Banknotes)
 			throws DisabledException, CashOverloadException, NoCashAvailableException, EmptyDevice, OverloadedDevice {
 
-		if (SelfCheckoutStationSoftware.getStationBlock()) {
+		if (software.getStationBlock()) {
 			System.out.println("Blocked. Please add your item to the bagging area.");
 			return false;
 		}
@@ -453,7 +466,7 @@ public class PaymentHandler {
 	 */
 	public int payWithCreditViaSwipe(Card card, double amountCharged, CardIssuer cardIssuer) throws IOException {
 		try {
-			if (SelfCheckoutStationSoftware.getStationBlock()) {
+			if (software.getStationBlock()) {
 				System.out.println("Blocked. Please add your item to the bagging area.");
 				return -1;
 			}
@@ -486,7 +499,7 @@ public class PaymentHandler {
 				System.out.println("The transaction failed. Please try again.");
 				return -1;
 			}
-			order.removeTotalPrice((long) amountCharged); // Update the total amount due to the customer
+			software.removeTotalOrderPrice((long) amountCharged); // Update the total amount due to the customer
 			amountSpent = BigDecimal.valueOf(amountCharged);
 			changeRemaining = BigDecimal.ZERO;
 			// Receipt printing is handled inside the demo
@@ -510,7 +523,7 @@ public class PaymentHandler {
 	 */
 	public int payWithDebitViaSwipe(Card card, double amountCharged, CardIssuer cardIssuer) throws IOException {
 		try {
-			if (SelfCheckoutStationSoftware.getStationBlock()) {
+			if (software.getStationBlock()) {
 				System.out.println("Blocked. Please add your item to the bagging area.");
 				return -1;
 			}
@@ -543,7 +556,7 @@ public class PaymentHandler {
 				System.out.println("The transaction failed. Please try again.");
 				return -1;
 			}
-			order.removeTotalPrice((long) amountCharged); // Update the total amount due to the customer
+			software.removeTotalOrderPrice((long) amountCharged); // Update the total amount due to the customer
 			amountSpent = BigDecimal.valueOf(amountCharged);
 			changeRemaining = BigDecimal.ZERO;
 			return 1;

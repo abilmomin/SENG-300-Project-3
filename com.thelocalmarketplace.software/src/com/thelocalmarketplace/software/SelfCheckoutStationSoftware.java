@@ -67,14 +67,14 @@ import com.thelocalmarketplace.software.product.ScannerListener;
  */
 public class SelfCheckoutStationSoftware {
 	// Things to listen to (hardware)
-	public AbstractSelfCheckoutStation station;
-	public IElectronicScale baggingArea;
-	public IReusableBagDispenser reusableBagDispenser;
-	public IReceiptPrinter printer;
-	public ICardReader cardReader;
-	public IBarcodeScanner mainScanner;
-	public IBarcodeScanner handheldScanner;
-	public CoinSlot coinSlot;
+	private AbstractSelfCheckoutStation station;
+	private IElectronicScale baggingArea;
+	private IReusableBagDispenser reusableBagDispenser;
+	private IReceiptPrinter printer;
+	private ICardReader cardReader;
+	private IBarcodeScanner mainScanner;
+	private IBarcodeScanner handheldScanner;
+	private CoinSlot coinSlot;
 	
 	// Listeners
 	public BaggingAreaListener baggingAreaListener;
@@ -105,25 +105,14 @@ public class SelfCheckoutStationSoftware {
 	public SelfCheckoutStationSoftware(AbstractSelfCheckoutStation station) {
 		this.station = station;
 		
-		// Get all the hardware the listeners need to listen to
-		this.mainScanner = station.getMainScanner();
-		this.handheldScanner = station.getHandheldScanner();
-		
-		// Make the listener objects
-		this.scannerListener = new ScannerListener(this);
-		
-		// Attach the listeners to the hardware
-		mainScanner.register(scannerListener);
-		handheldScanner.register(scannerListener);
-		
 		// Initialize a new order and all its info
 		this.order = new ArrayList<Item>();
 		this.totalOrderWeight = 0;
 		this.totalOrderPrice = 0;
 		
 		// Make facades
-		funds = new PaymentHandler(this);
-		products = new ProductHandler(this);
+		funds = new PaymentHandler(this, station);
+		products = new ProductHandler(this, station);
 	}
 
 	/**
@@ -254,6 +243,9 @@ public class SelfCheckoutStationSoftware {
 	public long getTotalOrderPrice() {
 		return this.totalOrderPrice;
 	}
+	public void removeTotalPrice(long price) {
+		this.totalOrderPrice -= price;
+	}
 	
 	/**
 	 * Updates the total weight of the order (in grams)
@@ -287,4 +279,37 @@ public class SelfCheckoutStationSoftware {
 	public void notifyUserOfOverload() {
 		System.out.println("Scale Overload. Please remove some items.");
 	}
+
+	public AbstractSelfCheckoutStation getStation() {
+		return station;
+	}
+
+	public IElectronicScale getBaggingArea() {
+		return baggingArea;
+	}
+
+	public IReusableBagDispenser getReusableBagDispenser() {
+		return reusableBagDispenser;
+	}
+
+	public IReceiptPrinter getPrinter() {
+		return printer;
+	}
+
+	public ICardReader getCardReader() {
+		return cardReader;
+	}
+
+	public IBarcodeScanner getMainScanner() {
+		return mainScanner;
+	}
+
+	public IBarcodeScanner getHandheldScanner() {
+		return handheldScanner;
+	}
+
+	public CoinSlot getCoinSlot() {
+		return coinSlot;
+	}
+
 }
