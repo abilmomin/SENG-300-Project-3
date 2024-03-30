@@ -29,6 +29,7 @@ import static com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation.reset
 import java.util.ArrayList;
 import java.util.Scanner;
 import com.jjjwelectronics.Item;
+import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.bag.IReusableBagDispenser;
 import com.jjjwelectronics.card.AbstractCardReader;
 import com.jjjwelectronics.card.ICardReader;
@@ -40,6 +41,10 @@ import com.jjjwelectronics.scanner.IBarcodeScanner;
 import com.tdc.coin.CoinSlot;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
+import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
+import com.thelocalmarketplace.hardware.PLUCodedItem;
+import com.thelocalmarketplace.hardware.PLUCodedProduct;
+import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.funds.PaymentHandler;
 import com.thelocalmarketplace.software.oldCode.BaggingAreaListener;
@@ -71,25 +76,22 @@ public class SelfCheckoutStationSoftware {
 	private long totalOrderPrice;
 	
 	// Facades
-	public PaymentHandler funds;
-	public ProductHandler products;
+	private PaymentHandler funds;
+	private ProductHandler products;
 
 	private boolean blocked = false;
-	private boolean active = false;
+	private boolean activeSession = false;
 
 	/**
-	 * Creates an instance of the software for a self checkout station.
+	 * Creates an instance of the software for a self-checkout station.
 	 * 
-	 * @param selfCheckoutStation
-	 * 		The self checkout station that requires the software.
+	 * @param station The self-checkout station that requires the software.
 	 */
-	public SelfCheckoutStationSoftware(AbstractSelfCheckoutStation station) {
+	public SelfCheckoutStationSoftware(ISelfCheckoutStation station) {
 		if (station == null) {
-			throw new NullPointerException("Station is null");		// IS THIS IS THE RIGHT ERROR TO THROW HERE
+			throw new IllegalArgumentException("The station cannot be null");		// IS THIS IS THE RIGHT ERROR TO THROW HERE
 		}
-		this.station = station;
-
-		// activate power grid and then just activate the entire hardware
+		this.station = (AbstractSelfCheckoutStation) station;
 
 		// Initialize a new order and all its info
 		this.order = new ArrayList<Item>();
@@ -98,7 +100,7 @@ public class SelfCheckoutStationSoftware {
 		
 		// Make facades
 		funds = new PaymentHandler(this);
-		products = new ProductHandler(this, station);
+		products = new ProductHandler(this);
 
 		setStationActive(false);
 
@@ -123,14 +125,14 @@ public class SelfCheckoutStationSoftware {
 	 * Set function to change the active variable value.
 	 */
 	public void setStationActive(boolean value) {
-		active = value;
+		activeSession = value;
 	}
 
 	/**
 	 * Get function to get the blocked station status.
 	 */
 	public boolean getStationActive() {
-		return active;
+		return activeSession;
 	}
 	
 	/**
@@ -139,7 +141,7 @@ public class SelfCheckoutStationSoftware {
 	 * @throws InvalidStateSimulationException If a session is already active.
 	 */
 	public void startSession(Scanner scanner) {
-		if (active) {
+		if (activeSession) {
 			throw new InvalidStateSimulationException("Session already started.");
 		}
 		
@@ -180,29 +182,49 @@ public class SelfCheckoutStationSoftware {
 	 * @param item The item to remove from order.
 	 * @return true if the item was successfully removed, false otherwise.
 	 */
-	public boolean removeItemFromOrder(BarcodedItem item) {
+	public boolean removeItemFromOrder(Item item) {
 		if (this.order.contains(item)) {
 			this.order.remove(item);
 			
 			setStationBlock(true);
 			
-			Barcode barcode = item.getBarcode();
-			BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
-			if (product != null) {
-				double productWeight = product.getExpectedWeight();
-				long productPrice = product.getPrice();
-				
-				removeTotalOrderWeightInGrams(productWeight);
-				removeTotalOrderPrice(productPrice);
-				
-				System.out.println("Please remove item from the bagging area");
+			if (item instanceof BarcodedItem) {
+				Barcode barcode = ((BarcodedItem) item).getBarcode();
+				BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+				if (product != null) {
+					double productWeight = product.getExpectedWeight();
+					long productPrice = product.getPrice();
+					
+					removeTotalOrderWeightInGrams(productWeight);
+					removeTotalOrderPrice(productPrice);
+					
+					System.out.println("Please remove item from the bagging area");
+				}
+				return true;
+			} 
+			
+			if (item instanceof PLUCodedItem) {
+				PriceLookUpCode PLUCode = ((PLUCodedItem) item).getPLUCode();
+				PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
+				if (product != null) {
+					Mass itemMass = item.getMass();
+					double productWeight = itemMass.inGrams().doubleValue();
+					long productPrice = product.getPrice();
+					
+					removeTotalOrderWeightInGrams(productWeight);
+					removeTotalOrderPrice(productPrice);
+					
+					System.out.println("Please remove item from the bagging area");
+				}
+				return true;
 			}
-			return true;
 			
 		} else {
 			System.out.println("Item not found in the order.");
 			return false;
 		}
+		
+		return false;
 	}
 
 	
@@ -269,36 +291,8 @@ public class SelfCheckoutStationSoftware {
 		System.out.println("Scale Overload. Please remove some items.");
 	}
 
-	public AbstractSelfCheckoutStation getStation() {
+	public ISelfCheckoutStation getStationHardware() {
 		return station;
-	}
-
-	public IElectronicScale getBaggingArea() {
-		return baggingArea;
-	}
-
-	public IReusableBagDispenser getReusableBagDispenser() {
-		return reusableBagDispenser;
-	}
-
-	public IReceiptPrinter getPrinter() {
-		return printer;
-	}
-
-	public ICardReader getCardReader() {
-		return cardReader;
-	}
-
-	public IBarcodeScanner getMainScanner() {
-		return mainScanner;
-	}
-
-	public IBarcodeScanner getHandheldScanner() {
-		return handheldScanner;
-	}
-
-	public CoinSlot getCoinSlot() {
-		return coinSlot;
 	}
 
 }

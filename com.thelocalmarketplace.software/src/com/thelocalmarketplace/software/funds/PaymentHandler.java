@@ -44,13 +44,7 @@ import com.tdc.DisabledException;
 import com.tdc.NoCashAvailableException;
 import com.tdc.banknote.Banknote;
 import com.tdc.coin.Coin;
-import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
-import com.thelocalmarketplace.hardware.BarcodedProduct;
-import com.thelocalmarketplace.hardware.PLUCodedItem;
-import com.thelocalmarketplace.hardware.PLUCodedProduct;
-import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
-import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
-import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
+import com.thelocalmarketplace.hardware.*;
 import com.thelocalmarketplace.hardware.external.CardIssuer;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
@@ -64,8 +58,8 @@ import powerutility.PowerGrid;
  * Handles coin insertion, validation, and change dispensing.
  */
 public class PaymentHandler {
-	private SelfCheckoutStationSoftware stationSoftware;
-	private AbstractSelfCheckoutStation stationHardware;
+	private final SelfCheckoutStationSoftware stationSoftware;
+	private final ISelfCheckoutStation stationHardware;
 
 	private BigDecimal amountSpent;
 	private BigDecimal changeRemaining = BigDecimal.ZERO;
@@ -83,8 +77,8 @@ public class PaymentHandler {
 		this.stationSoftware = stationSoftware;
 //		if (station == null)
 //			throw new NullPointerException("No argument may be null.");
-		this.stationHardware = stationSoftware.getStation();
-		this.cardReader = stationSoftware.getCardReader();
+		this.stationHardware = stationSoftware.getStationHardware();
+		this.cardReader = stationSoftware.getStationHardware().getCardReader();
 //		if (stationHardware instanceof SelfCheckoutStationBronze)
 //			this.stationHardware = (SelfCheckoutStationBronze) stationHardware;
 //		else if (stationHardware instanceof SelfCheckoutStationSilver)
@@ -108,10 +102,6 @@ public class PaymentHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	public AbstractSelfCheckoutStation getStation() {
-		return stationHardware;
 	}
 
 	/**
@@ -467,8 +457,6 @@ public class PaymentHandler {
 				return -1;
 			}
 
-			cardReader.plugIn(PowerGrid.instance());
-			cardReader.turnOn();
 			CardData data = cardReader.swipe(card);
 
 			long holdNumber = cardIssuer.authorizeHold(data.getNumber(), amountCharged);
