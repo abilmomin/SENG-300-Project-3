@@ -52,7 +52,7 @@ import com.thelocalmarketplace.software.product.ScannerListener;
  */
 public class SelfCheckoutStationSoftware {
 	// Things to listen to (hardware)
-	private AbstractSelfCheckoutStation station;
+	public AbstractSelfCheckoutStation station;
 	private IElectronicScale baggingArea;
 	private IReusableBagDispenser reusableBagDispenser;
 	private IReceiptPrinter printer;
