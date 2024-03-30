@@ -22,7 +22,7 @@
  * Nami Marwah (UCID: 30178528)
  */
 
-package com.thelocalmarketplace.software;
+package com.thelocalmarketplace.software.funds;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -35,13 +35,8 @@ import java.util.stream.Collectors;
 import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.Item;
 import com.jjjwelectronics.OverloadedDevice;
-import com.jjjwelectronics.card.AbstractCardReader;
-import com.jjjwelectronics.card.Card;
+import com.jjjwelectronics.card.*;
 import com.jjjwelectronics.card.Card.CardData;
-import com.jjjwelectronics.card.CardReaderBronze;
-import com.jjjwelectronics.card.CardReaderGold;
-import com.jjjwelectronics.card.CardReaderSilver;
-import com.jjjwelectronics.card.MagneticStripeFailureException;
 import com.jjjwelectronics.printer.ReceiptPrinterBronze;
 import com.jjjwelectronics.scanner.BarcodedItem;
 import com.tdc.CashOverloadException;
@@ -49,15 +44,11 @@ import com.tdc.DisabledException;
 import com.tdc.NoCashAvailableException;
 import com.tdc.banknote.Banknote;
 import com.tdc.coin.Coin;
-import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
-import com.thelocalmarketplace.hardware.BarcodedProduct;
-import com.thelocalmarketplace.hardware.PLUCodedItem;
-import com.thelocalmarketplace.hardware.PLUCodedProduct;
-import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
-import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
-import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
+import com.thelocalmarketplace.hardware.*;
 import com.thelocalmarketplace.hardware.external.CardIssuer;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.thelocalmarketplace.software.oldCode.Order;
 
 import ca.ucalgary.seng300.simulation.NullPointerSimulationException;
 import powerutility.PowerGrid;
@@ -67,40 +58,50 @@ import powerutility.PowerGrid;
  * Handles coin insertion, validation, and change dispensing.
  */
 public class PaymentHandler {
+	private final SelfCheckoutStationSoftware stationSoftware;
+	private final ISelfCheckoutStation stationHardware;
 
-	public BigDecimal amountSpent;
-	public BigDecimal changeRemaining = BigDecimal.ZERO;
-	public BigDecimal totalPrice = new BigDecimal(0);
-	public BigDecimal amountInserted;
-	private AbstractSelfCheckoutStation checkoutSystem = null;
-	private ArrayList<Item> allItemOrders;
+	private BigDecimal amountSpent;
+	private BigDecimal changeRemaining = BigDecimal.ZERO;
+	private BigDecimal totalPrice = new BigDecimal(0);
+	private BigDecimal amountInserted;
+	private ArrayList<Item> order;
 	private ReceiptPrinterBronze printerBronze;
+	private final ICardReader cardReader;
 
-	private Order order; // Represents the customer order
 	// Consider adapting the other methods to reflect this global variable.
 	
-	public PaymentHandler(AbstractSelfCheckoutStation station, Order order) throws EmptyDevice, OverloadedDevice {
-		if (station == null)
+	public PaymentHandler(SelfCheckoutStationSoftware stationSoftware) {
+		if (stationSoftware == null)
 			throw new NullPointerException("No argument may be null.");
-		if (station instanceof SelfCheckoutStationBronze)
-			this.checkoutSystem = (SelfCheckoutStationBronze) station;
-		else if (station instanceof SelfCheckoutStationSilver)
-			this.checkoutSystem = (SelfCheckoutStationSilver) station;
-		else if (station instanceof SelfCheckoutStationGold)
-			this.checkoutSystem = (SelfCheckoutStationGold) station;
-		this.allItemOrders = order.getOrder();
-		this.totalPrice = BigDecimal.valueOf(order.getTotalPrice());
+		this.stationSoftware = stationSoftware;
+//		if (station == null)
+//			throw new NullPointerException("No argument may be null.");
+		this.stationHardware = stationSoftware.getStationHardware();
+		this.cardReader = stationSoftware.getStationHardware().getCardReader();
+//		if (stationHardware instanceof SelfCheckoutStationBronze)
+//			this.stationHardware = (SelfCheckoutStationBronze) stationHardware;
+//		else if (stationHardware instanceof SelfCheckoutStationSilver)
+//			this.stationHardware = (SelfCheckoutStationSilver) stationHardware;
+//		else if (stationHardware instanceof SelfCheckoutStationGold)
+//			this.stationHardware = (SelfCheckoutStationGold) stationHardware;
+		
+		this.totalPrice = BigDecimal.valueOf(stationSoftware.getTotalOrderPrice());
 		this.printerBronze = new ReceiptPrinterBronze();
 		this.printerBronze.plugIn(PowerGrid.instance());
 		this.printerBronze.turnOn();
-		this.printerBronze.addInk(ReceiptPrinterBronze.MAXIMUM_INK);
-		this.printerBronze.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
-
-		this.order = order;
-	}
-
-	public AbstractSelfCheckoutStation getStation() {
-		return checkoutSystem;
+		try {
+			this.printerBronze.addInk(ReceiptPrinterBronze.MAXIMUM_INK);
+		} catch (OverloadedDevice e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			this.printerBronze.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
+		} catch (OverloadedDevice e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -128,7 +129,7 @@ public class PaymentHandler {
 	 */
 	public boolean processPaymentWithCoins(ArrayList<Coin> coinsList)
 			throws DisabledException, CashOverloadException, NoCashAvailableException, EmptyDevice, OverloadedDevice {
-		if (SelfCheckoutStationSoftware.getStationBlock()) {
+		if (stationSoftware.getStationBlock()) {
 			System.out.println("Blocked. Please add your item to the bagging area.");
 			return false;
 		}
@@ -162,7 +163,7 @@ public class PaymentHandler {
 	public boolean processPaymentWithBanknotes(ArrayList<Banknote> Banknotes)
 			throws DisabledException, CashOverloadException, NoCashAvailableException, EmptyDevice, OverloadedDevice {
 
-		if (SelfCheckoutStationSoftware.getStationBlock()) {
+		if (stationSoftware.getStationBlock()) {
 			System.out.println("Blocked. Please add your item to the bagging area.");
 			return false;
 		}
@@ -219,10 +220,10 @@ public class PaymentHandler {
 
 		BigDecimal amountDispensed = new BigDecimal("0.0");
 		BigDecimal remainingAmount = changeValue;
-		List<BigDecimal> coinDenominations = this.checkoutSystem.getCoinDenominations();
+		List<BigDecimal> coinDenominations = this.stationHardware.getCoinDenominations();
 		Collections.sort(coinDenominations);
 		Collections.reverse(coinDenominations);
-		List<BigDecimal> bankNoteDenominations = Arrays.stream(this.checkoutSystem.getBanknoteDenominations())
+		List<BigDecimal> bankNoteDenominations = Arrays.stream(this.stationHardware.getBanknoteDenominations())
 				.collect(Collectors.toList());
 		Collections.sort(bankNoteDenominations);
 		Collections.reverse(bankNoteDenominations);
@@ -237,7 +238,7 @@ public class PaymentHandler {
 			BigDecimal lowestBankNote = bankNoteDenominations.get(bankNoteDenominations.size() - 1);
 			BigDecimal lowestVal = lowestCoin.min(lowestBankNote);
 			if (remainingAmount.compareTo(lowestVal) < 0 && remainingAmount.compareTo(BigDecimal.ZERO) > 0) {
-				this.checkoutSystem.getCoinDispensers().get(lowestVal).emit();
+				this.stationHardware.getCoinDispensers().get(lowestVal).emit();
 				amountDispensed = changeValue;
 				remainingAmount = BigDecimal.ZERO;
 				break;
@@ -246,8 +247,8 @@ public class PaymentHandler {
 			boolean dispensed = false;
 			// Try using banknotes first
 			for (BigDecimal bankNote : bankNoteDenominations) {
-				if (remainingAmount.compareTo(bankNote) >= 0 && checkoutSystem.getBanknoteDispensers().get(bankNote).size() > 0) {
-					checkoutSystem.getBanknoteDispensers().get(bankNote).emit();
+				if (remainingAmount.compareTo(bankNote) >= 0 && stationHardware.getBanknoteDispensers().get(bankNote).size() > 0) {
+					stationHardware.getBanknoteDispensers().get(bankNote).emit();
 					amountDispensed = amountDispensed.add(bankNote);
 					remainingAmount = remainingAmount.subtract(bankNote);
 					dispensed = true;
@@ -258,10 +259,10 @@ public class PaymentHandler {
 			// If no banknotes are available or insufficient, try using coins
 			if (!dispensed) {
 				for (BigDecimal coin : coinDenominations) {
-					if (remainingAmount.compareTo(coin) >= 0 && checkoutSystem.getCoinDispensers().get(coin).size() > 0) {
-						System.out.println(checkoutSystem.getCoinDispensers().get(coin).size());
+					if (remainingAmount.compareTo(coin) >= 0 && stationHardware.getCoinDispensers().get(coin).size() > 0) {
+						System.out.println(stationHardware.getCoinDispensers().get(coin).size());
 						System.out.println(coin);
-						checkoutSystem.getCoinDispensers().get(coin).emit();
+						stationHardware.getCoinDispensers().get(coin).emit();
 						amountDispensed = amountDispensed.add(coin);
 						remainingAmount = remainingAmount.subtract(coin);
 						dispensed = true;
@@ -302,12 +303,12 @@ public class PaymentHandler {
 	 * @throws CashOverloadException If the cash storage is overloaded.
 	 */
 	public void acceptInsertedCoin(Coin coin) throws DisabledException, CashOverloadException {
-		if(this.checkoutSystem.getCoinStorage().hasSpace()) {
-			this.checkoutSystem.getCoinSlot().enable();
-			this.checkoutSystem.getCoinSlot().receive(coin);
+		if(this.stationHardware.getCoinStorage().hasSpace()) {
+			this.stationHardware.getCoinSlot().enable();
+			this.stationHardware.getCoinSlot().receive(coin);
 		}
 		else {
-			this.checkoutSystem.getCoinSlot().disable();
+			this.stationHardware.getCoinSlot().disable();
 		}
 	}
 
@@ -319,15 +320,15 @@ public class PaymentHandler {
 	 * @throws CashOverloadException if the banknote storage is overloaded
 	 */
 	public void acceptInsertedBanknote(Banknote banknote) throws DisabledException, CashOverloadException {
-		if(this.checkoutSystem.getBanknoteInput().hasDanglingBanknotes()) {
-			this.checkoutSystem.getBanknoteInput().removeDanglingBanknote();
+		if(this.stationHardware.getBanknoteInput().hasDanglingBanknotes()) {
+			this.stationHardware.getBanknoteInput().removeDanglingBanknote();
 		}
-		if(this.checkoutSystem.getBanknoteStorage().hasSpace()) {
-			this.checkoutSystem.getBanknoteInput().enable();
-			this.checkoutSystem.getBanknoteInput().receive(banknote);
+		if(this.stationHardware.getBanknoteStorage().hasSpace()) {
+			this.stationHardware.getBanknoteInput().enable();
+			this.stationHardware.getBanknoteInput().receive(banknote);
 		}
 		else {
-			this.checkoutSystem.getBanknoteInput().disable();
+			this.stationHardware.getBanknoteInput().disable();
 		}
 	}
 
@@ -403,7 +404,7 @@ public class PaymentHandler {
 			}
 			BigDecimal v = c.getValue();
 			try {
-				this.checkoutSystem.getCoinDispensers().get(v).load(c);
+				this.stationHardware.getCoinDispensers().get(v).load(c);
 			} catch (CashOverloadException e) {
 				throw new CashOverloadException("Coin Dispenser for coins of value " + v.doubleValue() + " is full.");
 			} catch (NullPointerException e) {
@@ -429,7 +430,7 @@ public class PaymentHandler {
 			}
 			BigDecimal v = ((Banknote) b).getDenomination();
 			try {
-				this.checkoutSystem.getBanknoteDispensers().get(v).load(b);
+				this.stationHardware.getBanknoteDispensers().get(v).load(b);
 			} catch (CashOverloadException e) {
 				throw new CashOverloadException("BankNote Dispenser for banknote of value " + v.doubleValue() + " is full.");
 			} catch (NullPointerException e) {
@@ -451,24 +452,11 @@ public class PaymentHandler {
 	 */
 	public int payWithCreditViaSwipe(Card card, double amountCharged, CardIssuer cardIssuer) throws IOException {
 		try {
-			if (SelfCheckoutStationSoftware.getStationBlock()) {
+			if (stationSoftware.getStationBlock()) {
 				System.out.println("Blocked. Please add your item to the bagging area.");
 				return -1;
 			}
 
-			AbstractCardReader cardReader = null;
-
-			if (checkoutSystem instanceof SelfCheckoutStationBronze) {
-				cardReader = new CardReaderBronze();
-			}
-			else if (checkoutSystem instanceof SelfCheckoutStationSilver) {
-				cardReader = new CardReaderSilver();
-			}
-			else if (checkoutSystem instanceof SelfCheckoutStationGold) {
-				cardReader = new CardReaderGold();
-			}
-			cardReader.plugIn(PowerGrid.instance());
-			cardReader.turnOn();
 			CardData data = cardReader.swipe(card);
 
 			long holdNumber = cardIssuer.authorizeHold(data.getNumber(), amountCharged);
@@ -484,7 +472,7 @@ public class PaymentHandler {
 				System.out.println("The transaction failed. Please try again.");
 				return -1;
 			}
-			order.removeTotalPrice((long) amountCharged); // Update the total amount due to the customer
+			stationSoftware.removeTotalOrderPrice((long) amountCharged); // Update the total amount due to the customer
 			amountSpent = BigDecimal.valueOf(amountCharged);
 			changeRemaining = BigDecimal.ZERO;
 			// Receipt printing is handled inside the demo
@@ -508,20 +496,20 @@ public class PaymentHandler {
 	 */
 	public int payWithDebitViaSwipe(Card card, double amountCharged, CardIssuer cardIssuer) throws IOException {
 		try {
-			if (SelfCheckoutStationSoftware.getStationBlock()) {
+			if (stationSoftware.getStationBlock()) {
 				System.out.println("Blocked. Please add your item to the bagging area.");
 				return -1;
 			}
 
 			AbstractCardReader cardReader = null;
 
-			if (checkoutSystem instanceof SelfCheckoutStationBronze) {
+			if (stationHardware instanceof SelfCheckoutStationBronze) {
 				cardReader = new CardReaderBronze();
 			}
-			else if (checkoutSystem instanceof SelfCheckoutStationSilver) {
+			else if (stationHardware instanceof SelfCheckoutStationSilver) {
 				cardReader = new CardReaderSilver();
 			}
-			else if (checkoutSystem instanceof SelfCheckoutStationGold) {
+			else if (stationHardware instanceof SelfCheckoutStationGold) {
 				cardReader = new CardReaderGold();
 			}
 			cardReader.plugIn(PowerGrid.instance());
@@ -541,7 +529,7 @@ public class PaymentHandler {
 				System.out.println("The transaction failed. Please try again.");
 				return -1;
 			}
-			order.removeTotalPrice((long) amountCharged); // Update the total amount due to the customer
+			stationSoftware.removeTotalOrderPrice((long) amountCharged); // Update the total amount due to the customer
 			amountSpent = BigDecimal.valueOf(amountCharged);
 			changeRemaining = BigDecimal.ZERO;
 			return 1;

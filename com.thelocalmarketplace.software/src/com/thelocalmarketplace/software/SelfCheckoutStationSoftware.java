@@ -26,36 +26,30 @@ package com.thelocalmarketplace.software;
 
 import ca.ucalgary.seng300.simulation.InvalidStateSimulationException;
 import static com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation.resetConfigurationToDefaults;
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
-
 import com.jjjwelectronics.Item;
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.bag.IReusableBagDispenser;
+import com.jjjwelectronics.card.AbstractCardReader;
 import com.jjjwelectronics.card.ICardReader;
 import com.jjjwelectronics.printer.IReceiptPrinter;
 import com.jjjwelectronics.scale.IElectronicScale;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
-import com.jjjwelectronics.screen.ITouchScreen;
-import com.tdc.banknote.BanknoteDispensationSlot;
-import com.tdc.banknote.BanknoteInsertionSlot;
-import com.tdc.banknote.BanknoteStorageUnit;
-import com.tdc.banknote.BanknoteValidator;
-import com.tdc.banknote.IBanknoteDispenser;
 import com.tdc.coin.CoinSlot;
-import com.tdc.coin.CoinStorageUnit;
-import com.tdc.coin.CoinValidator;
-import com.tdc.coin.ICoinDispenser;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
-import com.thelocalmarketplace.hardware.CoinTray;
+import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
+import com.thelocalmarketplace.hardware.PLUCodedItem;
+import com.thelocalmarketplace.hardware.PLUCodedProduct;
+import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
+import com.thelocalmarketplace.software.funds.PaymentHandler;
+import com.thelocalmarketplace.software.oldCode.BaggingAreaListener;
+import com.thelocalmarketplace.software.product.ProductHandler;
+import com.thelocalmarketplace.software.product.ScannerListener;
 
 /**
  * This class acts as the central unit that communicates with 
@@ -63,15 +57,8 @@ import com.thelocalmarketplace.hardware.external.ProductDatabases;
  */
 public class SelfCheckoutStationSoftware {
 	// Things to listen to (hardware)
-	public AbstractSelfCheckoutStation station;
-	public IElectronicScale baggingArea;
-	public IReusableBagDispenser reusableBagDispenser;
-	public IReceiptPrinter printer;
-	public ICardReader cardReader;
-	public IBarcodeScanner mainScanner;
-	public IBarcodeScanner handheldScanner;
-	public CoinSlot coinSlot;
-	
+	private ISelfCheckoutStation stationHardware;
+
 	// Listeners
 	public BaggingAreaListener baggingAreaListener;
 	public ScannerListener scannerListener;
@@ -80,38 +67,36 @@ public class SelfCheckoutStationSoftware {
 	private ArrayList<Item> order;
 	private double totalOrderWeight;
 	private long totalOrderPrice;
+	
+	// Facades
+	private PaymentHandler funds;
+	private ProductHandler products;
 
 	private boolean blocked = false;
-	private boolean active = false;
-	
-	// bulky item code also goes in this class i can do it later. Button needed in GUI -Tara
-	// request attendants attention also goes here. Button needed in GUI
-	// safe to say most things go here
-	
+	private boolean activeSession = false;
+
 	/**
-	 * Creates an instance of the software for a self checkout station.
+	 * Creates an instance of the software for a self-checkout station.
 	 * 
-	 * @param selfCheckoutStation
-	 * 		The self checkout station that requires the software.
+	 * @param station The self-checkout station that requires the software.
 	 */
-	public SelfCheckoutStationSoftware(AbstractSelfCheckoutStation station) {
-		this.station = station;
-		
-		// Get all the hardware the listeners need to listen to
-		this.mainScanner = station.getMainScanner();
-		this.handheldScanner = station.getHandheldScanner();
-		
-		// Make the listener objects
-		this.scannerListener = new ScannerListener(this);
-		
-		// Attach the listeners to the hardware
-		mainScanner.register(scannerListener);
-		handheldScanner.register(scannerListener);
-		
+	public SelfCheckoutStationSoftware(ISelfCheckoutStation station) {
+		if (station == null) {
+			throw new IllegalArgumentException("The station cannot be null");		// IS THIS IS THE RIGHT ERROR TO THROW HERE
+		}
+		this.stationHardware = station;
+
 		// Initialize a new order and all its info
 		this.order = new ArrayList<Item>();
 		this.totalOrderWeight = 0;
 		this.totalOrderPrice = 0;
+		
+		// Make facades
+		funds = new PaymentHandler(this);
+		products = new ProductHandler(this);
+
+		setStationActive(false);
+
 	}
 
 	/**
@@ -133,14 +118,14 @@ public class SelfCheckoutStationSoftware {
 	 * Set function to change the active variable value.
 	 */
 	public void setStationActive(boolean value) {
-		active = value;
+		activeSession = value;
 	}
 
 	/**
 	 * Get function to get the blocked station status.
 	 */
 	public boolean getStationActive() {
-		return active;
+		return activeSession;
 	}
 	
 	/**
@@ -149,7 +134,7 @@ public class SelfCheckoutStationSoftware {
 	 * @throws InvalidStateSimulationException If a session is already active.
 	 */
 	public void startSession(Scanner scanner) {
-		if (active) {
+		if (activeSession) {
 			throw new InvalidStateSimulationException("Session already started.");
 		}
 		
@@ -190,29 +175,49 @@ public class SelfCheckoutStationSoftware {
 	 * @param item The item to remove from order.
 	 * @return true if the item was successfully removed, false otherwise.
 	 */
-	public boolean removeItemFromOrder(BarcodedItem item) {
+	public boolean removeItemFromOrder(Item item) {
 		if (this.order.contains(item)) {
 			this.order.remove(item);
 			
 			setStationBlock(true);
 			
-			Barcode barcode = item.getBarcode();
-			BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
-			if (product != null) {
-				double productWeight = product.getExpectedWeight();
-				long productPrice = product.getPrice();
-				
-				removeTotalOrderWeightInGrams(productWeight);
-				removeTotalOrderPrice(productPrice);
-				
-				System.out.println("Please remove item from the bagging area");
+			if (item instanceof BarcodedItem) {
+				Barcode barcode = ((BarcodedItem) item).getBarcode();
+				BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+				if (product != null) {
+					double productWeight = product.getExpectedWeight();
+					long productPrice = product.getPrice();
+					
+					removeTotalOrderWeightInGrams(productWeight);
+					removeTotalOrderPrice(productPrice);
+					
+					System.out.println("Please remove item from the bagging area");
+				}
+				return true;
+			} 
+			
+			if (item instanceof PLUCodedItem) {
+				PriceLookUpCode PLUCode = ((PLUCodedItem) item).getPLUCode();
+				PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
+				if (product != null) {
+					Mass itemMass = item.getMass();
+					double productWeight = itemMass.inGrams().doubleValue();
+					long productPrice = product.getPrice();
+					
+					removeTotalOrderWeightInGrams(productWeight);
+					removeTotalOrderPrice(productPrice);
+					
+					System.out.println("Please remove item from the bagging area");
+				}
+				return true;
 			}
-			return true;
 			
 		} else {
 			System.out.println("Item not found in the order.");
 			return false;
 		}
+		
+		return false;
 	}
 
 	
@@ -241,6 +246,9 @@ public class SelfCheckoutStationSoftware {
 	 */
 	public long getTotalOrderPrice() {
 		return this.totalOrderPrice;
+	}
+	public void removeTotalPrice(long price) {
+		this.totalOrderPrice -= price;
 	}
 	
 	/**
@@ -275,4 +283,9 @@ public class SelfCheckoutStationSoftware {
 	public void notifyUserOfOverload() {
 		System.out.println("Scale Overload. Please remove some items.");
 	}
+
+	public ISelfCheckoutStation getStationHardware() {
+		return stationHardware;
+	}
+
 }

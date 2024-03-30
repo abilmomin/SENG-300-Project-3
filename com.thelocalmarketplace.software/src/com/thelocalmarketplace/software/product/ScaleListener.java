@@ -1,4 +1,4 @@
-package com.thelocalmarketplace.software;
+package com.thelocalmarketplace.software.product;
 
 import com.jjjwelectronics.IDevice;
 import com.jjjwelectronics.IDeviceListener;
@@ -7,13 +7,17 @@ import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.jjjwelectronics.scale.ElectronicScaleListener;
 import com.jjjwelectronics.scale.IElectronicScale;
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 public class ScaleListener implements ElectronicScaleListener {
-	private SelfCheckoutStationSoftware software;
+	// In order to access the hardware of the SelfCheckoutStation, use software.HARDWARE_YOU_WANNA_GET
 	
-	public ScaleListener (SelfCheckoutStationSoftware software) {
-		 this.software = software;
-		
+	private SelfCheckoutStationSoftware software;
+	private ProductHandler handler;
+	
+	public ScaleListener (SelfCheckoutStationSoftware software, ProductHandler handler) {
+		this.software = software;
+		this.handler = handler;	
 	}
 	@Override
 	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {
