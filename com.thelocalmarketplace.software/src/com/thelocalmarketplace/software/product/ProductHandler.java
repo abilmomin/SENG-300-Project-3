@@ -1,10 +1,14 @@
 package com.thelocalmarketplace.software.product;
 
+import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.bag.IReusableBagDispenser;
 import com.jjjwelectronics.scale.IElectronicScale;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
+import com.thelocalmarketplace.hardware.PLUCodedProduct;
+import com.thelocalmarketplace.hardware.PriceLookUpCode;
+import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.oldCode.Order;
 
@@ -62,6 +66,31 @@ public class ProductHandler {
 		double finalWeight = currentWeight-productWeight;
 		if (finalWeight >= 0) software.addTotalOrderWeightInGrams(-productWeight); 
 	}
+	/**
+	 * 
+	 * Adds item to order by PLU code
+	 * 
+	 * @param plucode
+	 */
+	
+	public void addItemByPLUCode(String plucode) {
+		if (software.getStationActive() && !software.getStationBlock()) {
+			software.setStationBlock(true);
+		
+			PriceLookUpCode PLUcode = new PriceLookUpCode(plucode);
+			PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUcode);
+			
+			
+//			if (product != null) {
+//				double productWeight = product.get...
+			
+//			} NOT COMPLETE, need to talk to TA
+			
+		}
+		
+	}
+	
+
 	// all product logic goes here
 	
 	// In order to access the hardware of the SelfCheckoutStation, use software.HARDWARE_YOU_WANNA_GET()
