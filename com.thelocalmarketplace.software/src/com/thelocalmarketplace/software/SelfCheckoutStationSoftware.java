@@ -112,6 +112,24 @@ public class SelfCheckoutStationSoftware {
 	 */
 	public void setStationBlock(boolean value) {
 		blocked = value;
+		
+		station.getCardReader().disable();
+		station.getCoinSlot().disable();
+		station.getHandheldScanner().disable();
+		station.getMainScanner().disable();
+	}
+	
+	/**
+	 * Set function to unblock the system
+	 * enables functions again
+	 */
+	public void setStationUnblock() {
+		blocked = false;
+		
+		station.getCardReader().enable();
+		station.getCoinSlot().enable();
+		station.getHandheldScanner().enable();
+		station.getMainScanner().enable();
 	}
 
 	/**
