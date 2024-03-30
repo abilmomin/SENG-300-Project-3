@@ -19,6 +19,7 @@ import com.tdc.banknote.IBanknoteDispenser;
 import com.tdc.coin.Coin;
 import com.tdc.coin.ICoinDispenser;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
+import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 public class Funds {
@@ -46,7 +47,7 @@ public class Funds {
 		// register the coin payment handler to track coin available and that were entered into the checkout station
 		PayWithCoinHandler pch = new PayWithCoinHandler(this);
 		checkoutStation.station.getCoinValidator().attach(pch);
-		Map<BigDecimal, ICoinDispenser> coinDispensersMap = this.checkoutStationSoftware.getStation().getCoinDispensers();
+		Map<BigDecimal, ICoinDispenser> coinDispensersMap = this.checkoutStationSoftware.getStationHardware().getCoinDispensers();
 		for( BigDecimal coin: coinDispensersMap.keySet()) {
 			ICoinDispenser dispenser = coinDispensersMap.get(coin);
 			dispenser.attach(pch);
@@ -54,7 +55,7 @@ public class Funds {
 		// register the banknote payment handler to track banknotes available and that were entered into the checkout station
 		PayWithBanknoteHandler pbh = new PayWithBanknoteHandler(this);
 		checkoutStation.station.getBanknoteValidator().attach(pbh);
-		Map<BigDecimal, IBanknoteDispenser> banknoteDispensersMap = this.checkoutStationSoftware.getStation().getBanknoteDispensers();
+		Map<BigDecimal, IBanknoteDispenser> banknoteDispensersMap = this.checkoutStationSoftware.getStationHardware().getBanknoteDispensers();
 		for( BigDecimal coin: banknoteDispensersMap.keySet()) {
 			IBanknoteDispenser dispenser = banknoteDispensersMap.get(coin);
 			dispenser.attach(pbh);
@@ -154,7 +155,7 @@ public class Funds {
 	 */
 	public boolean dispenseAccurateChange(BigDecimal changeValue)
 			throws DisabledException, CashOverloadException, NoCashAvailableException, EmptyDevice, OverloadedDevice {
-		AbstractSelfCheckoutStation station = checkoutStationSoftware.getStation();
+		ISelfCheckoutStation station = checkoutStationSoftware.getStationHardware();
 		
 		BigDecimal amountDispensed = new BigDecimal("0.0");
 		BigDecimal remainingAmount = changeValue;
