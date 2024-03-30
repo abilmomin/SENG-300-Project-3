@@ -29,6 +29,7 @@ import static com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation.reset
 import java.util.ArrayList;
 import java.util.Scanner;
 import com.jjjwelectronics.Item;
+import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.bag.IReusableBagDispenser;
 import com.jjjwelectronics.card.AbstractCardReader;
 import com.jjjwelectronics.card.ICardReader;
@@ -41,6 +42,9 @@ import com.tdc.coin.CoinSlot;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
+import com.thelocalmarketplace.hardware.PLUCodedItem;
+import com.thelocalmarketplace.hardware.PLUCodedProduct;
+import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.funds.PaymentHandler;
 import com.thelocalmarketplace.software.oldCode.BaggingAreaListener;
@@ -171,29 +175,49 @@ public class SelfCheckoutStationSoftware {
 	 * @param item The item to remove from order.
 	 * @return true if the item was successfully removed, false otherwise.
 	 */
-	public boolean removeItemFromOrder(BarcodedItem item) {
+	public boolean removeItemFromOrder(Item item) {
 		if (this.order.contains(item)) {
 			this.order.remove(item);
 			
 			setStationBlock(true);
 			
-			Barcode barcode = item.getBarcode();
-			BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
-			if (product != null) {
-				double productWeight = product.getExpectedWeight();
-				long productPrice = product.getPrice();
-				
-				removeTotalOrderWeightInGrams(productWeight);
-				removeTotalOrderPrice(productPrice);
-				
-				System.out.println("Please remove item from the bagging area");
+			if (item instanceof BarcodedItem) {
+				Barcode barcode = ((BarcodedItem) item).getBarcode();
+				BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+				if (product != null) {
+					double productWeight = product.getExpectedWeight();
+					long productPrice = product.getPrice();
+					
+					removeTotalOrderWeightInGrams(productWeight);
+					removeTotalOrderPrice(productPrice);
+					
+					System.out.println("Please remove item from the bagging area");
+				}
+				return true;
+			} 
+			
+			if (item instanceof PLUCodedItem) {
+				PriceLookUpCode PLUCode = ((PLUCodedItem) item).getPLUCode();
+				PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
+				if (product != null) {
+					Mass itemMass = item.getMass();
+					double productWeight = itemMass.inGrams().doubleValue();
+					long productPrice = product.getPrice();
+					
+					removeTotalOrderWeightInGrams(productWeight);
+					removeTotalOrderPrice(productPrice);
+					
+					System.out.println("Please remove item from the bagging area");
+				}
+				return true;
 			}
-			return true;
 			
 		} else {
 			System.out.println("Item not found in the order.");
 			return false;
 		}
+		
+		return false;
 	}
 
 	
