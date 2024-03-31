@@ -1,86 +1,39 @@
 package com.thelocalmarketplace.software.funds;
 
-import com.jjjwelectronics.EmptyDevice;
-
 import com.jjjwelectronics.IDevice;
 
 import com.jjjwelectronics.IDeviceListener;
-
-import com.jjjwelectronics.OverloadedDevice;
-
-import com.jjjwelectronics.card.Card;
 
 import com.jjjwelectronics.card.Card.CardData;
 
 import com.jjjwelectronics.card.CardReaderListener;
 
-import com.jjjwelectronics.card.MagneticStripeFailureException;
-
 import com.thelocalmarketplace.hardware.external.CardIssuer;
-
-import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
-
-import java.io.IOException;
 
 import java.math.BigDecimal;
 
-import java.util.HashSet;
-
-import java.util.Set;
-
+/**
+ * CardHandler class which handles all transactions with debit and credit cards, including tap, swipe, and insert.
+ */
 public class CardHandler implements CardReaderListener {
-    private Funds fundController = null;
+    private final Funds fundController;
 
+    /**
+     * Constructor for CardHandler class
+     * @param fundController the funds controller class
+     */
     public CardHandler(Funds fundController) {
-        if (this.fundController == null) {
+        if (fundController == null) {
             throw new IllegalArgumentException("The argument cannot be null");
         }
         this.fundController = fundController;
     }
 
     /**
-	 * Processes a credit card payment via swipe.
-	 *
-	 * @param card         The credit card to be used for payment.
-	 * @param amountCharged The amount to be charged to the credit card.
-	 * @param cardIssuer   The card issuer responsible for authorizing the transaction.
-	 * @throws IOException          If an I/O error occurs.
-	 * @throws EmptyDevice          If the checkout station device is empty.
-	 * @throws OverloadedDevice     If the checkout station device is overloaded.
-	 */
-	public int payWithCreditViaSwipe(Card card, double amountCharged, CardIssuer cardIssuer) throws IOException {
-		try {
-			if (stationSoftware.getStationBlock()) {
-				System.out.println("Blocked. Please add your item to the bagging area.");
-				return -1;
-			}
-
-			CardData data = cardReader.swipe(card);
-
-			long holdNumber = cardIssuer.authorizeHold(data.getNumber(), amountCharged);
-			if (holdNumber == -1) {
-				// HOLD FAILED
-				System.out.println("The hold on the card failed. Please try again.");
-				return -1;
-			}
-			boolean transaction = cardIssuer.postTransaction(data.getNumber(), holdNumber, amountCharged);
-			if (!transaction) {
-				// TRANSACTION FAILED
-				cardIssuer.releaseHold(data.getNumber(), holdNumber); // Remove the hold.
-				System.out.println("The transaction failed. Please try again.");
-				return -1;
-			}
-			stationSoftware.removeTotalOrderPrice((long) amountCharged); // Update the total amount due to the customer
-			amountSpent = BigDecimal.valueOf(amountCharged);
-			changeRemaining = BigDecimal.ZERO;
-			// Receipt printing is handled inside the demo
-			return 1;
-		} catch (MagneticStripeFailureException msfe) {
-			System.out.println("Card Swipe failed, please try again!");
-			return -1;
-		}
-	}
-
+     *  Function for approving a purchase using card and card issuer information
+     * @param cardNumber The user's card number
+     * @param amount Total amount to be charged
+     */
     public boolean approvePurchase(String cardNumber, double amount) {
         for (CardIssuer bank : fundController.checkoutStationSoftware.getBanks()) {
             long holdNumber = bank.authorizeHold(cardNumber, amount);
@@ -90,18 +43,10 @@ public class CardHandler implements CardReaderListener {
         return false;
     }
 
-    @Override
-    public void aCardHasBeenInserted() {}
-
-    @Override
-    public void theCardHasBeenRemoved() {}
-
-    @Override
-    public void aCardHasBeenTapped() {}
-
-    @Override
-    public void aCardHasBeenSwiped() {}
-
+    /**
+     * Implemented method that uses the user's card information to process transaction
+     * @param data The data of the user's card
+     */
     @Override
     public void theDataFromACardHasBeenRead(CardData data) {
         PaymentKind.Kind cardType = PaymentKind.getCardType(data.getType());
@@ -115,23 +60,58 @@ public class CardHandler implements CardReaderListener {
         boolean purchaseStatus = approvePurchase(data.getNumber(), totalOrderPrice);
 
         if (purchaseStatus) {
-            fundController.checkoutStationSoftware.removeTotalOrderPrice(totalOrderPrice);
-            
+            fundController.notifyPaidFunds(BigDecimal.ZERO);
         } else {
-
+            fundController.notifyInvalidFunds(cardType);
         }
-        
+
     }
 
+    /**
+     * Not used.
+     */
+    @Override
+    public void aCardHasBeenInserted() {}
+
+    /**
+     * Not used.
+     */
+    @Override
+    public void theCardHasBeenRemoved() {}
+
+    /**
+     * Not used.
+     */
+    @Override
+    public void aCardHasBeenTapped() {}
+
+    /**
+     * Not used.
+     */
+    @Override
+    public void aCardHasBeenSwiped() {}
+
+    /**
+     * Not used.
+     */
     @Override
     public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {}
 
+    /**
+     * Not used.
+     */
     @Override
     public void aDeviceHasBeenDisabled(IDevice<? extends IDeviceListener> device) {}
 
+    /**
+     * Not used.
+     */
     @Override
     public void aDeviceHasBeenTurnedOn(IDevice<? extends IDeviceListener> device) {}
 
+    /**
+     * Not used.
+     */
     @Override
     public void aDeviceHasBeenTurnedOff(IDevice<? extends IDeviceListener> device) {}
 }
