@@ -20,7 +20,7 @@ public class AttendantPageGUI extends JFrame {
         setLocationRelativeTo(null);
 
         // Main panel
-        JPanel mainPanel = new JPanel(new GridLayout(5, 1));
+        JPanel mainPanel = new JPanel(new GridLayout(7, 1));
 
         // Label for stations
         JLabel stationsLabel = new JLabel("Checkout Stations: ");
@@ -53,12 +53,36 @@ public class AttendantPageGUI extends JFrame {
         stationControlPanel.add(blockStation);
         stationControlPanel.add(unblockStation);
         stationControlPanel.add(closeStation);
+        
+        // Label for station controls
+        JLabel stationServicesLabel = new JLabel("Other Services: ");
 
+        // Button panel for station controls
+        JPanel stationServicesPanel = new JPanel(new FlowLayout());
+        JButton addItembyText = new JButton("Add Item by Text Search");
+        JButton refillCoins = new JButton("Refill Coins");
+        JButton refillBanknotes = new JButton("Refill Banknotes");
+        JButton refillReciptPaper = new JButton("Refill Recipt Paper");
+        JButton emptyCoins = new JButton("Empty Coins");
+        JButton emptyBanknotes = new JButton("Empty Banknotes");
+        JButton refillReciptInk = new JButton("Refill Recipt Ink");
+
+        
+        stationServicesPanel.add(addItembyText);
+        stationServicesPanel.add(refillCoins);
+        stationServicesPanel.add(refillBanknotes);
+        stationServicesPanel.add(refillReciptPaper);
+        stationServicesPanel.add(refillReciptInk);
+        stationServicesPanel.add(emptyCoins);
+        stationServicesPanel.add(emptyBanknotes);
         // Adding the panels to the main panel
         mainPanel.add(stationsLabel);
         mainPanel.add(stationPanel);
         mainPanel.add(stationControlLabel);
         mainPanel.add(stationControlPanel);
+        mainPanel.add(stationServicesLabel);
+        mainPanel.add(stationServicesPanel);
+       
         add(mainPanel);
     }
 
