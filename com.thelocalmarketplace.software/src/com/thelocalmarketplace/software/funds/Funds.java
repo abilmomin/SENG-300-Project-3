@@ -19,7 +19,6 @@ import com.tdc.banknote.IBanknoteDispenser;
 import com.tdc.coin.Coin;
 import com.tdc.coin.ICoinDispenser;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
-import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 public class Funds {
@@ -60,7 +59,10 @@ public class Funds {
 			IBanknoteDispenser dispenser = banknoteDispensersMap.get(coin);
 			dispenser.attach(pbh);
 		}
-		
+
+		CardHandler cardHandler = new CardHandler(this);
+		checkoutStation.station.getCardReader().register(cardHandler);
+
 		//add registeration of credit, debit, and crypto here wehn ready
 	}
 
@@ -155,7 +157,7 @@ public class Funds {
 	 */
 	public boolean dispenseAccurateChange(BigDecimal changeValue)
 			throws DisabledException, CashOverloadException, NoCashAvailableException, EmptyDevice, OverloadedDevice {
-		ISelfCheckoutStation station = checkoutStationSoftware.getStationHardware();
+		AbstractSelfCheckoutStation station = (AbstractSelfCheckoutStation) checkoutStationSoftware.getStationHardware();
 		
 		BigDecimal amountDispensed = new BigDecimal("0.0");
 		BigDecimal remainingAmount = changeValue;
