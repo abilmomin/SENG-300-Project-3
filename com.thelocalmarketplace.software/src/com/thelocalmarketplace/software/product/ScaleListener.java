@@ -62,12 +62,15 @@ public class ScaleListener implements ElectronicScaleListener {
 	        long difference = Math.abs(actualInMicrograms - expectedInMicrograms);
 
 	        if (difference <= tolerance) {
-	            software.setStationBlock(false);
+	            software.setStationUnblock();
+	        }
+	       
+	        else {
+	        	software.setStationBlock(true);
 	        }
 	    } catch (OverloadedDevice e) {
 	        software.setStationBlock(true);
-	    } 
-		
+	    } 	
 	}
 
 	@Override
