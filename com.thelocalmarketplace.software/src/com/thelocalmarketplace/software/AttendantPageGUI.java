@@ -11,8 +11,9 @@ public class AttendantPageGUI extends JFrame {
     private int selectedStation = -1; // Variable to store the selected station number
     private JButton[] stationButtons; // Array to hold the station buttons
     private CustomerStation[] customerGUIs;
-    public AttendantPageGUI() {
+    private boolean[] stationEnabled; // Array to keep track of station status
 
+    public AttendantPageGUI() {
         // Setup
         setTitle("Attendant Page");
         setSize(800, 600);
@@ -29,12 +30,14 @@ public class AttendantPageGUI extends JFrame {
         JPanel stationPanel = new JPanel(new GridLayout(2, 2));
         stationButtons = new JButton[4]; // Initialize the station buttons array
         customerGUIs = new CustomerStation[4];
+        stationEnabled = new boolean[4]; // Initialize the station status array
         // Create station buttons
         for (int i = 0; i < 4; i++) {
             JButton checkoutButton = new JButton("Checkout Station " + (i + 1));
             checkoutButton.addActionListener(new StationButtonListener(i));
             stationPanel.add(checkoutButton);
             stationButtons[i] = checkoutButton; // Add button to the array
+            stationEnabled[i] = true; // Initialize station as enabled
         }
 
         // Label for station controls
@@ -46,14 +49,23 @@ public class AttendantPageGUI extends JFrame {
         JButton blockStation = new JButton("Block Station");
         JButton unblockStation = new JButton("Unblock Station");
         JButton closeStation = new JButton("Close Station");
+        JButton enableStation = new JButton("Enable Station");
+        JButton disableStation = new JButton("Disable Station");
 
         startStation.addActionListener(new StartStationButtonListener());
         closeStation.addActionListener(new CloseStationButtonListener());
+        blockStation.addActionListener(new BlockStationButtonListener());
+        unblockStation.addActionListener(new UnblockStationButtonListener());
+        enableStation.addActionListener(new EnableStationButtonListener());
+        disableStation.addActionListener(new DisableStationButtonListener());
+
         stationControlPanel.add(startStation);
+        stationControlPanel.add(closeStation);
         stationControlPanel.add(blockStation);
         stationControlPanel.add(unblockStation);
-        stationControlPanel.add(closeStation);
-        
+        stationControlPanel.add(enableStation);
+        stationControlPanel.add(disableStation);
+
         // Label for station controls
         JLabel stationServicesLabel = new JLabel("Other Services: ");
 
@@ -62,19 +74,19 @@ public class AttendantPageGUI extends JFrame {
         JButton addItembyText = new JButton("Add Item by Text Search");
         JButton refillCoins = new JButton("Refill Coins");
         JButton refillBanknotes = new JButton("Refill Banknotes");
-        JButton refillReciptPaper = new JButton("Refill Recipt Paper");
+        JButton refillReciptPaper = new JButton("Refill Receipt Paper");
         JButton emptyCoins = new JButton("Empty Coins");
         JButton emptyBanknotes = new JButton("Empty Banknotes");
-        JButton refillReciptInk = new JButton("Refill Recipt Ink");
+        JButton refillReceiptInk = new JButton("Refill Receipt Ink");
 
-        
         stationServicesPanel.add(addItembyText);
         stationServicesPanel.add(refillCoins);
         stationServicesPanel.add(refillBanknotes);
         stationServicesPanel.add(refillReciptPaper);
-        stationServicesPanel.add(refillReciptInk);
+        stationServicesPanel.add(refillReceiptInk);
         stationServicesPanel.add(emptyCoins);
         stationServicesPanel.add(emptyBanknotes);
+
         // Adding the panels to the main panel
         mainPanel.add(stationsLabel);
         mainPanel.add(stationPanel);
@@ -82,7 +94,7 @@ public class AttendantPageGUI extends JFrame {
         mainPanel.add(stationControlPanel);
         mainPanel.add(stationServicesLabel);
         mainPanel.add(stationServicesPanel);
-       
+
         add(mainPanel);
     }
 
@@ -106,16 +118,18 @@ public class AttendantPageGUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (selectedStation != -1) { // Check if a station is selected
-                // Open the Customer GUI page for the selected station
-//                CustomerStation customerGUI = new CustomerStation(selectedStation + 1); // Adjusted index for station number
-//                customerGUI.setVisible(true);
-            	  customerGUIs[selectedStation] = new CustomerStation(selectedStation + 1); // Adjusted index for station number
-                  customerGUIs[selectedStation].setVisible(true);
+                if (stationEnabled[selectedStation]) { // Check if station is enabled
+                    customerGUIs[selectedStation] = new CustomerStation(selectedStation + 1); // Adjusted index for station number
+                    customerGUIs[selectedStation].setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Selected station is disabled. Please enable it.");
+                }
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");
             }
         }
     }
+
     // Action listener for close station button
     private class CloseStationButtonListener implements ActionListener {
         @Override
@@ -128,6 +142,69 @@ public class AttendantPageGUI extends JFrame {
         }
     }
 
+    // Action listener for block station button
+    private class BlockStationButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (selectedStation != -1) { // Check if a station is selected
+                stationEnabled[selectedStation] = false; // Disable the selected station
+                if (customerGUIs[selectedStation] != null) { // Check if GUI is created for the selected station
+                    customerGUIs[selectedStation].freezeGUI(); // Freeze the GUI
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Please select a station first.");
+            }
+        }
+    }
+
+    // Action listener for unblock station button
+    private class UnblockStationButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (selectedStation != -1) { // Check if a station is selected
+                stationEnabled[selectedStation] = true; // Enable the selected station
+                if (customerGUIs[selectedStation] != null) { // Check if GUI is created for the selected station
+                    customerGUIs[selectedStation].unfreezeGUI(); // Unfreeze the GUI
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Please select a station first.");
+            }
+        }
+    }
+
+    // Action listener for enable station button
+    private class EnableStationButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (selectedStation != -1) { // Check if a station is selected
+                stationEnabled[selectedStation] = true; // Enable the selected station
+                if (customerGUIs[selectedStation] != null) { // Check if GUI is created for the selected station
+                    customerGUIs[selectedStation].unfreezeGUI(); // Unfreeze the GUI
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Please select a station first.");
+            }
+        }
+    }
+
+    // Action listener for disable station button
+    private class DisableStationButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (selectedStation != -1) { // Check if a station is selected
+                stationEnabled[selectedStation] = false; // Disable the selected station
+                if (customerGUIs[selectedStation] != null) { // Check if GUI is created for the selected station
+                    customerGUIs[selectedStation].freezeGUI(); // Freeze the GUI
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Please select a station first.");
+            }
+        }
+    }
+
+    public static void notifyAssistanceRequired(int stationNumber) {
+        JOptionPane.showMessageDialog(null, "Station " + (stationNumber + 1) + " requires assistance.");
+    }
     
     // Method to highlight the selected station button
     private void highlightSelectedStation() {
@@ -140,3 +217,4 @@ public class AttendantPageGUI extends JFrame {
         }
     }
 }
+
