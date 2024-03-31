@@ -59,7 +59,10 @@ public class Funds {
 			IBanknoteDispenser dispenser = banknoteDispensersMap.get(coin);
 			dispenser.attach(pbh);
 		}
-		
+
+		CardHandler cardHandler = new CardHandler(this);
+		checkoutStation.station.getCardReader().register(cardHandler);
+
 		//add registeration of credit, debit, and crypto here wehn ready
 	}
 

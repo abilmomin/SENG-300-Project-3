@@ -75,17 +75,8 @@ public class PaymentHandler {
 		if (stationSoftware == null)
 			throw new NullPointerException("No argument may be null.");
 		this.stationSoftware = stationSoftware;
-//		if (station == null)
-//			throw new NullPointerException("No argument may be null.");
 		this.stationHardware = stationSoftware.getStationHardware();
 		this.cardReader = stationSoftware.getStationHardware().getCardReader();
-//		if (stationHardware instanceof SelfCheckoutStationBronze)
-//			this.stationHardware = (SelfCheckoutStationBronze) stationHardware;
-//		else if (stationHardware instanceof SelfCheckoutStationSilver)
-//			this.stationHardware = (SelfCheckoutStationSilver) stationHardware;
-//		else if (stationHardware instanceof SelfCheckoutStationGold)
-//			this.stationHardware = (SelfCheckoutStationGold) stationHardware;
-		
 		this.totalPrice = BigDecimal.valueOf(stationSoftware.getTotalOrderPrice());
 		this.printerBronze = new ReceiptPrinterBronze();
 		this.printerBronze.plugIn(PowerGrid.instance());
