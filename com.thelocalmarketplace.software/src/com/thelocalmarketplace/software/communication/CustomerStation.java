@@ -141,7 +141,7 @@ public class CustomerStation extends JFrame {
 
     private void notifyAttendant(int selectedStation) {
         // Notify the AttendantPageGUI that assistance is required at this station
-        AttendantPageGUI.notifyAssistanceRequired(selectedStation);
+        AttendantPageGUI.notifyAssistanceRequired(selectedStation -1);
     }
 
 	private JButton createButton(String text, ActionListener actionListener) {
