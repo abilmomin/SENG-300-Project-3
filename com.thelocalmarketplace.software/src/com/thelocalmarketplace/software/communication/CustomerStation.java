@@ -118,9 +118,40 @@ public class CustomerStation extends JFrame {
 
     
     public void askForMembershipNumber() {
-    	String membershipNumber = JOptionPane.showInputDialog(this, "Please enter your membership number:");
-    	checkMembershipNumber(membershipNumber);
+        JPanel panel = new JPanel(new BorderLayout(5, 5));
+
+        JPanel labelPanel = new JPanel(new GridLayout(0, 1, 2, 2));
+        labelPanel.add(new JLabel("Enter your membership number, or use your card:", SwingConstants.RIGHT));
+        panel.add(labelPanel, BorderLayout.WEST);
+
+        JPanel controlsPanel = new JPanel(new GridLayout(0, 1, 2, 2));
+        JTextField membershipNumberField = new JTextField();
+        controlsPanel.add(membershipNumberField);
+        panel.add(controlsPanel, BorderLayout.CENTER);
+        
+        Object[] options = {"Enter", "Scan Card", "swipe Card", "Cancel"};
+
+        int choice = JOptionPane.showOptionDialog(
+            this,
+            panel,
+            "Membership Number",
+            JOptionPane.NO_OPTION,
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            options,
+            options[0]
+        );
+        switch (choice) {
+        case 0:
+        	String membershipNumber = membershipNumberField.getText();
+            checkMembershipNumber(membershipNumber);
+        case 1:
+        	scanCard();
+        case 2:
+        	swipeCard();
+        }
     }
+    
     public void checkMembershipNumber(String membershipNumber) {
     	MembershipCard membershipCard = new MembershipCard();
     	if (membershipNumber != null && !membershipNumber.isEmpty()) {
@@ -149,8 +180,7 @@ public class CustomerStation extends JFrame {
     	
     	switch (response) {
     		case 0:
-    			String membershipNumber = JOptionPane.showInputDialog(this, "Please enter your membership number:");
-    			checkMembershipNumber(membershipNumber);
+    			askForMembershipNumber();
                 break;
     		case 1:
     			createAccount();
@@ -174,6 +204,14 @@ public class CustomerStation extends JFrame {
 	        JOptionPane.showMessageDialog(this, "You must enter a name to create a membership account.", "Error", JOptionPane.ERROR_MESSAGE);
 	    }
 		
+    }
+    
+    public void scanCard() {
+    	
+    }
+    
+    public void swipeCard() {
+    	
     }
     
 }
