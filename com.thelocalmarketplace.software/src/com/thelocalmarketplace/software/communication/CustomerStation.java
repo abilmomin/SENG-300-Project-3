@@ -14,6 +14,7 @@ public class CustomerStation extends JFrame {
 
     private JTextArea cartTextArea;
     private JLabel totalPriceLabel;
+    private JPanel menuPanel;
 
     public CustomerStation(int selectedStation) {
         setTitle("Self-Checkout Station " + selectedStation);
@@ -25,7 +26,7 @@ public class CustomerStation extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout());
 
         // Menu panel
-        JPanel menuPanel = new JPanel(new GridLayout(3, 3, 10, 10));
+        menuPanel = new JPanel(new GridLayout(3, 3, 10, 10));
         menuPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         // Buttons
@@ -39,7 +40,15 @@ public class CustomerStation extends JFrame {
         JButton doNotBagBtn = createButton("Do Not Bag", null);
         JButton viewBaggingAreaBtn = createButton("View Bagging Area", null);
         JButton enterMembershipNumber = createButton("Enter Membership Number", e -> askForMembershipNumber());
-
+        //Signal for attendant button 
+        JButton helpButton = new JButton("Help");
+        helpButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                notifyAttendant(selectedStation);
+            }
+        });
+        
         // Add buttons to menu panel
         menuPanel.add(useOwnBagsBtn);
         menuPanel.add(scanBarcodeBtn);
@@ -49,6 +58,7 @@ public class CustomerStation extends JFrame {
         menuPanel.add(doNotBagBtn);
         menuPanel.add(viewBaggingAreaBtn);
         menuPanel.add(enterMembershipNumber);
+        menuPanel.add(helpButton);
 
         // Cart panel
         JPanel cartPanel = new JPanel(new BorderLayout());
@@ -100,7 +110,11 @@ public class CustomerStation extends JFrame {
         // Set frame visible
         setVisible(true);
     }
-
+    private void notifyAttendant(int selectedStation) {
+        // Notify the AttendantPageGUI that assistance is required at this station
+        AttendantPageGUI.notifyAssistanceRequired(selectedStation);
+    }
+    
     private void addProductToCart(String productName, double price) {
         cartTextArea.append(productName + " - $" + price + "\n");
         double currentTotal = Double.parseDouble(totalPriceLabel.getText().replace("Total Price: $", ""));
@@ -125,11 +139,27 @@ public class CustomerStation extends JFrame {
         for (Component component : getContentPane().getComponents()) {
             component.setEnabled(false);
         }
+        // Disable buttons in the menuPanel
+        for (Component component : menuPanel.getComponents()) {
+            if (component instanceof JButton) {
+                component.setEnabled(false);
+            }
+        }
+        JOptionPane.showMessageDialog(null, "Out of order.");
     }
 
     public void unfreezeGUI() {
         for (Component component : getContentPane().getComponents()) {
             component.setEnabled(true);
         }
+        // Enable buttons in the menuPanel
+        if (menuPanel != null) {
+            for (Component component : menuPanel.getComponents()) {
+                if (component instanceof JButton) {
+                    component.setEnabled(true);
+                }
+            }
+        }
     }
+
 }

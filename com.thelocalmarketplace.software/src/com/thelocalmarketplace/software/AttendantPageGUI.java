@@ -178,6 +178,9 @@ public class AttendantPageGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (selectedStation != -1) { // Check if a station is selected
                 stationEnabled[selectedStation] = true; // Enable the selected station
+                if (customerGUIs[selectedStation] != null) { // Check if GUI is created for the selected station
+                    customerGUIs[selectedStation].unfreezeGUI(); // Unfreeze the GUI
+                }
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");
             }
@@ -192,7 +195,6 @@ public class AttendantPageGUI extends JFrame {
                 stationEnabled[selectedStation] = false; // Disable the selected station
                 if (customerGUIs[selectedStation] != null) { // Check if GUI is created for the selected station
                     customerGUIs[selectedStation].freezeGUI(); // Freeze the GUI
-                    JOptionPane.showMessageDialog(null, "Checkout station " + (selectedStation + 1) + " is out of order.");
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");
@@ -200,6 +202,10 @@ public class AttendantPageGUI extends JFrame {
         }
     }
 
+    public static void notifyAssistanceRequired(int stationNumber) {
+        JOptionPane.showMessageDialog(null, "Station " + (stationNumber + 1) + " requires assistance.");
+    }
+    
     // Method to highlight the selected station button
     private void highlightSelectedStation() {
         for (int i = 0; i < stationButtons.length; i++) {
