@@ -117,7 +117,14 @@ public class ProductHandler {
 			
 			
 			if(product != null) {
+				long productPrice = product.getPrice();
 				
+				software.addTotalOrderWeightInGrams(itemWeight);
+				software.addTotalOrderPrice(productPrice);
+				
+				Mass mass = new Mass(itemWeight);
+				PLUCodedItem newItem = new PLUCodedItem(PLUCode, mass);
+				software.addItemToOrder(newItem);			
 			}
 			 
 		}
