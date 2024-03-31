@@ -95,7 +95,6 @@ public class ProductHandler {
 	
 	// In order to access the hardware of the SelfCheckoutStation, use software.HARDWARE_YOU_WANNA_GET()
 	
-	// bulky item code also goes in this class i can do it later. Button needed in GUI -Tara
 	// request attendants attention also goes in communication, but where? idk. Button needed in GUI
 	// safe to say most things go here for group 4 :))
 }
