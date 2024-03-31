@@ -138,10 +138,6 @@ public class PLUCode extends JFrame {
         setVisible(true);
     }
 
-    
- 
-
-    
 	private JButton createButton(String text, ActionListener actionListener) {
         JButton button = new JButton("<html><center>" + text + "</center></html>");
         button.setFont(new Font("Arial", Font.PLAIN, 16));
