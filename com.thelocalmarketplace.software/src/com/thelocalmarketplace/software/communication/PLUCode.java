@@ -111,7 +111,6 @@ public class PLUCode extends JFrame {
         keypadPanel.add(delete);
         
         
-
         // Screen panel
         JPanel screenPanel = new JPanel(new BorderLayout());
         screenTextField = new JTextField(); // Initialize the screen text field
