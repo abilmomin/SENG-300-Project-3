@@ -27,6 +27,8 @@ package com.thelocalmarketplace.software;
 import ca.ucalgary.seng300.simulation.InvalidStateSimulationException;
 import static com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation.resetConfigurationToDefaults;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Scanner;
 import com.jjjwelectronics.Item;
 import com.jjjwelectronics.Mass;
@@ -51,6 +53,7 @@ import com.thelocalmarketplace.software.funds.PaymentHandler;
 import com.thelocalmarketplace.software.oldCode.BaggingAreaListener;
 import com.thelocalmarketplace.software.product.ProductHandler;
 import com.thelocalmarketplace.software.product.ScannerListener;
+import com.thelocalmarketplace.hardware.external.CardIssuer;
 
 /**
  * This class acts as the central unit that communicates with 
@@ -82,6 +85,8 @@ public class SelfCheckoutStationSoftware {
 
 	private boolean blocked = false;
 	private boolean activeSession = false;
+
+	private Set<CardIssuer> banks = new HashSet<>();
 
 	/**
 	 * Creates an instance of the software for a self-checkout station.
@@ -312,6 +317,14 @@ public class SelfCheckoutStationSoftware {
 
 	public ISelfCheckoutStation getStationHardware() {
 		return station;
+	}
+
+	public Set<CardIssuer> getBanks() {
+		return banks;
+	}
+
+	public void addBank(CardIssuer cardIssuer) {
+		banks.add(cardIssuer);
 	}
 	
 }
