@@ -116,9 +116,6 @@ public class CustomerStation extends JFrame {
         totalPriceLabel.setText("Total Price: $" + String.format("%.2f", currentTotal));
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(CustomerStation::new);
-    }
     
     public void askForMembershipNumber() {
     	String membershipNumber = JOptionPane.showInputDialog(this, "Please enter your membership number:");
