@@ -87,6 +87,7 @@ public class SelfCheckoutStationSoftware {
 	private boolean activeSession = false;
 
 	private Set<CardIssuer> banks = new HashSet<>();
+	private String pin;
 
 	/**
 	 * Creates an instance of the software for a self-checkout station.
@@ -324,7 +325,15 @@ public class SelfCheckoutStationSoftware {
 	}
 
 	public void addBank(CardIssuer cardIssuer) {
-		banks.add(cardIssuer);
+		this.banks.add(cardIssuer);
+	}
+
+	public void setPin(String pin) {
+		this.pin = pin;
+	}
+
+	public String getPin() {
+		return this.pin;
 	}
 	
 }
