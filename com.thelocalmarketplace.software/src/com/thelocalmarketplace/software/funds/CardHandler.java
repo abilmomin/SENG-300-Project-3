@@ -1,19 +1,31 @@
 package com.thelocalmarketplace.software.funds;
 
 import com.jjjwelectronics.EmptyDevice;
+
 import com.jjjwelectronics.IDevice;
+
 import com.jjjwelectronics.IDeviceListener;
+
 import com.jjjwelectronics.OverloadedDevice;
+
 import com.jjjwelectronics.card.Card;
+
 import com.jjjwelectronics.card.Card.CardData;
+
 import com.jjjwelectronics.card.CardReaderListener;
+
 import com.jjjwelectronics.card.MagneticStripeFailureException;
+
 import com.thelocalmarketplace.hardware.external.CardIssuer;
+
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 import java.io.IOException;
+
 import java.math.BigDecimal;
+
 import java.util.HashSet;
+
 import java.util.Set;
 
 public class CardHandler implements CardReaderListener {
@@ -69,6 +81,15 @@ public class CardHandler implements CardReaderListener {
 		}
 	}
 
+    public boolean approvePurchase(String cardNumber, double amount) {
+        for (CardIssuer bank : fundController.checkoutStationSoftware.getBanks()) {
+            long holdNumber = bank.authorizeHold(cardNumber, amount);
+            if (holdNumber != -1) 
+                return bank.postTransaction(cardNumber, holdNumber, amount);
+        }
+        return false;
+    }
+
     @Override
     public void aCardHasBeenInserted() {}
 
@@ -90,8 +111,27 @@ public class CardHandler implements CardReaderListener {
             return;
         }
 
-        if (cardType.equals(PaymentKind.Kind.CREDIT)) {
+        long totalOrderPrice = fundController.checkoutStationSoftware.getTotalOrderPrice();
+        boolean purchaseStatus = approvePurchase(data.getNumber(), totalOrderPrice);
+
+        if (purchaseStatus) {
+            fundController.checkoutStationSoftware.removeTotalOrderPrice(totalOrderPrice);
             
+        } else {
+
         }
+        
     }
+
+    @Override
+    public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {}
+
+    @Override
+    public void aDeviceHasBeenDisabled(IDevice<? extends IDeviceListener> device) {}
+
+    @Override
+    public void aDeviceHasBeenTurnedOn(IDevice<? extends IDeviceListener> device) {}
+
+    @Override
+    public void aDeviceHasBeenTurnedOff(IDevice<? extends IDeviceListener> device) {}
 }
