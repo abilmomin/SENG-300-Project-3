@@ -15,6 +15,7 @@ public class CustomerStation extends JFrame {
     private JTextArea cartTextArea;
     private JLabel totalPriceLabel;
     private JPanel menuPanel;
+    private JPanel payButtonPanel;
 
     public CustomerStation(int selectedStation) {
         setTitle("Self-Checkout Station " + selectedStation);
@@ -88,7 +89,7 @@ public class CustomerStation extends JFrame {
             }
         });
         payButton.setFont(payButton.getFont().deriveFont(Font.BOLD, 16));
-        JPanel payButtonPanel = new JPanel(new BorderLayout());
+        payButtonPanel = new JPanel(new BorderLayout());
         payButtonPanel.add(payButton, BorderLayout.CENTER);
 
         // Add components to cart panel
@@ -112,7 +113,7 @@ public class CustomerStation extends JFrame {
     }
     private void notifyAttendant(int selectedStation) {
         // Notify the AttendantPageGUI that assistance is required at this station
-        AttendantPageGUI.notifyAssistanceRequired(selectedStation);
+        AttendantPageGUI.notifyAssistanceRequired(selectedStation-1);
     }
     
     private void addProductToCart(String productName, double price) {
@@ -135,6 +136,7 @@ public class CustomerStation extends JFrame {
         // Implementation for asking membership number
     }
 
+   
     public void freezeGUI() {
         for (Component component : getContentPane().getComponents()) {
             component.setEnabled(false);
@@ -142,6 +144,13 @@ public class CustomerStation extends JFrame {
         // Disable buttons in the menuPanel
         for (Component component : menuPanel.getComponents()) {
             if (component instanceof JButton) {
+                component.setEnabled(false);
+            }
+        }
+        // Disable pay button
+        Component[] cartComponents = payButtonPanel.getComponents();
+        for (Component component : cartComponents) {
+            if (component instanceof JButton && ((JButton) component).getText().equals("Pay")) {
                 component.setEnabled(false);
             }
         }
@@ -159,7 +168,14 @@ public class CustomerStation extends JFrame {
                     component.setEnabled(true);
                 }
             }
+            // Enable pay button
+            Component[] cartComponents = payButtonPanel.getComponents();
+            for (Component component : cartComponents) {
+                if (component instanceof JButton && ((JButton) component).getText().equals("Pay")) {
+                    component.setEnabled(true);
+                }
+            }
         }
-    }
+    } 
 
 }
