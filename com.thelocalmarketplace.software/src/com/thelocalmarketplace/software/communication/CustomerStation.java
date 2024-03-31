@@ -12,7 +12,9 @@ public class CustomerStation extends JFrame {
 
     private JTextArea cartTextArea;
     private JLabel totalPriceLabel;
-
+    JTextField membershipNumberField = new JTextField();
+    JPanel membershipPanel = new JPanel(new BorderLayout(5, 5));
+    
     public CustomerStation(int selectedStation) {
         setTitle("Self-Checkout Station " + selectedStation);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -118,22 +120,55 @@ public class CustomerStation extends JFrame {
 
     
     public void askForMembershipNumber() {
-        JPanel panel = new JPanel(new BorderLayout(5, 5));
 
         JPanel labelPanel = new JPanel(new GridLayout(0, 1, 2, 2));
         labelPanel.add(new JLabel("Enter your membership number, or use your card:", SwingConstants.RIGHT));
-        panel.add(labelPanel, BorderLayout.WEST);
+        membershipPanel.add(labelPanel, BorderLayout.WEST);
 
         JPanel controlsPanel = new JPanel(new GridLayout(0, 1, 2, 2));
-        JTextField membershipNumberField = new JTextField();
-        controlsPanel.add(membershipNumberField);
-        panel.add(controlsPanel, BorderLayout.CENTER);
         
+        controlsPanel.add(membershipNumberField);
+        membershipPanel.add(controlsPanel, BorderLayout.CENTER);
+        
+        showVirtualNumberKeyboard();
+        showChoicesOfEnteringNumber();
+    }
+    
+    public void showVirtualNumberKeyboard() {
+    	JPanel keyboardPanel = new JPanel();
+    	keyboardPanel.setLayout(new GridLayout(4,3,5,5));
+    	for (int i = 1; i<=9; i++) {
+    		JButton numberButtons = new JButton(String.valueOf(i));
+    		numberButtons.addActionListener(e->membershipNumberField.setText(membershipNumberField.getText() + e.getActionCommand()));
+    		keyboardPanel.add(numberButtons);
+    	}
+    	JButton clearButton = new JButton("Clear");
+        clearButton.addActionListener(e -> membershipNumberField.setText(""));
+        keyboardPanel.add(clearButton);
+        
+        JButton zeroButton = new JButton("0");
+        zeroButton.addActionListener(e -> membershipNumberField.setText(membershipNumberField.getText() + e.getActionCommand()));
+        keyboardPanel.add(zeroButton);
+        
+        JButton backButton = new JButton("back"); // Placeholder to fill the grid
+        backButton.addActionListener(e -> {
+        	String currentNumber = membershipNumberField.getText();
+        	if (!currentNumber.isEmpty()) {
+        		String newNumber = currentNumber.substring(0, currentNumber.length()-1);
+        		membershipNumberField.setText(newNumber);
+        	}
+        });
+        keyboardPanel.add(backButton);
+        
+        membershipPanel.add(keyboardPanel, BorderLayout.SOUTH);
+        
+    }
+    public void showChoicesOfEnteringNumber() {
         Object[] options = {"Enter", "Scan Card", "swipe Card", "Cancel"};
 
         int choice = JOptionPane.showOptionDialog(
             this,
-            panel,
+            membershipPanel,
             "Membership Number",
             JOptionPane.NO_OPTION,
             JOptionPane.PLAIN_MESSAGE,
@@ -180,6 +215,7 @@ public class CustomerStation extends JFrame {
     	
     	switch (response) {
     		case 0:
+    			membershipNumberField.setText("");
     			askForMembershipNumber();
                 break;
     		case 1:
