@@ -13,8 +13,8 @@ public class CustomerStation extends JFrame {
     private JTextArea cartTextArea;
     private JLabel totalPriceLabel;
 
-    public CustomerStation() {
-        setTitle("Self-Checkout Station");
+    public CustomerStation(int selectedStation) {
+        setTitle("Self-Checkout Station" + selectedStation);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
@@ -98,7 +98,9 @@ public class CustomerStation extends JFrame {
         setVisible(true);
     }
 
-    private JButton createButton(String text, ActionListener actionListener) {
+ 
+
+	private JButton createButton(String text, ActionListener actionListener) {
         JButton button = new JButton("<html><center>" + text + "</center></html>");
         button.setFont(new Font("Arial", Font.PLAIN, 16));
         if (actionListener != null) {

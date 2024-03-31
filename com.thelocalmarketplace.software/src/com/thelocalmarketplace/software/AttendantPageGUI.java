@@ -1,10 +1,14 @@
 package com.thelocalmarketplace.software;
 
 import javax.swing.*;
+
+import com.thelocalmarketplace.software.communication.CustomerStation;
+
 import java.awt.*;
 import java.awt.event.*;
 
 public class AttendantPageGUI extends JFrame{
+	 private int selectedStation = -1; // Variable to store the selected station number
 
 	 public AttendantPageGUI() {
 		 
@@ -25,7 +29,13 @@ public class AttendantPageGUI extends JFrame{
 	        JButton checkout2Button = new JButton("Checkout Station 2");
 	        JButton checkout3Button = new JButton("Checkout Station 3");
 	        JButton checkout4Button = new JButton("Checkout Station 4");
-	       
+
+	        // Add action listeners to station buttons
+	        checkout1Button.addActionListener(new StationButtonListener(1));
+	        checkout2Button.addActionListener(new StationButtonListener(2));
+	        checkout3Button.addActionListener(new StationButtonListener(3));
+	        checkout4Button.addActionListener(new StationButtonListener(4));
+	        
 	        stationPanel.add(checkout1Button);
 	        stationPanel.add(checkout2Button);
 	        stationPanel.add(checkout3Button);
@@ -40,6 +50,7 @@ public class AttendantPageGUI extends JFrame{
 	        JButton unblockStation = new JButton("Unblock Station");
 	        JButton closeStation = new JButton("Close Station");
 	        
+	        startStation.addActionListener(new StartStationButtonListener());
 	        stationControlPanel.add(startStation);
 	        stationControlPanel.add(blockStation);
 	        stationControlPanel.add(unblockStation);
@@ -53,4 +64,31 @@ public class AttendantPageGUI extends JFrame{
 	        mainPanel.add(stationControlPanel);
 	        add(mainPanel);
 	 }
+	// Action listener for station buttons
+	    private class StationButtonListener implements ActionListener {
+	        private int stationNumber;
+
+	        public StationButtonListener(int stationNumber) {
+	            this.stationNumber = stationNumber;
+	        }
+
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	            selectedStation = stationNumber; // Store the selected station number
+	        }
+	    }
+
+	    // Action listener for start station button
+	    private class StartStationButtonListener implements ActionListener {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	            if (selectedStation != -1) { // Check if a station is selected
+	                // Open the Customer GUI page for the selected station
+	                CustomerStation customerGUI = new CustomerStation(selectedStation);
+	                customerGUI.setVisible(true);
+	            } else {
+	                JOptionPane.showMessageDialog(null, "Please select a station first.");
+	            }
+	        }
+	    }
 }
