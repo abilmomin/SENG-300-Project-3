@@ -85,4 +85,12 @@ public interface FundsObserver {
      * @param changeReturned The amount of change returned after paying in full.
      */
     default public void fundsPaidInFull(Funds fundsFacade, BigDecimal changeReturned) {}
+
+	/**
+	 * Signals an event in which the station is blocked at payment state.
+	 *
+	 * @param fundsFacade The facade in which the event occurred.
+	 * @param blockedStatus Whether the station is blocked.
+	 */
+	default public void fundsStationBlocked(Funds fundsFacade, boolean blockedStatus) {}
 }
