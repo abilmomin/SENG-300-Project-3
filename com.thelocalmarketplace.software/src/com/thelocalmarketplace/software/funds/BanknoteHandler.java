@@ -45,16 +45,16 @@ import com.tdc.banknote.BanknoteValidatorObserver;
 import com.tdc.banknote.IBanknoteDispenser;
 import com.tdc.coin.Coin;
 
-public class PayWithBanknoteHandler implements BanknoteValidatorObserver, BanknoteDispenserObserver {
+public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispenserObserver {
 	
 	private Funds fundController = null;
 	
 	/**
-	 * Constructs a PayWithBanknoteHandler with the specified fund controller.
+	 * Constructs a BanknoteHandler with the specified fund controller.
 	 * 
 	 * @param fundController The fund controller to associate with this handler.
 	 */
-	public PayWithBanknoteHandler(Funds fundController) {
+	public BanknoteHandler(Funds fundController) {
 		this.fundController = fundController;
 	}
 
@@ -68,8 +68,8 @@ public class PayWithBanknoteHandler implements BanknoteValidatorObserver, Bankno
 	@Override
 	public void goodBanknote(BanknoteValidator validator, Currency currency, BigDecimal denomination) {
 		this.fundController.notifyFundsAdded(denomination);
-		this.fundController.banknotePaid.add(denomination);
-		BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(this.fundController.totalPaid());
+		this.fundController.totalPaid.add(denomination);
+		BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(this.fundController.totalPaid);
 		if (amountDue.compareTo(BigDecimal.ZERO) <= 0) {
 			amountDue = amountDue.abs();
 			
