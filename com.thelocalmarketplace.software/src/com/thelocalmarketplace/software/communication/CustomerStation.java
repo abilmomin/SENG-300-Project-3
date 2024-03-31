@@ -29,6 +29,7 @@ Nami Marwah              30178528
 package com.thelocalmarketplace.software.communication;
 import javax.swing.*;
 
+import com.thelocalmarketplace.software.AttendantPageGUI;
 import com.thelocalmarketplace.software.MembershipCard;
 
 import java.awt.*;
@@ -66,6 +67,15 @@ public class CustomerStation extends JFrame {
         JButton viewBaggingAreaBtn = createButton("View Bagging Area", null);
         JButton enterMembershipNumber = createButton("Enter Membership Number", e->askForMembershipNumber());
 
+        //Signal for attendant button 
+        JButton helpButton = new JButton("Help");
+        helpButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                notifyAttendant(selectedStation);
+            }
+        });
+        
         // Add buttons to menu panel
         menuPanel.add(useOwnBagsBtn);
         menuPanel.add(scanBarcodeBtn);
@@ -75,6 +85,7 @@ public class CustomerStation extends JFrame {
         menuPanel.add(doNotBagBtn);
         menuPanel.add(viewBaggingAreaBtn);
         menuPanel.add(enterMembershipNumber);
+        menuPanel.add(helpButton);
         // Cart panel
         JPanel cartPanel = new JPanel(new BorderLayout());
         cartPanel.setBorder(BorderFactory.createTitledBorder("Cart"));
@@ -105,6 +116,8 @@ public class CustomerStation extends JFrame {
         payButton.setFont(payButton.getFont().deriveFont(Font.BOLD, 16));
         JPanel payButtonPanel = new JPanel(new BorderLayout());
         payButtonPanel.add(payButton, BorderLayout.CENTER);
+        
+
 
         // Add components to cart panel
         cartPanel.add(cartScrollPane, BorderLayout.CENTER);
@@ -126,7 +139,10 @@ public class CustomerStation extends JFrame {
         setVisible(true);
     }
 
- 
+    private void notifyAttendant(int selectedStation) {
+        // Notify the AttendantPageGUI that assistance is required at this station
+        AttendantPageGUI.notifyAssistanceRequired(selectedStation);
+    }
 
 	private JButton createButton(String text, ActionListener actionListener) {
         JButton button = new JButton("<html><center>" + text + "</center></html>");

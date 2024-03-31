@@ -155,6 +155,9 @@ public class AttendantPageGUI extends JFrame {
             }
         }
     }
+    public static void notifyAssistanceRequired(int stationNumber) {
+        JOptionPane.showMessageDialog(null, "Station " + (stationNumber + 1) + " requires assistance.");
+    }
 
     
     // Method to highlight the selected station button
