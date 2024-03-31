@@ -110,11 +110,6 @@ public class ProductHandler {
 		if (software.getStationActive() && !software.getStationBlock()) {
 			software.setStationBlock(true);
 			
-		
-//			PriceLookUpCode PLUcode = new PriceLookUpCode(plucode);
-//			PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUcode);
-//	
-
 			BigDecimal itemWeightInGrams = pluItem.getMass().inGrams();
 			double itemWeight = itemWeightInGrams.doubleValue();
 			PriceLookUpCode PLUCode = pluItem.getPLUCode();
