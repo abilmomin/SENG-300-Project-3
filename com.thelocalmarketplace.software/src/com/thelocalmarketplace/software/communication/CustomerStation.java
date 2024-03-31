@@ -14,7 +14,7 @@ public class CustomerStation extends JFrame {
     private JLabel totalPriceLabel;
 
     public CustomerStation(int selectedStation) {
-        setTitle("Self-Checkout Station" + selectedStation);
+        setTitle("Self-Checkout Station " + selectedStation);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
