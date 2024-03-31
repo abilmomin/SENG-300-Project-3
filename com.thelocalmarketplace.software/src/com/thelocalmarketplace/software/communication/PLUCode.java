@@ -12,6 +12,7 @@ public class PLUCode extends JFrame {
     private JTextArea cartTextArea;
     private JLabel totalPriceLabel;
     private JTextField screenTextField;
+     
 
     public PLUCode(int selectedStation) {
         setTitle("Self-Checkout Station " + selectedStation);
@@ -89,6 +90,11 @@ public class PLUCode extends JFrame {
                  String newText = currentText.substring(0, currentText.length() - 1);
                  screenTextField.setText(newText);
         	}
+        });
+        
+        enter.addActionListener(e -> {
+        	AddtoBagging popup  = new AddtoBagging(this);
+        	popup.setVisible(true);
         });
         
         enter.setBackground(new Color(214, 255, 217));
