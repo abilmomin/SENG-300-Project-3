@@ -10,7 +10,7 @@ import java.awt.event.*;
 public class AttendantPageGUI extends JFrame {
     private int selectedStation = -1; // Variable to store the selected station number
     private JButton[] stationButtons; // Array to hold the station buttons
-
+    private CustomerStation[] customerGUIs;
     public AttendantPageGUI() {
 
         // Setup
@@ -28,7 +28,7 @@ public class AttendantPageGUI extends JFrame {
         // Button panel for managing customer checkout stations
         JPanel stationPanel = new JPanel(new GridLayout(2, 2));
         stationButtons = new JButton[4]; // Initialize the station buttons array
-
+        customerGUIs = new CustomerStation[4];
         // Create station buttons
         for (int i = 0; i < 4; i++) {
             JButton checkoutButton = new JButton("Checkout Station " + (i + 1));
@@ -48,6 +48,7 @@ public class AttendantPageGUI extends JFrame {
         JButton closeStation = new JButton("Close Station");
 
         startStation.addActionListener(new StartStationButtonListener());
+        closeStation.addActionListener(new CloseStationButtonListener());
         stationControlPanel.add(startStation);
         stationControlPanel.add(blockStation);
         stationControlPanel.add(unblockStation);
@@ -82,14 +83,28 @@ public class AttendantPageGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (selectedStation != -1) { // Check if a station is selected
                 // Open the Customer GUI page for the selected station
-                CustomerStation customerGUI = new CustomerStation(selectedStation + 1); // Adjusted index for station number
-                customerGUI.setVisible(true);
+//                CustomerStation customerGUI = new CustomerStation(selectedStation + 1); // Adjusted index for station number
+//                customerGUI.setVisible(true);
+            	  customerGUIs[selectedStation] = new CustomerStation(selectedStation + 1); // Adjusted index for station number
+                  customerGUIs[selectedStation].setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");
             }
         }
     }
+    // Action listener for close station button
+    private class CloseStationButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (selectedStation != -1 && customerGUIs[selectedStation] != null) { // Check if a station is selected and GUI is created
+                customerGUIs[selectedStation].dispose(); // Close the Customer GUI page for the selected station
+            } else {
+                JOptionPane.showMessageDialog(null, "Please select a station with an active Customer Station GUI.");
+            }
+        }
+    }
 
+    
     // Method to highlight the selected station button
     private void highlightSelectedStation() {
         for (int i = 0; i < stationButtons.length; i++) {
