@@ -34,7 +34,7 @@ public class Funds {
 	/**
 	 * Basic constructor.
 	 * 
-	 * @param vendingMachine
+	 * @param checkoutStation
 	 *            The device facade that will be used to implement all low-level
 	 *            functions.
 	 */
@@ -140,6 +140,16 @@ public class Funds {
 	protected void notifyFundsRemoved(BigDecimal amount) {
 		for(FundsObserver observer : observers)
 			observer.fundsRemoved(this, amount);
+	}
+
+	/**
+	 * Notifies observers that the station is blocked at payment state.
+	 *
+	 * @param blockedStatus Whether the station is blocked.
+	 */
+	protected void notifyFundsStationBlocked(boolean blockedStatus) {
+		for (FundsObserver observer : observers)
+			observer.fundsStationBlocked(this, blockedStatus);
 	}
 	
 	/**

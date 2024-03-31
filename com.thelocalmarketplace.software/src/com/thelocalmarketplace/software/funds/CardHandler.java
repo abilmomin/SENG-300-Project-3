@@ -81,7 +81,7 @@ public class CardHandler implements CardReaderListener {
         PaymentKind.Kind cardType = PaymentKind.getCardType(data.getType());
 
         if (fundController.checkoutStationSoftware.getStationBlock()) {
-            // Maybe return something from the gui??? Maybe raise an exception?
+            fundController.notifyFundsStationBlocked(true);
             return;
         }
 
