@@ -1,8 +1,12 @@
 package com.thelocalmarketplace.software.communication;
 import javax.swing.*;
+
+import com.thelocalmarketplace.software.MembershipCard;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 
 public class CustomerStation extends JFrame {
 
@@ -32,6 +36,7 @@ public class CustomerStation extends JFrame {
         JButton removeItemBtn = createButton("Remove Item", null);
         JButton doNotBagBtn = createButton("Do Not Bag", null);
         JButton viewBaggingAreaBtn = createButton("View Bagging Area", null);
+        JButton enterMembershipNumber = createButton("Enter Membership Number", e->askForMembershipNumber());
 
         // Add buttons to menu panel
         menuPanel.add(useOwnBagsBtn);
@@ -41,7 +46,7 @@ public class CustomerStation extends JFrame {
         menuPanel.add(removeItemBtn);
         menuPanel.add(doNotBagBtn);
         menuPanel.add(viewBaggingAreaBtn);
-
+        menuPanel.add(enterMembershipNumber);
         // Cart panel
         JPanel cartPanel = new JPanel(new BorderLayout());
         cartPanel.setBorder(BorderFactory.createTitledBorder("Cart"));
@@ -112,4 +117,64 @@ public class CustomerStation extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(CustomerStation::new);
     }
+    
+    public void askForMembershipNumber() {
+    	String membershipNumber = JOptionPane.showInputDialog(this, "Please enter your membership number:");
+    	checkMembershipNumber(membershipNumber);
+    }
+    public void checkMembershipNumber(String membershipNumber) {
+    	MembershipCard membershipCard = new MembershipCard();
+    	if (membershipNumber != null && !membershipNumber.isEmpty()) {
+            if (membershipCard.isMembershipNumberValid(membershipNumber)) {
+                JOptionPane.showMessageDialog(this, "Membership number accepted.");
+            } else {
+                showOptions();
+            }
+        } else if (membershipNumber != null) {
+            JOptionPane.showMessageDialog(this, "No membership number entered.");
+        }
+    }
+    
+    public void showOptions() {
+    	String options[] = new String[] {"Try again", "Become a member", "continue"};
+    	int response = JOptionPane.showOptionDialog(
+                this,
+                "Invalid membership number.",
+                "Membership Error",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+    	
+    	switch (response) {
+    		case 0:
+    			String membershipNumber = JOptionPane.showInputDialog(this, "Please enter your membership number:");
+    			checkMembershipNumber(membershipNumber);
+                break;
+    		case 1:
+    			createAccount();
+    			break;
+    		case 2: 
+    			JOptionPane.showMessageDialog(this, "Continuing without a membership account.");
+    			break;
+    	}
+    }
+    
+    public void createAccount() {
+		MembershipCard membershipCard = new MembershipCard();
+		String memberName = JOptionPane.showInputDialog(this, "Please enter your name:");
+		if (memberName != null && !memberName.trim().isEmpty()) {
+			Random random = new Random();
+			long randomNumber = (long) (random.nextDouble() * 9_000_000_000L) + 1_000_000_000L;
+			String membershipNumber = Long.toString(randomNumber);
+			membershipCard.createNewMember(membershipNumber, memberName);
+		    JOptionPane.showMessageDialog(this, "Account created successfully!\nName: " + memberName + "\nMembership Number: " + membershipNumber);
+	    } else {
+	        JOptionPane.showMessageDialog(this, "You must enter a name to create a membership account.", "Error", JOptionPane.ERROR_MESSAGE);
+	    }
+		
+    }
+    
 }

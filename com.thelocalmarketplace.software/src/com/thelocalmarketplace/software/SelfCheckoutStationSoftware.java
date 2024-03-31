@@ -32,6 +32,7 @@ import com.jjjwelectronics.Item;
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.bag.IReusableBagDispenser;
 import com.jjjwelectronics.card.AbstractCardReader;
+import com.jjjwelectronics.card.Card;
 import com.jjjwelectronics.card.ICardReader;
 import com.jjjwelectronics.printer.IReceiptPrinter;
 import com.jjjwelectronics.scale.IElectronicScale;
@@ -312,5 +313,5 @@ public class SelfCheckoutStationSoftware {
 	public ISelfCheckoutStation getStationHardware() {
 		return station;
 	}
-
+	
 }
