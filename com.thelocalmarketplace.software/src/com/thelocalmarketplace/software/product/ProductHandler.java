@@ -132,6 +132,42 @@ public class ProductHandler {
 
 	}
 	/**
+     * Adds an item to the order by text search of the description.
+     * 
+     * @param searchText The text to search for in the product descriptions.
+     */
+    public void addItemByTextSearch(String searchText, PLUCodedItem pluItem) {
+        if (software.getStationActive() && !software.getStationBlock()) {
+            software.setStationBlock(true); // Block the station
+            
+            // Search in barcoded products
+            for(BarcodedProduct barcodedProduct : ProductDatabases.BARCODED_PRODUCT_DATABASE.values()) {
+                if(barcodedProduct.getDescription().toLowerCase().contains(searchText.toLowerCase())) {
+                    
+                    addBarcodedProductToOrder(barcodedProduct);
+                    software.setStationBlock(false); // Unblock the station
+                    return; // Exit after adding product
+                }
+            }
+            
+            // Search in PLU-coded products
+            for(PLUCodedProduct pluCodedProduct : ProductDatabases.PLU_PRODUCT_DATABASE.values()) {
+                if(pluCodedProduct.getDescription().toLowerCase().contains(searchText.toLowerCase())) {
+                	BigDecimal itemWeightInGrams = pluItem.getMass().inGrams();
+        			double itemWeight = itemWeightInGrams.doubleValue();
+                    addPLUCodedProductToOrder(pluCodedProduct, itemWeight);
+                    software.setStationBlock(false); // Unblock the station
+                    return; // Exit after adding product
+                }
+            }
+
+            // If product not found
+            System.out.println("Product not found.");
+
+            software.setStationBlock(false); // Unblock the station if no product is found
+        }
+    }
+	/**
 	 * Adds a barcoded product to the current order.
 	 *
 	 * @param product The barcoded product to add to the order.
