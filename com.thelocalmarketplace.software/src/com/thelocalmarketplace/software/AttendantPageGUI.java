@@ -223,14 +223,6 @@ public class AttendantPageGUI extends JFrame {
     	checkout.setStationBlock(false);
    
     }
-    
-    // user presses add own bag
-    // they can add bag, its added to the weight
-    // oopsie too heavy- button bag to heavy
-    // station is blocked
-    // attendant is notified
-    
-    // at attendant station, a pop-up shows up that says station blank bag is too heavy
-    // attendent approves it 
+     
 }
 
