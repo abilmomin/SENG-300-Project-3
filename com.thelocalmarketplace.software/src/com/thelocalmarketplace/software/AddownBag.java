@@ -19,14 +19,12 @@ public class AddownBag implements ElectronicScaleListener {
 	private SelfCheckoutStationSoftware instance;
     private AbstractElectronicScale scale1;
     private Mass mass_test;
+    private int station_number;
+    
 	
 	//constructor
 	public AddownBag(SelfCheckoutStationSoftware weight_order, AbstractElectronicScale scale1) {
-		
-		this.weight_order = weight_order;
-        this.scale1 = scale1;
         theMassOnTheScaleHasChanged(scale1, mass_test);
-	
 	}
 			
 	
@@ -34,7 +32,7 @@ public class AddownBag implements ElectronicScaleListener {
 	public void theMassOnTheScaleHasChanged(IElectronicScale scale, Mass mass) {
 		// TODO Auto-generated method stub
 		double bag_grams = getBagWeight(weight_order, scale1); 
-		addbagweight(weight_order, scale1, bag_grams); 
+		addbagweight(weight_order, scale1, bag_grams,station_number); 
 		}
 		
 	
@@ -66,7 +64,7 @@ public class AddownBag implements ElectronicScaleListener {
 	}
 	
 	
-	/**  in add bag weight, we pass in order, scale, and weight of bag, we first determine the mass limit
+	/** In add bag weight, we pass in order, scale, and weight of bag, we first determine the mass limit
 	 * and we compare the current mass on the scale to this limit, if there is a difference 
 	 * print out bag to heavy and block the station, we then call attendant to deal with the problem, the attendant will fix it 
 	 * next if there is no difference, we set station block to false add weight to order and print you may now continue
@@ -76,7 +74,7 @@ public class AddownBag implements ElectronicScaleListener {
 	 * @param weight_of_bag
 	 */
 	// now that customer has signaled they want to add their own bags, pass in the weight of their own bags
-	public void addbagweight(SelfCheckoutStationSoftware p1, AbstractElectronicScale scale, double weight_of_bag) {
+	public void addbagweight(SelfCheckoutStationSoftware p1, AbstractElectronicScale scale, double weight_of_bag, int station_num) {
 		
 		//threshold = scale limit in mcg 
 		BigInteger threshold = scale.getMassLimit().inMicrograms();
@@ -87,13 +85,9 @@ public class AddownBag implements ElectronicScaleListener {
 			
 			if (compare_to_threshold>=0) {
 				System.out.println("Bags too heavy, not allowed");
-				instance.setStationBlock(true); //block b/c to heavy 
-				//call attendant 
-				//NOTIFY ATTENDANT
+				instance.setStationBlock(true); // block station
 				double order = p1.getTotalOrderWeightInGrams();
-				mockAttendant attend = new mockAttendant(order,scale,weight_of_bag);
-				attend.notifyAttendant();
-			
+				AttendantPageGUI.notifyAssistanceRequired(station_num); // call attendant 
 				
 			}
 			else {
@@ -142,10 +136,6 @@ public class AddownBag implements ElectronicScaleListener {
 		// TODO Auto-generated method stub
 		
 	}
-
-
-	
-
 
 	@Override
 	public void theMassOnTheScaleHasExceededItsLimit(IElectronicScale scale) {
