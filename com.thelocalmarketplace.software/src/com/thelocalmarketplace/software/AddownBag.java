@@ -24,6 +24,7 @@ public class AddownBag implements ElectronicScaleListener {
 	
 	//constructor
 	public AddownBag(SelfCheckoutStationSoftware weight_order, AbstractElectronicScale scale1) {
+
         theMassOnTheScaleHasChanged(scale1, mass_test);
 	}
 			
@@ -87,7 +88,8 @@ public class AddownBag implements ElectronicScaleListener {
 				System.out.println("Bags too heavy, not allowed");
 				instance.setStationBlock(true); // block station
 				double order = p1.getTotalOrderWeightInGrams();
-				AttendantPageGUI.notifyAssistanceRequired(station_num); // call attendant 
+				AttendantPageGUI attendant_test = new AttendantPageGUI();
+				attendant_test.bagdiscpreancydectected();
 				
 			}
 			else {

@@ -216,5 +216,21 @@ public class AttendantPageGUI extends JFrame {
             }
         }
     }
+    
+    public void bagdiscpreancydectected() {
+    	// Attendant approves discrepancy 
+    	SelfCheckoutStationSoftware checkout = new SelfCheckoutStationSoftware(null);
+    	checkout.setStationBlock(false);
+   
+    }
+    
+    // user presses add own bag
+    // they can add bag, its added to the weight
+    // oopsie too heavy- button bag to heavy
+    // station is blocked
+    // attendant is notified
+    
+    // at attendant station, a pop-up shows up that says station blank bag is too heavy
+    // attendent approves it 
 }
 
