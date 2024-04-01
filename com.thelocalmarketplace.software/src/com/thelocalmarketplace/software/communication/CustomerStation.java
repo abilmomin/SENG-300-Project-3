@@ -40,7 +40,6 @@ public class CustomerStation extends JFrame {
         JButton removeItemBtn = createButton("Remove Item", null);
         JButton doNotBagBtn = createButton("Do Not Bag", null);
         JButton viewBaggingAreaBtn = createButton("View Bagging Area", null);
-        JButton enterMembershipNumber = createButton("Enter Membership Number", e -> askForMembershipNumber());
         //Signal for attendant button 
         JButton helpButton = new JButton("Help");
         helpButton.addActionListener(new ActionListener() {
@@ -58,9 +57,8 @@ public class CustomerStation extends JFrame {
         menuPanel.add(removeItemBtn);
         menuPanel.add(doNotBagBtn);
         menuPanel.add(viewBaggingAreaBtn);
-        menuPanel.add(enterMembershipNumber);
         menuPanel.add(helpButton);
-
+        
         // Cart panel
         JPanel cartPanel = new JPanel(new BorderLayout());
         cartPanel.setBorder(BorderFactory.createTitledBorder("Cart"));
@@ -133,7 +131,8 @@ public class CustomerStation extends JFrame {
     }
 
     public void askForMembershipNumber() {
-        // Implementation for asking membership number
+    	MembershipNumberInput dialog = new MembershipNumberInput(this);
+        dialog.frameInit();
     }
 
    
