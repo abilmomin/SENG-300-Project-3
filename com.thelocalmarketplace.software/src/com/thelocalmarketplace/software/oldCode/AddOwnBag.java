@@ -15,6 +15,7 @@ import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 public class AddOwnBag implements ElectronicScaleListener {
 	
 	private SelfCheckoutStationSoftware weight_order;
+	private SelfCheckoutStationSoftware instance;
     private AbstractElectronicScale scale1;
     private Mass mass_test;
 	
@@ -85,7 +86,7 @@ public class AddOwnBag implements ElectronicScaleListener {
 			
 			if (compare_to_threshold>=0) {
 				System.out.println("Bags too heavy, not allowed");
-				WeightDiscrepancy.setStationBlock(true); //block b/c to heavy 
+				instance.setStationBlock(true); //block b/c to heavy 
 				//call attendant 
 				//NOTIFY ATTENDANT
 				double order = p1.getTotalOrderWeightInGrams();
@@ -96,7 +97,7 @@ public class AddOwnBag implements ElectronicScaleListener {
 			}
 			else {
 				//bag weight is fine, add weight of bag to order, system unblocks
-				WeightDiscrepancy.setStationBlock(false);  // change to unblock and continue 
+				instance.setStationBlock(false);  // change to unblock and continue 
 				p1.addTotalOrderWeightInGrams(weight_of_bag);
 				System.out.println("You may now continue");
 			}
