@@ -5,8 +5,7 @@ import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 public class mockAttendant {
 
-   
-    private Order order;
+  
 	private AbstractElectronicScale scale; 
 	private double weight_of_bag;
 	private AddOwnBag instance;
@@ -31,8 +30,7 @@ public class mockAttendant {
     
 	/** method that prints a message to notify to the attendant to some to station */
     public void notifyAttendant() {
-        System.out.println("Attendant come here");
-        
+        System.out.println("Attendant come here");     
     }
 
     /** here the attendant approves the situation and set station block to false so the uesr can continue
