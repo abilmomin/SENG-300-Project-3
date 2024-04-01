@@ -1,26 +1,30 @@
 package com.thelocalmarketplace.software.oldCode;
 
 import com.jjjwelectronics.scale.AbstractElectronicScale;
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 public class mockAttendant {
 
    
     private Order order;
-	private AbstractElectronicScale scale;
+	private AbstractElectronicScale scale; 
 	private double weight_of_bag;
 	private AddOwnBag instance;
 	
+	SelfCheckoutStationSoftware order_testt;
+	double test_order_Weight = order_testt.getTotalOrderWeightInGrams();
+	
 /** In the constructor pass in order scale and the bag weight and we create an instance of the addownbag class
- * @param order
+ * @param order2
  * @param scale
  * @param weight_of_bag
  */
-	public mockAttendant(Order order, AbstractElectronicScale scale, double weight_of_bag) {
-    	this.order = order;
+	public mockAttendant(double test_order_Weight, AbstractElectronicScale scale, double weight_of_bag) {
+    	this.test_order_Weight = test_order_Weight;
     	this.scale = scale;
     	this.weight_of_bag = weight_of_bag;
     	
-    	instance = new AddOwnBag(order,scale);
+    	instance = new AddOwnBag(order_testt,scale);
         
     }
 
@@ -36,7 +40,7 @@ public class mockAttendant {
     public void Attendant_approves() {
         // here the bag is approved
     	WeightDiscrepancy.setStationBlock(false);
-    	instance.addbagweight(order,scale,weight_of_bag);
+    	instance.addbagweight(order_testt,scale,weight_of_bag);
     	instance.print_mess();	
         
     }
@@ -47,7 +51,7 @@ public class mockAttendant {
     public void Attendant_corrected_problem() {
         // here the bag is approved
     	WeightDiscrepancy.setStationBlock(false);
-    	instance.addbagweight(order,scale,weight_of_bag);
+    	instance.addbagweight(order_testt,scale,weight_of_bag);
     	instance.print_mess();
     }
 }
