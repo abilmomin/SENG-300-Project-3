@@ -1,8 +1,9 @@
-package com.thelocalmarketplace.software.oldCode;
+package com.thelocalmarketplace.software;
+
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import com.jjjwelectronics.IDevice;
+import com.jjjwelectronics.IDevice;  
 import com.jjjwelectronics.IDeviceListener;
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.OverloadedDevice;
@@ -10,17 +11,18 @@ import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.jjjwelectronics.scale.ElectronicScaleListener;
 import com.jjjwelectronics.scale.IElectronicScale;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.thelocalmarketplace.software.oldCode.WeightDiscrepancy;
+import com.thelocalmarketplace.software.oldCode.mockAttendant;
 
 
-public class AddOwnBag implements ElectronicScaleListener {
+public class AddownBag implements ElectronicScaleListener {
 	
 	private SelfCheckoutStationSoftware weight_order;
-	private SelfCheckoutStationSoftware instance;
     private AbstractElectronicScale scale1;
     private Mass mass_test;
 	
 	//constructor
-	public AddOwnBag(SelfCheckoutStationSoftware weight_order, AbstractElectronicScale scale1) {
+	public AddownBag(SelfCheckoutStationSoftware weight_order, AbstractElectronicScale scale1) {
 		
 		this.weight_order = weight_order;
         this.scale1 = scale1;
@@ -86,7 +88,7 @@ public class AddOwnBag implements ElectronicScaleListener {
 			
 			if (compare_to_threshold>=0) {
 				System.out.println("Bags too heavy, not allowed");
-				instance.setStationBlock(true); //block b/c to heavy 
+				WeightDiscrepancy.setStationBlock(true); //block b/c to heavy 
 				//call attendant 
 				//NOTIFY ATTENDANT
 				double order = p1.getTotalOrderWeightInGrams();
@@ -97,7 +99,7 @@ public class AddOwnBag implements ElectronicScaleListener {
 			}
 			else {
 				//bag weight is fine, add weight of bag to order, system unblocks
-				instance.setStationBlock(false);  // change to unblock and continue 
+				WeightDiscrepancy.setStationBlock(false);  // change to unblock and continue 
 				p1.addTotalOrderWeightInGrams(weight_of_bag);
 				System.out.println("You may now continue");
 			}

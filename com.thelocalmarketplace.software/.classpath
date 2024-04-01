@@ -7,5 +7,7 @@
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="/com.thelocalmarketplace.hardware_0.3.3"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.thelocalmarketplace.software.test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
