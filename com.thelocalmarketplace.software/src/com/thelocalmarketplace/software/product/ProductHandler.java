@@ -28,17 +28,22 @@ Nami Marwah              30178528
 
 package com.thelocalmarketplace.software.product;
 
+import java.math.BigDecimal;
+
+import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.bag.IReusableBagDispenser;
 import com.jjjwelectronics.scale.IElectronicScale;
+import com.jjjwelectronics.scanner.Barcode;
+import com.jjjwelectronics.scanner.BarcodedItem;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
+import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
-import com.thelocalmarketplace.software.oldCode.Order;
 
 public class ProductHandler {
 	// Things to listen to (hardware)
@@ -101,19 +106,27 @@ public class ProductHandler {
 	 * @param plucode
 	 */
 	
-	public void addItemByPLUCode(String plucode) {
+	public void addItemByPLUCode(PLUCodedItem pluItem) {
 		if (software.getStationActive() && !software.getStationBlock()) {
 			software.setStationBlock(true);
-		
-			PriceLookUpCode PLUcode = new PriceLookUpCode(plucode);
-			PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUcode);
+			
+			BigDecimal itemWeightInGrams = pluItem.getMass().inGrams();
+			double itemWeight = itemWeightInGrams.doubleValue();
+			PriceLookUpCode PLUCode = pluItem.getPLUCode();
+			PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
 			
 			
-//			if (product != null) {
-//				double productWeight = product.get...
-			
-//			} NOT COMPLETE, need to talk to TA
-			
+			if(product != null) {
+				long productPrice = product.getPrice();
+				
+				software.addTotalOrderWeightInGrams(itemWeight);
+				software.addTotalOrderPrice(productPrice);
+				
+				Mass mass = new Mass(itemWeight);
+				PLUCodedItem newItem = new PLUCodedItem(PLUCode, mass);
+				software.addItemToOrder(newItem);			
+			}
+			 
 		}
 		
 	}

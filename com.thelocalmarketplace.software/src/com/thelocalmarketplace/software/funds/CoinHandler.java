@@ -48,16 +48,16 @@ import com.tdc.coin.ICoinDispenser;
 /**
  * Handles coin payment events, implementing observer interfaces for CoinValidator and CoinDispenser.
  */
-public class PayWithCoinHandler implements CoinValidatorObserver, CoinDispenserObserver {
+public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver {
     
     private Funds fundController = null;
     
     /**
-     * Constructs a PayWithCoinHandler with a given fund controller.
+     * Constructs a CoinHandler with a given fund controller.
      * 
      * @param fundController The fund controller to associate with this handler.
      */
-    public PayWithCoinHandler(Funds fundController) {
+    public CoinHandler(Funds fundController) {
         this.fundController = fundController;
     }
     
@@ -69,10 +69,9 @@ public class PayWithCoinHandler implements CoinValidatorObserver, CoinDispenserO
      */
     @Override
     public void validCoinDetected(CoinValidator validator, BigDecimal value)  {
-
-        this.fundController.coinPaid.add(value);
+        this.fundController.totalPaid.add(value);
         this.fundController.notifyFundsAdded(value);
-        BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(this.fundController.totalPaid());
+        BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(this.fundController.totalPaid);
         if (amountDue.compareTo(BigDecimal.ZERO) <= 0) {
             amountDue = amountDue.abs();
             

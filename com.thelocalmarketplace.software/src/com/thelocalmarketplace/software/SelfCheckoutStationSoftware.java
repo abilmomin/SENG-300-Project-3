@@ -53,6 +53,7 @@ import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
+import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.funds.PaymentHandler;
 import com.thelocalmarketplace.software.oldCode.BaggingAreaListener;
 import com.thelocalmarketplace.software.product.ProductHandler;
@@ -84,7 +85,7 @@ public class SelfCheckoutStationSoftware {
 	private long totalOrderPrice;
 	
 	// Facades
-	private PaymentHandler funds;
+	private Funds funds;
 	private ProductHandler products;
 
 	private boolean blocked = false;
@@ -110,7 +111,7 @@ public class SelfCheckoutStationSoftware {
 		this.totalOrderPrice = 0;
 		
 		// Make facades
-		funds = new PaymentHandler(this);
+		funds = new Funds(this);
 		products = new ProductHandler(this);
 
 		setStationActive(false);

@@ -22,8 +22,9 @@ import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 public class Funds {
-	protected BigDecimal coinPaid = BigDecimal.ZERO;
-	protected BigDecimal banknotePaid = BigDecimal.ZERO;
+	// protected BigDecimal coinPaid = BigDecimal.ZERO;
+	// protected BigDecimal banknotePaid = BigDecimal.ZERO;
+	protected BigDecimal totalPaid = BigDecimal.ZERO;
 	protected Map<BigDecimal, Number> coinsAvailable;
 	protected Map<BigDecimal, Number> banknotesAvailable;
 	protected int storedCredit = 0;
@@ -33,7 +34,7 @@ public class Funds {
 	/**
 	 * Basic constructor.
 	 * 
-	 * @param vendingMachine
+	 * @param checkoutStation
 	 *            The device facade that will be used to implement all low-level
 	 *            functions.
 	 */
@@ -44,20 +45,26 @@ public class Funds {
 		this.checkoutStationSoftware = checkoutStation;
 		
 		// register the coin payment handler to track coin available and that were entered into the checkout station
-		PayWithCoinHandler pch = new PayWithCoinHandler(this);
-		checkoutStation.station.getCoinValidator().attach(pch);
+		CoinHandler coinHandler = new CoinHandler(this);
+		checkoutStation.station.getCoinValidator().attach(coinHandler);
 		Map<BigDecimal, ICoinDispenser> coinDispensersMap = this.checkoutStationSoftware.getStationHardware().getCoinDispensers();
 		for( BigDecimal coin: coinDispensersMap.keySet()) {
 			ICoinDispenser dispenser = coinDispensersMap.get(coin);
-			dispenser.attach(pch);
+			dispenser.attach(coinHandler);
 		}
 		// register the banknote payment handler to track banknotes available and that were entered into the checkout station
-		PayWithBanknoteHandler pbh = new PayWithBanknoteHandler(this);
-		checkoutStation.station.getBanknoteValidator().attach(pbh);
+		BanknoteHandler banknoteHandler = new BanknoteHandler(this);
+		checkoutStation.station.getBanknoteValidator().attach(banknoteHandler);
 		Map<BigDecimal, IBanknoteDispenser> banknoteDispensersMap = this.checkoutStationSoftware.getStationHardware().getBanknoteDispensers();
+<<<<<<< HEAD
 		for( BigDecimal note: banknoteDispensersMap.keySet()) {
 			IBanknoteDispenser dispenser = banknoteDispensersMap.get(note);
 			dispenser.attach(pbh);
+=======
+		for( BigDecimal coin: banknoteDispensersMap.keySet()) {
+			IBanknoteDispenser dispenser = banknoteDispensersMap.get(coin);
+			dispenser.attach(banknoteHandler);
+>>>>>>> e4b01c5d60c0110d7c3b74170bae8bb09a03f8cb
 		}
 
 		CardHandler cardHandler = new CardHandler(this);
@@ -90,14 +97,15 @@ public class Funds {
 		observers.remove(listener);
 	}
 	
-	/**
-	 * Returns the total amount paid by the customer in both coins and banknotes.
-	 * 
-	 * @return The total amount paid.
-	 */
-	protected BigDecimal totalPaid() {
-		return new BigDecimal(coinPaid.add(banknotePaid).intValue());
-	}
+	// /**
+	//  * Returns the total amount paid by the customer in both coins and banknotes.
+	//  * 
+	//  * @return The total amount paid.
+	//  */
+	// protected BigDecimal getTotalPaid() {
+	// 	// return new BigDecimal(coinPaid.add(banknotePaid).intValue());
+	// 	return new BigDecimal(totalPaid.intValue());
+	// }
 	
 	
 	/**
@@ -138,6 +146,16 @@ public class Funds {
 	protected void notifyFundsRemoved(BigDecimal amount) {
 		for(FundsObserver observer : observers)
 			observer.fundsRemoved(this, amount);
+	}
+
+	/**
+	 * Notifies observers that the station is blocked at payment state.
+	 *
+	 * @param blockedStatus Whether the station is blocked.
+	 */
+	protected void notifyFundsStationBlocked(boolean blockedStatus) {
+		for (FundsObserver observer : observers)
+			observer.fundsStationBlocked(this, blockedStatus);
 	}
 	
 	
