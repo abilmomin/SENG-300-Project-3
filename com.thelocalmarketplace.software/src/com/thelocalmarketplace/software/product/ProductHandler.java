@@ -80,6 +80,7 @@ public class ProductHandler {
 		mainScanner.register(scannerListener);
 		handheldScanner.register(scannerListener);
 	}
+	
 	/**
 	 * Handle bulky item 
 	 * 
@@ -87,7 +88,7 @@ public class ProductHandler {
 	 * 			The weight of the bulky item 
 	 * */
 	public void handleBulkyItem(double productWeight) {
-		software.setStationBlock(true);
+		software.setStationBlock();
 		System.out.println("No-bagging request is in progress.");
 
 		System.out.println("Request has been approved");
@@ -95,6 +96,7 @@ public class ProductHandler {
 		double finalWeight = currentWeight-productWeight;
 		if (finalWeight >= 0) software.addTotalOrderWeightInGrams(-productWeight); 
 	}
+	
 	/**
 	 * 
 	 * Adds item to order by PLU code
@@ -104,7 +106,7 @@ public class ProductHandler {
 
 	public void addItemByPLUCode(PLUCodedItem pluItem) {
 		if (software.getStationActive() && !software.getStationBlock()) {
-			software.setStationBlock(true);
+			software.setStationBlock();
 
 			BigDecimal itemWeightInGrams = pluItem.getMass().inGrams();
 			double itemWeight = itemWeightInGrams.doubleValue();
@@ -122,11 +124,9 @@ public class ProductHandler {
 				PLUCodedItem newItem = new PLUCodedItem(PLUCode, mass);
 				software.addItemToOrder(newItem);			
 			}
-
 		}
-
-
 	}
+	
 	/**
      * Adds an item to the order by text search of the description.
      * 
@@ -134,14 +134,14 @@ public class ProductHandler {
      */
     public void addItemByTextSearch(String searchText, PLUCodedItem pluItem) {
         if (software.getStationActive() && !software.getStationBlock()) {
-            software.setStationBlock(true); // Block the station
+            software.setStationBlock(); // Block the station
             
             // Search in barcoded products
             for(BarcodedProduct barcodedProduct : ProductDatabases.BARCODED_PRODUCT_DATABASE.values()) {
                 if(barcodedProduct.getDescription().toLowerCase().contains(searchText.toLowerCase())) {
                     
                     addBarcodedProductToOrder(barcodedProduct);
-                    software.setStationBlock(false); // Unblock the station
+                    software.setStationUnblock(); // Unblock the station
                     return; // Exit after adding product
                 }
             }
@@ -152,17 +152,17 @@ public class ProductHandler {
                 	BigDecimal itemWeightInGrams = pluItem.getMass().inGrams();
         			double itemWeight = itemWeightInGrams.doubleValue();
                     addPLUCodedProductToOrder(pluCodedProduct, itemWeight);
-                    software.setStationBlock(false); // Unblock the station
+                    software.setStationUnblock(); // Unblock the station
                     return; // Exit after adding product
                 }
             }
-
             // If product not found
             System.out.println("Product not found.");
 
-            software.setStationBlock(false); // Unblock the station if no product is found
+            software.setStationUnblock(); // Unblock the station if no product is found
         }
     }
+    
 	/**
 	 * Adds a barcoded product to the current order.
 	 *
@@ -215,7 +215,7 @@ public class ProductHandler {
 	public void addItemByVisualCatalogue(PLUCodedItem visualCatalogueItem) {
 		if (software.getStationActive()) {
 			if (!software.getStationBlock()) {
-				software.setStationBlock(true);
+				software.setStationBlock();
 
 				BigDecimal itemWeightInGrams = visualCatalogueItem.getMass().inGrams();
 				double itemWeight = itemWeightInGrams.doubleValue();
@@ -233,10 +233,6 @@ public class ProductHandler {
 			}
 		}
 	}
-	// all product logic goes here
-
-	// In order to access the hardware of the SelfCheckoutStation, use software.HARDWARE_YOU_WANNA_GET()
-
 	// request attendants attention also goes in communication, but where? idk. Button needed in GUI
 	// safe to say most things go here for group 4 :))
 }
