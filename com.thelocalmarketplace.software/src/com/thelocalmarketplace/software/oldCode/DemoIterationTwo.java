@@ -54,7 +54,6 @@ import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
 import com.thelocalmarketplace.hardware.external.CardIssuer;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
-import com.thelocalmarketplace.software.funds.PaymentHandler;
 
 import powerutility.PowerGrid;
 

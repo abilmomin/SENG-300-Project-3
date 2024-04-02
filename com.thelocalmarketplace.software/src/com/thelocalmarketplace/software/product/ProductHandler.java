@@ -37,11 +37,7 @@ import com.jjjwelectronics.scale.IElectronicScale;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
-import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
-import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
-import com.thelocalmarketplace.hardware.PLUCodedItem;
-import com.thelocalmarketplace.hardware.PLUCodedProduct;
-import com.thelocalmarketplace.hardware.PriceLookUpCode;
+import com.thelocalmarketplace.hardware.*;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
@@ -103,7 +99,7 @@ public class ProductHandler {
 	 * 
 	 * Adds item to order by PLU code
 	 * 
-	 * @param plucode
+	 * @param pluItem
 	 */
 
 	public void addItemByPLUCode(PLUCodedItem pluItem) {
@@ -214,7 +210,7 @@ public class ProductHandler {
 
 	/**
 	 * Adds an item after customer selects it from the visual catalog
-	 * @param visualCatalogItem
+	 * @param visualCatalogueItem
 	 */
 	public void addItemByVisualCatalogue(PLUCodedItem visualCatalogueItem) {
 		if (software.getStationActive()) {

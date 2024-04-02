@@ -9,8 +9,7 @@ import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.jjjwelectronics.scale.ElectronicScaleListener;
-import com.jjjwelectronics.scale.IElectronicScale;;
-import com.thelocalmarketplace.software.oldCode.mockAttendant;
+import com.jjjwelectronics.scale.IElectronicScale;
 
 
 public class AddownBag implements ElectronicScaleListener {

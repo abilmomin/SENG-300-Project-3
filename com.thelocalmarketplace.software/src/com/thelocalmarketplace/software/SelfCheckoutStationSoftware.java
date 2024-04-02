@@ -37,8 +37,6 @@ import java.util.Scanner;
 import com.jjjwelectronics.Item;
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.bag.IReusableBagDispenser;
-import com.jjjwelectronics.card.AbstractCardReader;
-import com.jjjwelectronics.card.Card;
 import com.jjjwelectronics.card.ICardReader;
 import com.jjjwelectronics.printer.IReceiptPrinter;
 import com.jjjwelectronics.scale.IElectronicScale;
@@ -54,8 +52,6 @@ import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.funds.Funds;
-import com.thelocalmarketplace.software.funds.PaymentHandler;
-import com.thelocalmarketplace.software.oldCode.BaggingAreaListener;
 import com.thelocalmarketplace.software.product.ProductHandler;
 import com.thelocalmarketplace.software.product.ScannerListener;
 import com.thelocalmarketplace.hardware.external.CardIssuer;
@@ -76,7 +72,6 @@ public class SelfCheckoutStationSoftware {
 	private CoinSlot coinSlot;
 	
 	// Listeners
-	public BaggingAreaListener baggingAreaListener;
 	public ScannerListener scannerListener;
 
 	// Order stuff
