@@ -56,15 +56,10 @@ public class Funds {
 		BanknoteHandler banknoteHandler = new BanknoteHandler(this);
 		checkoutStation.station.getBanknoteValidator().attach(banknoteHandler);
 		Map<BigDecimal, IBanknoteDispenser> banknoteDispensersMap = this.checkoutStationSoftware.getStationHardware().getBanknoteDispensers();
-<<<<<<< HEAD
-		for( BigDecimal note: banknoteDispensersMap.keySet()) {
-			IBanknoteDispenser dispenser = banknoteDispensersMap.get(note);
-			dispenser.attach(pbh);
-=======
+
 		for( BigDecimal coin: banknoteDispensersMap.keySet()) {
 			IBanknoteDispenser dispenser = banknoteDispensersMap.get(coin);
 			dispenser.attach(banknoteHandler);
->>>>>>> e4b01c5d60c0110d7c3b74170bae8bb09a03f8cb
 		}
 
 		CardHandler cardHandler = new CardHandler(this);
@@ -160,7 +155,7 @@ public class Funds {
 	
 	
 	public BigDecimal getAmountPaid() {
-		return coinPaid.add(banknotePaid);
+		return totalPaid;
 	}
 	
 	public BigDecimal getMoneyLeft() {
