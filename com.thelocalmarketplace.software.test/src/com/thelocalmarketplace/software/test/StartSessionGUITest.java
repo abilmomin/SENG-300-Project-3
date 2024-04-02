@@ -66,7 +66,7 @@ public class StartSessionGUITest {
     public void testStartSessionButtonClick() {
         JButton startSessionButton = findButtonByText("Start Session");
         startSessionButton.doClick();
-        // You might add more assertions here if necessary
+        
     }
     
     
