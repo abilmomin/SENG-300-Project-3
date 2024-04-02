@@ -54,15 +54,11 @@ public class AttendantPageGUI extends JFrame {
 
         startStation.addActionListener(new StartStationButtonListener());
         closeStation.addActionListener(new CloseStationButtonListener());
-        blockStation.addActionListener(new BlockStationButtonListener());
-        unblockStation.addActionListener(new UnblockStationButtonListener());
         enableStation.addActionListener(new EnableStationButtonListener());
         disableStation.addActionListener(new DisableStationButtonListener());
 
         stationControlPanel.add(startStation);
         stationControlPanel.add(closeStation);
-        stationControlPanel.add(blockStation);
-        stationControlPanel.add(unblockStation);
         stationControlPanel.add(enableStation);
         stationControlPanel.add(disableStation);
 
