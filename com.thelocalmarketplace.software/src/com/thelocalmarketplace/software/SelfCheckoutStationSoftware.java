@@ -211,7 +211,7 @@ public class SelfCheckoutStationSoftware {
 		if (this.order.contains(item)) {
 			this.order.remove(item);
 			
-			setStationBlock(true);
+			setStationBlock();
 			
 			if (item instanceof BarcodedItem) {
 				Barcode barcode = ((BarcodedItem) item).getBarcode();
