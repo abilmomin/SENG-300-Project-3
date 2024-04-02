@@ -117,8 +117,8 @@ public class SelfCheckoutStationSoftware {
 	 * Set function to change the blocked variable value.
 	 * @param value The new value for station block status
 	 */
-	public void setStationBlock(boolean value) {
-		blocked = value;
+	public void setStationBlock() {
+		blocked = true;
 		
 		station.getCardReader().disable();
 		station.getCoinSlot().disable();
