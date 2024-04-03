@@ -105,7 +105,7 @@ public class CustomerStation extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Perform payment action here
-                JOptionPane.showMessageDialog(CustomerStation2.this, "Payment processed successfully!");
+                JOptionPane.showMessageDialog(CustomerStation.this, "Payment processed successfully!");
                 // Clear cart after payment
                 cartTextArea.setText("");
                 totalPriceLabel.setText("Total Price: $0.00");
