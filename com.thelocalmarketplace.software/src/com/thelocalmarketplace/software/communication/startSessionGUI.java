@@ -2,42 +2,52 @@ package com.thelocalmarketplace.software.communication;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class startSessionGUI extends JFrame {
 
     public startSessionGUI() {
         // Frame initialization
         setTitle("Welcome to the Market");
-        setSize(300, 200); // Set the size of the window
+        setSize(600, 400); // Set the size of the window
         setLocationRelativeTo(null); // Center the window
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Panel to hold components
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        // Main panel with GridBagLayout
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER; // End row after this component
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Stretch component horizontally
+        gbc.anchor = GridBagConstraints.CENTER; // Center component
 
-        // Welcome label
-        JLabel welcomeLabel = new JLabel("Welcome to the Market!");
-        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        // Start session button
-        JButton startSessionButton = new JButton("Start Session");
-        startSessionButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        startSessionButton.addActionListener(new ActionListener() {
+        // Make the panel clickable
+        panel.addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                // need to be changess
-                JOptionPane.showMessageDialog(startSessionGUI.this, "Change this");
+            public void mouseClicked(MouseEvent e) {
+                // Implement session start logic here
+                JOptionPane.showMessageDialog(startSessionGUI.this, "Session Started!");
             }
         });
 
-        // Adding components to the panel
-        panel.add(Box.createRigidArea(new Dimension(0, 50))); // Spacer
-        panel.add(welcomeLabel);
-        panel.add(Box.createRigidArea(new Dimension(0, 10))); // Spacer
-        panel.add(startSessionButton);
+        // Welcome label
+        JLabel welcomeLabel = new JLabel("Welcome!");
+        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Set the font size of the welcome label
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 24));
+
+        // Start session label
+        JLabel startSessionLabel = new JLabel("Click anywhere to start a session");
+        startSessionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // set the font size of the start session label
+        startSessionLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+
+        // Add components to the panel with constraints
+        panel.add(Box.createVerticalStrut(50)); // Vertical spacer
+        panel.add(welcomeLabel, gbc);
+        panel.add(Box.createVerticalStrut(50)); // Vertical spacer
+        panel.add(startSessionLabel, gbc);
 
         // Adding the panel to the frame
         add(panel);
