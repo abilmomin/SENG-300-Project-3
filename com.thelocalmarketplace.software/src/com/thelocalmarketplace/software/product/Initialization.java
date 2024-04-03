@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.scanner.Barcode;
+import com.jjjwelectronics.scanner.BarcodedItem;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
@@ -19,7 +21,7 @@ import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 public class Initialization {
 	private static SelfCheckoutStationSoftware bronzeStation1;
 	
-	private Map<Barcode, BarcodedProduct> productDatabase = ProductDatabases.BARCODED_PRODUCT_DATABASE;
+	private static Map<Barcode, BarcodedProduct> productDatabase = ProductDatabases.BARCODED_PRODUCT_DATABASE;
 	private Map<Product, Integer> inventoryDatabase = ProductDatabases.INVENTORY; 
 	private Map<PriceLookUpCode, PLUCodedProduct> PLUDatabase = ProductDatabases.PLU_PRODUCT_DATABASE; 
 	
@@ -45,6 +47,21 @@ public class Initialization {
 		
 		Numeral[] code3Digits = {Numeral.six, Numeral.seven, Numeral.eight, Numeral.nine};
 		Barcode barcode3 = new Barcode(code3Digits);
+		
+		// Add to each station? Or add to a database that each station can then access
+			// I think we'd need to add a function in SelfCheckoutStationSoftware either way
+		
+		// Not sure whether we use BarcodedItem or BarcodedProduct but here's both;
+	
+		// BarcodedItem(Barcode barcode, Mass mass)
+		BarcodedItem i_milk = new BarcodedItem(barcode1, new Mass(new BigDecimal("3894.8")));
+		
+		// BarcodedProduct(Barcode barcode, String description, long price, double expectedWeightInGrams)
+			// I assumed price is in cents since longs can't have decimals
+		BarcodedProduct milk = new BarcodedProduct(barcode1, "Milk", 350, 3894.8);
+		
+		productDatabase.put(barcode1, milk); // Adding milk to the product database with its barcode as the key
+
 		
 	}
 	
