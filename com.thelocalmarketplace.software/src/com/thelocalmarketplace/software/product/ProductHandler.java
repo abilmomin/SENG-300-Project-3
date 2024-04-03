@@ -126,23 +126,20 @@ public class ProductHandler {
 			}
 		}
 	}
-	
 	/**
      * Adds an item to the order by text search of the description.
      * 
      * @param searchText The text to search for in the product descriptions.
      */
     public void addItemByTextSearch(String searchText, PLUCodedItem pluItem) {
-        if (software.getStationActive() && !software.getStationBlock()) {
-            software.setStationBlock(); // Block the station
-            
+       
             // Search in barcoded products
             for(BarcodedProduct barcodedProduct : ProductDatabases.BARCODED_PRODUCT_DATABASE.values()) {
                 if(barcodedProduct.getDescription().toLowerCase().contains(searchText.toLowerCase())) {
                     
                     addBarcodedProductToOrder(barcodedProduct);
-                    software.setStationUnblock(); // Unblock the station
-                    return; // Exit after adding product
+                    
+                    return; 
                 }
             }
             
@@ -152,61 +149,58 @@ public class ProductHandler {
                 	BigDecimal itemWeightInGrams = pluItem.getMass().inGrams();
         			double itemWeight = itemWeightInGrams.doubleValue();
                     addPLUCodedProductToOrder(pluCodedProduct, itemWeight);
-                    software.setStationUnblock(); // Unblock the station
-                    return; // Exit after adding product
+                    
+                    return; 
                 }
             }
-            // If product not found
-            System.out.println("Product not found.");
 
-            software.setStationUnblock(); // Unblock the station if no product is found
+            
+        }
+    
+    /**
+     * Adds a barcoded product to the current order.
+     *
+     * @param product The barcoded product to add to the order.
+     */
+    private void addBarcodedProductToOrder(BarcodedProduct product) {
+        // Check for an active and unblocked station before proceeding
+        if(software.getStationActive() && !software.getStationBlock()) {
+        	Mass itemMass = new Mass(product.getExpectedWeight()); //  Mass has a constructor that accepts a double representing grams
+
+            BarcodedItem item = new BarcodedItem(product.getBarcode(), itemMass);
+            software.addItemToOrder(item); // Add the item to the order
+            
+            // Update the total weight and price in the software
+            software.addTotalOrderWeightInGrams(product.getExpectedWeight());
+            software.addTotalOrderPrice(product.getPrice());
+        } else {
+            System.out.println("Unable to add product - station is inactive or blocked.");
         }
     }
-    
-	/**
-	 * Adds a barcoded product to the current order.
-	 *
-	 * @param product The barcoded product to add to the order.
-	 */
-	private void addBarcodedProductToOrder(BarcodedProduct product) {
-		// Check for an active and unblocked station before proceeding
-		if(software.getStationActive() && !software.getStationBlock()) {
-			Mass itemMass = new Mass(product.getExpectedWeight()); //  Mass has a constructor that accepts a double representing grams
 
-			BarcodedItem item = new BarcodedItem(product.getBarcode(), itemMass);
-			software.addItemToOrder(item); // Add the item to the order
-
-			// Update the total weight and price in the software
-			software.addTotalOrderWeightInGrams(product.getExpectedWeight());
-			software.addTotalOrderPrice(product.getPrice());
-		} else {
-			System.out.println("Unable to add product - station is inactive or blocked.");
-		}
-	}
-
-	/**
-	 * Adds a PLU-coded product to the current order.
-	 *
-	 * @param product The PLU-coded product to add to the order.
-	 * @param weight The weight of the PLU-coded product to add.
-	 */
-	private void addPLUCodedProductToOrder(PLUCodedProduct product, double weight) {
-		// Check for an active and unblocked station before proceeding
-		if(software.getStationActive() && !software.getStationBlock()) {
-			PLUCodedItem item = new PLUCodedItem(product.getPLUCode(), new Mass(weight));
-			software.addItemToOrder(item); // Add the item to the order
-
-			// Update the total weight and price in the software
-			// price is per-kilogram and we need to convert weight to kilograms
-			double weightInKg = weight / 1000;
-			long priceForWeight = (long)(product.getPrice() * weightInKg);
-
-			software.addTotalOrderWeightInGrams(weight);
-			software.addTotalOrderPrice(priceForWeight);
-		} else {
-			System.out.println("Unable to add product - station is inactive or blocked.");
-		}
-	}
+    /**
+     * Adds a PLU-coded product to the current order.
+     *
+     * @param product The PLU-coded product to add to the order.
+     * @param weight The weight of the PLU-coded product to add.
+     */
+    private void addPLUCodedProductToOrder(PLUCodedProduct product, double weight) {
+        // Check for an active and unblocked station before proceeding
+        if(software.getStationActive() && !software.getStationBlock()) {
+            PLUCodedItem item = new PLUCodedItem(product.getPLUCode(), new Mass(weight));
+            software.addItemToOrder(item); // Add the item to the order
+            
+            // Update the total weight and price in the software
+            // price is per-kilogram and we need to convert weight to kilograms
+            double weightInKg = weight / 1000;
+            long priceForWeight = (long)(product.getPrice() * weightInKg);
+            
+            software.addTotalOrderWeightInGrams(weight);
+            software.addTotalOrderPrice(priceForWeight);
+        } else {
+            System.out.println("Unable to add product - station is inactive or blocked.");
+        }
+    }
 
 	/**
 	 * Adds an item after customer selects it from the visual catalog
