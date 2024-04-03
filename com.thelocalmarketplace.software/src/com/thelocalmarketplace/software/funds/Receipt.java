@@ -112,6 +112,9 @@ public class Receipt {
         this.funds = funds;
         this.checkoutStationSoftware = checkoutStation;
         this.order = checkoutStationSoftware.getOrder();
+
+        this.checkoutStationSoftware.getStationHardware().plugIn(PowerGrid.instance());
+        this.checkoutStationSoftware.getStationHardware().turnOn();
     }
 
     public String printReceipt() throws EmptyDevice, OverloadedDevice {

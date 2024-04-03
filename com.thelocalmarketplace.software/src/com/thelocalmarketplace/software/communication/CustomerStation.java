@@ -174,9 +174,10 @@ public class CustomerStation extends JFrame {
         enter.setForeground(new Color(42, 120, 48));
     	keypadPanel.add(enter);
     	
-    	JButton button9 = new JButton("0");
-    	button9.setFont(new Font("Arial", Font.PLAIN, 16));
-    	keypadPanel.add(button9);
+    	JButton button0 = new JButton("0");
+    	button0.setFont(new Font("Arial", Font.PLAIN, 16));
+    	keypadPanel.add(button0);
+    	button0.addActionListener(addNum);
     	
     	JButton delete = new JButton("Delete");
     	delete.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -279,4 +280,9 @@ public class CustomerStation extends JFrame {
             }
         }
     } 
+	public static void main(String[] args ) {
+		CustomerStation station = new CustomerStation(1);	// USING ARBITRARY TEST VALUE ATM
+	}
+
+    
 }
