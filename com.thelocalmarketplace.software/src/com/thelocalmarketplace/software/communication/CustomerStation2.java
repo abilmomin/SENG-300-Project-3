@@ -275,6 +275,8 @@ public class CustomerStation2 extends JFrame {
             // Hide addItemPanel and show menuPanel
             addItemPanel.setVisible(false);
             menuPanel.setVisible(true);
+            PLUPanel.setVisible(false);
+            cartPanel.setVisible(true);
         }
 
         // Add the panels back to mainPanel with the same constraints
