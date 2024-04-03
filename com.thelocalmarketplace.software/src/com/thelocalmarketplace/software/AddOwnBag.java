@@ -12,7 +12,7 @@ import com.jjjwelectronics.scale.ElectronicScaleListener;
 import com.jjjwelectronics.scale.IElectronicScale;
 
 
-public class AddOwnBag implements ElectronicScaleListener {
+public class AddownBag implements ElectronicScaleListener {
 	
 	private SelfCheckoutStationSoftware weight_order;
 	private SelfCheckoutStationSoftware instance;
@@ -22,7 +22,7 @@ public class AddOwnBag implements ElectronicScaleListener {
     
 	
 	//constructor
-	public AddOwnBag(SelfCheckoutStationSoftware weight_order, AbstractElectronicScale scale1) {
+	public AddownBag(SelfCheckoutStationSoftware weight_order, AbstractElectronicScale scale1) {
 
         theMassOnTheScaleHasChanged(scale1, mass_test);
 	}
@@ -39,8 +39,6 @@ public class AddOwnBag implements ElectronicScaleListener {
 	/** in this method order and scale are passed in, we get the total order weight convert to a big decimal
 	 *  next we get the scale weight and we compare the order weight and the scale weight
 	 *  subtract the two values, that value will equal the bag weight, if any errors catch and print message to console, and return bag weight
-	 * @param order
-	 * @param scale
 	 * @return
 	 */
 	public double getBagWeight(SelfCheckoutStationSoftware p1, AbstractElectronicScale p2 ) {  
@@ -69,7 +67,6 @@ public class AddOwnBag implements ElectronicScaleListener {
 	 * print out bag to heavy and block the station, we then call attendant to deal with the problem, the attendant will fix it 
 	 * next if there is no difference, we set station block to false add weight to order and print you may now continue
 	 * if any exceptions are called catch and print message
-	 * @param order
 	 * @param scale
 	 * @param weight_of_bag
 	 */
@@ -93,7 +90,7 @@ public class AddOwnBag implements ElectronicScaleListener {
 			}
 			else {
 				//bag weight is fine, add weight of bag to order, system unblocks
-				instance.setStationUnblock();  // change to unblock and continue 
+				instance.setStationUnblock();  // change to unblock and continue
 				p1.addTotalOrderWeightInGrams(weight_of_bag);
 				System.out.println("You may now continue");
 			}
