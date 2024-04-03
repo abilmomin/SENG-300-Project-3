@@ -26,10 +26,13 @@ Nami Marwah              30178528
 
  */
 
-
 package com.thelocalmarketplace.software.funds;
 
-public class PaymentKind{
+/**
+ * Holds the state of which payment method the user selects.
+ */
+public class PaymentKind {
+
 	/**
 	 * Enumeration of possible payment methods
 	 */
@@ -37,10 +40,12 @@ public class PaymentKind{
 		NONE, // Default
 		CREDIT,
 		DEBIT,
-		CASH,
-		CRYPTO
+		CASH
 	}
 
+	/**
+	 *
+	 */
 	public static Kind getCardType(String cardType) {
 		if (cardType.equalsIgnoreCase("debit")) {
 			return Kind.DEBIT;

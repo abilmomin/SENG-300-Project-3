@@ -28,35 +28,56 @@ Nami Marwah              30178528
 
 package com.thelocalmarketplace.software.funds;
 
-
 import java.math.BigDecimal;
+
 import java.util.ArrayList;
+
 import java.util.HashSet;
+
 import java.util.Map;
+
 import java.util.Set;
 
 import com.jjjwelectronics.EmptyDevice;
+
 import com.jjjwelectronics.IDevice;
+
 import com.jjjwelectronics.IDeviceListener;
+
 import com.jjjwelectronics.Item;
+
 import com.jjjwelectronics.OverloadedDevice;
+
 import com.jjjwelectronics.printer.IReceiptPrinter;
+
 import com.jjjwelectronics.printer.ReceiptPrinterBronze;
+
 import com.jjjwelectronics.printer.ReceiptPrinterGold;
+
 import com.jjjwelectronics.printer.ReceiptPrinterListener;
+
 import com.jjjwelectronics.printer.ReceiptPrinterSilver;
+
 import com.jjjwelectronics.scanner.BarcodedItem;
+
 import com.tdc.coin.ICoinDispenser;
+
 import com.thelocalmarketplace.hardware.BarcodedProduct;
+
 import com.thelocalmarketplace.hardware.PLUCodedItem;
+
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
+
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 import powerutility.PowerGrid;
 
-public class Receipt{
+/**
+ * Receipt class which handles the logic of the receipt.
+ */
+public class Receipt {
 
     private IReceiptPrinter receiptPrinter;
     protected final SelfCheckoutStationSoftware checkoutStationSoftware;
@@ -64,19 +85,26 @@ public class Receipt{
     protected Set<ReceiptObserver> observers = new HashSet<>();
     private ArrayList<Item> order;
     
-
+    /**
+     * Constructor for the receipt class.
+     *
+     * @param printer the receipt printer.
+     * @param funds The Funds facade.
+     * @param checkoutStation The checkout station software.
+     */
     public Receipt (IReceiptPrinter printer, Funds funds, SelfCheckoutStationSoftware checkoutStation) {
-        if  (printer == null)
-            throw new NullPointerException("No argument may be null.");
-        if (printer instanceof ReceiptPrinterBronze)
-            this.receiptPrinter = (ReceiptPrinterBronze) printer;
-        else if (printer instanceof ReceiptPrinterSilver)
-            this.receiptPrinter = (ReceiptPrinterSilver) printer;
-        else if (printer instanceof ReceiptPrinterGold)
-            this.receiptPrinter = (ReceiptPrinterGold) printer;
-
-        receiptPrinter.plugIn(PowerGrid.instance());
-        receiptPrinter.turnOn();
+        this.receiptPrinter = checkoutStation.getStationHardware().getPrinter();
+//        if  (printer == null)
+//            throw new NullPointerException("No argument may be null.");
+//        if (printer instanceof ReceiptPrinterBronze)
+//            this.receiptPrinter = (ReceiptPrinterBronze) printer;
+//        else if (printer instanceof ReceiptPrinterSilver)
+//            this.receiptPrinter = (ReceiptPrinterSilver) printer;
+//        else if (printer instanceof ReceiptPrinterGold)
+//            this.receiptPrinter = (ReceiptPrinterGold) printer;
+//
+//        receiptPrinter.plugIn(PowerGrid.instance());
+//        receiptPrinter.turnOn();
         
         ReceiptHandler rh = new ReceiptHandler(receiptPrinter);
         checkoutStation.station.getPrinter().register(rh);
