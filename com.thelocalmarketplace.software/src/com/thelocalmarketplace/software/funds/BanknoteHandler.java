@@ -29,22 +29,36 @@ Nami Marwah              30178528
 package com.thelocalmarketplace.software.funds;
 
 import java.math.BigDecimal;
+
 import java.util.Currency;
 
 import com.jjjwelectronics.EmptyDevice;
-import com.jjjwelectronics.OverloadedDevice;
-import com.tdc.CashOverloadException;
-import com.tdc.DisabledException;
-import com.tdc.IComponent;
-import com.tdc.IComponentObserver;
-import com.tdc.NoCashAvailableException;
-import com.tdc.banknote.Banknote;
-import com.tdc.banknote.BanknoteDispenserObserver;
-import com.tdc.banknote.BanknoteValidator;
-import com.tdc.banknote.BanknoteValidatorObserver;
-import com.tdc.banknote.IBanknoteDispenser;
-import com.tdc.coin.Coin;
 
+import com.jjjwelectronics.OverloadedDevice;
+
+import com.tdc.CashOverloadException;
+
+import com.tdc.DisabledException;
+
+import com.tdc.IComponent;
+
+import com.tdc.IComponentObserver;
+
+import com.tdc.NoCashAvailableException;
+
+import com.tdc.banknote.Banknote;
+
+import com.tdc.banknote.BanknoteDispenserObserver;
+
+import com.tdc.banknote.BanknoteValidator;
+
+import com.tdc.banknote.BanknoteValidatorObserver;
+
+import com.tdc.banknote.IBanknoteDispenser;
+
+/**
+ * This class acts as the facade and controller for all payments handled with banknotes.
+ */
 public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispenserObserver {
 	
 	private Funds fundController = null;
@@ -68,7 +82,8 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	@Override
 	public void goodBanknote(BanknoteValidator validator, Currency currency, BigDecimal denomination) {
 		this.fundController.notifyFundsAdded(denomination);
-		this.fundController.totalPaid.add(denomination);
+		this.fundController.addToTotalPaid(denomination);
+//		this.fundController.totalPaid = this.fundController.totalPaid.add(denomination);
 		BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(this.fundController.totalPaid);
 		if (amountDue.compareTo(BigDecimal.ZERO) <= 0) {
 			amountDue = amountDue.abs();

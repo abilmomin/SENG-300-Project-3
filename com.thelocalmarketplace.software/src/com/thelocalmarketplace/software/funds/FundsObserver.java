@@ -32,10 +32,7 @@ package com.thelocalmarketplace.software.funds;
 import java.math.BigDecimal;
 
 /**
- * Permits objects to listen to one or more {@link Funds}s when registered
- * with them.
- * 
- * @author Robert J. Walker
+ * Permits objects to listen to one or more Funds when registered with them.
  */
 public interface FundsObserver {
 	/**

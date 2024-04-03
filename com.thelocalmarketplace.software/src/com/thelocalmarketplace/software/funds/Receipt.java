@@ -114,7 +114,7 @@ public class Receipt{
         }
 
         BigDecimal purchaseValue = new BigDecimal(String.valueOf(checkoutStationSoftware.getTotalOrderPrice()));
-        BigDecimal amountPaid = this.funds.getAmountPaid();
+        BigDecimal amountPaid = this.funds.getTotalPaid();
         BigDecimal changeDue = this.funds.getMoneyLeft();
 
 

@@ -26,7 +26,6 @@ Nami Marwah              30178528
 
  */
 
-
 package com.thelocalmarketplace.software.funds;
 
 import com.jjjwelectronics.IDevice;
@@ -81,7 +80,7 @@ public class CardHandler implements CardReaderListener {
         PaymentKind.Kind cardType = PaymentKind.getCardType(data.getType());
 
         if (fundController.checkoutStationSoftware.getStationBlock()) {
-            fundController.notifyFundsStationBlocked(true);
+            fundController.notifyFundsStationBlocked();
             return;
         }
 
@@ -89,6 +88,7 @@ public class CardHandler implements CardReaderListener {
         boolean purchaseStatus = approvePurchase(data.getNumber(), totalOrderPrice);
 
         if (purchaseStatus) {
+            fundController.addToTotalPaid(BigDecimal.valueOf(totalOrderPrice));
             fundController.notifyPaidFunds(BigDecimal.ZERO);
         } else {
             fundController.notifyInvalidFunds(cardType);

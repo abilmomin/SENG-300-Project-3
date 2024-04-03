@@ -29,20 +29,29 @@ Nami Marwah              30178528
 package com.thelocalmarketplace.software.funds;
 
 import java.math.BigDecimal;
-import java.util.Currency;
-import java.util.List;
 
 import com.jjjwelectronics.EmptyDevice;
+
 import com.jjjwelectronics.OverloadedDevice;
+
 import com.tdc.CashOverloadException;
+
 import com.tdc.DisabledException;
+
 import com.tdc.IComponent;
+
 import com.tdc.IComponentObserver;
+
 import com.tdc.NoCashAvailableException;
+
 import com.tdc.coin.Coin;
+
 import com.tdc.coin.CoinDispenserObserver;
+
 import com.tdc.coin.CoinValidator;
+
 import com.tdc.coin.CoinValidatorObserver;
+
 import com.tdc.coin.ICoinDispenser;
 
 /**
@@ -69,7 +78,8 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
      */
     @Override
     public void validCoinDetected(CoinValidator validator, BigDecimal value)  {
-        this.fundController.totalPaid.add(value);
+//        this.fundController.totalPaid.add(value);
+        this.fundController.addToTotalPaid(value);
         this.fundController.notifyFundsAdded(value);
         BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(this.fundController.totalPaid);
         if (amountDue.compareTo(BigDecimal.ZERO) <= 0) {

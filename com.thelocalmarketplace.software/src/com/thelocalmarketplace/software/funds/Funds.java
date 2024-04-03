@@ -1,3 +1,31 @@
+/**
+
+ Name                      UCID
+
+ Yotam Rojnov             30173949
+ Duncan McKay             30177857
+ Mahfuz Alam              30142265
+ Luis Trigueros Granillo  30167989
+ Lilia Skumatova          30187339
+ Abdelrahman Abbas        30110374
+ Talaal Irtija            30169780
+ Alejandro Cardona        30178941
+ Alexandre Duteau         30192082
+ Grace Johnson            30149693
+ Abil Momin               30154771
+ Tara Ghasemi M. Rad      30171212
+ Izabella Mawani          30179738
+ Binish Khalid            30061367
+ Fatima Khalid            30140757
+ Lucas Kasdorf            30173922
+ Emily Garcia-Volk        30140791
+ Yuinikoru Futamata       30173228
+ Joseph Tandyo            30182561
+ Syed Haider              30143096
+ Nami Marwah              30178528
+
+ */
+
 package com.thelocalmarketplace.software.funds;
 
 import java.math.BigDecimal;
@@ -26,11 +54,7 @@ import com.tdc.DisabledException;
 
 import com.tdc.NoCashAvailableException;
 
-import com.tdc.banknote.Banknote;
-
 import com.tdc.banknote.IBanknoteDispenser;
-
-import com.tdc.coin.Coin;
 
 import com.tdc.coin.ICoinDispenser;
 
@@ -46,7 +70,6 @@ public class Funds {
 	protected BigDecimal totalPaid = BigDecimal.ZERO;
 	protected Map<BigDecimal, Number> coinsAvailable;
 	protected Map<BigDecimal, Number> banknotesAvailable;
-	protected int storedCredit = 0;
 	protected final SelfCheckoutStationSoftware checkoutStationSoftware;
 	protected Set<FundsObserver> observers = new HashSet<>();
 
@@ -149,16 +172,18 @@ public class Funds {
 
 	/**
 	 * Notifies observers that the station is blocked at payment state.
-	 *
-	 * @param blockedStatus Whether the station is blocked.
 	 */
-	protected void notifyFundsStationBlocked(boolean blockedStatus) {
+	protected void notifyFundsStationBlocked() {
 		for (FundsObserver observer : observers)
-			observer.fundsStationBlocked(this, blockedStatus);
+			observer.fundsStationBlocked(this, true);
 	}
 
-	public BigDecimal getAmountPaid() {
+	public BigDecimal getTotalPaid() {
 		return totalPaid;
+	}
+
+	public BigDecimal addToTotalPaid(BigDecimal amountPaid) {
+		return totalPaid.add(amountPaid);
 	}
 
 	public BigDecimal getMoneyLeft() {

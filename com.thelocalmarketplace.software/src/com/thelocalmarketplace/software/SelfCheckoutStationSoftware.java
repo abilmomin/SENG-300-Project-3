@@ -87,7 +87,6 @@ public class SelfCheckoutStationSoftware {
 	private boolean activeSession = false;
 
 	private Set<CardIssuer> banks = new HashSet<>();
-	private String pin;
 
 	/**
 	 * Creates an instance of the software for a self-checkout station.
@@ -115,7 +114,6 @@ public class SelfCheckoutStationSoftware {
 
 	/**
 	 * Set function to change the blocked variable value.
-	 * @param value The new value for station block status
 	 */
 	public void setStationBlock() {
 		blocked = true;
@@ -127,8 +125,7 @@ public class SelfCheckoutStationSoftware {
 	}
 	
 	/**
-	 * Set function to unblock the system
-	 * enables functions again
+	 * Set function to unblock the system enables functions again
 	 */
 	public void setStationUnblock() {
 		blocked = false;
@@ -326,14 +323,6 @@ public class SelfCheckoutStationSoftware {
 
 	public void addBank(CardIssuer cardIssuer) {
 		this.banks.add(cardIssuer);
-	}
-
-	public void setPin(String pin) {
-		this.pin = pin;
-	}
-
-	public String getPin() {
-		return this.pin;
 	}
 	
 }
