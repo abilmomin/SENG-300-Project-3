@@ -277,8 +277,15 @@ public class SelfCheckoutStationSoftware {
 	public long getTotalOrderPrice() {
 		return this.totalOrderPrice;
 	}
-	public void removeTotalPrice(long price) {
-		this.totalOrderPrice -= price;
+
+	/**
+	 * sets the total price of the order
+	 * 
+	 * @return The total price of order.
+	 */
+	
+	public void setOrderTotalPrice(long price) {
+		this.totalOrderPrice = price;
 	}
 	
 	/**
