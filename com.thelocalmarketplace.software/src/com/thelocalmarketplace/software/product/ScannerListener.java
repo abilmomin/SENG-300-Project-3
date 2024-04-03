@@ -58,7 +58,7 @@ public class ScannerListener implements BarcodeScannerListener {
 	@Override
 	public void aBarcodeHasBeenScanned(IBarcodeScanner barcodeScanner, Barcode barcode) {
 		if (software.getStationActive() && !software.getStationBlock()) {
-			software.setStationBlock(true);
+			software.setStationBlock();
 			
 			BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
 			BarcodedItem barcodedItem;

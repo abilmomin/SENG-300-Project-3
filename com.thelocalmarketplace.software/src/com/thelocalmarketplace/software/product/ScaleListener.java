@@ -94,23 +94,23 @@ public class ScaleListener implements ElectronicScaleListener {
 	        }
 	       
 	        else {
-	        	software.setStationBlock(true);
+	        	software.setStationBlock();
 	        }
 	    } catch (OverloadedDevice e) {
-	        software.setStationBlock(true);
+	        software.setStationBlock();
 	    } 	
 	}
 
 	@Override
 	public void theMassOnTheScaleHasExceededItsLimit(IElectronicScale scale) {
-		software.setStationBlock(true);
+		software.setStationBlock();
 		software.notifyUserOfOverload();
 		
 	}
 
 	@Override
 	public void theMassOnTheScaleNoLongerExceedsItsLimit(IElectronicScale scale) {
-		software.setStationBlock(false);	
+		software.setStationUnblock();	
 	}
 	
 }
