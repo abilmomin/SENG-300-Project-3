@@ -13,11 +13,9 @@ import javax.swing.*;
 // Glue is like a spring << add on before and after box components to squish them to the middle
 
 public class AddtoBagging extends JFrame {
-	private PLUCode pluCode;
 	
-	public AddtoBagging(PLUCode pluCode) {
-		this.pluCode = pluCode;
-		
+	public AddtoBagging() {
+
 	    setTitle("Add to Bag");
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setSize(600, 500);
@@ -28,38 +26,41 @@ public class AddtoBagging extends JFrame {
 	    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
 	    // Label for the large text display
-	    JLabel bigTextLabel = new JLabel("BIG TEXT");
-	    bigTextLabel.setFont(new Font("Arial", Font.BOLD, 24)); // Set font for big text
-	    bigTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align the label
+	    JLabel bigTextLabel = new JLabel("Place Item in Bagging Area");
+	    bigTextLabel.setFont(new Font("Arial", Font.BOLD, 32));
+	    bigTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 	    // Label for the small text display
-	    JLabel smallTextLabel = new JLabel("small text");
-	    smallTextLabel.setFont(new Font("Arial", Font.PLAIN, 12)); // Set font for small text
-	    smallTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align the label
+	    JLabel smallTextLabel = new JLabel("**** item ****");
+	    smallTextLabel.setFont(new Font("Arial", Font.PLAIN, 12)); 
+	    smallTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT); 
 
 	    // Button
-	    JButton button = new JButton("TEXT HERE");
-	    button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align the button
+	    JButton button = new JButton("Place item");
+	    button.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    button.setFont(new Font("Arial", Font.PLAIN, 16));
+	    button.setPreferredSize(new Dimension(100, 30));
+
  
 	    button.addActionListener(e -> {
 	    	dispose();
 	    	
 	    });
-	    // Add some vertical glue before and after the components to center them in the window
+	   
 	    mainPanel.add(Box.createVerticalGlue());
 	    mainPanel.add(bigTextLabel);
 	    mainPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Small space between big text and small text
 	    mainPanel.add(smallTextLabel);
-	    mainPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Space between small text and button
+	    mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 	    mainPanel.add(button);
-	   mainPanel.add(Box.createVerticalGlue());
+	    mainPanel.add(Box.createVerticalGlue());
 
-	    // Add the main panel to the frame
+
 	    add(mainPanel);
-
-	    // Set frame visibility
 	    setVisible(true);
 	}
 
-	// NEEDS TO BE START FROM PLUCode
+	public static void main(String[] args) {
+		AddtoBagging test = new AddtoBagging();
+	}
 }
