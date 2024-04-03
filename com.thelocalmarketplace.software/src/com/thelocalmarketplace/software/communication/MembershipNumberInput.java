@@ -18,6 +18,7 @@ public class MembershipNumberInput extends JDialog {
 		super(parent, "Membership Number", true);
 		this.parent = (CustomerStation) parent;
 		setLocationRelativeTo(parent);
+		setVisible(true);
 	}
 	
 	public void frameInit() {
@@ -174,6 +175,10 @@ public class MembershipNumberInput extends JDialog {
         keyboardPanel.add(backButton);
         
         membershipPanel.add(keyboardPanel, BorderLayout.SOUTH);
+	}
+	
+	public JTextField getMembershipNumberField() {
+		return membershipNumberField;
 	}
 	
 
