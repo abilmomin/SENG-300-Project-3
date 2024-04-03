@@ -61,7 +61,6 @@ public class Initialization {
 		BarcodedProduct milk = new BarcodedProduct(barcode1, "Milk", 350, 3894.8);
 		
 		productDatabase.put(barcode1, milk); // Adding milk to the product database with its barcode as the key
-
 		
 	}
 	
