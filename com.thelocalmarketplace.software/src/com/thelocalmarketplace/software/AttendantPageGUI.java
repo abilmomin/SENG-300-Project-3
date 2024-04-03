@@ -224,7 +224,7 @@ public class AttendantPageGUI extends JFrame {
     public void bagdiscpreancydectected() {
     	// Attendant approves discrepancy 
     	SelfCheckoutStationSoftware checkout = new SelfCheckoutStationSoftware(null);
-    	checkout.setStationBlock(false);
+    	checkout.setStationBlock();
    
     }
      

@@ -10,7 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 
-public class CustomerStation extends JFrame {
+public class CustomerStation2 extends JFrame {
 
     private JTextArea cartTextArea;
     private JLabel totalPriceLabel;
@@ -22,7 +22,7 @@ public class CustomerStation extends JFrame {
     private JTextField screenTextField;
     private JPanel addItemPanel;
 
-    public CustomerStation(int selectedStation) {
+    public CustomerStation2(int selectedStation) {
         setTitle("Self-Checkout Station " + selectedStation);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 700);
@@ -105,7 +105,7 @@ public class CustomerStation extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Perform payment action here
-                JOptionPane.showMessageDialog(CustomerStation.this, "Payment processed successfully!");
+                JOptionPane.showMessageDialog(CustomerStation2.this, "Payment processed successfully!");
                 // Clear cart after payment
                 cartTextArea.setText("");
                 totalPriceLabel.setText("Total Price: $0.00");
@@ -341,4 +341,3 @@ public class CustomerStation extends JFrame {
 
     
 }
-

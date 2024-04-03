@@ -76,7 +76,12 @@ public class ReceiptHandler implements ReceiptPrinterListener{
 
 	@Override
 	public void thePrinterIsOutOfPaper() {
-		// TODO Auto-generated method stub
+		try {
+			this.receiptPrinter.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
+		} catch (OverloadedDevice e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
@@ -110,7 +115,12 @@ public class ReceiptHandler implements ReceiptPrinterListener{
 
 	@Override
 	public void thePrinterHasLowPaper() {
-		// TODO Auto-generated method stub
+		try {
+			this.receiptPrinter.addInk(ReceiptPrinterBronze.MAXIMUM_PAPER - this.receiptPrinter.paperRemaining());
+		} catch (OverloadedDevice e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
