@@ -54,7 +54,7 @@ public class AttendantStationSoftware extends JFrame{
 
     public AttendantStationSoftware() { 
     	setTitle("Attendant Station Login");
-	    setSize(800, 600);
+	    setSize(900, 700);
 	    setDefaultCloseOperation(EXIT_ON_CLOSE);
 	    setLocationRelativeTo(null);
 	    

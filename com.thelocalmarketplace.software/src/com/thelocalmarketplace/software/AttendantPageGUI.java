@@ -16,7 +16,7 @@ public class AttendantPageGUI extends JFrame {
     public AttendantPageGUI() {
         // Setup
         setTitle("Attendant Page");
-        setSize(800, 600);
+        setSize(900, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -66,7 +66,7 @@ public class AttendantPageGUI extends JFrame {
         JLabel stationServicesLabel = new JLabel("Hardware Services: ");
 
         // Button panel for station controls
-        JPanel stationServicesPanel = new JPanel(new FlowLayout());
+        JPanel stationServicesPanel = new JPanel(new GridLayout(2,1));
        
         JButton refillCoins = new JButton("Refill Coins");
         JButton refillBanknotes = new JButton("Refill Banknotes");

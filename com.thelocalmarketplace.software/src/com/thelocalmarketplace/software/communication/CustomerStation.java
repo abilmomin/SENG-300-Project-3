@@ -23,7 +23,7 @@ public class CustomerStation extends JFrame {
     public CustomerStation(int selectedStation) {
         setTitle("Self-Checkout Station " + selectedStation);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
+        setSize(900, 700);
         setLocationRelativeTo(null);
 
         // Main panel
