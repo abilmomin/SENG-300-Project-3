@@ -11,6 +11,7 @@ import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
+import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.Product;
@@ -23,7 +24,7 @@ public class Initialization {
 	
 	private static Map<Barcode, BarcodedProduct> productDatabase = ProductDatabases.BARCODED_PRODUCT_DATABASE;
 	private Map<Product, Integer> inventoryDatabase = ProductDatabases.INVENTORY; 
-	private Map<PriceLookUpCode, PLUCodedProduct> PLUDatabase = ProductDatabases.PLU_PRODUCT_DATABASE; 
+	private static Map<PriceLookUpCode, PLUCodedProduct> PLUDatabase = ProductDatabases.PLU_PRODUCT_DATABASE; 
 	
 	// private ArrayList<BarcodedItems> items 
 	
@@ -53,14 +54,27 @@ public class Initialization {
 		
 		// Not sure whether we use BarcodedItem or BarcodedProduct but here's both;
 	
-		// BarcodedItem(Barcode barcode, Mass mass)
+			// BarcodedItem(Barcode barcode, Mass mass)
 		BarcodedItem i_milk = new BarcodedItem(barcode1, new Mass(new BigDecimal("3894.8")));
 		
-		// BarcodedProduct(Barcode barcode, String description, long price, double expectedWeightInGrams)
-			// I assumed price is in cents since longs can't have decimals
+			// BarcodedProduct(Barcode barcode, String description, long price, double expectedWeightInGrams)
+				// I assumed price is in cents since longs can't have decimals
 		BarcodedProduct milk = new BarcodedProduct(barcode1, "Milk", 350, 3894.8);
 		
 		productDatabase.put(barcode1, milk); // Adding milk to the product database with its barcode as the key
+		
+		// PLU Code Items
+		
+		PriceLookUpCode plu1 = new PriceLookUpCode("1234");
+		
+			//PLUCodedItem(PriceLookUpCode pluCode, Mass mass) 
+		PLUCodedItem i_apple = new PLUCodedItem(plu1, new Mass(new BigDecimal("150.0")));
+		
+			//PLUCodedProduct(PriceLookUpCode pluCode, String description, long price)
+				// Does not have expectedWeight >> BUG??
+		PLUCodedProduct apple = new PLUCodedProduct(plu1, "Apple", 150);
+		
+		PLUDatabase.put(plu1, apple);
 		
 	}
 	
