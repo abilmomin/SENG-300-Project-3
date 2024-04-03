@@ -93,7 +93,7 @@ public class PLUCode extends JFrame {
         });
         
         enter.addActionListener(e -> {
-        	AddtoBagging popup  = new AddtoBagging(this);
+        	AddtoBagging popup  = new AddtoBagging();
         	popup.setVisible(true);
         });
         
