@@ -332,4 +332,8 @@ public class SelfCheckoutStationSoftware {
 	public void addBank(CardIssuer cardIssuer) {
 		this.banks.add(cardIssuer);
 	}
+	
+	public ProductHandler getProductHandler() {
+		return products;
+	}
 }
