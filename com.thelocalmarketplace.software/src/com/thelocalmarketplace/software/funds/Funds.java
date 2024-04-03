@@ -188,7 +188,7 @@ public class Funds {
 
 	public BigDecimal getMoneyLeft() {
 		BigDecimal total = new BigDecimal(checkoutStationSoftware.getTotalOrderPrice());
-		return total.subtract(getMoneyLeft());
+		return total.subtract(getTotalPaid());
 	}
 	
 	/**
