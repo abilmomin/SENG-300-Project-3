@@ -232,11 +232,9 @@ public class CustomerStation extends JFrame {
         // Remove cart panel
         cartPanel.setVisible(false);
         
-        // Create and add keypad panel
-        
         getContentPane().add(PLUPanel, BorderLayout.EAST);
         
-        // Refresh frame
+        // To refresh 
         revalidate();
         repaint();
     }
