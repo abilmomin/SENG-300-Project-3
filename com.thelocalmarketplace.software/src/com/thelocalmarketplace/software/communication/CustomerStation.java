@@ -15,7 +15,10 @@ public class CustomerStation extends JFrame {
     private JTextArea cartTextArea;
     private JLabel totalPriceLabel;
     private JPanel menuPanel;
+    private JPanel cartPanel;
+    private JPanel PLUPanel;
     private JPanel payButtonPanel;
+    private JTextField screenTextField;
 
     public CustomerStation(int selectedStation) {
         setTitle("Self-Checkout Station " + selectedStation);
@@ -59,8 +62,9 @@ public class CustomerStation extends JFrame {
         menuPanel.add(viewBaggingAreaBtn);
         menuPanel.add(helpButton);
         
+
         // Cart panel
-        JPanel cartPanel = new JPanel(new BorderLayout());
+        cartPanel = new JPanel(new BorderLayout());
         cartPanel.setBorder(BorderFactory.createTitledBorder("Cart"));
 
         // Cart contents
@@ -98,7 +102,23 @@ public class CustomerStation extends JFrame {
         // Add panels to main panel
         mainPanel.add(menuPanel, BorderLayout.CENTER);
         mainPanel.add(cartPanel, BorderLayout.EAST);
-
+        
+        //PLU panel
+        PLUPanel = new JPanel(new BorderLayout());
+        
+        // PLU code keypad
+        JPanel keypadPanel = createKeypadPanel();
+        
+        // PLU code screen
+        JPanel screenPanel = createScreenPanel();
+        
+        PLUPanel.add(keypadPanel);
+        PLUPanel.add(screenPanel, BorderLayout.NORTH);
+        
+        enterPLUBtn.addActionListener(e -> {
+        	replaceCartPanelWithKeypadPanel();
+        });
+        
         // Add main panel to frame
         add(mainPanel);
 
@@ -134,8 +154,93 @@ public class CustomerStation extends JFrame {
     	MembershipNumberInput dialog = new MembershipNumberInput(this);
         dialog.frameInit();
     }
-
+    
+    public JPanel createKeypadPanel() {
+    	JPanel keypadPanel = new JPanel();
+    	keypadPanel.setLayout(new GridLayout(4,4,10,10));
+    	keypadPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+    	
+    	for (int i = 1; i <= 9; i++) {
+            JButton button = new JButton(Integer.toString(i));
+            button.setFont(new Font("Arial", Font.PLAIN, 16));
+            keypadPanel.add(button);
+            button.addActionListener(addNum);
+            
+        }
+    	
+    	JButton enter = new JButton("Enter");
+    	enter.setFont(new Font("Arial", Font.PLAIN, 16));
+    	enter.setBackground(new Color(214, 255, 217));
+        enter.setForeground(new Color(42, 120, 48));
+    	keypadPanel.add(enter);
+    	
+    	JButton button9 = new JButton("0");
+    	button9.setFont(new Font("Arial", Font.PLAIN, 16));
+    	keypadPanel.add(button9);
+    	
+    	JButton delete = new JButton("Delete");
+    	delete.setFont(new Font("Arial", Font.PLAIN, 16));
+        delete.setBackground(new Color(227, 188, 188));
+        delete.setForeground(Color.RED);
+    	keypadPanel.add(delete);
+    	
+    	delete.addActionListener(e -> {
+        	String currentText = screenTextField.getText();
+        	if (!currentText.isEmpty()) {
+                 // Remove the last character from the text
+                 String newText = currentText.substring(0, currentText.length() - 1);
+                 screenTextField.setText(newText);
+        	}
+        });
+    	
+    	/*
+    	enter.addActionListener(e -> {
+        	AddtoBagging popup  = new AddtoBagging(this);
+        	popup.setVisible(true);
+        });
+    	*/
+    	return keypadPanel;
+    }
    
+    ActionListener addNum = e -> {
+        JButton button = (JButton) e.getSource();
+        String digit = button.getText();
+        String current = screenTextField.getText(); // Append the digit to the screen
+        String newText = current + digit;
+        
+        Font currentFont = screenTextField.getFont();
+        Font newFont = new Font(currentFont.getName(), currentFont.getStyle(), 24); // Adjust the font size as needed
+        screenTextField.setFont(newFont);
+        
+        screenTextField.setText(newText);
+    };
+    
+    public JPanel createScreenPanel() {
+    	JPanel screenPanel = new JPanel(new BorderLayout());
+        screenTextField = new JTextField(); // Initialize the screen text field
+        screenTextField.setEditable(false); // Make it read-only
+        screenTextField.setBackground(Color.WHITE);
+        screenTextField.setHorizontalAlignment(JTextField.CENTER);
+        screenPanel.add(screenTextField, BorderLayout.CENTER);
+        screenPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        screenTextField.setPreferredSize(new Dimension(100, 50));
+        
+        return screenPanel;
+    }
+    
+    private void replaceCartPanelWithKeypadPanel() {
+        // Remove cart panel
+        cartPanel.setVisible(false);
+        
+        // Create and add keypad panel
+        
+        getContentPane().add(PLUPanel, BorderLayout.EAST);
+        
+        // Refresh frame
+        revalidate();
+        repaint();
+    }
+    
     public void freezeGUI() {
         for (Component component : getContentPane().getComponents()) {
             component.setEnabled(false);
@@ -176,5 +281,4 @@ public class CustomerStation extends JFrame {
             }
         }
     } 
-
 }
