@@ -15,10 +15,12 @@ public class CustomerStation extends JFrame {
     private JTextArea cartTextArea;
     private JLabel totalPriceLabel;
     private JPanel menuPanel;
+    private JPanel mainPanel;
     private JPanel cartPanel;
     private JPanel PLUPanel;
     private JPanel payButtonPanel;
     private JTextField screenTextField;
+    private JPanel addItemPanel;
 
     public CustomerStation(int selectedStation) {
         setTitle("Self-Checkout Station " + selectedStation);
@@ -27,7 +29,7 @@ public class CustomerStation extends JFrame {
         setLocationRelativeTo(null);
 
         // Main panel
-        JPanel mainPanel = new JPanel(new BorderLayout());
+         mainPanel = new JPanel(new BorderLayout());
 
         // Menu panel
         menuPanel = new JPanel(new GridLayout(3, 3, 10, 10));
@@ -52,17 +54,36 @@ public class CustomerStation extends JFrame {
             }
         });
         
+        JButton addItem = createButton("Add Item", null);
+        JButton back = createButton("Back", null);
+        
         // Add buttons to menu panel
         menuPanel.add(useOwnBagsBtn);
-        menuPanel.add(scanBarcodeBtn);
-        menuPanel.add(enterPLUBtn);
-        menuPanel.add(searchProductBtn);
+        //menuPanel.add(scanBarcodeBtn);
+        //menuPanel.add(enterPLUBtn);
+        //menuPanel.add(searchProductBtn);
+        menuPanel.add(addItem);
         menuPanel.add(removeItemBtn);
         menuPanel.add(doNotBagBtn);
         menuPanel.add(viewBaggingAreaBtn);
         menuPanel.add(helpButton);
         
+        
+         addItemPanel = new JPanel(new GridLayout(2, 2,10,10));
+         addItemPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+         
+         addItemPanel.add(scanBarcodeBtn);
+         addItemPanel.add(enterPLUBtn);
+         addItemPanel.add(searchProductBtn);
+         addItemPanel.add(back);
+         
+         addItem.addActionListener(e -> {
+        	 replaceGrids();
+         });
 
+         back.addActionListener(e ->{
+        	 replaceGrids();
+         });
         // Cart panel
         cartPanel = new JPanel(new BorderLayout());
         cartPanel.setBorder(BorderFactory.createTitledBorder("Cart"));
@@ -84,12 +105,13 @@ public class CustomerStation extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Perform payment action here
-                JOptionPane.showMessageDialog(CustomerStation.this, "Payment processed successfully!");
+                JOptionPane.showMessageDialog(CustomerStation2.this, "Payment processed successfully!");
                 // Clear cart after payment
                 cartTextArea.setText("");
                 totalPriceLabel.setText("Total Price: $0.00");
             }
         });
+        
         payButton.setFont(payButton.getFont().deriveFont(Font.BOLD, 16));
         payButtonPanel = new JPanel(new BorderLayout());
         payButtonPanel.add(payButton, BorderLayout.CENTER);
@@ -231,10 +253,43 @@ public class CustomerStation extends JFrame {
     
     private void replaceCartPanelWithKeypadPanel() {
         // Remove cart panel
-        cartPanel.setVisible(false);
-        
-        getContentPane().add(PLUPanel, BorderLayout.EAST);
-        
+    	if (cartPanel.isVisible()) {
+    		cartPanel.setVisible(false);
+    		getContentPane().add(PLUPanel, BorderLayout.EAST);
+    		PLUPanel.setVisible(true);
+            // To refresh 
+            revalidate();
+            repaint();
+    	} else {
+    		if (!PLUPanel.isVisible()) {
+    			cartPanel.setVisible(true);
+    		}
+    	}
+    }
+    private void replaceGrids() {
+        // Remove current panels from mainPanel
+        mainPanel.remove(menuPanel);
+        mainPanel.remove(addItemPanel);
+
+        if (menuPanel.isVisible()) {
+            // Hide menuPanel and show addItemPanel
+            menuPanel.setVisible(false);
+            addItemPanel.setVisible(true);
+            
+            PLUPanel.setVisible(false);
+
+        } else {
+            // Hide addItemPanel and show menuPanel
+            addItemPanel.setVisible(false);
+            menuPanel.setVisible(true);
+            PLUPanel.setVisible(false);
+            cartPanel.setVisible(true);
+        }
+
+        // Add the panels back to mainPanel with the same constraints
+        mainPanel.add(menuPanel, BorderLayout.CENTER);
+        mainPanel.add(addItemPanel, BorderLayout.CENTER);
+
         // To refresh 
         revalidate();
         repaint();
@@ -281,8 +336,9 @@ public class CustomerStation extends JFrame {
         }
     } 
 	public static void main(String[] args ) {
-		CustomerStation station = new CustomerStation(1);	// USING ARBITRARY TEST VALUE ATM
+		CustomerStation2 station = new CustomerStation2(1);	// USING ARBITRARY TEST VALUE ATM
 	}
 
     
 }
+
