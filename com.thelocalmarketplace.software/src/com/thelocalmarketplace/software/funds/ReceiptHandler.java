@@ -116,7 +116,7 @@ public class ReceiptHandler implements ReceiptPrinterListener{
 	@Override
 	public void thePrinterHasLowPaper() {
 		try {
-			this.receiptPrinter.addInk(ReceiptPrinterBronze.MAXIMUM_PAPER - this.receiptPrinter.paperRemaining());
+			this.receiptPrinter.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER - this.receiptPrinter.paperRemaining());
 		} catch (OverloadedDevice e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
