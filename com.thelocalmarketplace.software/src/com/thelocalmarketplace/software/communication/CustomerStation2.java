@@ -253,15 +253,19 @@ public class CustomerStation2 extends JFrame {
     
     private void replaceCartPanelWithKeypadPanel() {
         // Remove cart panel
-        cartPanel.setVisible(false);
-        
-        getContentPane().add(PLUPanel, BorderLayout.EAST);
-        
-        // To refresh 
-        revalidate();
-        repaint();
+    	if (cartPanel.isVisible()) {
+    		cartPanel.setVisible(false);
+    		getContentPane().add(PLUPanel, BorderLayout.EAST);
+    		PLUPanel.setVisible(true);
+            // To refresh 
+            revalidate();
+            repaint();
+    	} else {
+    		if (!PLUPanel.isVisible()) {
+    			cartPanel.setVisible(true);
+    		}
+    	}
     }
-    
     private void replaceGrids() {
         // Remove current panels from mainPanel
         mainPanel.remove(menuPanel);
@@ -271,6 +275,9 @@ public class CustomerStation2 extends JFrame {
             // Hide menuPanel and show addItemPanel
             menuPanel.setVisible(false);
             addItemPanel.setVisible(true);
+            
+            PLUPanel.setVisible(false);
+
         } else {
             // Hide addItemPanel and show menuPanel
             addItemPanel.setVisible(false);
