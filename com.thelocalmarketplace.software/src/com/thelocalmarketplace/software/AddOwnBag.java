@@ -12,7 +12,7 @@ import com.jjjwelectronics.scale.ElectronicScaleListener;
 import com.jjjwelectronics.scale.IElectronicScale;
 
 
-public class AddownBag implements ElectronicScaleListener {
+public class AddOwnBag implements ElectronicScaleListener {
 	
 	private SelfCheckoutStationSoftware weight_order;
 	private SelfCheckoutStationSoftware instance;
@@ -22,7 +22,7 @@ public class AddownBag implements ElectronicScaleListener {
     
 	
 	//constructor
-	public AddownBag(SelfCheckoutStationSoftware weight_order, AbstractElectronicScale scale1) {
+	public AddOwnBag(SelfCheckoutStationSoftware weight_order, AbstractElectronicScale scale1) {
 
         theMassOnTheScaleHasChanged(scale1, mass_test);
 	}
@@ -85,7 +85,7 @@ public class AddownBag implements ElectronicScaleListener {
 			
 			if (compare_to_threshold>=0) {
 				System.out.println("Bags too heavy, not allowed");
-				instance.setStationBlock(true); // block station
+				instance.setStationBlock(); // block station
 				double order = p1.getTotalOrderWeightInGrams();
 				AttendantPageGUI attendant_test = new AttendantPageGUI();
 				attendant_test.bagdiscpreancydectected();
@@ -93,7 +93,7 @@ public class AddownBag implements ElectronicScaleListener {
 			}
 			else {
 				//bag weight is fine, add weight of bag to order, system unblocks
-				instance.setStationBlock(false);  // change to unblock and continue 
+				instance.setStationUnblock();  // change to unblock and continue 
 				p1.addTotalOrderWeightInGrams(weight_of_bag);
 				System.out.println("You may now continue");
 			}
