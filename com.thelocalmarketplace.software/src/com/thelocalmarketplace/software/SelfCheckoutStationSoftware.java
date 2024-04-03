@@ -94,11 +94,11 @@ public class SelfCheckoutStationSoftware {
 	 * 
 	 * @param station The self-checkout station that requires the software.
 	 */
-	public SelfCheckoutStationSoftware(ISelfCheckoutStation station) {
+	public SelfCheckoutStationSoftware(AbstractSelfCheckoutStation station) {
 		if (station == null) {
 			throw new IllegalArgumentException("The station cannot be null");		// IS THIS IS THE RIGHT ERROR TO THROW HERE
 		}
-		this.station = (AbstractSelfCheckoutStation) station;
+		this.station = station;
 
 		// Initialize a new order and all its info
 		this.order = new ArrayList<Item>();
