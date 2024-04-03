@@ -52,6 +52,7 @@ import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.funds.Funds;
+import com.thelocalmarketplace.software.oldCode.PaymentHandler;
 import com.thelocalmarketplace.software.product.ProductHandler;
 import com.thelocalmarketplace.software.product.ScannerListener;
 import com.thelocalmarketplace.hardware.external.CardIssuer;
@@ -105,8 +106,8 @@ public class SelfCheckoutStationSoftware {
 		this.totalOrderPrice = 0;
 		
 		// Make facades
-		funds = new Funds(this);
-		products = new ProductHandler(this);
+		this.funds = new Funds(this);
+		this.products = new ProductHandler(this);
 
 		setStationActive(false);
 
@@ -324,5 +325,4 @@ public class SelfCheckoutStationSoftware {
 	public void addBank(CardIssuer cardIssuer) {
 		this.banks.add(cardIssuer);
 	}
-	
 }

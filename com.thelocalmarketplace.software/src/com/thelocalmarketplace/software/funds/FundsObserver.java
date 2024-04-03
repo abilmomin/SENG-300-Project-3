@@ -43,7 +43,7 @@ public interface FundsObserver {
 	 * @param funds
 	 *            The quantity of funds involved.
 	 */
-	default public void fundsAdded(Funds fundsFacade, BigDecimal funds) {}
+	public void fundsAdded(Funds fundsFacade, BigDecimal funds);
 
 	/**
 	 * Signals an event in which funds have been removed from the facade, no longer
@@ -54,7 +54,7 @@ public interface FundsObserver {
 	 * @param funds
 	 *            The quantity of funds involved.
 	 */
-	default public void fundsRemoved(Funds fundsFacade, BigDecimal funds) {}
+	public void fundsRemoved(Funds fundsFacade, BigDecimal funds);
 
 	/**
 	 * Signals an event in which funds have been removed from the facade, but stored
@@ -65,7 +65,7 @@ public interface FundsObserver {
 	 * @param funds
 	 *            The quantity of funds involved.
 	 */
-	default public void fundsStored(Funds fundsFacade, BigDecimal funds) {}
+	public void fundsStored(Funds fundsFacade, BigDecimal funds);
 	
     /**
      * Signals an event in which funds are invalid for a payment kind.
@@ -73,7 +73,7 @@ public interface FundsObserver {
      * @param fundsFacade The facade in which the event occurred.
      * @param kind The kind of payment for which the funds are invalid.
      */
-    default public void fundsInvalid(Funds fundsFacade, PaymentKind.Kind kind) {}
+    public void fundsInvalid(Funds fundsFacade, PaymentKind.Kind kind);
     
     /**
      * Signals an event in which funds have been paid in full, with change returned.
@@ -81,7 +81,7 @@ public interface FundsObserver {
      * @param fundsFacade The facade in which the event occurred.
      * @param changeReturned The amount of change returned after paying in full.
      */
-    default public void fundsPaidInFull(Funds fundsFacade, BigDecimal changeReturned) {}
+    public void fundsPaidInFull(Funds fundsFacade, BigDecimal changeReturned);
 
 	/**
 	 * Signals an event in which the station is blocked at payment state.
@@ -89,5 +89,5 @@ public interface FundsObserver {
 	 * @param fundsFacade The facade in which the event occurred.
 	 * @param blockedStatus Whether the station is blocked.
 	 */
-	default public void fundsStationBlocked(Funds fundsFacade, boolean blockedStatus) {}
+	public void fundsStationBlocked(Funds fundsFacade, boolean blockedStatus);
 }
