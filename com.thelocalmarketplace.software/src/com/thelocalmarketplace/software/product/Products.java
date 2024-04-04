@@ -29,12 +29,11 @@ Nami Marwah              30178528
 package com.thelocalmarketplace.software.product;
 
 import java.math.BigDecimal;
-
+import java.util.HashSet;
+import java.util.Set;
 import com.jjjwelectronics.Mass;
-import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.bag.IReusableBagDispenser;
 import com.jjjwelectronics.scale.IElectronicScale;
-import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
 import com.thelocalmarketplace.hardware.*;
@@ -42,6 +41,8 @@ import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 public class Products {
+	// request attendants attention also goes in communication, but where? idk. Button needed in GUI
+	// safe to say most things go here for group 4 :))
 	// Things to listen to (hardware)
 	public SelfCheckoutStationSoftware software;
 	public ISelfCheckoutStation station;
@@ -53,6 +54,7 @@ public class Products {
 	// Listeners
 	public ScaleListener scaleListener;
 	public ScannerListener scannerListener;
+	public Set<ProductsListener> listeners = new HashSet<>();
 
 	/**
 	 * Basic constructor.
@@ -120,7 +122,9 @@ public class Products {
 
 				Mass mass = new Mass(itemWeight);
 				PLUCodedItem newItem = new PLUCodedItem(PLUCode, mass);
-				software.addItemToOrder(newItem);			
+				software.addItemToOrder(newItem);	
+				
+				notifyProductAdded(product);
 			}
 		}
 	}
@@ -169,6 +173,8 @@ public class Products {
             // Update the total weight and price in the software
             software.addTotalOrderWeightInGrams(product.getExpectedWeight());
             software.addTotalOrderPrice(product.getPrice());
+            
+            notifyProductAdded(product);
         } else {
             System.out.println("Unable to add product - station is inactive or blocked.");
         }
@@ -193,6 +199,8 @@ public class Products {
             
             software.addTotalOrderWeightInGrams(weight);
             software.addTotalOrderPrice(priceForWeight);
+            
+            notifyProductAdded(product);
         } else {
             System.out.println("Unable to add product - station is inactive or blocked.");
         }
@@ -220,9 +228,55 @@ public class Products {
 					PLUCodedItem newVisualCatalogueItem = new PLUCodedItem(PLUCode, mass);
 					software.addItemToOrder(newVisualCatalogueItem);
 				}
+				
+				notifyProductAdded(PLUProduct);
 			}
 		}
 	}
-	// request attendants attention also goes in communication, but where? idk. Button needed in GUI
-	// safe to say most things go here for group 4 :))
+	
+	/**
+	 * Registers the given listener with this facade so that the listener will be
+	 * notified of events emanating from here.
+	 * 
+	 * @param listener
+	 *            The listener to be registered. No effect if it is already
+	 *    
+	 */
+	public void register(ProductsListener listener) {
+		listeners.add(listener);
+	}
+	
+	/**
+	 * De-registers the given listener from this facade so that the listener will no
+	 * longer be notified of events emanating from here.
+	 * 
+	 * @param listener
+	 *            The listener to be de-registered. No effect if it is not already
+	 *            registered or null.
+	 */
+	public void deregister(ProductsListener listener) {
+		listeners.remove(listener);
+	}
+
+	/**
+	 * Notifies observers that an item was added to the order.
+	 * 
+	 * @param product
+	 * 		The product added.
+	 */
+	public void notifyProductAdded(Product product) {
+		for(ProductsListener listener : listeners)
+			listener.productAdded(this, product);
+	}
+	
+	/**
+	 * Notifies observers that an item was removed to the order.
+	 * 
+	 * @param product
+	 * 		The product removed.
+	 */
+	public void notifyProductRemoved(Product product) {
+		for(ProductsListener listener : listeners)
+			listener.productRemoved(this, product);
+	}
 }

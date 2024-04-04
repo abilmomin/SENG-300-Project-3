@@ -221,6 +221,8 @@ public class SelfCheckoutStationSoftware {
 					removeTotalOrderPrice(productPrice);
 					
 					System.out.println("Please remove item from the bagging area");
+					
+					products.notifyProductRemoved(product);
 				}
 				return true;
 			} 
@@ -237,6 +239,8 @@ public class SelfCheckoutStationSoftware {
 					removeTotalOrderPrice(productPrice);
 					
 					System.out.println("Please remove item from the bagging area");
+					
+					products.notifyProductRemoved(product);
 				}
 				return true;
 			}
