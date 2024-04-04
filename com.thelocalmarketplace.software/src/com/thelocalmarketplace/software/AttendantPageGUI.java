@@ -2,6 +2,8 @@ package com.thelocalmarketplace.software;
 
 import javax.swing.*;
 
+import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
+import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.software.communication.CustomerStation;
 import com.thelocalmarketplace.software.communication.StartSession;
 import java.awt.*;
@@ -12,7 +14,8 @@ public class AttendantPageGUI extends JFrame {
     private JButton[] stationButtons; // Array to hold the station buttons
     private StartSession[] startSessions; // Array to hold StartSession instances
     private boolean[] stationEnabled; // Array to keep track of station status
-
+    private SelfCheckoutStationSoftware[] stationSoftwareInstances;
+    private  AbstractSelfCheckoutStation checkoutStation;
     public AttendantPageGUI() {
         // Setup
         setTitle("Attendant Page");
@@ -46,8 +49,6 @@ public class AttendantPageGUI extends JFrame {
         // Button panel for station controls
         JPanel stationControlPanel = new JPanel(new FlowLayout());
         JButton startStation = new JButton("Start Station");
-        JButton blockStation = new JButton("Block Station");
-        JButton unblockStation = new JButton("Unblock Station");
         JButton closeStation = new JButton("Close Station");
         JButton enableStation = new JButton("Enable Station");
         JButton disableStation = new JButton("Disable Station");
@@ -122,6 +123,14 @@ public class AttendantPageGUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (selectedStation != -1) { // Check if a station is selected
+            	System.out.println("after 1st if statement!");
+            	 checkoutStation = new SelfCheckoutStationBronze();
+            	 System.out.println("make bronze station!");
+            	  stationSoftwareInstances[selectedStation] = new SelfCheckoutStationSoftware(checkoutStation);
+            	  System.out.println("make + store selfcheckout station station!");
+                  stationSoftwareInstances[selectedStation].setStationUnblock();
+                  System.out.println("unblocked!");
+
                 if (stationEnabled[selectedStation]) { // Check if station is enabled
                     if (startSessions[selectedStation] == null) { // Check if StartSession is not already created for this station
                         startSessions[selectedStation] = new StartSession(selectedStation + 1);
