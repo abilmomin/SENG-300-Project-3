@@ -10,9 +10,12 @@ import java.util.List;
 
 import org.junit.*;
 
+import com.tdc.CashOverloadException;
+import com.tdc.DisabledException;
 import com.tdc.coin.Coin;
 import com.tdc.coin.CoinDispenserBronze;
 import com.tdc.coin.CoinDispenserGold;
+import com.tdc.coin.CoinSlot;
 import com.tdc.coin.CoinValidator;
 
 import com.thelocalmarketplace.hardware.Product;
@@ -32,9 +35,6 @@ public class CoinHandlerTest {
     private SelfCheckoutStationBronze checkoutStationB;
     private ArrayList<Product> coinsList;
     private Coin coin1, coin2;
-    private CoinHandler coinHandlerG;
-    private CoinHandler coinHandlerS;
-    private CoinHandler coinHandlerB;
     private Funds fundsG;
     private Funds fundsS;
     private Funds fundsB;
@@ -52,9 +52,7 @@ public class CoinHandlerTest {
         this.checkoutStationG.plugIn(PowerGrid.instance());
         this.checkoutStationG.turnOn();
         this.station = new SelfCheckoutStationSoftware(checkoutStationG);
-        this.fundsG = new Funds(station);
-        this.coinHandlerG = new CoinHandler(fundsG);
-        
+        this.fundsG = new Funds(station);        
         
         //Set up Silver selfCheckoutStation
     	SelfCheckoutStationSilver.resetConfigurationToDefaults();
@@ -65,7 +63,6 @@ public class CoinHandlerTest {
         this.checkoutStationS.turnOn();
         this.station = new SelfCheckoutStationSoftware(checkoutStationS);
         this.fundsS = new Funds(station);
-        this.coinHandlerS = new CoinHandler(fundsS);
         
         //Set up Bronze selfCheckoutStation
     	SelfCheckoutStationBronze.resetConfigurationToDefaults();
@@ -76,7 +73,6 @@ public class CoinHandlerTest {
         this.checkoutStationB.turnOn();
         this.station = new SelfCheckoutStationSoftware(checkoutStationB);
         this.fundsB = new Funds(station);
-        this.coinHandlerB = new CoinHandler(fundsB);
         
     }
     
@@ -170,18 +166,14 @@ public class CoinHandlerTest {
     }
     
     @Test
-    public void coinAddedTest() {
+    public void coinAddedTest() throws DisabledException, CashOverloadException {
     	Currency currency = Currency.getInstance("CAD");
         // Prepare some coins
         coin1 = new Coin(currency, new BigDecimal("0.10"));
         
-        //Prepare some dispensers there's no silver
+        CoinSlot cs = this.checkoutStationG.getCoinSlot();
+        cs.receive(coin1);
         
-        CoinDispenserGold dispenserG = new CoinDispenserGold(2);
-        CoinDispenserBronze dispenserB = new CoinDispenserBronze(2);
-        dispenserG.connect(PowerGrid.instance());
-        coinHandlerG.coinAdded(dispenserG, coin1);
-        coinHandlerB.coinAdded(dispenserB, coin1);
     }
     
     @Test (expected = NullPointerException.class)
