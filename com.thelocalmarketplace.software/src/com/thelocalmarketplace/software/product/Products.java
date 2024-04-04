@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.Set;
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.bag.IReusableBagDispenser;
+import com.jjjwelectronics.bag.ReusableBag;
 import com.jjjwelectronics.scale.IElectronicScale;
 import com.jjjwelectronics.scanner.BarcodedItem;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
@@ -233,6 +234,13 @@ public class Products {
 			}
 		}
 	}
+	/**
+	 * The selected amount of purchased bags are dispensed and added to the bagging area. The bag weight and cost is 
+	 * accounted for to avoid a weight discrepancy and make sure the bag price is added to the order total. 
+	 */
+	public void PurchaseBags(Mass idealMass) {
+	}
+	
 	
 	/**
 	 * Registers the given listener with this facade so that the listener will be
