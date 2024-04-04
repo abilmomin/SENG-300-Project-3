@@ -59,6 +59,11 @@ public class SelectPayment extends JFrame {
 
         debitButton.addActionListener(e -> new CardPayment());
         creditButton.addActionListener(e -> new CardPayment());
+        cashButton.addActionListener(e -> new PayWithBanknotes());
+        coinButton.addActionListener(e -> new PayWithCoins());
+        
+        
+        
         
         bottomPanel.add(addMembershipButton);
         bottomPanel.add(returnToCheckoutButton);
