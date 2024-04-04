@@ -33,6 +33,7 @@ package com.thelocalmarketplace.software.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -51,6 +52,7 @@ import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.funds.*;
 
 import ca.ucalgary.seng300.simulation.NullPointerSimulationException;
+import ca.ucalgary.seng300.simulation.SimulationException;
 import powerutility.PowerGrid;
 
 public class CoinHandlerTest {
@@ -59,9 +61,6 @@ public class CoinHandlerTest {
 	private SelfCheckoutStationSilver checkoutStationS;
 	private SelfCheckoutStationBronze checkoutStationB;
 	private Coin coin1, coin2;
-	private Funds fundsG;
-	private Funds fundsS;
-	private Funds fundsB;
 
 	@Before
 	public void setUp() {
@@ -76,7 +75,6 @@ public class CoinHandlerTest {
 		this.checkoutStationG.plugIn(PowerGrid.instance());
 		this.checkoutStationG.turnOn();
 		this.station = new SelfCheckoutStationSoftware(checkoutStationG);
-		this.fundsG = new Funds(station);
 
 		// Set up Silver selfCheckoutStation
 		SelfCheckoutStationSilver.resetConfigurationToDefaults();
@@ -86,7 +84,6 @@ public class CoinHandlerTest {
 		this.checkoutStationS.plugIn(PowerGrid.instance());
 		this.checkoutStationS.turnOn();
 		this.station = new SelfCheckoutStationSoftware(checkoutStationS);
-		this.fundsS = new Funds(station);
 
 		// Set up Bronze selfCheckoutStation
 		SelfCheckoutStationBronze.resetConfigurationToDefaults();
@@ -96,7 +93,6 @@ public class CoinHandlerTest {
 		this.checkoutStationB.plugIn(PowerGrid.instance());
 		this.checkoutStationB.turnOn();
 		this.station = new SelfCheckoutStationSoftware(checkoutStationB);
-		this.fundsB = new Funds(station);
 
 	}
 
@@ -202,55 +198,179 @@ public class CoinHandlerTest {
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////
+	// Everything below this line needs the tests are passing but coverage isn't
 
 	@Test
-    public void coinsLoadedG() throws DisabledException, CashOverloadException {
-    	Currency currency = Currency.getInstance("CAD");
-        // Prepare some coins
-        coin1 = new Coin(currency, BigDecimal.valueOf(0.25));
-        coin2 = new Coin(currency, new BigDecimal("0.10"));
-        
-        checkoutStationG.getCoinStorage().load(coin1, coin2);
-        
-    }
-	@Test
-    public void coinsLoadedG2() throws DisabledException, CashOverloadException {
-    	Currency currency = Currency.getInstance("CAD");
-        // Prepare some coins
-        coin1 = new Coin(currency, BigDecimal.valueOf(0.25));
-        coin2 = new Coin(currency, new BigDecimal("0.10"));
-        checkoutStationG.getCoinStorage().load(coin1, coin2);
-        
-    }
+	public void coinsLoadedG() throws DisabledException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		// Prepare some coins
+		coin1 = new Coin(currency, BigDecimal.valueOf(0.25));
+		coin2 = new Coin(currency, new BigDecimal("0.10"));
 
-	//this test isn't throwing the overloadException
-	@Test (expected = CashOverloadException.class)
+		checkoutStationG.getCoinStorage().load(coin1, coin2);
+
+	}
+
+	@Test
+	public void coinsLoadedS() throws DisabledException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		// Prepare some coins
+		coin1 = new Coin(currency, BigDecimal.valueOf(0.25));
+		coin2 = new Coin(currency, new BigDecimal("0.10"));
+
+		checkoutStationS.getCoinStorage().load(coin1, coin2);
+
+	}
+
+	@Test
+	public void coinsLoadedB() throws DisabledException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		// Prepare some coins
+		coin1 = new Coin(currency, BigDecimal.valueOf(0.25));
+		coin2 = new Coin(currency, new BigDecimal("0.10"));
+
+		checkoutStationB.getCoinStorage().load(coin1, coin2);
+
+	}
+
+	// this test isn't throwing the overloadException
+	@Test(expected = CashOverloadException.class)
 	public void testCoinsLoadedOverloadG() throws DisabledException, CashOverloadException {
-		checkoutStationG.configureCoinDispenserCapacity(2);
+		Currency currency = Currency.getInstance("CAD");
+		// Prepare some coins
+		Coin c1 = new Coin(currency, new BigDecimal("0.05"));
+		Coin c2 = new Coin(currency, new BigDecimal("0.10"));
+
+		SelfCheckoutStationGold.configureCoinStorageUnitCapacity(2);
+		this.checkoutStationG = new SelfCheckoutStationGold();
+		this.checkoutStationG.plugIn(PowerGrid.instance());
+		this.checkoutStationG.turnOn();
+		checkoutStationG.getCoinStorage().load(c1, c2);
+		// should cause overload now
+		Coin c3 = new Coin(currency, new BigDecimal("0.25"));
+		checkoutStationG.getCoinStorage().load(c3);
+	}
+
+	// this test isn't throwing the overloadException
+	@Test(expected = CashOverloadException.class)
+	public void testCoinsLoadedOverloadS() throws DisabledException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		// Prepare some coins
+		Coin c1 = new Coin(currency, new BigDecimal("0.05"));
+		Coin c2 = new Coin(currency, new BigDecimal("0.10"));
+
+		SelfCheckoutStationSilver.configureCoinStorageUnitCapacity(2);
+		this.checkoutStationS = new SelfCheckoutStationSilver();
+		this.checkoutStationS.plugIn(PowerGrid.instance());
+		this.checkoutStationS.turnOn();
+		checkoutStationS.getCoinStorage().load(c1, c2);
+		// should cause overload now
+		Coin c3 = new Coin(currency, new BigDecimal("0.25"));
+		checkoutStationS.getCoinStorage().load(c3);
+	}
+
+	// this test isn't throwing the overloadException
+	@Test(expected = CashOverloadException.class)
+	public void testCoinsLoadedOverloadB() throws DisabledException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		// Prepare some coins
+		Coin c1 = new Coin(currency, new BigDecimal("0.05"));
+		Coin c2 = new Coin(currency, new BigDecimal("0.10"));
+
+		SelfCheckoutStationBronze.configureCoinStorageUnitCapacity(2);
+		this.checkoutStationB = new SelfCheckoutStationBronze();
+		this.checkoutStationB.plugIn(PowerGrid.instance());
+		this.checkoutStationB.turnOn();
+		checkoutStationB.getCoinStorage().load(c1, c2);
+		// should cause overload now
+		Coin c3 = new Coin(currency, new BigDecimal("0.25"));
+		checkoutStationB.getCoinStorage().load(c3);
+	}
+
+	@Test(expected = SimulationException.class)
+	public void loadCoinDoesntExistTestG() throws SimulationException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		// Prepare a coin
+		Coin c1 = new Coin(currency, new BigDecimal("0.27"));
+		checkoutStationG.getCoinStorage().load(c1);
+	}
+
+	@Test(expected = SimulationException.class)
+	public void loadCoinDoesntExistTestS() throws SimulationException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		// Prepare a coin
+		Coin c1 = new Coin(currency, new BigDecimal("0.27"));
+		checkoutStationS.getCoinStorage().load(c1);
+	}
+
+	@Test(expected = SimulationException.class)
+	public void loadCoinDoesntExistTestB() throws SimulationException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		// Prepare a coin
+		Coin c1 = new Coin(currency, new BigDecimal("0.27"));
+		checkoutStationB.getCoinStorage().load(c1);
+	}
+
+	@Test(expected = SimulationException.class)
+	public void loadNullCoinTestG() throws SimulationException, CashOverloadException {
+		// Prepare a coin
+		Coin nullCoin = new Coin(null, null);
+		checkoutStationG.getCoinStorage().load(nullCoin);
+	}
+
+	@Test(expected = SimulationException.class)
+	public void loadNullCoinTestS() throws SimulationException, CashOverloadException {
+		// Prepare a coin
+		Coin nullCoin = new Coin(null, null);
+		checkoutStationS.getCoinStorage().load(nullCoin);
+	}
+
+	@Test(expected = SimulationException.class)
+	public void loadNullCoinTestB() throws SimulationException, CashOverloadException {
+		// Prepare a coin
+		Coin nullCoin = new Coin(null, null);
+		checkoutStationB.getCoinStorage().load(nullCoin);
+	}
+
+	@Test
+	public void coinsUnloadedG() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		// Prepare some coins
 		coin1 = new Coin(currency, BigDecimal.valueOf(0.25));
 		coin2 = new Coin(currency, new BigDecimal("0.10"));
 		checkoutStationG.getCoinStorage().load(coin1, coin2);
+		// now unloaded
+		checkoutStationG.getCoinStorage().unload();
+		assertTrue(checkoutStationG.getCoinStorage().getCoinCount() == 0);
 
-		// should throw overload error on this load
-		checkoutStationG.getCoinStorage().load(new Coin(currency, BigDecimal.valueOf(0.05)));
 	}
-	
-	@Test
-    public void coinsUnloadedG() throws DisabledException, CashOverloadException {
-    	Currency currency = Currency.getInstance("CAD");
-        // Prepare some coins
-        coin1 = new Coin(currency, BigDecimal.valueOf(0.25));
-        coin2 = new Coin(currency, new BigDecimal("0.10"));
-        checkoutStationG.getCoinStorage().load(coin1, coin2);
-        //now unloaded
-        checkoutStationG.getCoinStorage().unload();
-        assertTrue(checkoutStationG.getCoinStorage().getCoinCount() == 0);
-        
-    }
 
-	//////////////////////////// Still need to fix Coverage ////////////////////////
+	@Test
+	public void coinsUnloadedS() throws DisabledException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		// Prepare some coins
+		coin1 = new Coin(currency, BigDecimal.valueOf(0.25));
+		coin2 = new Coin(currency, new BigDecimal("0.10"));
+		checkoutStationS.getCoinStorage().load(coin1, coin2);
+		// now unloaded
+		checkoutStationS.getCoinStorage().unload();
+		assertTrue(checkoutStationS.getCoinStorage().getCoinCount() == 0);
+
+	}
+
+	@Test
+	public void coinsUnloadedB() throws DisabledException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		// Prepare some coins
+		coin1 = new Coin(currency, BigDecimal.valueOf(0.25));
+		coin2 = new Coin(currency, new BigDecimal("0.10"));
+		checkoutStationB.getCoinStorage().load(coin1, coin2);
+		// now unloaded
+		checkoutStationB.getCoinStorage().unload();
+		assertTrue(checkoutStationB.getCoinStorage().getCoinCount() == 0);
+
+	}
+
 	@Test
 	public void coinRemovedTestG() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
@@ -267,7 +387,7 @@ public class CoinHandlerTest {
 		CoinSlot cs = this.checkoutStationS.getCoinSlot();
 		cs.receive(coin1);
 		checkoutStationS.getCoinDispensers().remove(coin1);
-		
+
 	}
 
 	@Test
@@ -279,16 +399,37 @@ public class CoinHandlerTest {
 		checkoutStationB.getCoinDispensers().remove(coin1);
 	}
 
-	//Also does not give nullPointException
-	@Test (expected = NullPointerException.class)
+	// Also does not give nullPointException
+	@Test(expected = NullPointerException.class)
 	public void removeNonExistentCoinTestG() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		coin1 = new Coin(currency, BigDecimal.valueOf(0.10));
 		coin2 = new Coin(currency, BigDecimal.valueOf(0.25));
 		CoinSlot cs = this.checkoutStationG.getCoinSlot();
 		cs.receive(coin1);
-		checkoutStationG.getCoinDispensers().remove(new Coin(currency, BigDecimal.valueOf(5.46)));
+		checkoutStationG.getCoinDispensers().remove(coin2);
+	}
 
+	// Also does not give nullPointException
+	@Test(expected = NullPointerException.class)
+	public void removeNonExistentCoinTestS() throws DisabledException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		coin1 = new Coin(currency, BigDecimal.valueOf(0.10));
+		coin2 = new Coin(currency, BigDecimal.valueOf(0.25));
+		CoinSlot cs = this.checkoutStationS.getCoinSlot();
+		cs.receive(coin1);
+		checkoutStationS.getCoinDispensers().remove(coin2);
+	}
+
+	// Also does not give nullPointException
+	@Test(expected = NullPointerException.class)
+	public void removeNonExistentCoinTestB() throws DisabledException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		coin1 = new Coin(currency, BigDecimal.valueOf(0.10));
+		coin2 = new Coin(currency, BigDecimal.valueOf(0.25));
+		CoinSlot cs = this.checkoutStationB.getCoinSlot();
+		cs.receive(coin1);
+		checkoutStationB.getCoinDispensers().remove(coin2);
 	}
 
 }
