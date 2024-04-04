@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.scale.AbstractElectronicScale;
+import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 public class mockScale extends AbstractElectronicScale {
 
@@ -22,4 +24,8 @@ public class mockScale extends AbstractElectronicScale {
 	    }
 
 }
+
+
+
+
 

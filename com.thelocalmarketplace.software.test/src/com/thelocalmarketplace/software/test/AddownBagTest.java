@@ -13,13 +13,13 @@ import com.thelocalmarketplace.software.oldCode.AddOwnBag;
 public class AddownBagTest {
 	private AddownBag addownBag;
     private mockScale scale;
-    private SelfCheckoutStationSoftware order_weight; 
+    private mockSelfCheckoutStation order_weight; 
     
     @Before
     public void setUp() {
     	scale = new mockScale(new Mass(40000000),new Mass(40000000));
-    	// order_weight = new SelfCheckoutStationSoftware(new Mass(40000000)); 
-    	addownBag = new AddownBag(order_weight, scale); 
+    	order_weight = new mockSelfCheckoutStation(); 
+    	addownBag = new AddownBag(null, scale); 
     	
     }
     
