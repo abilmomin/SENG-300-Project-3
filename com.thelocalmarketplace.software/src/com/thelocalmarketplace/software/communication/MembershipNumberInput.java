@@ -1,3 +1,30 @@
+/**
+
+Name                      UCID
+
+Yotam Rojnov             30173949
+Duncan McKay             30177857
+Mahfuz Alam              30142265
+Luis Trigueros Granillo  30167989
+Lilia Skumatova          30187339
+Abdelrahman Abbas        30110374
+Talaal Irtija            30169780
+Alejandro Cardona        30178941
+Alexandre Duteau         30192082
+Grace Johnson            30149693
+Abil Momin               30154771
+Tara Ghasemi M. Rad      30171212
+Izabella Mawani          30179738
+Binish Khalid            30061367
+Fatima Khalid            30140757
+Lucas Kasdorf            30173922
+Emily Garcia-Volk        30140791
+Yuinikoru Futamata       30173228
+Joseph Tandyo            30182561
+Syed Haider              30143096
+Nami Marwah              30178528
+
+ */
 package com.thelocalmarketplace.software.communication;
 
 import javax.swing.*;
@@ -12,11 +39,14 @@ public class MembershipNumberInput extends JDialog {
 	private JTextField membershipNumberField;
 	private JPanel membershipPanel;
 	private CustomerStation parent;
+	private MembershipInputLogic logic;
+
 	
 	
 	public MembershipNumberInput(Frame parent) {
 		super(parent, "Membership Number", true);
 		this.parent = (CustomerStation) parent;
+		this.logic = new MembershipInputLogic();
 		setLocationRelativeTo(parent);
 		setVisible(true);
 	}
@@ -86,22 +116,17 @@ public class MembershipNumberInput extends JDialog {
 		
 		
 	}
-
 	public void checkMembershipNumber(String membershipNumber) {
-    	MembershipCard membershipCard = new MembershipCard();
-    	if (membershipNumber != null && !membershipNumber.isEmpty()) {
-            if (membershipCard.isMembershipNumberValid(membershipNumber)) {
+        if (membershipNumber != null && !membershipNumber.isEmpty()) {
+            if (logic.isMembershipNumberValid(membershipNumber)) {
                 JOptionPane.showMessageDialog(this, "Membership number accepted.");
             } else {
                 showOptions();
             }
-        } else if (membershipNumber != null) {
+        } else {
             JOptionPane.showMessageDialog(this, "No membership number entered.");
         }
-
-
-		
-	}
+    }
 
 	private void showOptions() {
 		String options[] = new String[] {"Try again", "Become a member", "continue"};
@@ -134,19 +159,14 @@ public class MembershipNumberInput extends JDialog {
 	
 
 	private void createAccount() {
-		MembershipCard membershipCard = new MembershipCard();
-		String memberName = JOptionPane.showInputDialog(this, "Please enter your name:");
-		if (memberName != null && !memberName.trim().isEmpty()) {
-			Random random = new Random();
-			long randomNumber = (long) (random.nextDouble() * 9_000_000_000L) + 1_000_000_000L;
-			String membershipNumber = Long.toString(randomNumber);
-			membershipCard.createNewMember(membershipNumber, memberName);
-		    JOptionPane.showMessageDialog(this, "Account created successfully!\nName: " + memberName + "\nMembership Number: " + membershipNumber);
-	    } else {
-	        JOptionPane.showMessageDialog(this, "You must enter a name to create a membership account.", "Error", JOptionPane.ERROR_MESSAGE);
-	    }
-
-	}
+        String memberName = JOptionPane.showInputDialog(this, "Please enter your name:");
+        if (memberName != null && !memberName.trim().isEmpty()) {
+            MembershipCard newCard = logic.createNewMember(memberName);
+            JOptionPane.showMessageDialog(this, "Account created successfully!\nName: " + memberName + "\nMembership Number: " + newCard.getMembershipNumber());
+        } else {
+            JOptionPane.showMessageDialog(this, "You must enter a name to create a membership account.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
 	private void addVirtualNumberKeyboard() {
 		JPanel keyboardPanel = new JPanel();

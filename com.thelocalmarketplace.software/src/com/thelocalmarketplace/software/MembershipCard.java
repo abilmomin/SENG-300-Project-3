@@ -65,9 +65,7 @@ public class MembershipCard {
 		return membershipCard;
 	}
 	
-	
-	
-	
+
 	
 	
 }
