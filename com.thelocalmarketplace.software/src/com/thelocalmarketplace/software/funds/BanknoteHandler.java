@@ -49,7 +49,8 @@ import com.tdc.NoCashAvailableException;
 import com.tdc.banknote.Banknote;
 
 import com.tdc.banknote.BanknoteDispenserObserver;
-
+import com.tdc.banknote.BanknoteStorageUnit;
+import com.tdc.banknote.BanknoteStorageUnitObserver;
 import com.tdc.banknote.BanknoteValidator;
 
 import com.tdc.banknote.BanknoteValidatorObserver;
@@ -59,7 +60,7 @@ import com.tdc.banknote.IBanknoteDispenser;
 /**
  * This class acts as the facade and controller for all payments handled with banknotes.
  */
-public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispenserObserver {
+public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispenserObserver, BanknoteStorageUnitObserver {
 	
 	private Funds fundController = null;
 	
@@ -134,6 +135,8 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	@Override
 	public void banknoteRemoved(IBanknoteDispenser dispenser, Banknote banknote) {
 		this.fundController.banknotesAvailable.put(banknote.getDenomination(), (int)this.fundController.banknotesAvailable.get(banknote.getDenomination()) - 1);
+		if (dispenser.size() < 5)
+        	this.fundController.notifyBanknotesLow(dispenser);
 	}
 
 	/**
@@ -166,6 +169,8 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 				throw new NullPointerException();
 			}
 		}
+		if (dispenser.size() < 5)
+        	this.fundController.notifyBanknotesLow(dispenser);
 	}
 
 	// These methods are not useful for this class and thus left unimplemented with default JavaDoc comments.
@@ -202,5 +207,33 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	 */
 	@Override
 	public void banknotesEmpty(IBanknoteDispenser dispenser) {
+		if (dispenser.size() < 5)
+        	this.fundController.notifyBanknotesLow(dispenser);
+	}
+
+	@Override
+	public void banknotesFull(BanknoteStorageUnit unit) {
+		// TODO Auto-generated method stub
+		this.fundController.notifyBanknotesHigh(unit);
+	}
+
+	@Override
+	public void banknoteAdded(BanknoteStorageUnit unit) {
+		// TODO Auto-generated method stub
+		if (unit.getCapacity() - unit.getBanknoteCount() < 5)
+        	this.fundController.notifyBanknotesHigh(unit);
+	}
+
+	@Override
+	public void banknotesLoaded(BanknoteStorageUnit unit) {
+		// TODO Auto-generated method stub
+		if (unit.getCapacity() - unit.getBanknoteCount() < 5)
+        	this.fundController.notifyBanknotesHigh(unit);
+	}
+
+	@Override
+	public void banknotesUnloaded(BanknoteStorageUnit unit) {
+		// TODO Auto-generated method stub
+		
 	}
 }
