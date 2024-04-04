@@ -107,7 +107,7 @@ public class Receipt {
 //        receiptPrinter.plugIn(PowerGrid.instance());
 //        receiptPrinter.turnOn();
         
-        ReceiptHandler rh = new ReceiptHandler(receiptPrinter);
+        ReceiptHandler rh = new ReceiptHandler(this);
         checkoutStation.station.getPrinter().register(rh);
 
         this.funds = funds;
