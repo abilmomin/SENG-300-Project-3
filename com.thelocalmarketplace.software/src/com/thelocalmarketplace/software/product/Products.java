@@ -41,7 +41,7 @@ import com.thelocalmarketplace.hardware.*;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
-public class ProductHandler {
+public class Products {
 	// Things to listen to (hardware)
 	public SelfCheckoutStationSoftware software;
 	public ISelfCheckoutStation station;
@@ -53,7 +53,6 @@ public class ProductHandler {
 	// Listeners
 	public ScaleListener scaleListener;
 	public ScannerListener scannerListener;
-	public BaggingListener baggingListener;
 
 	/**
 	 * Basic constructor.
@@ -61,7 +60,7 @@ public class ProductHandler {
 	 * @param software
 	 * 		The main software hub.
 	 */
-	public ProductHandler(SelfCheckoutStationSoftware software) {
+	public Products(SelfCheckoutStationSoftware software) {
 		this.software = software;
 		this.station = software.getStationHardware();
 
@@ -74,7 +73,6 @@ public class ProductHandler {
 		// Make the listener objects
 		this.scannerListener = new ScannerListener(software, this);
 		this.scaleListener = new ScaleListener(software, this);
-		this.baggingListener = new BaggingListener(software, this);
 
 		// Attach the listeners to the hardware
 		mainScanner.register(scannerListener);
@@ -152,9 +150,7 @@ public class ProductHandler {
                     
                     return; 
                 }
-            }
-
-            
+            }   
         }
     
     /**

@@ -41,9 +41,9 @@ public class ScaleListener implements ElectronicScaleListener {
 	// In order to access the hardware of the SelfCheckoutStation, use software.HARDWARE_YOU_WANNA_GET
 	
 	private SelfCheckoutStationSoftware software;
-	private ProductHandler handler;
+	private Products handler;
 	
-	public ScaleListener (SelfCheckoutStationSoftware software, ProductHandler handler) {
+	public ScaleListener (SelfCheckoutStationSoftware software, Products handler) {
 		this.software = software;
 		this.handler = handler;	
 	}

@@ -45,9 +45,9 @@ public class ScannerListener implements BarcodeScannerListener {
 	// In order to access the hardware of the SelfCheckoutStation, use software.getHARDWARE_YOU_WANNA_GET()
 	
 	private SelfCheckoutStationSoftware software;
-	private ProductHandler handler;
+	private Products handler;
 	
-	public ScannerListener(SelfCheckoutStationSoftware software, ProductHandler handler) {
+	public ScannerListener(SelfCheckoutStationSoftware software, Products handler) {
 		this.software = software;
 		this.handler = handler;
 	}
