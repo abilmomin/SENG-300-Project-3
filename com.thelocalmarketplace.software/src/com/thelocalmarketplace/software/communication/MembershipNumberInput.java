@@ -32,21 +32,18 @@ import javax.swing.*;
 import com.thelocalmarketplace.software.MembershipCard;
 
 import java.awt.*;
-import java.util.Random;
 
 public class MembershipNumberInput extends JDialog {
 	private static final long serialVersionUID = 1997230330248440038L;
 	private JTextField membershipNumberField;
 	private JPanel membershipPanel;
 	private CustomerStation parent;
-	private MembershipInputLogic logic;
 
 	
 	
 	public MembershipNumberInput(Frame parent) {
 		super(parent, "Membership Number", true);
 		this.parent = (CustomerStation) parent;
-		this.logic = new MembershipInputLogic();
 		setLocationRelativeTo(parent);
 		setVisible(true);
 	}
@@ -70,7 +67,7 @@ public class MembershipNumberInput extends JDialog {
 		setLocationRelativeTo(getParent());
 		
 		
-		
+	
 	}
 
 	private void addOptionsPanel() {
@@ -117,8 +114,9 @@ public class MembershipNumberInput extends JDialog {
 		
 	}
 	public void checkMembershipNumber(String membershipNumber) {
+		MembershipCard membershipCard = new MembershipCard();
         if (membershipNumber != null && !membershipNumber.isEmpty()) {
-            if (logic.isMembershipNumberValid(membershipNumber)) {
+            if (membershipCard.isMembershipNumberValid(membershipNumber)) {
                 JOptionPane.showMessageDialog(this, "Membership number accepted.");
             } else {
                 showOptions();
@@ -161,7 +159,8 @@ public class MembershipNumberInput extends JDialog {
 	private void createAccount() {
         String memberName = JOptionPane.showInputDialog(this, "Please enter your name:");
         if (memberName != null && !memberName.trim().isEmpty()) {
-            MembershipCard newCard = logic.createNewMember(memberName);
+            MembershipCard newCard = new MembershipCard();
+            newCard.createNewMember(memberName);
             JOptionPane.showMessageDialog(this, "Account created successfully!\nName: " + memberName + "\nMembership Number: " + newCard.getMembershipNumber());
         } else {
             JOptionPane.showMessageDialog(this, "You must enter a name to create a membership account.", "Error", JOptionPane.ERROR_MESSAGE);

@@ -28,6 +28,8 @@ Nami Marwah              30178528
 
 package com.thelocalmarketplace.software;
 
+import java.util.Random;
+
 import com.jjjwelectronics.card.Card;
 
 public class MembershipCard {
@@ -36,11 +38,13 @@ public class MembershipCard {
 	private String memberName;
 	private Card membershipCard;
 	
-	public void createNewMember(String membershipNumber, String memberName) {
-		if (isMembershipNumberValid(membershipNumber)) {
-			this.membershipNumber = membershipNumber; 
-		}
+	public String createNewMember(String memberName) {
+		Random random = new Random();
+        long randomNumber = (long) (random.nextDouble() * 9_000_000_000L) + 1_000_000_000L;
+        String membershipNumber = Long.toString(randomNumber);
 		this.memberName = memberName;
+		this.membershipNumber = membershipNumber;
+		return membershipNumber;
 	}
 	
 	public String getMembershipNumber() {
@@ -65,7 +69,6 @@ public class MembershipCard {
 		return membershipCard;
 	}
 	
-
 	
 	
 }
