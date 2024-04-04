@@ -213,7 +213,17 @@ public class CoinHandlerTest {
         checkoutStationG.getCoinStorage().load(coin1, coin2);
         
     }
+	@Test
+    public void coinsLoadedG2() throws DisabledException, CashOverloadException {
+    	Currency currency = Currency.getInstance("CAD");
+        // Prepare some coins
+        coin1 = new Coin(currency, BigDecimal.valueOf(0.25));
+        coin2 = new Coin(currency, new BigDecimal("0.10"));
+        checkoutStationG.getCoinStorage().load(coin1, coin2);
+        
+    }
 
+	//this test isn't throwing the overloadException
 	@Test (expected = CashOverloadException.class)
 	public void testCoinsLoadedOverloadG() throws DisabledException, CashOverloadException {
 		checkoutStationG.configureCoinDispenserCapacity(2);
@@ -226,6 +236,19 @@ public class CoinHandlerTest {
 		// should throw overload error on this load
 		checkoutStationG.getCoinStorage().load(new Coin(currency, BigDecimal.valueOf(0.05)));
 	}
+	
+	@Test
+    public void coinsUnloadedG() throws DisabledException, CashOverloadException {
+    	Currency currency = Currency.getInstance("CAD");
+        // Prepare some coins
+        coin1 = new Coin(currency, BigDecimal.valueOf(0.25));
+        coin2 = new Coin(currency, new BigDecimal("0.10"));
+        checkoutStationG.getCoinStorage().load(coin1, coin2);
+        //now unloaded
+        checkoutStationG.getCoinStorage().unload();
+        assertTrue(checkoutStationG.getCoinStorage().getCoinCount() == 0);
+        
+    }
 
 	//////////////////////////// Still need to fix Coverage ////////////////////////
 	@Test
@@ -244,6 +267,7 @@ public class CoinHandlerTest {
 		CoinSlot cs = this.checkoutStationS.getCoinSlot();
 		cs.receive(coin1);
 		checkoutStationS.getCoinDispensers().remove(coin1);
+		
 	}
 
 	@Test
@@ -255,7 +279,8 @@ public class CoinHandlerTest {
 		checkoutStationB.getCoinDispensers().remove(coin1);
 	}
 
-	@Test
+	//Also does not give nullPointException
+	@Test (expected = NullPointerException.class)
 	public void removeNonExistentCoinTestG() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		coin1 = new Coin(currency, BigDecimal.valueOf(0.10));
