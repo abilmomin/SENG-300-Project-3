@@ -249,6 +249,7 @@ public class SelfCheckoutStationSoftware {
 			System.out.println("Item not found in the order.");
 			return false;
 		}
+		return false;
 		
 	
 	}
