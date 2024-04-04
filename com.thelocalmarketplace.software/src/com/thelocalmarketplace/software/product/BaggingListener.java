@@ -37,9 +37,9 @@ public class BaggingListener implements ReusableBagDispenserListener {
 	// In order to access the hardware of the SelfCheckoutStation, use software.getHARDWARE_YOU_WANNA_GET()
 	
 	private SelfCheckoutStationSoftware software;
-	private ProductHandler handler;
+	private Products handler;
 	
-	public BaggingListener(SelfCheckoutStationSoftware software, ProductHandler handler) {
+	public BaggingListener(SelfCheckoutStationSoftware software, Products handler) {
 		this.software = software;
 		this.handler = handler;	
 	}
