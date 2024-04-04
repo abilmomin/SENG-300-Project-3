@@ -6,13 +6,13 @@ import com.thelocalmarketplace.hardware.Product;
 import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.funds.FundsObserver;
 import com.thelocalmarketplace.software.funds.PaymentKind.Kind;
-import com.thelocalmarketplace.software.product.ProductHandler;
+import com.thelocalmarketplace.software.product.Products;
 
 public class Coordination implements FundsObserver {
     Funds funds;
-    ProductHandler products;
+    Products products;
 
-    public Coordination(Funds funds, ProductHandler products) {
+    public Coordination(Funds funds, Products products) {
         this.funds = funds;
         this.products = products;
     }

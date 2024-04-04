@@ -1,3 +1,5 @@
+package com.thelocalmarketplace.software.communication;
+
 import javax.swing.*;
 import java.awt.*;
 
