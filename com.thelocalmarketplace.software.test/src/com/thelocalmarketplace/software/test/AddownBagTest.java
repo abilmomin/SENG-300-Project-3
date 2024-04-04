@@ -10,7 +10,7 @@ import com.thelocalmarketplace.software.AddownBag;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.oldCode.AddOwnBag;
 
-public class AddOwnBagTest {
+public class AddownBagTest {
 	private AddownBag addownBag;
     private mockScale scale;
     private SelfCheckoutStationSoftware order_weight; 
@@ -35,9 +35,9 @@ public class AddOwnBagTest {
 		//the order has a weight of the mock scale in before (40000000)
 		// weight of the scale with the order and the bag added is 10000000 (10 grams) more than the weight of the order
 		mockScale orderAndBagScale = new mockScale(new Mass(5000000), new Mass(5000000)); 
-		AddOwnBag addOwnBag = new AddOwnBag(order_weight, orderAndBagScale);
+		AddOwnBag addownBag = new AddOwnBag(order_weight, orderAndBagScale);
 		//bag weight being calculated
-		double bagWeight = addOwnBag.getBagWeight(order_weight, orderAndBagScale); 
+		double bagWeight = addownBag.getBagWeight(order_weight, orderAndBagScale); 
 		Assert.assertEquals(10.0, bagWeight, 10.0);
 	}
  
