@@ -47,17 +47,19 @@ import com.tdc.NoCashAvailableException;
 import com.tdc.coin.Coin;
 
 import com.tdc.coin.CoinDispenserObserver;
-
+import com.tdc.coin.CoinStorageUnit;
+import com.tdc.coin.CoinStorageUnitObserver;
 import com.tdc.coin.CoinValidator;
 
 import com.tdc.coin.CoinValidatorObserver;
 
 import com.tdc.coin.ICoinDispenser;
+import com.thelocalmarketplace.software.PredictError;
 
 /**
  * Handles coin payment events, implementing observer interfaces for CoinValidator and CoinDispenser.
  */
-public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver {
+public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver, CoinStorageUnitObserver {
     
     private Funds fundController = null;
     
@@ -119,6 +121,7 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
     @Override
 	public void coinAdded(ICoinDispenser dispenser, Coin coin) {
         this.fundController.coinsAvailable.put(coin.getValue(), (int)this.fundController.coinsAvailable.get(coin.getValue()) + 1);
+        
     }
 
     /**
@@ -136,6 +139,8 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
         else {
             throw new NullPointerException();
         }
+        if (dispenser.size() < 5)
+        	this.fundController.notifyCoinsLow(dispenser);
     }
     
     /**
@@ -168,6 +173,8 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
                 throw new NullPointerException();
             }
         }
+        if (dispenser.size() < 5)
+        	this.fundController.notifyCoinsLow(dispenser);
     }
 
     // not useful to us
@@ -204,7 +211,36 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
      */
     @Override
     public void coinsEmpty(ICoinDispenser dispenser) {
+    	if (dispenser.size() < 5)
+        	this.fundController.notifyCoinsLow(dispenser);
     }
+
+	@Override
+	public void coinsFull(CoinStorageUnit unit) {
+		// TODO Auto-generated method stub
+		if (unit.getCapacity() - unit.getCoinCount() < 5)
+        	this.fundController.notifyCoinsHigh(unit);
+	}
+
+	@Override
+	public void coinAdded(CoinStorageUnit unit) {
+		// TODO Auto-generated method stub
+		if (unit.getCapacity() - unit.getCoinCount() < 5)
+        	this.fundController.notifyCoinsHigh(unit);
+	}
+
+	@Override
+	public void coinsLoaded(CoinStorageUnit unit) {
+		// TODO Auto-generated method stub
+		if (unit.getCapacity() - unit.getCoinCount() < 5)
+        	this.fundController.notifyCoinsHigh(unit);
+	}
+
+	@Override
+	public void coinsUnloaded(CoinStorageUnit unit) {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 }

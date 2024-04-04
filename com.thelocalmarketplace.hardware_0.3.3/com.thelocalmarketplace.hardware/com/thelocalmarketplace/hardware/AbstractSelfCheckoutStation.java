@@ -269,6 +269,7 @@ public abstract class AbstractSelfCheckoutStation implements ISelfCheckoutStatio
 		Map<BigDecimal, IBanknoteDispenser> banknoteDispensers, CoinSlot coinSlot, CoinValidator coinValidator,
 		CoinStorageUnit coinStorage, List<BigDecimal> coinDenominations, Map<BigDecimal, ICoinDispenser> coinDispensers,
 		CoinTray coinTray) {
+		 System.out.println("abstract checkout constructor start!");
 		this.baggingArea = baggingArea;
 		this.scanningArea = scanningArea;
 		this.screen = screen;
@@ -289,6 +290,7 @@ public abstract class AbstractSelfCheckoutStation implements ISelfCheckoutStatio
 		this.coinDenominations = coinDenominations;
 		this.coinDispensers = coinDispensers;
 		this.coinTray = coinTray;
+		 System.out.println("abstract checkout constructor finished!");
 	}
 
 	@Override

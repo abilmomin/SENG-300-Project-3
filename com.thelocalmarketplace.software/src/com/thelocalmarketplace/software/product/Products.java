@@ -29,19 +29,21 @@ Nami Marwah              30178528
 package com.thelocalmarketplace.software.product;
 
 import java.math.BigDecimal;
-
+import java.util.HashSet;
+import java.util.Set;
 import com.jjjwelectronics.Mass;
-import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.bag.IReusableBagDispenser;
+import com.jjjwelectronics.bag.ReusableBag;
 import com.jjjwelectronics.scale.IElectronicScale;
-import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
 import com.thelocalmarketplace.hardware.*;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
-public class ProductHandler {
+public class Products {
+	// request attendants attention also goes in communication, but where? idk. Button needed in GUI
+	// safe to say most things go here for group 4 :))
 	// Things to listen to (hardware)
 	public SelfCheckoutStationSoftware software;
 	public ISelfCheckoutStation station;
@@ -53,7 +55,7 @@ public class ProductHandler {
 	// Listeners
 	public ScaleListener scaleListener;
 	public ScannerListener scannerListener;
-	public BaggingListener baggingListener;
+	public Set<ProductsListener> listeners = new HashSet<>();
 
 	/**
 	 * Basic constructor.
@@ -61,7 +63,7 @@ public class ProductHandler {
 	 * @param software
 	 * 		The main software hub.
 	 */
-	public ProductHandler(SelfCheckoutStationSoftware software) {
+	public Products(SelfCheckoutStationSoftware software) {
 		this.software = software;
 		this.station = software.getStationHardware();
 
@@ -74,7 +76,6 @@ public class ProductHandler {
 		// Make the listener objects
 		this.scannerListener = new ScannerListener(software, this);
 		this.scaleListener = new ScaleListener(software, this);
-		this.baggingListener = new BaggingListener(software, this);
 
 		// Attach the listeners to the hardware
 		mainScanner.register(scannerListener);
@@ -122,7 +123,9 @@ public class ProductHandler {
 
 				Mass mass = new Mass(itemWeight);
 				PLUCodedItem newItem = new PLUCodedItem(PLUCode, mass);
-				software.addItemToOrder(newItem);			
+				software.addItemToOrder(newItem);	
+				
+				notifyProductAdded(product);
 			}
 		}
 	}
@@ -152,9 +155,7 @@ public class ProductHandler {
                     
                     return; 
                 }
-            }
-
-            
+            }   
         }
     
     /**
@@ -173,6 +174,8 @@ public class ProductHandler {
             // Update the total weight and price in the software
             software.addTotalOrderWeightInGrams(product.getExpectedWeight());
             software.addTotalOrderPrice(product.getPrice());
+            
+            notifyProductAdded(product);
         } else {
             System.out.println("Unable to add product - station is inactive or blocked.");
         }
@@ -197,6 +200,8 @@ public class ProductHandler {
             
             software.addTotalOrderWeightInGrams(weight);
             software.addTotalOrderPrice(priceForWeight);
+            
+            notifyProductAdded(product);
         } else {
             System.out.println("Unable to add product - station is inactive or blocked.");
         }
@@ -224,9 +229,62 @@ public class ProductHandler {
 					PLUCodedItem newVisualCatalogueItem = new PLUCodedItem(PLUCode, mass);
 					software.addItemToOrder(newVisualCatalogueItem);
 				}
+				
+				notifyProductAdded(PLUProduct);
 			}
 		}
 	}
-	// request attendants attention also goes in communication, but where? idk. Button needed in GUI
-	// safe to say most things go here for group 4 :))
+	/**
+	 * The selected amount of purchased bags are dispensed and added to the bagging area. The bag weight and cost is 
+	 * accounted for to avoid a weight discrepancy and make sure the bag price is added to the order total. 
+	 */
+	public void PurchaseBags(Mass idealMass) {
+	}
+	
+	
+	/**
+	 * Registers the given listener with this facade so that the listener will be
+	 * notified of events emanating from here.
+	 * 
+	 * @param listener
+	 *            The listener to be registered. No effect if it is already
+	 *    
+	 */
+	public void register(ProductsListener listener) {
+		listeners.add(listener);
+	}
+	
+	/**
+	 * De-registers the given listener from this facade so that the listener will no
+	 * longer be notified of events emanating from here.
+	 * 
+	 * @param listener
+	 *            The listener to be de-registered. No effect if it is not already
+	 *            registered or null.
+	 */
+	public void deregister(ProductsListener listener) {
+		listeners.remove(listener);
+	}
+
+	/**
+	 * Notifies observers that an item was added to the order.
+	 * 
+	 * @param product
+	 * 		The product added.
+	 */
+	public void notifyProductAdded(Product product) {
+		for(ProductsListener listener : listeners)
+			listener.productAdded(this, product);
+	}
+	
+	/**
+	 * Notifies observers that an item was removed to the order.
+	 * 
+	 * @param product
+	 * 		The product removed.
+	 */
+	public void notifyProductRemoved(Product product) {
+		for(ProductsListener listener : listeners)
+			listener.productRemoved(this, product);
+	}
 }

@@ -1,18 +1,18 @@
 package com.thelocalmarketplace.software;
 
 import java.math.BigDecimal;
-
 import com.thelocalmarketplace.hardware.Product;
 import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.funds.FundsObserver;
 import com.thelocalmarketplace.software.funds.PaymentKind.Kind;
-import com.thelocalmarketplace.software.product.ProductHandler;
+import com.thelocalmarketplace.software.product.Products;
+import com.thelocalmarketplace.software.product.ProductsListener;
 
-public class Coordination implements FundsObserver {
+public class Coordination implements FundsObserver, ProductsListener {
     Funds funds;
-    ProductHandler products;
+    Products products;
 
-    public Coordination(Funds funds, ProductHandler products) {
+    public Coordination(Funds funds, Products products) {
         this.funds = funds;
         this.products = products;
     }
@@ -50,5 +50,15 @@ public class Coordination implements FundsObserver {
     public void fundsStationBlocked(Funds fundsFacade, boolean blockedStatus) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'fundsStationBlocked'");
+    }
+    
+    @Override
+    public void productAdded(Products productFacade, Product product) {
+    	
+    }
+    
+    @Override
+    public void productRemoved(Products productFacade, Product product) {
+    	
     }
 }

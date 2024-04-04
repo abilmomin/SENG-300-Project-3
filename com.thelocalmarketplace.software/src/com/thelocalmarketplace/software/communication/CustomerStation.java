@@ -4,6 +4,7 @@ import javax.swing.*;
 
 import com.thelocalmarketplace.software.AttendantPageGUI;
 import com.thelocalmarketplace.software.MembershipCard;
+import com.thelocalmarketplace.software.communication.StartSession;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -29,7 +30,7 @@ public class CustomerStation extends JFrame {
         setLocationRelativeTo(null);
 
         // Main panel
-         mainPanel = new JPanel(new BorderLayout());
+        mainPanel = new JPanel(new BorderLayout());
 
         // Menu panel
         menuPanel = new JPanel(new GridLayout(3, 3, 10, 10));

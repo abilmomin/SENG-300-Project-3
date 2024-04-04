@@ -2,17 +2,20 @@ package com.thelocalmarketplace.software;
 
 import javax.swing.*;
 
+import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
+import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.software.communication.CustomerStation;
-
+import com.thelocalmarketplace.software.communication.StartSession;
 import java.awt.*;
 import java.awt.event.*;
 
 public class AttendantPageGUI extends JFrame {
     private int selectedStation = -1; // Variable to store the selected station number
     private JButton[] stationButtons; // Array to hold the station buttons
-    private CustomerStation[] customerGUIs;
+    private StartSession[] startSessions; // Array to hold StartSession instances
     private boolean[] stationEnabled; // Array to keep track of station status
-
+    private SelfCheckoutStationSoftware[] stationSoftwareInstances;
+    private  AbstractSelfCheckoutStation checkoutStation;
     public AttendantPageGUI() {
         // Setup
         setTitle("Attendant Page");
@@ -29,7 +32,7 @@ public class AttendantPageGUI extends JFrame {
         // Button panel for managing customer checkout stations
         JPanel stationPanel = new JPanel(new GridLayout(2, 2));
         stationButtons = new JButton[4]; // Initialize the station buttons array
-        customerGUIs = new CustomerStation[4];
+        startSessions = new StartSession[4]; // Initialize the StartSession instances array
         stationEnabled = new boolean[4]; // Initialize the station status array
         // Create station buttons
         for (int i = 0; i < 4; i++) {
@@ -46,8 +49,6 @@ public class AttendantPageGUI extends JFrame {
         // Button panel for station controls
         JPanel stationControlPanel = new JPanel(new FlowLayout());
         JButton startStation = new JButton("Start Station");
-        JButton blockStation = new JButton("Block Station");
-        JButton unblockStation = new JButton("Unblock Station");
         JButton closeStation = new JButton("Close Station");
         JButton enableStation = new JButton("Enable Station");
         JButton disableStation = new JButton("Disable Station");
@@ -122,9 +123,19 @@ public class AttendantPageGUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (selectedStation != -1) { // Check if a station is selected
+            	System.out.println("after 1st if statement!");
+            	 checkoutStation = new SelfCheckoutStationBronze();
+            	 System.out.println("make bronze station!");
+            	  stationSoftwareInstances[selectedStation] = new SelfCheckoutStationSoftware(checkoutStation);
+            	  System.out.println("make + store selfcheckout station station!");
+                  stationSoftwareInstances[selectedStation].setStationUnblock();
+                  System.out.println("unblocked!");
+
                 if (stationEnabled[selectedStation]) { // Check if station is enabled
-                    customerGUIs[selectedStation] = new CustomerStation(selectedStation + 1); // Adjusted index for station number
-                    customerGUIs[selectedStation].setVisible(true);
+                    if (startSessions[selectedStation] == null) { // Check if StartSession is not already created for this station
+                        startSessions[selectedStation] = new StartSession(selectedStation + 1);
+                        startSessions[selectedStation].setVisible(true);
+                    }
                 } else {
                     JOptionPane.showMessageDialog(null, "Selected station is disabled. Please enable it.");
                 }
@@ -138,8 +149,8 @@ public class AttendantPageGUI extends JFrame {
     private class CloseStationButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (selectedStation != -1 && customerGUIs[selectedStation] != null) { // Check if a station is selected and GUI is created
-                customerGUIs[selectedStation].dispose(); // Close the Customer GUI page for the selected station
+            if (selectedStation != -1 && startSessions[selectedStation] != null) { // Check if a station is selected and GUI is created
+                startSessions[selectedStation].dispose(); // Close the Customer GUI page for the selected station
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a station with an active Customer Station GUI.");
             }
@@ -152,8 +163,8 @@ public class AttendantPageGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (selectedStation != -1) { // Check if a station is selected
                 stationEnabled[selectedStation] = false; // Disable the selected station
-                if (customerGUIs[selectedStation] != null) { // Check if GUI is created for the selected station
-                    customerGUIs[selectedStation].freezeGUI(); // Freeze the GUI
+                if (startSessions[selectedStation] != null) { // Check if GUI is created for the selected station
+                    startSessions[selectedStation].freezeCustomerGUI(); // Freeze the GUI
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");
@@ -167,8 +178,8 @@ public class AttendantPageGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (selectedStation != -1) { // Check if a station is selected
                 stationEnabled[selectedStation] = true; // Enable the selected station
-                if (customerGUIs[selectedStation] != null) { // Check if GUI is created for the selected station
-                    customerGUIs[selectedStation].unfreezeGUI(); // Unfreeze the GUI
+                if (startSessions[selectedStation] != null) { // Check if GUI is created for the selected station
+                    startSessions[selectedStation].unfreezeCustomerGUI(); // Unfreeze the GUI
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");
@@ -182,8 +193,8 @@ public class AttendantPageGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (selectedStation != -1) { // Check if a station is selected
                 stationEnabled[selectedStation] = true; // Enable the selected station
-                if (customerGUIs[selectedStation] != null) { // Check if GUI is created for the selected station
-                    customerGUIs[selectedStation].unfreezeGUI(); // Unfreeze the GUI
+                if (startSessions[selectedStation] != null) { // Check if GUI is created for the selected station
+                    startSessions[selectedStation].unfreezeCustomerGUI(); // Unfreeze the GUI
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");
@@ -197,8 +208,8 @@ public class AttendantPageGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (selectedStation != -1) { // Check if a station is selected
                 stationEnabled[selectedStation] = false; // Disable the selected station
-                if (customerGUIs[selectedStation] != null) { // Check if GUI is created for the selected station
-                    customerGUIs[selectedStation].freezeGUI(); // Freeze the GUI
+                if (startSessions[selectedStation] != null) { // Check if GUI is created for the selected station
+                    startSessions[selectedStation].freezeCustomerGUI(); // Freeze the GUI
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");

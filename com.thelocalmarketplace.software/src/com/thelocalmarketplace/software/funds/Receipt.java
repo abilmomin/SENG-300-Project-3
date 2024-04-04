@@ -69,7 +69,7 @@ import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
-
+import com.thelocalmarketplace.software.PredictError;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 import powerutility.PowerGrid;
@@ -83,6 +83,7 @@ public class Receipt {
     protected final SelfCheckoutStationSoftware checkoutStationSoftware;
     private Funds funds;
     protected Set<ReceiptObserver> observers = new HashSet<>();
+    protected Set<PredictError> errorObservers = new HashSet<>();
     private ArrayList<Item> order;
     
     /**
@@ -106,7 +107,7 @@ public class Receipt {
 //        receiptPrinter.plugIn(PowerGrid.instance());
 //        receiptPrinter.turnOn();
         
-        ReceiptHandler rh = new ReceiptHandler(receiptPrinter);
+        ReceiptHandler rh = new ReceiptHandler(this);
         checkoutStation.station.getPrinter().register(rh);
 
         this.funds = funds;
@@ -166,18 +167,29 @@ public class Receipt {
         return this.receiptPrinter.removeReceipt();
     }
     
-    public void register(ReceiptObserver listener) {
+    public void register(ReceiptObserver listener, PredictError error) {
 		observers.add(listener);
+		errorObservers.add(error);
 	}
 
-	public void deregister(ReceiptObserver listener) {
+    public void deregister(ReceiptObserver listener, PredictError error) {
 		observers.remove(listener);
+		errorObservers.remove(error);
 	}
 
-   
     protected void notifyReceiptPrinted(ArrayList<Item> order) {
 		for(ReceiptObserver observer : observers)
 			observer.receiptPrinted(order);
+	}
+    
+    protected void notifyInkLow(IReceiptPrinter printer) {
+		for (PredictError observer : errorObservers)
+			observer.lowInkError(printer);
+	}
+	
+	protected void notifyPaperLow(IReceiptPrinter printer) {
+		for (PredictError observer : errorObservers)
+			observer.lowPaperError(printer);
 	}
     
    

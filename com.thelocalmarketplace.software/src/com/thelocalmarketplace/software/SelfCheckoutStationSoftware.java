@@ -52,8 +52,7 @@ import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.funds.Funds;
-import com.thelocalmarketplace.software.oldCode.PaymentHandler;
-import com.thelocalmarketplace.software.product.ProductHandler;
+import com.thelocalmarketplace.software.product.Products;
 import com.thelocalmarketplace.software.product.ScannerListener;
 import com.thelocalmarketplace.hardware.external.CardIssuer;
 
@@ -82,7 +81,7 @@ public class SelfCheckoutStationSoftware {
 	
 	// Facades
 	private Funds funds;
-	private ProductHandler products;
+	private Products products;
 
 	private boolean blocked = false;
 	private boolean activeSession = false;
@@ -107,7 +106,7 @@ public class SelfCheckoutStationSoftware {
 		
 		// Make facades
 		this.funds = new Funds(this);
-		this.products = new ProductHandler(this);
+		this.products = new Products(this);
 
 		setStationActive(false);
 
@@ -222,6 +221,8 @@ public class SelfCheckoutStationSoftware {
 					removeTotalOrderPrice(productPrice);
 					
 					System.out.println("Please remove item from the bagging area");
+					
+					products.notifyProductRemoved(product);
 				}
 				return true;
 			} 
@@ -238,6 +239,8 @@ public class SelfCheckoutStationSoftware {
 					removeTotalOrderPrice(productPrice);
 					
 					System.out.println("Please remove item from the bagging area");
+					
+					products.notifyProductRemoved(product);
 				}
 				return true;
 			}
@@ -246,8 +249,9 @@ public class SelfCheckoutStationSoftware {
 			System.out.println("Item not found in the order.");
 			return false;
 		}
-		
 		return false;
+		
+	
 	}
 
 	
@@ -333,7 +337,7 @@ public class SelfCheckoutStationSoftware {
 		this.banks.add(cardIssuer);
 	}
 	
-	public ProductHandler getProductHandler() {
+	public Products getProductHandler() {
 		return products;
 	}
 }
