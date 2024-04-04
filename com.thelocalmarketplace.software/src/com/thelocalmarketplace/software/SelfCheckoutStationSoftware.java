@@ -250,7 +250,7 @@ public class SelfCheckoutStationSoftware {
 			return false;
 		}
 		
-		return false;
+	
 	}
 
 	
