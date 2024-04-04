@@ -36,7 +36,7 @@ package com.thelocalmarketplace.software.test;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.thelocalmarketplace.software.communication.startSessionGUI;
+import com.thelocalmarketplace.software.communication.StartSession;
 
 import javax.swing.*;
 
@@ -48,16 +48,16 @@ public class StartSessionGUITest {
 
     @Before
     public void setUp() {
-        startSessionGUI session = new startSessionGUI();
+        StartSession session = new StartSession(1);
     }
 
     @Test
     public void testConstructor() {
-    	startSessionGUI session = new startSessionGUI();
+    	StartSession session = new StartSession(1);
         assertNotNull(session.getContentPane());
         assertEquals("Welcome to the Market", session.getTitle());
-        assertEquals(300, session.getWidth());
-        assertEquals(200, session.getHeight());
+        assertEquals(900, session.getWidth());
+        assertEquals(700, session.getHeight());
         assertEquals(JFrame.EXIT_ON_CLOSE, session.getDefaultCloseOperation());
         assertEquals(1, session.getContentPane().getComponentCount());
     }
@@ -72,7 +72,7 @@ public class StartSessionGUITest {
     
     // Utility method for testing the button
     private JButton findButtonByText(String text) {
-    	startSessionGUI session = new startSessionGUI();
+    	StartSession session = new StartSession(1);
         for (int i = 0; i < session.getContentPane().getComponentCount(); i++) {
             if (session.getContentPane().getComponent(i) instanceof JButton) {
                 JButton button = (JButton) session.getContentPane().getComponent(i);

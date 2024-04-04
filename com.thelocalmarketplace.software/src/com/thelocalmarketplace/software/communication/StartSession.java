@@ -4,12 +4,36 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class startSessionGUI extends JFrame {
+public class StartSession extends JFrame {
+    private int selectedStation; // Variable to hold the selected station number
+    private CustomerStation customerStation; // Reference to the CustomerStation GUI
 
-    public startSessionGUI() {
+    // Method to start a customer session (this might be called based on some user interaction within StartSession)
+    public void startCustomerSession(int stationNumber) {
+        if (customerStation == null) {
+            customerStation = new CustomerStation(stationNumber);
+            customerStation.setVisible(true);
+        }
+    }
+
+    // Methods to control the CustomerStation GUI
+    public void freezeCustomerGUI() {
+        if (customerStation != null) {
+            customerStation.freezeGUI();
+        }
+    }
+
+    public void unfreezeCustomerGUI() {
+        if (customerStation != null) {
+            customerStation.unfreezeGUI();
+        }
+    }
+    public StartSession(int stationNumber) {
+        this.selectedStation = stationNumber; // Set the selected station number
+
         // Frame initialization
-        setTitle("Welcome to the Market");
-        setSize(600, 400); // Set the size of the window
+        setTitle("Welcome to the Market - Station " + selectedStation);
+        setSize(900, 700); // Set the size of the window
         setLocationRelativeTo(null); // Center the window
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -25,7 +49,10 @@ public class startSessionGUI extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 // Implement session start logic here
-                JOptionPane.showMessageDialog(startSessionGUI.this, "Session Started!");
+                JOptionPane.showMessageDialog(StartSession.this, "Session Started!");
+                // Once the session is started, dispose the current frame and open the CustomerStation GUI
+                StartSession.this.dispose(); // Close StartSession window
+                new CustomerStation(stationNumber); // Create and display a new instance of CustomerStation (using station 1 for this example)
             }
         });
 
@@ -60,7 +87,7 @@ public class startSessionGUI extends JFrame {
         // Ensure the GUI is created on the Event Dispatch Thread for thread safety
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new startSessionGUI();
+                new StartSession(1);
             }
         });
     }
