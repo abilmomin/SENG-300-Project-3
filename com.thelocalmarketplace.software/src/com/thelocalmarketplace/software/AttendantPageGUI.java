@@ -206,36 +206,6 @@ public class AttendantPageGUI extends JFrame {
         }
     }
 
-    // Action listener for block station button
-    private class BlockStationButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (selectedStation != -1) { // Check if a station is selected
-                stationEnabled[selectedStation] = false; // Disable the selected station
-                if (customerStation[selectedStation] != null) { // Check if GUI is created for the selected station
-                	customerStation[selectedStation].freezeGUI(); // Freeze the GUI
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "Please select a station first.");
-            }
-        }
-    }
-
-               
-    // Action listener for unblock station button
-    private class UnblockStationButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (selectedStation != -1) { // Check if a station is selected
-                stationEnabled[selectedStation] = true; // Enable the selected station
-                if (customerStation[selectedStation] != null) { // Check if GUI is created for the selected station
-                	customerStation[selectedStation].unfreezeGUI(); // Unfreeze the GUI
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "Please select a station first.");
-            }
-        }
-    }
 
     // Action listener for enable station button
     private class EnableStationButtonListener implements ActionListener {
@@ -243,7 +213,8 @@ public class AttendantPageGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (selectedStation != -1) { // Check if a station is selected
                 stationEnabled[selectedStation] = true; // Enable the selected station
-                if (startSessions[selectedStation] != null) { // Check if GUI is created for the selected station
+                if (customerStation[selectedStation] != null && stationSoftwareInstances[selectedStation].getStationBlock()== true) { // Check if GUI is created for the selected station
+                	stationSoftwareInstances[selectedStation].setStationUnblock();
                     startSessions[selectedStation].unfreezeCustomerGUI(); // Unfreeze the GUI
                 }
             } else {
@@ -258,8 +229,9 @@ public class AttendantPageGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (selectedStation != -1) { // Check if a station is selected
                 stationEnabled[selectedStation] = false; // Disable the selected station
-                if (startSessions[selectedStation] != null) { // Check if GUI is created for the selected station
-                    startSessions[selectedStation].freezeCustomerGUI(); // Freeze the GUI
+                if (customerStation[selectedStation] != null && stationSoftwareInstances[selectedStation].getStationBlock()== false) { // Check if GUI is created for the selected station
+                	stationSoftwareInstances[selectedStation].setStationBlock();
+                	startSessions[selectedStation].freezeCustomerGUI(); // Freeze the GUI
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");
