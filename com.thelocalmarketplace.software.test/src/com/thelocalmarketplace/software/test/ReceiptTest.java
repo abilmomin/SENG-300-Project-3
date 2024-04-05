@@ -80,7 +80,7 @@ public class ReceiptTest {
         this.funds = new Funds(this.station);
         this.printer = this.station.getStationHardware().getPrinter();
         this.receipt = new Receipt(printer, funds, station);
-        
+
 
     }
 
@@ -106,6 +106,9 @@ public class ReceiptTest {
         this.station.addTotalOrderPrice(barcodeProductPrice);
         this.funds.addToTotalPaid(new BigDecimal(5));
 
+        this.receipt.receiptPrinter.addInk(ReceiptPrinterBronze.MAXIMUM_INK);
+        this.receipt.receiptPrinter.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
+
         this.receipt.printReceipt();
 
     }
@@ -130,6 +133,9 @@ public class ReceiptTest {
         this.station.addTotalOrderPrice(pluCodeProductPrice);
         this.funds.addToTotalPaid(new BigDecimal(5));
 
+        this.receipt.receiptPrinter.addInk(ReceiptPrinterBronze.MAXIMUM_INK);
+        this.receipt.receiptPrinter.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
+
         this.receipt.printReceipt();
 
 
@@ -148,61 +154,80 @@ public class ReceiptTest {
 
     @Test
     public void testRegisterAndNotifyReceiptPrinted() {
-        // Arrange
+
 
         mockReceiptObserver observer = new mockReceiptObserver();
 
-        // Act
         this.receipt.register(observer, error);
         this.receipt.notifyReceiptPrinted(new ArrayList<>());
 
-        // Assert
+
         assertTrue(observer.receiptPrintedCalled);
     }
 
     @Test
     public void testDeregister() {
-        // Arrange
+
 
         mockReceiptObserver observer = new mockReceiptObserver();
 
-        // Act
+
         this.receipt.register(observer, error);
         this.receipt.deregister(observer, error);
         this.receipt.notifyReceiptPrinted(new ArrayList<>());
 
-        // Assert
+
         assertFalse(observer.receiptPrintedCalled);
     }
 
     @Test
-    public void testNotifyInkLow() {
-        // Arrange
+    public void testNotifyInkEmpty() {
 
         mockReceiptObserver observer = new mockReceiptObserver();
         mockPredictError pError = new mockPredictError();
 
         // Act
         this.receipt.register(observer, pError);
-        this.receipt.notifyInkLow(printer);
+        this.receipt.notifyInkEmpty(printer);
 
-        // Assert
-        assertTrue(pError.inkLowCalled);
+        assertTrue(pError.noInkCalled);
     }
 
     @Test
-    public void testNotifyPaperLow() {
-        // Arrange
+    public void testNotifyPaperEmpty() {
 
         mockReceiptObserver observer = new mockReceiptObserver();
         mockPredictError pError = new mockPredictError();
 
-        // Act
-        this.receipt.register(observer, pError);
-        this.receipt.notifyPaperLow(printer);
 
-        // Assert
-        assertTrue(pError.paperLowCalled);
+        this.receipt.register(observer, pError);
+        this.receipt.notifyPaperEmpty(printer);
+
+        assertTrue(pError.noPaperCalled);
+    }
+
+    @Test
+    public void testNotifyInkAdded() {
+
+
+        mockReceiptObserver observer = new mockReceiptObserver();
+
+        this.receipt.register(observer, error);
+        this.receipt.notifyInkAdded(printer);
+
+        assertTrue(observer.inkAddedCalled);
+    }
+
+    @Test
+    public void testNotifyPaperAdded() {
+
+        mockReceiptObserver observer = new mockReceiptObserver();
+
+        this.receipt.register(observer, error);
+        this.receipt.notifyPaperAdded(printer);
+
+
+        assertTrue(observer.paperAddedCalled);
     }
 
 
