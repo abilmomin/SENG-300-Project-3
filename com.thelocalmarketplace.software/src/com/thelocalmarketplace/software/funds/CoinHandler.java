@@ -211,15 +211,13 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
      */
     @Override
     public void coinsEmpty(ICoinDispenser dispenser) {
-    	if (dispenser.size() < 5)
-        	this.fundController.notifyCoinsLow(dispenser);
+        this.fundController.notifyCoinsLow(dispenser);
     }
 
 	@Override
 	public void coinsFull(CoinStorageUnit unit) {
 		// TODO Auto-generated method stub
-		if (unit.getCapacity() - unit.getCoinCount() < 5)
-        	this.fundController.notifyCoinsHigh(unit);
+        this.fundController.notifyCoinsHigh(unit);
 	}
 
 	@Override

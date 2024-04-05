@@ -31,6 +31,7 @@ package com.thelocalmarketplace.software.funds;
 import java.util.ArrayList;
 
 import com.jjjwelectronics.Item;
+import com.jjjwelectronics.printer.IReceiptPrinter;
 
 /**
  * Observer for the receipt.
@@ -43,5 +44,6 @@ public interface ReceiptObserver {
 	default public void receiptPrinted(ArrayList<Item> Order) {}
 
 	default public void inkAdded(IReceiptPrinter printer) {}
+	
 	default public void paperAdded(IReceiptPrinter printer) {}
 }

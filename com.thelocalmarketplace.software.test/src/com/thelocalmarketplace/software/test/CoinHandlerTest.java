@@ -33,8 +33,14 @@ package com.thelocalmarketplace.software.test;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.*;
 
 import com.tdc.CashOverloadException;
@@ -42,8 +48,11 @@ import com.tdc.DisabledException;
 import com.tdc.NoCashAvailableException;
 import com.tdc.coin.Coin;
 import com.tdc.coin.CoinSlot;
+import com.tdc.coin.CoinStorageUnit;
+import com.tdc.coin.CoinStorageUnitObserver;
 import com.tdc.coin.CoinValidator;
-
+import com.tdc.coin.ICoinDispenser;
+import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
@@ -55,12 +64,14 @@ import ca.ucalgary.seng300.simulation.SimulationException;
 import powerutility.PowerGrid;
 
 public class CoinHandlerTest {
-	private SelfCheckoutStationSoftware station;
+	private SelfCheckoutStationSoftware stationG;
+	private SelfCheckoutStationSoftware stationB;
+	private SelfCheckoutStationSoftware stationS;
 	private SelfCheckoutStationGold checkoutStationG;
 	private SelfCheckoutStationSilver checkoutStationS;
 	private SelfCheckoutStationBronze checkoutStationB;
 	private Coin coin1, coin2;
-
+	
 	@Before
 	public void setUp() {
 		BigDecimal[] coinDenominations = { new BigDecimal("0.25"), new BigDecimal("0.10"), new BigDecimal("0.50"),
@@ -73,7 +84,7 @@ public class CoinHandlerTest {
 		this.checkoutStationG = new SelfCheckoutStationGold();
 		this.checkoutStationG.plugIn(PowerGrid.instance());
 		this.checkoutStationG.turnOn();
-		this.station = new SelfCheckoutStationSoftware(checkoutStationG);
+		this.stationG = new SelfCheckoutStationSoftware(checkoutStationG);
 
 		// Set up Silver selfCheckoutStation
 		SelfCheckoutStationSilver.resetConfigurationToDefaults();
@@ -82,7 +93,7 @@ public class CoinHandlerTest {
 		this.checkoutStationS = new SelfCheckoutStationSilver();
 		this.checkoutStationS.plugIn(PowerGrid.instance());
 		this.checkoutStationS.turnOn();
-		this.station = new SelfCheckoutStationSoftware(checkoutStationS);
+		this.stationS = new SelfCheckoutStationSoftware(checkoutStationS);
 
 		// Set up Bronze selfCheckoutStation
 		SelfCheckoutStationBronze.resetConfigurationToDefaults();
@@ -91,8 +102,18 @@ public class CoinHandlerTest {
 		this.checkoutStationB = new SelfCheckoutStationBronze();
 		this.checkoutStationB.plugIn(PowerGrid.instance());
 		this.checkoutStationB.turnOn();
-		this.station = new SelfCheckoutStationSoftware(checkoutStationB);
+		this.stationB = new SelfCheckoutStationSoftware(checkoutStationB);
 
+	}
+	
+	@After
+	public void tearDown() {
+		stationG = null;
+		stationS = null;
+		stationB = null;
+		checkoutStationB = null;
+		checkoutStationS = null;
+		checkoutStationG = null;
 	}
 
 	@Test
@@ -304,6 +325,119 @@ public class CoinHandlerTest {
 		// remove coin
 		checkoutStationB.getCoinDispensers().get(new BigDecimal("0.25")).emit();
 		;
+	}
+	
+	// Coin Dispenser Tests
+	@Test
+	public void testCoinsEmptyDS() throws SimulationException, CashOverloadException, NoCashAvailableException, DisabledException {
+		Currency currency = Currency.getInstance("CAD");
+		List<BigDecimal> denominations = checkoutStationS.getCoinDenominations();
+		Map<BigDecimal, ICoinDispenser> dispensers = checkoutStationS.getCoinDispensers();
+		for (BigDecimal denomination : denominations) {
+			ICoinDispenser dispenser = dispensers.get(denomination);
+			Coin coin = new Coin(currency, denomination);
+			dispenser.load(coin);
+			dispenser.emit();
+		}
+	}
+	
+	@Test
+	public void testCoinsEmptyDB() throws SimulationException, CashOverloadException, NoCashAvailableException, DisabledException {
+		Currency currency = Currency.getInstance("CAD");
+		List<BigDecimal> denominations = checkoutStationB.getCoinDenominations();
+		Map<BigDecimal, ICoinDispenser> dispensers = checkoutStationB.getCoinDispensers();
+		for (BigDecimal denomination : denominations) {
+			ICoinDispenser dispenser = dispensers.get(denomination);
+			Coin coin = new Coin(currency, denomination);
+			dispenser.load(coin);
+			dispenser.emit();
+		}
+	}
+	
+	@Test
+	public void testCoinsEmptyDG() throws SimulationException, CashOverloadException, NoCashAvailableException, DisabledException {
+		Currency currency = Currency.getInstance("CAD");
+		List<BigDecimal> denominations = checkoutStationG.getCoinDenominations();
+		Map<BigDecimal, ICoinDispenser> dispensers = checkoutStationG.getCoinDispensers();
+		for (BigDecimal denomination : denominations) {
+			ICoinDispenser dispenser = dispensers.get(denomination);
+			Coin coin = new Coin(currency, denomination);
+			dispenser.load(coin);
+			dispenser.emit();
+		}
+	}
+	
+	// Coin Storage Unit Tests
+	@Test
+	public void testCoinsFullSS() throws DisabledException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		CoinStorageUnit storage = checkoutStationS.getCoinStorage();
+		Funds funds = new Funds(stationS);
+		CoinHandler handler = new CoinHandler(funds);
+		storage.attach(handler);
+		while (storage.hasSpace()) {
+			storage.receive(new Coin(currency, BigDecimal.valueOf(0.25)));
+		}
+	}
+	
+	@Test
+	public void testCoinsFullSB() throws DisabledException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		CoinStorageUnit storage = checkoutStationB.getCoinStorage();
+		Funds funds = new Funds(stationB);
+		CoinHandler handler = new CoinHandler(funds);
+		storage.attach(handler);
+		while (storage.hasSpace()) {
+			storage.receive(new Coin(currency, BigDecimal.valueOf(0.25)));
+		}
+	}
+	
+	@Test
+	public void testCoinsFullSG() throws DisabledException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		CoinStorageUnit storage = checkoutStationG.getCoinStorage();
+		Funds funds = new Funds(stationG);
+		CoinHandler handler = new CoinHandler(funds);
+		storage.attach(handler);
+		while (storage.hasSpace()) {
+			storage.receive(new Coin(currency, BigDecimal.valueOf(0.25)));
+		}
+	}
+	
+	@Test
+	public void testCoinsLoadSS() throws DisabledException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		CoinStorageUnit storage = checkoutStationS.getCoinStorage();
+		Funds funds = new Funds(stationS);
+		CoinHandler handler = new CoinHandler(funds);
+		storage.attach(handler);
+		while (storage.hasSpace()) {
+			storage.load(new Coin(currency, BigDecimal.valueOf(0.25)));
+		}
+	}
+	
+	@Test
+	public void testCoinsLoadSB() throws DisabledException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		CoinStorageUnit storage = checkoutStationB.getCoinStorage();
+		Funds funds = new Funds(stationB);
+		CoinHandler handler = new CoinHandler(funds);
+		storage.attach(handler);
+		while (storage.hasSpace()) {
+			storage.load(new Coin(currency, BigDecimal.valueOf(0.25)));
+		}
+	}
+	
+	@Test
+	public void testCoinsLoadSG() throws DisabledException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		CoinStorageUnit storage = checkoutStationG.getCoinStorage();
+		Funds funds = new Funds(stationG);
+		CoinHandler handler = new CoinHandler(funds);
+		storage.attach(handler);
+		while (storage.hasSpace()) {
+			storage.load(new Coin(currency, BigDecimal.valueOf(0.25)));
+		}
 	}
 
 }
