@@ -7,14 +7,20 @@ import com.jjjwelectronics.printer.IReceiptPrinter;
 import com.thelocalmarketplace.software.PredictError;
 import com.thelocalmarketplace.software.funds.ReceiptObserver;
 
-public class mockReceiptObserver implements ReceiptObserver{
+public class mockPredictError implements PredictError {
     boolean receiptPrintedCalled = false;
     boolean inkLowCalled = false;
     boolean paperLowCalled = false;
 
     @Override
-    public void receiptPrinted(ArrayList<Item> order) {
-        receiptPrintedCalled = true;
+    public void lowInkError(IReceiptPrinter printer) {
+        inkLowCalled = true;
+    }
+
+    @Override
+    public void lowPaperError(IReceiptPrinter printer) {
+        paperLowCalled = true;
     }
 
 }
+
