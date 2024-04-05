@@ -79,12 +79,12 @@ public class ReceiptHandler implements ReceiptPrinterListener{
 	@Override
 	public void thePrinterIsOutOfPaper() {
 		this.receipt.notifyPaperLow(receiptPrinter);
-		try {
-			this.receiptPrinter.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
-		} catch (OverloadedDevice e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			this.receiptPrinter.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
+//		} catch (OverloadedDevice e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 	}
 
@@ -94,12 +94,12 @@ public class ReceiptHandler implements ReceiptPrinterListener{
 	@Override
     public void thePrinterIsOutOfInk() {
 	 	this.receipt.notifyInkLow(receiptPrinter);
-        try {
-            this.receiptPrinter.addInk(ReceiptPrinterBronze.MAXIMUM_INK);
-        } catch (OverloadedDevice e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+//        try {
+//            this.receiptPrinter.addInk(ReceiptPrinterBronze.MAXIMUM_INK);
+//        } catch (OverloadedDevice e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
 
     }
 
@@ -109,24 +109,24 @@ public class ReceiptHandler implements ReceiptPrinterListener{
     @Override
     public void thePrinterHasLowInk(){
     	this.receipt.notifyInkLow(receiptPrinter);
-        try {
-            this.receiptPrinter.addInk(ReceiptPrinterBronze.MAXIMUM_INK - this.receiptPrinter.inkRemaining());
-        } catch (OverloadedDevice e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+//        try {
+//            this.receiptPrinter.addInk(ReceiptPrinterBronze.MAXIMUM_INK - this.receiptPrinter.inkRemaining());
+//        } catch (OverloadedDevice e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
 
     }
 
 	@Override
 	public void thePrinterHasLowPaper() {
 		this.receipt.notifyPaperLow(receiptPrinter);
-		try {
-			this.receiptPrinter.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER - this.receiptPrinter.paperRemaining());
-		} catch (OverloadedDevice e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			this.receiptPrinter.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER - this.receiptPrinter.paperRemaining());
+//		} catch (OverloadedDevice e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 	}
 

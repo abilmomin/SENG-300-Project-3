@@ -17,9 +17,11 @@ import com.tdc.banknote.IBanknoteDispenser;
 import com.tdc.coin.Coin;
 import com.tdc.coin.CoinStorageUnit;
 import com.tdc.coin.ICoinDispenser;
+import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
 
 import ca.ucalgary.seng300.simulation.SimulationException;
+import powerutility.PowerGrid;
 
 public class ALogic {
 	
@@ -49,26 +51,36 @@ public class ALogic {
 	
 	public void refillBanknoteDispensers(SelfCheckoutStationSoftware cSoftware) throws SimulationException, CashOverloadException {
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
+		AbstractSelfCheckoutStation aCS = (AbstractSelfCheckoutStation) cS;
 		Currency currency = Currency.getInstance("CAD");
 		BigDecimal[] denominations = cS.getBanknoteDenominations();
-		Map<BigDecimal, IBanknoteDispenser> dispensers = cS.getBanknoteDispensers();
+		Map<BigDecimal, IBanknoteDispenser> dispensers = aCS.getBanknoteDispensers();
+		aCS.plugIn(PowerGrid.instance());
+		aCS.turnOn();
 		for (BigDecimal denomination : denominations) {
 			IBanknoteDispenser dispenser = dispensers.get(denomination);
-			while (dispenser.size() <= dispenser.getCapacity())
+			while (dispenser.size() < dispenser.getCapacity())
 				dispenser.load(new Banknote(currency, denomination));
 		}
 	}
 	
+	// ONLY USE ONCE INK IS EMPTY
 	public void refillPrinterInk(SelfCheckoutStationSoftware cSoftware) throws OverloadedDevice {
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
 		IReceiptPrinter printer = cS.getPrinter();
-		printer.addInk(ReceiptPrinterBronze.MAXIMUM_INK - printer.inkRemaining());
+		printer.addInk(ReceiptPrinterBronze.MAXIMUM_INK);
 	}
 	
+	// ONLY USE ONCE PAPER IS EMPTY
 	public void refillPrinterPaper(SelfCheckoutStationSoftware cSoftware) throws OverloadedDevice {
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
 		IReceiptPrinter printer = cS.getPrinter();
-		printer.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER - printer.paperRemaining());
+		try {
+			printer.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
+		} catch (OverloadedDevice e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 

@@ -188,12 +188,11 @@ public class Receipt {
         for (PredictError observer : errorObservers)
             observer.lowInkError(printer);
     }
-
+    
     public void notifyPaperLow(IReceiptPrinter printer) {
         for (PredictError observer : errorObservers)
             observer.lowPaperError(printer);
     }
-
 
 
 }
