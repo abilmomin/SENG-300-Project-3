@@ -63,24 +63,23 @@ public class ALogic {
 				dispenser.load(new Banknote(currency, denomination));
 		}
 	}
-	
+
 	// ONLY USE ONCE INK IS EMPTY
-	public void refillPrinterInk(SelfCheckoutStationSoftware cSoftware) throws OverloadedDevice {
+	public void refillPrinterInk(SelfCheckoutStationSoftware cSoftware, Receipt receipt) throws OverloadedDevice {
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
 		IReceiptPrinter printer = cS.getPrinter();
 		printer.addInk(ReceiptPrinterBronze.MAXIMUM_INK);
+		receipt.notifyInkAdded(printer);
+
 	}
-	
+
 	// ONLY USE ONCE PAPER IS EMPTY
-	public void refillPrinterPaper(SelfCheckoutStationSoftware cSoftware) throws OverloadedDevice {
+	public void refillPrinterPaper(SelfCheckoutStationSoftware cSoftware, Receipt receipt) throws OverloadedDevice {
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
 		IReceiptPrinter printer = cS.getPrinter();
-		try {
-			printer.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
-		} catch (OverloadedDevice e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		printer.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
+		receipt.notifyPaperAdded(printer);
+
 	}
 
 
