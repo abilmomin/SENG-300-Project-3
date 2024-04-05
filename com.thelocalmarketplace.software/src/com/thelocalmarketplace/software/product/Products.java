@@ -262,14 +262,16 @@ public class Products {
 						throw new EmptyDevice("Dispenser is now out of bags");
 					}	
 				}
-			double rBagWeightTotal = 0; 
+			double reusableBagWeightTotal = 0; 
+			Product rbag = null;
+			long reusableBagPrice = rbag.getPrice();
 			for(ReusableBag bag: bags) {
-				Mass reusableBagMass = bag.getMass();
-				
-				rBagWeightTotal += reusableBagMass.inGrams().doubleValue(); 
+				reusableBagWeightTotal += bag.getMass().inGrams().doubleValue(); 
+				long totalBagPrice = reusableBagPrice * bags.length; 
+				software.addTotalOrderPrice(totalBagPrice); 
 			}
 			// add the total weight of all purchased bags to the weight of the order 
-			software.addTotalOrderWeightInGrams(rBagWeightTotal);
+			software.addTotalOrderWeightInGrams(reusableBagWeightTotal); 
 			
 			} catch (OverloadedDevice | EmptyDevice e) {
 	            System.out.println("Unable to add bags: " + e.getMessage());
