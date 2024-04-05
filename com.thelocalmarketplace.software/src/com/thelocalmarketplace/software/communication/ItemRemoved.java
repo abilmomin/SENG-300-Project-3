@@ -25,7 +25,7 @@ public class ItemRemoved extends JFrame {
         JButton removeButton = new JButton("Remove from Bagging Area");
         removeButton.setFont(new Font("Arial", Font.BOLD, 16));
         removeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        removeButton.setBackground(new Color(70, 130, 180));
+        removeButton.setBackground(Color.RED); // Set the button color to red
         removeButton.setForeground(Color.WHITE);
         removeButton.setOpaque(true);
         removeButton.setBorderPainted(false);
