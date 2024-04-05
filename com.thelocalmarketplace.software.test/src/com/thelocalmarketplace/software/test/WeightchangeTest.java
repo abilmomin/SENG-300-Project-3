@@ -19,6 +19,7 @@ import powerutility.PowerGrid;
 public class WeightchangeTest {
 	 
 	private mockScale scale;
+	private mockScale scale1;
 	private AbstractElectronicScale tehst;
 	private SelfCheckoutStationSoftware station;
 	private SelfCheckoutStationBronze checkoutSB;
@@ -35,7 +36,7 @@ public class WeightchangeTest {
 		listen = new ScaleListener(station, null);
 		
 		scale = new mockScale(new Mass(6000000),new Mass (6000000));
-		
+		scale1 = new mockScale(new Mass(600000000000L),new Mass (60000000000l));
 		this.scale.plugIn(PowerGrid.instance());
 		this.scale.turnOn();
 		
@@ -65,16 +66,43 @@ public class WeightchangeTest {
         
         
             }
+	
+	@Test
+	public void unBlockTestTolerance() throws Exception {
+    	
+		 
+		 scale1.plugIn(PowerGrid.instance());
+		 scale1.turnOn();
+    	 MockItem item1 = new MockItem(new Mass(100));
+         MockItem item2 = new MockItem(new Mass(150));
+         
+         station.addItemToOrder(item1);
+         station.addItemToOrder(item2);
+         
+         scale1.addAnItem(item1);
+         this.checkoutSB.getBaggingArea();
+    	
+        listen.theMassOnTheScaleHasChanged(scale1,null);
+          
+        assertFalse(station.getStationBlock());     
+
+            }
+	
 	@Test
 	public void unBlockCatchExceptionTest() throws OverloadedDevice{
-        
+		mockScale scale2 = new mockScale(new Mass(6),new Mass (6));
+		scale2.plugIn(PowerGrid.instance());
+		scale2.turnOn();
         MockItem item2 = new MockItem(new Mass(200000000000000000L));
    
-        scale.addAnItem(item2);
-        listen.theMassOnTheScaleHasChanged(scale,null);
+        scale2.addAnItem(item2);
+        listen.theMassOnTheScaleHasChanged(scale2,null);
         assertTrue(station.getStationBlock());    
  
             }
+	
+	
+	
 	
 	
 
