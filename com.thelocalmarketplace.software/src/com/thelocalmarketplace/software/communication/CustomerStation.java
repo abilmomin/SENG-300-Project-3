@@ -57,6 +57,7 @@ public class CustomerStation extends JFrame {
         JButton viewBaggingAreaBtn = createButton("View Bagging Area", null);
         //Signal for attendant button 
         JButton helpButton = new JButton("Help");
+        helpButton.setFont(new Font("Arial", Font.PLAIN, 16));
         helpButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
