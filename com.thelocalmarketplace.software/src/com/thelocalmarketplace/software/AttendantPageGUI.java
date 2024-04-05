@@ -3,6 +3,10 @@ package com.thelocalmarketplace.software;
 import javax.swing.*;
 
 import com.jjjwelectronics.OverloadedDevice;
+import com.jjjwelectronics.scale.AbstractElectronicScale;
+import com.jjjwelectronics.scale.ElectronicScaleBronze;
+import com.jjjwelectronics.scale.ElectronicScaleGold;
+import com.jjjwelectronics.scale.ElectronicScaleSilver;
 import com.tdc.CashOverloadException;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.PLUCodedItem;
@@ -26,6 +30,7 @@ public class AttendantPageGUI extends JFrame {
     private boolean[] stationEnabled; // Array to keep track of station status
     private CustomerStation[] customerStation;
     private SelfCheckoutStationSoftware[] stationSoftwareInstances;
+    private AbstractElectronicScale scale;
     private  AbstractSelfCheckoutStation checkoutStation;
     public AttendantPageGUI() {
         // Setup
@@ -243,12 +248,15 @@ public class AttendantPageGUI extends JFrame {
                     try { 
                         if (selectedStation == 0) {
                             checkoutStation = new SelfCheckoutStationGold();
+                            scale = new ElectronicScaleGold();
                             System.out.println("SelfCheckoutStationGold initialized");
                         } else if (selectedStation == 1) {
                             checkoutStation = new SelfCheckoutStationSilver();
                             System.out.println("SelfCheckoutStationSilver initialized");
+                            scale = new ElectronicScaleSilver();
                         } else {
                             checkoutStation = new SelfCheckoutStationBronze();
+                             scale = new ElectronicScaleBronze();
                             System.out.println("SelfCheckoutStationBronze initialized");
                         }
 
@@ -261,7 +269,7 @@ public class AttendantPageGUI extends JFrame {
 
                             if (stationEnabled[selectedStation]) {
                                 if (startSessions[selectedStation] == null) {
-                                    startSessions[selectedStation] = new StartSession(selectedStation + 1);
+                                    startSessions[selectedStation] = new StartSession(selectedStation + 1, stationSoftwareInstances[selectedStation],scale);
                                     startSessions[selectedStation].setVisible(true);
                                     startSessions[selectedStation].setAttendantPageGUI(AttendantPageGUI.this); // Pass the reference to AttendantPageGUI
                                 }
