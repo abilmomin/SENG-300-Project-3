@@ -258,7 +258,7 @@ public class Products {
 				}
 			
 			double rBagWeightTotal = 0; 
-			double rBagPriceTotal = 0; // use case doesn't say anything about price but makes sense to add bag price to order? 
+			//double rBagPriceTotal = 0; use case doesn't say anything about price but makes sense to add bag price to order? 
 			for(ReusableBag bag: bags) {
 				Mass reusableBagMass = bag.getMass();
 				rBagWeightTotal += reusableBagMass.inGrams().doubleValue(); 
@@ -278,7 +278,7 @@ public class Products {
 		}
 		}
 	}
-	//will remove for clean code soon
+	//will remove for clean code soon 
 	// customer signals they want to purchase bags and say how many 
 	// system adds bags to order 
 	// system dispenses the number of bags ordered 
