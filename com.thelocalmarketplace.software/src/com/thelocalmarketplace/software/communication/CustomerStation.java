@@ -317,7 +317,7 @@ public class CustomerStation extends JFrame {
     }
 
     public void customerPopUp(String message) {
-    	JOptionPane.showMessageDialog(null, message);
+        JOptionPane.showMessageDialog(this, message);
     }
     
     public void unfreezeGUI() {

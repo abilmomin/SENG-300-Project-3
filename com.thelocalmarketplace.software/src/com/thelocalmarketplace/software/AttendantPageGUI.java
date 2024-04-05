@@ -233,6 +233,7 @@ public class AttendantPageGUI extends JFrame {
                 	stationSoftwareInstances[selectedStation].setStationBlock();
                 	customerStation[selectedStation].freezeGUI(); // Freeze the GUI
                 	customerStation[selectedStation].customerPopUp("Out of Order.");
+
                 	
                 }
             } else {
