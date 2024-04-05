@@ -9,12 +9,22 @@ import com.thelocalmarketplace.software.funds.ReceiptObserver;
 
 public class mockReceiptObserver implements ReceiptObserver{
     boolean receiptPrintedCalled = false;
-    boolean inkLowCalled = false;
-    boolean paperLowCalled = false;
+    boolean inkAddedCalled = false;
+    boolean paperAddedCalled = false;
+
 
     @Override
     public void receiptPrinted(ArrayList<Item> order) {
         receiptPrintedCalled = true;
     }
 
+    @Override
+    public void inkAdded(IReceiptPrinter printer) {
+        inkAddedCalled = true;
+    }
+
+    @Override
+    public void paperAdded(IReceiptPrinter printer) {
+        paperAddedCalled = true;
+    }
 }
