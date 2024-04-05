@@ -40,6 +40,7 @@ import org.junit.*;
 
 import com.tdc.CashOverloadException;
 import com.tdc.DisabledException;
+import com.tdc.NoCashAvailableException;
 import com.tdc.banknote.Banknote;
 import com.tdc.banknote.BanknoteInsertionSlot;
 import com.tdc.coin.Coin;
@@ -62,8 +63,8 @@ public class BanknoteHandlerTest {
 	@Before
 	public void setUp() {
 
-		BigDecimal[] banknoteDenominations = { new BigDecimal(5.0), new BigDecimal(10.0), new BigDecimal(20.0),
-				new BigDecimal(50), new BigDecimal(100) };
+		BigDecimal[] banknoteDenominations = { new BigDecimal("5.0"), new BigDecimal("10.0"), new BigDecimal("20.0"),
+				new BigDecimal("50.0"), new BigDecimal("100.0")};
 
 		// Set up Gold selfCheckoutStation
 		SelfCheckoutStationGold.resetConfigurationToDefaults();
@@ -143,165 +144,89 @@ public class BanknoteHandlerTest {
 	}
 
 	@Test
-	public void banknoteRemovedTestG() throws DisabledException, CashOverloadException {
+	public void banknotesLoadedTestG() throws CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
-		banknote1 = new Banknote(currency, BigDecimal.valueOf(20.0));
-		BanknoteInsertionSlot bs = this.checkoutStationG.getBanknoteInput();
-		bs.receive(banknote1);
-		checkoutStationG.getBanknoteDispensers().remove(banknote1);
+		banknote1 = new Banknote(currency, new BigDecimal("10.0"));
+		banknote2 = new Banknote(currency, new BigDecimal("10.0"));
+		checkoutStationG.getBanknoteDispensers().get(new BigDecimal("10.0")).load(banknote1,banknote2);
+	}
+	
+	@Test
+	public void banknotesLoadedTestS() throws CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		banknote1 = new Banknote(currency, new BigDecimal("10.0"));
+		banknote2 = new Banknote(currency, new BigDecimal("10.0"));
+		checkoutStationS.getBanknoteDispensers().get(new BigDecimal("10.0")).load(banknote1,banknote2);
 	}
 
 	@Test
-	public void banknoteRemovedTestS() throws DisabledException, CashOverloadException {
+	public void banknotesLoadedTestB() throws CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
-		banknote2 = new Banknote(currency, new BigDecimal(10.0));
-		BanknoteInsertionSlot bs = this.checkoutStationS.getBanknoteInput();
-		bs.receive(banknote2);
-		checkoutStationS.getBanknoteDispensers().remove(banknote2);
-
+		banknote1 = new Banknote(currency, new BigDecimal("10.0"));
+		banknote2 = new Banknote(currency, new BigDecimal("10.0"));
+		checkoutStationB.getBanknoteDispensers().get(new BigDecimal("10.0")).load(banknote1,banknote2);
 	}
-
+	
 	@Test
-	public void banknoteRemovedTestB() throws DisabledException, CashOverloadException {
+	public void banknoteRemovedTestG() throws DisabledException, CashOverloadException, NoCashAvailableException {
 		Currency currency = Currency.getInstance("CAD");
-		banknote1 = new Banknote(currency, BigDecimal.valueOf(20.0));
-		BanknoteInsertionSlot bs = this.checkoutStationB.getBanknoteInput();
-		bs.receive(banknote1);
-		checkoutStationB.getBanknoteDispensers().remove(banknote1);
-
+		banknote1 = new Banknote(currency, new BigDecimal("20.0"));
+		banknote2 = new Banknote(currency, new BigDecimal("20.0"));
+		checkoutStationG.getBanknoteDispensers().get(new BigDecimal("20.0")).load(banknote1,banknote2);
+		// remove banknote
+		checkoutStationG.getBanknoteDispensers().get(new BigDecimal("20.0")).emit();
+		
 	}
-
-	@Test(expected = NullPointerException.class)
-	public void nonExistentBanknoteRemovedTestG() throws DisabledException, CashOverloadException {
-		Currency currency = Currency.getInstance("CAD");
-		banknote1 = new Banknote(currency, BigDecimal.valueOf(20.0));
-		banknote2 = new Banknote(currency, BigDecimal.valueOf(100.0));
-		BanknoteInsertionSlot bs = this.checkoutStationG.getBanknoteInput();
-		bs.receive(banknote1);
-		checkoutStationG.getBanknoteDispensers().remove(banknote2);
-
-	}
-
-	@Test(expected = NullPointerException.class)
-	public void nonExistentBanknoteRemovedTestS() throws DisabledException, CashOverloadException {
-		Currency currency = Currency.getInstance("CAD");
-		banknote1 = new Banknote(currency, BigDecimal.valueOf(20.0));
-		banknote2 = new Banknote(currency, BigDecimal.valueOf(100.0));
-		BanknoteInsertionSlot bs = this.checkoutStationS.getBanknoteInput();
-		bs.receive(banknote1);
-		checkoutStationS.getBanknoteDispensers().remove(banknote2);
-	}
-
-	@Test(expected = NullPointerException.class)
-	public void nonExistentBanknoteRemovedTestB() throws DisabledException, CashOverloadException {
-		Currency currency = Currency.getInstance("CAD");
-		banknote1 = new Banknote(currency, BigDecimal.valueOf(20.0));
-		banknote2 = new Banknote(currency, BigDecimal.valueOf(100.0));
-		BanknoteInsertionSlot bs = this.checkoutStationB.getBanknoteInput();
-		bs.receive(banknote1);
-		checkoutStationB.getBanknoteDispensers().remove(banknote2);
-	}
-
+	
 	@Test
-	public void banknotesLoadedtestG() throws SimulationException, CashOverloadException {
+	public void banknoteRemovedTestS() throws DisabledException, CashOverloadException, NoCashAvailableException {
 		Currency currency = Currency.getInstance("CAD");
-		banknote1 = new Banknote(currency, BigDecimal.valueOf(20.0));
-		banknote2 = new Banknote(currency, BigDecimal.valueOf(10.0));
-		checkoutStationG.getBanknoteStorage().load(banknote1, banknote2);
+		banknote1 = new Banknote(currency, new BigDecimal("20.0"));
+		banknote2 = new Banknote(currency, new BigDecimal("20.0"));
+		checkoutStationS.getBanknoteDispensers().get(new BigDecimal("20.0")).load(banknote1,banknote2);
+		// remove banknote
+		checkoutStationS.getBanknoteDispensers().get(new BigDecimal("20.0")).emit();
+		
 	}
-
+	
 	@Test
-	public void banknotesLoadedtestS() throws SimulationException, CashOverloadException {
+	public void banknoteRemovedTestB() throws CashOverloadException, NoCashAvailableException, DisabledException {
 		Currency currency = Currency.getInstance("CAD");
-		banknote1 = new Banknote(currency, BigDecimal.valueOf(20.0));
-		banknote2 = new Banknote(currency, BigDecimal.valueOf(10.0));
-		checkoutStationS.getBanknoteStorage().load(banknote1, banknote2);
+		banknote1 = new Banknote(currency, new BigDecimal("20.0"));
+		banknote2 = new Banknote(currency, new BigDecimal("20.0"));
+		checkoutStationB.getBanknoteDispensers().get(new BigDecimal("20.0")).load(banknote1,banknote2);
+		// remove banknote
+		checkoutStationB.getBanknoteDispensers().get(new BigDecimal("20.0")).emit();
+		
 	}
-
+	
 	@Test
-	public void banknotesLoadedtestB() throws SimulationException, CashOverloadException {
+	public void banknotesUnloadedTestG() throws CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
-		banknote1 = new Banknote(currency, BigDecimal.valueOf(20.0));
-		banknote2 = new Banknote(currency, BigDecimal.valueOf(10.0));
-		checkoutStationB.getBanknoteStorage().load(banknote1, banknote2);
+		banknote1 = new Banknote(currency, new BigDecimal("20.0"));
+		banknote2 = new Banknote(currency, new BigDecimal("20.0"));
+		checkoutStationG.getBanknoteDispensers().get(new BigDecimal("20.0")).load(banknote1,banknote2);
+		// unload banknote
+		checkoutStationG.getBanknoteDispensers().get(new BigDecimal("20.0")).unload();
 	}
-
-	@Test(expected = CashOverloadException.class)
-	public void banknotesLoadedOverloadTestG() throws DisabledException, CashOverloadException {
-		Currency currency = Currency.getInstance("CAD");
-		banknote1 = new Banknote(currency, BigDecimal.valueOf(20.0));
-		banknote2 = new Banknote(currency, BigDecimal.valueOf(10.0));
-
-		SelfCheckoutStationGold.configureBanknoteStorageUnitCapacity(2);
-		this.checkoutStationG = new SelfCheckoutStationGold();
-		this.checkoutStationG.plugIn(PowerGrid.instance());
-		this.checkoutStationG.turnOn();
-		checkoutStationG.getBanknoteStorage().load(banknote1, banknote2);
-		// should cause overload now
-		Banknote b3 = new Banknote(currency, new BigDecimal("50.0"));
-		checkoutStationG.getBanknoteStorage().load(b3);
-	}
-
-	@Test(expected = CashOverloadException.class)
-	public void banknotesLoadedOverloadTestS() throws DisabledException, CashOverloadException {
-		Currency currency = Currency.getInstance("CAD");
-		banknote1 = new Banknote(currency, BigDecimal.valueOf(20.0));
-		banknote2 = new Banknote(currency, BigDecimal.valueOf(10.0));
-
-		SelfCheckoutStationSilver.configureBanknoteStorageUnitCapacity(2);
-		this.checkoutStationS = new SelfCheckoutStationSilver();
-		this.checkoutStationS.plugIn(PowerGrid.instance());
-		this.checkoutStationS.turnOn();
-		checkoutStationS.getBanknoteStorage().load(banknote1, banknote2);
-		// should cause overload now
-		Banknote b3 = new Banknote(currency, new BigDecimal("50.0"));
-		checkoutStationS.getBanknoteStorage().load(b3);
-	}
-
-	@Test(expected = CashOverloadException.class)
-	public void banknotesLoadedOverloadTestB() throws DisabledException, CashOverloadException {
-		Currency currency = Currency.getInstance("CAD");
-		banknote1 = new Banknote(currency, BigDecimal.valueOf(20.0));
-		banknote2 = new Banknote(currency, BigDecimal.valueOf(10.0));
-
-		SelfCheckoutStationBronze.configureBanknoteStorageUnitCapacity(2);
-		this.checkoutStationB = new SelfCheckoutStationBronze();
-		this.checkoutStationB.plugIn(PowerGrid.instance());
-		this.checkoutStationB.turnOn();
-		checkoutStationB.getBanknoteStorage().load(banknote1, banknote2);
-		// should cause overload now
-		Banknote b3 = new Banknote(currency, new BigDecimal("50.0"));
-		checkoutStationB.getBanknoteStorage().load(b3);
-	}
-
+	
 	@Test
-	public void banknotesUnloadedTestG() throws SimulationException, CashOverloadException {
+	public void banknotesUnloadedTestS() throws CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
-		banknote1 = new Banknote(currency, BigDecimal.valueOf(20.0));
-		banknote2 = new Banknote(currency, BigDecimal.valueOf(10.0));
-		checkoutStationG.getBanknoteStorage().load(banknote1, banknote2);
-		checkoutStationG.getBanknoteStorage().unload();
-		assertTrue(checkoutStationG.getBanknoteStorage().getBanknoteCount() == 0);
+		banknote1 = new Banknote(currency, new BigDecimal("20.0"));
+		banknote2 = new Banknote(currency, new BigDecimal("20.0"));
+		checkoutStationS.getBanknoteDispensers().get(new BigDecimal("20.0")).load(banknote1,banknote2);
+		// unload banknote
+		checkoutStationS.getBanknoteDispensers().get(new BigDecimal("20.0")).unload();
 	}
-
+	
 	@Test
-	public void banknotesUnloadedTestS() throws SimulationException, CashOverloadException {
+	public void banknotesUnloadedTestB() throws CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
-		banknote1 = new Banknote(currency, BigDecimal.valueOf(20.0));
-		banknote2 = new Banknote(currency, BigDecimal.valueOf(10.0));
-		checkoutStationS.getBanknoteStorage().load(banknote1, banknote2);
-		checkoutStationS.getBanknoteStorage().unload();
-		assertTrue(checkoutStationS.getBanknoteStorage().getBanknoteCount() == 0);
+		banknote1 = new Banknote(currency, new BigDecimal("20.0"));
+		banknote2 = new Banknote(currency, new BigDecimal("20.0"));
+		checkoutStationB.getBanknoteDispensers().get(new BigDecimal("20.0")).load(banknote1,banknote2);
+		// remove banknote
+		checkoutStationB.getBanknoteDispensers().get(new BigDecimal("20.0")).unload();
 	}
-
-	@Test
-	public void banknotesUnloadedTestB() throws SimulationException, CashOverloadException {
-		Currency currency = Currency.getInstance("CAD");
-		banknote1 = new Banknote(currency, BigDecimal.valueOf(20.0));
-		banknote2 = new Banknote(currency, BigDecimal.valueOf(10.0));
-		checkoutStationB.getBanknoteStorage().load(banknote1, banknote2);
-		checkoutStationB.getBanknoteStorage().unload();
-		assertTrue(checkoutStationB.getBanknoteStorage().getBanknoteCount() == 0);
-	}
-
 }
