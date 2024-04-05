@@ -311,7 +311,7 @@ public class AttendantPageGUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (selectedStation != -1) { // Check if a station is selected
-                stationEnabled[selectedStation] = true; // Enable the selected station
+
                 if (customerStation[selectedStation] != null && stationSoftwareInstances[selectedStation].getStationBlock()== true) { // Check if GUI is created for the selected station
                 	stationSoftwareInstances[selectedStation].setStationUnblock();
                 	customerStation[selectedStation].unfreezeGUI(); // Unfreeze the GUI
@@ -322,24 +322,45 @@ public class AttendantPageGUI extends JFrame {
         }
     }
 
-    // Action listener for disable station button
+ // Action listener for disable station button
     private class DisableStationButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (selectedStation != -1) { // Check if a station is selected
-                stationEnabled[selectedStation] = false; // Disable the selected station
-                if (customerStation[selectedStation] != null && stationSoftwareInstances[selectedStation].getStationBlock()== false) { // Check if GUI is created for the selected station
-                	stationSoftwareInstances[selectedStation].setStationBlock();
-                	customerStation[selectedStation].freezeGUI(); // Freeze the GUI
-                	customerStation[selectedStation].customerPopUp("Out of Order.");
-
-                	
+                if (customerStation[selectedStation] != null && stationSoftwareInstances[selectedStation].getStationBlock() == false) { // Check if GUI is created for the selected station
+                    if (stationSoftwareInstances[selectedStation].getStationActive() == false) {
+                        // If station is not active, disable it immediately
+                    	stationSoftwareInstances[selectedStation].setStationBlock();
+                    	customerStation[selectedStation].freezeGUI();
+                    } else {
+                        // If station is active, prompt user and disable after session completion
+                            new Thread(() -> waitForSessionCompletion(selectedStation)).start();
+                    }
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");
             }
         }
     }
+
+    // Method to wait for session completion
+    private void waitForSessionCompletion(int stationNumber) {
+        try {
+            while (stationSoftwareInstances[stationNumber].getStationActive()) {
+                // Sleep for a certain period before checking again
+                Thread.sleep(5000); // Sleep for 5 seconds
+            }
+            // Once the session is complete, disable the station
+            SwingUtilities.invokeLater(() -> {
+                stationSoftwareInstances[selectedStation].setStationBlock();
+                customerStation[selectedStation].freezeGUI();
+            });
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
 
     public static void notifyAssistanceRequired(int stationNumber) {
         JOptionPane.showMessageDialog(null, "Station " + (stationNumber + 1) + " requires assistance.");
