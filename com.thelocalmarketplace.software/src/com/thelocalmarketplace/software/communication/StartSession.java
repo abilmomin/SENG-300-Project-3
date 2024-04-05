@@ -47,6 +47,7 @@ public class StartSession extends JFrame {
     }
     public StartSession(int stationNumber, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale) {
     	this.stationSoftwareInstance = stationSoftwareInstance;
+    	this.stationSoftwareInstance.setStationActive(false);
     	this.scale = scale;
         this.selectedStation = stationNumber; // Set the selected station number
         // Frame initialization
@@ -67,6 +68,7 @@ public class StartSession extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 // Implement session start logic here
+            	stationSoftwareInstance.setStationActive(true);
                 JOptionPane.showMessageDialog(StartSession.this, "Session Started!");
                 // Once the session is started, dispose the current frame and open the CustomerStation GUI
                 StartSession.this.dispose(); // Close StartSession window
