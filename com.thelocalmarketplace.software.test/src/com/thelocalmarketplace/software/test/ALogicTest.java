@@ -43,17 +43,17 @@ import powerutility.PowerGrid;
 public class ALogicTest {
 
 	private ALogic aLogic;
-    public PredictError error;
-    public ReceiptObserver rO;
+	public PredictError error;
+	public ReceiptObserver rO;
 
-    private SelfCheckoutStationSoftware station;
+	private SelfCheckoutStationSoftware station;
 
 
-    @Before
-    public void setUp() {
-    	BigDecimal[] coinDenominations = { new BigDecimal("0.25"), new BigDecimal("0.10"), new BigDecimal("0.50"),
+	@Before
+	public void setUp() {
+		BigDecimal[] coinDenominations = { new BigDecimal("0.25"), new BigDecimal("0.10"), new BigDecimal("0.50"),
 				new BigDecimal("1.0") };
-    	BigDecimal[] banknoteDenominations = { new BigDecimal("5.0"), new BigDecimal("10.0"), new BigDecimal("20.0"),
+		BigDecimal[] banknoteDenominations = { new BigDecimal("5.0"), new BigDecimal("10.0"), new BigDecimal("20.0"),
 				new BigDecimal("50.0"), new BigDecimal("100.0")};
 
 		// Set up Gold selfCheckoutStation
@@ -65,12 +65,12 @@ public class ALogicTest {
 		checkoutStationG.plugIn(PowerGrid.instance());
 		checkoutStationG.turnOn();
 		this.station = new SelfCheckoutStationSoftware(checkoutStationG);
-        this.aLogic = new ALogic();
-    }
-    
-    @Test
-    public void testEmptyCoins() throws SimulationException, CashOverloadException {
-    	Currency currency = Currency.getInstance("CAD");
+		this.aLogic = new ALogic();
+	}
+
+	@Test
+	public void testEmptyCoins() throws SimulationException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
 		Coin coin1 = new Coin(currency, BigDecimal.valueOf(0.25));
 		Coin coin2 = new Coin(currency, BigDecimal.valueOf(0.10));
 		CoinStorageUnit storage = station.getStationHardware().getCoinStorage();
@@ -78,11 +78,11 @@ public class ALogicTest {
 		assertTrue(storage.getCoinCount() == 2);
 		aLogic.emptyCoinStorage(station);
 		assertTrue(storage.getCoinCount() == 0);
-    }
-    
-    @Test
-    public void testEmptyBanknotes() throws SimulationException, CashOverloadException {
-    	Currency currency = Currency.getInstance("CAD");
+	}
+
+	@Test
+	public void testEmptyBanknotes() throws SimulationException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
 		Banknote banknote1 = new Banknote(currency, BigDecimal.valueOf(5.00));
 		Banknote banknote2 = new Banknote(currency, BigDecimal.valueOf(10.00));
 		BanknoteStorageUnit storage = station.getStationHardware().getBanknoteStorage();
@@ -90,8 +90,8 @@ public class ALogicTest {
 		assertTrue(storage.getBanknoteCount() == 2);
 		aLogic.emptyBanknoteStorage(station);
 		assertTrue(storage.getBanknoteCount() == 0);
-    }
-    
+	}
+
 //    @Test
 //    public void testFillBanknoteDispensers() throws SimulationException, CashOverloadException {
 //    	ISelfCheckoutStation cS = station.getStationHardware();
@@ -111,10 +111,10 @@ public class ALogicTest {
 //			assertTrue(dispenser.size() == dispenser.getCapacity());
 //		}
 //    }
-    
-  @Test
-  public void testFillCoinDispensers() throws SimulationException, CashOverloadException {
-  	ISelfCheckoutStation cS = station.getStationHardware();
+
+	@Test
+	public void testFillCoinDispensers() throws SimulationException, CashOverloadException {
+		ISelfCheckoutStation cS = station.getStationHardware();
 		List<BigDecimal> denominations = cS.getCoinDenominations();
 		Map<BigDecimal, ICoinDispenser> dispensers = cS.getCoinDispensers();
 		for (BigDecimal denomination : denominations) {
@@ -128,21 +128,30 @@ public class ALogicTest {
 			ICoinDispenser dispenser = dispensers.get(denomination);
 			assertFalse(dispenser.hasSpace());
 		}
-  }
-  
-  @Test
-  public void testRefillInk() throws OverloadedDevice {
-	  ISelfCheckoutStation cS = station.getStationHardware();
-	  IReceiptPrinter printer = cS.getPrinter();
-	  aLogic.refillPrinterInk(station);
-  }
-    
-    
-    
-    @After
-    public void tearDown() {
-    	station = null;
-    	aLogic = null;
-    }
-	
+	}
+
+	@Test
+	public void testRefillInk() throws OverloadedDevice {
+		ISelfCheckoutStation cS = station.getStationHardware();
+		IReceiptPrinter printer = cS.getPrinter();
+		Receipt receipt = new Receipt(printer, new Funds(station), station);
+		aLogic.refillPrinterInk(station, receipt);
+	}
+
+	@Test
+	public void testRefillPaper() throws OverloadedDevice {
+		ISelfCheckoutStation cS = station.getStationHardware();
+		IReceiptPrinter printer = cS.getPrinter();
+		Receipt receipt = new Receipt(printer, new Funds(station), station);
+		aLogic.refillPrinterPaper(station, receipt);
+	}
+
+
+
+	@After
+	public void tearDown() {
+		station = null;
+		aLogic = null;
+	}
+
 }
