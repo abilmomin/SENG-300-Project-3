@@ -53,6 +53,7 @@ import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.product.Products;
+import com.thelocalmarketplace.software.product.ProductsListener;
 import com.thelocalmarketplace.software.product.ScannerListener;
 import com.thelocalmarketplace.hardware.external.CardIssuer;
 
@@ -79,9 +80,10 @@ public class SelfCheckoutStationSoftware {
 	private double totalOrderWeight;
 	private long totalOrderPrice;
 	
-	// Facades
+	// Facades and listeners
 	private Funds funds;
 	private Products products;
+	private Coordination coordination;
 
 	private boolean blocked = false;
 	private boolean activeSession = false;
@@ -107,9 +109,9 @@ public class SelfCheckoutStationSoftware {
 		// Make facades
 		this.funds = new Funds(this);
 		this.products = new Products(this);
+		this.coordination = new Coordination(funds, products);
 
 		setStationActive(false);
-
 	}
 
 	/**
