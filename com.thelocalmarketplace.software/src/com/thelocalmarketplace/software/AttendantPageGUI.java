@@ -362,5 +362,11 @@ public class AttendantPageGUI extends JFrame {
     	instance.setStationUnblock();
     	JOptionPane.showMessageDialog(this, "Customer may now continue.");
     }
+    
+    public void weightDiscpreancydNotify(SelfCheckoutStationSoftware instance) {
+    	// Attendant approves discrepancy 
+    	JOptionPane.showMessageDialog(this, "Weight Discrepancy Detected.");
+    	instance.setStationUnblock();
+    }
      
 }
