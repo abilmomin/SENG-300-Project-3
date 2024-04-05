@@ -2,8 +2,12 @@ package com.thelocalmarketplace.software.communication;
 
 import javax.swing.*;
 
+import com.jjjwelectronics.Mass;
+import com.jjjwelectronics.scale.AbstractElectronicScale;
+import com.thelocalmarketplace.software.AddownBag;
 import com.thelocalmarketplace.software.AttendantPageGUI;
 import com.thelocalmarketplace.software.MembershipCard;
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.StartSession;
 
 import java.awt.*;
@@ -22,8 +26,13 @@ public class CustomerStation extends JFrame {
     private JPanel payButtonPanel;
     private JTextField screenTextField;
     private JPanel addItemPanel;
-
-    public CustomerStation(int selectedStation) {
+    private AddownBag addOwnBag;
+    private SelfCheckoutStationSoftware stationSoftwareInstance;
+    private AbstractElectronicScale scale;
+    
+    public CustomerStation(int selectedStation, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale) {
+    	this.scale = scale;
+    	this.stationSoftwareInstance = stationSoftwareInstance;
         setTitle("Self-Checkout Station " + selectedStation);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 700);
@@ -57,6 +66,18 @@ public class CustomerStation extends JFrame {
         
         JButton addItem = createButton("Add Item", null);
         JButton back = createButton("Back", null);
+        
+        
+     
+
+        // Add ActionListener to the "Use Own Bags" button
+        useOwnBagsBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Call the method to handle using own bags
+                handleUseOwnBags();
+            }
+        });
         
         // Add buttons to menu panel
         menuPanel.add(useOwnBagsBtn);
@@ -152,6 +173,14 @@ public class CustomerStation extends JFrame {
         // Set frame visible
         setVisible(true);
     }
+    
+    private void handleUseOwnBags() {
+    	
+        // Call the method in the AddownBag instance to handle bagging
+    	   // Initialize the AddownBag instance
+         addOwnBag = new AddownBag(stationSoftwareInstance, scale);
+    }
+    
     private void notifyAttendant(int selectedStation) {
         // Notify the AttendantPageGUI that assistance is required at this station
         AttendantPageGUI.notifyAssistanceRequired(selectedStation-1);

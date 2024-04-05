@@ -3,13 +3,19 @@ package com.thelocalmarketplace.software;
 import javax.swing.*;
 
 import com.jjjwelectronics.OverloadedDevice;
+import com.jjjwelectronics.scale.AbstractElectronicScale;
+import com.jjjwelectronics.scale.ElectronicScaleBronze;
+import com.jjjwelectronics.scale.ElectronicScaleGold;
+import com.jjjwelectronics.scale.ElectronicScaleSilver;
 import com.tdc.CashOverloadException;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
+import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
 import com.thelocalmarketplace.software.communication.CustomerStation;
 import com.thelocalmarketplace.software.communication.StartSession;
+import com.thelocalmarketplace.software.product.Products;
 
 import ca.ucalgary.seng300.simulation.SimulationException;
 import powerutility.PowerGrid;
@@ -24,6 +30,7 @@ public class AttendantPageGUI extends JFrame {
     private boolean[] stationEnabled; // Array to keep track of station status
     private CustomerStation[] customerStation;
     private SelfCheckoutStationSoftware[] stationSoftwareInstances;
+    private AbstractElectronicScale scale;
     private  AbstractSelfCheckoutStation checkoutStation;
     public AttendantPageGUI() {
         // Setup
@@ -185,6 +192,20 @@ public class AttendantPageGUI extends JFrame {
         JLabel customerServicesLabel = new JLabel("Customer Services: ");
         JPanel customerServicesPanel = new JPanel(new FlowLayout());
         JButton addItembyText = new JButton("Add Item by Text Search");
+        
+        addItembyText.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Create a pop-up dialog with a search bar
+                String searchText = JOptionPane.showInputDialog(null, "Enter search text:");
+
+                // Call the method in Products class to add item by text search
+                if (searchText != null && !searchText.isEmpty()) {
+                	Products product = new Products( stationSoftwareInstances[selectedStation]);
+                	//product.addItemByTextSearch(searchText, null);
+                }
+            }
+        });
 
         customerServicesPanel.add(addItembyText);
 
@@ -227,12 +248,15 @@ public class AttendantPageGUI extends JFrame {
                     try { 
                         if (selectedStation == 0) {
                             checkoutStation = new SelfCheckoutStationGold();
+                            scale = new ElectronicScaleGold();
                             System.out.println("SelfCheckoutStationGold initialized");
                         } else if (selectedStation == 1) {
                             checkoutStation = new SelfCheckoutStationSilver();
                             System.out.println("SelfCheckoutStationSilver initialized");
+                            scale = new ElectronicScaleSilver();
                         } else {
                             checkoutStation = new SelfCheckoutStationBronze();
+                             scale = new ElectronicScaleBronze();
                             System.out.println("SelfCheckoutStationBronze initialized");
                         }
 
@@ -245,7 +269,7 @@ public class AttendantPageGUI extends JFrame {
 
                             if (stationEnabled[selectedStation]) {
                                 if (startSessions[selectedStation] == null) {
-                                    startSessions[selectedStation] = new StartSession(selectedStation + 1);
+                                    startSessions[selectedStation] = new StartSession(selectedStation + 1, stationSoftwareInstances[selectedStation],scale);
                                     startSessions[selectedStation].setVisible(true);
                                     startSessions[selectedStation].setAttendantPageGUI(AttendantPageGUI.this); // Pass the reference to AttendantPageGUI
                                 }
@@ -332,11 +356,17 @@ public class AttendantPageGUI extends JFrame {
         }
     }
     
-    public void bagdiscpreancydectected() {
+    public void bagdiscpreancydectected(SelfCheckoutStationSoftware instance) {
     	// Attendant approves discrepancy 
-    	SelfCheckoutStationSoftware checkout = new SelfCheckoutStationSoftware(null);
-    	checkout.setStationBlock();
-   
+    	JOptionPane.showMessageDialog(this, "Bags Too Heavy, Inspect.");
+    	instance.setStationUnblock();
+    	JOptionPane.showMessageDialog(this, "Customer may now continue.");
+    }
+    
+    public void weightDiscpreancydNotify(SelfCheckoutStationSoftware instance) {
+    	// Attendant approves discrepancy 
+    	JOptionPane.showMessageDialog(this, "Weight Discrepancy Detected.");
+    	instance.setStationUnblock();
     }
      
 }

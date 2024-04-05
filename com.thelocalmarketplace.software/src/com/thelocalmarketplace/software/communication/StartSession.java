@@ -2,7 +2,9 @@ package com.thelocalmarketplace.software.communication;
 
 import javax.swing.*;
 
+import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.thelocalmarketplace.software.AttendantPageGUI;
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -11,11 +13,13 @@ public class StartSession extends JFrame {
     private int selectedStation; // Variable to hold the selected station number
     private CustomerStation customerStation; // Reference to the CustomerStation GUI
     private AttendantPageGUI attendantPageGUI;
+    private SelfCheckoutStationSoftware stationSoftwareInstance;
+    private AbstractElectronicScale scale;
 
     // Method to start a customer session (this might be called based on some user interaction within StartSession)
-    public void startCustomerSession(int stationNumber) {
+    public void startCustomerSession(int stationNumber, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale) {
         if (customerStation == null) {
-            this.customerStation = new CustomerStation(stationNumber);
+            this.customerStation = new CustomerStation(stationNumber,stationSoftwareInstance,scale);
             this.customerStation.setVisible(true);
             // Update the reference in AttendantPageGUI
             if (attendantPageGUI != null) {
@@ -41,7 +45,9 @@ public class StartSession extends JFrame {
             customerStation.unfreezeGUI();
         }
     }
-    public StartSession(int stationNumber) {
+    public StartSession(int stationNumber, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale) {
+    	this.stationSoftwareInstance = stationSoftwareInstance;
+    	this.scale = scale;
         this.selectedStation = stationNumber; // Set the selected station number
         // Frame initialization
         setTitle("Welcome to the Market - Station " + selectedStation);
@@ -64,7 +70,7 @@ public class StartSession extends JFrame {
                 JOptionPane.showMessageDialog(StartSession.this, "Session Started!");
                 // Once the session is started, dispose the current frame and open the CustomerStation GUI
                 StartSession.this.dispose(); // Close StartSession window
-                startCustomerSession(stationNumber); // Create and display a new instance of CustomerStation (using station 1 for this example)
+                startCustomerSession(stationNumber,stationSoftwareInstance,scale); // Create and display a new instance of CustomerStation (using station 1 for this example)
             }
         });
 
@@ -95,13 +101,5 @@ public class StartSession extends JFrame {
         setVisible(true);
     }
 
-    public static void main(String[] args) {
-        // Ensure the GUI is created on the Event Dispatch Thread for thread safety
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new StartSession(1);
-            }
-        });
-    }
 }
 
