@@ -38,6 +38,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.*;
 
+import com.jjjwelectronics.printer.IReceiptPrinter;
+import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.funds.Receipt;
@@ -48,31 +50,63 @@ public class ReceiptHandlerTest {
     private ReceiptHandler handler;
     private Funds funds;
     private SelfCheckoutStationSoftware station;
+    private IReceiptPrinter printer;
+    private Receipt receipt;
 
     @Before
     public void setUp() {
+        this.station = new SelfCheckoutStationSoftware(new SelfCheckoutStationBronze());
         this.handler = new ReceiptHandler(new Receipt(this.station.getStationHardware().getPrinter(), funds, station));
+        this.funds = new Funds(this.station);
+        this.printer = this.station.getStationHardware().getPrinter();
+        this.receipt = new Receipt(printer, funds, station);
     }
 
     @Test
     public void testOutOfPaper() {
+        mockReceiptObserver observer = new mockReceiptObserver();
+        mockPredictError pError = new mockPredictError();
+
+        // Act
+        this.handler.thePrinterIsOutOfPaper();
+        assertTrue(pError.noPaperCalled);
+        assertTrue(observer.paperAddedCalled);
+
 
     }
 
     @Test
     public void testOutOfInk() {
 
+        mockReceiptObserver observer = new mockReceiptObserver();
+        mockPredictError pError = new mockPredictError();
+
+        // Act
+        this.handler.thePrinterIsOutOfInk();
+        assertTrue(pError.noInkCalled);
+        assertTrue(observer.inkAddedCalled);
+
+
     }
 
     @Test
-    public void testLowInk() {
+    public void testPaperHasBeenAdded() {
+        mockReceiptObserver observer = new mockReceiptObserver();
 
+        this.handler.paperHasBeenAddedToThePrinter();
+        assertTrue(observer.paperAddedCalled);
     }
 
     @Test
-    public void testLowPaper() {
+    public void testInkHasBeenAdded() {
+
+        mockReceiptObserver observer = new mockReceiptObserver();
+
+        this.handler.inkHasBeenAddedToThePrinter();
+        assertTrue(observer.inkAddedCalled);
 
     }
+
 
 
 
