@@ -184,15 +184,27 @@ public class Receipt {
             observer.receiptPrinted(order);
     }
 
-    public void notifyInkLow(IReceiptPrinter printer) {
+    public void notifyInkEmpty(IReceiptPrinter printer) {
         for (PredictError observer : errorObservers)
-            observer.lowInkError(printer);
+            observer.noInkError(printer);
     }
-    
-    public void notifyPaperLow(IReceiptPrinter printer) {
+
+    public void notifyPaperEmpty(IReceiptPrinter printer) {
         for (PredictError observer : errorObservers)
-            observer.lowPaperError(printer);
+            observer.noPaperError(printer);
     }
+
+    public void notifyInkAdded(IReceiptPrinter printer) {
+        for(ReceiptObserver observer : observers)
+            observer.inkAdded(printer);
+    }
+
+    public void notifyPaperAdded(IReceiptPrinter printer) {
+        for(ReceiptObserver observer : observers)
+            observer.paperAdded(printer);
+    }
+
+
 
 
 }
