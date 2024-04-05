@@ -77,8 +77,21 @@ public class WeightchangeTest {
             }
 	
 	
+
+	@Test
+	public void testTheMassOnTheScaleNoLongerExceedsItsLimit() {
+		// Set the station to be blocked
+		station.setStationBlock();
+		listen.theMassOnTheScaleNoLongerExceedsItsLimit(scale);
+		assertFalse(station.getStationBlock());
+	}
 	
+	@Test
+	public void testTheMassOnTheScaleHasExceededItsLimit() {
+		listen.theMassOnTheScaleHasExceededItsLimit(scale);
+		assertTrue(station.getStationBlock());
 	
+	}
 	
 	
 	 class MockItem extends Item {
