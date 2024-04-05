@@ -31,7 +31,10 @@ package com.thelocalmarketplace.software.product;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.Mass;
+import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.bag.IReusableBagDispenser;
 import com.jjjwelectronics.bag.ReusableBag;
 import com.jjjwelectronics.scale.IElectronicScale;
@@ -238,9 +241,50 @@ public class Products {
 	 * The selected amount of purchased bags are dispensed and added to the bagging area. The bag weight and cost is 
 	 * accounted for to avoid a weight discrepancy and make sure the bag price is added to the order total. 
 	 */
-	public void PurchaseBags(Mass idealMass) {
+	public void PurchaseBags(ReusableBag...bags)throws OverloadedDevice, EmptyDevice {
+		if (software.getStationActive()) {
+			if (!software.getStationBlock()) {
+				software.setStationBlock();
+			
+			try {
+				reusableBagDispenser.load(bags); //requires power
+				if(reusableBagDispenser.getQuantityRemaining() < bags.length || reusableBagDispenser.getCapacity() <bags.length) {
+					throw new EmptyDevice("Dispenser does not have enough bags");
+				}
+				else {
+					reusableBagDispenser.load(bags);
+					reusableBagDispenser.dispense();
+				}
+			
+			double rBagWeightTotal = 0; 
+			double rBagPriceTotal = 0; // use case doesn't say anything about price but makes sense to add bag price to order? 
+			for(ReusableBag bag: bags) {
+				Mass reusableBagMass = bag.getMass();
+				rBagWeightTotal += reusableBagMass.inGrams().doubleValue(); 
+				//can sum price of each bag here if needed 
+			}
+			
+			// add the total weight of all purchased bags to the weight of the order 
+			software.addTotalOrderWeightInGrams(rBagWeightTotal);
+			
+			
+			} catch (OverloadedDevice | EmptyDevice e) {
+	            System.out.println("Unable to add bags: " + e.getMessage());
+	            throw e;
+	        } finally {
+	            software.getStationBlock();
+			}
+		}
+		}
 	}
-	
+	//will remove for clean code soon
+	// customer signals they want to purchase bags and say how many 
+	// system adds bags to order 
+	// system dispenses the number of bags ordered 
+	// system increases expected weight by the expected weight of each bag 
+	// system detects weight change 
+	// tells customer that bags has been added 
+	// if all bags in dispenser are removed after dispensing "out of bags event" will be announced after dispensing 
 	
 	/**
 	 * Registers the given listener with this facade so that the listener will be
