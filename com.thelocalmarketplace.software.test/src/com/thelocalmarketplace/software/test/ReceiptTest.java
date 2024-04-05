@@ -55,7 +55,10 @@ import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.PredictError;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.jjjwelectronics.printer.ReceiptPrinterBronze;
+import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
 import com.thelocalmarketplace.software.funds.*;
+
 
 public class ReceiptTest {
 
