@@ -313,9 +313,13 @@ public class CustomerStation extends JFrame {
                 component.setEnabled(false);
             }
         }
-        JOptionPane.showMessageDialog(null, "Out of order.");
+        
     }
 
+    public void customerPopUp(String message) {
+    	JOptionPane.showMessageDialog(null, message);
+    }
+    
     public void unfreezeGUI() {
         for (Component component : getContentPane().getComponents()) {
             component.setEnabled(true);

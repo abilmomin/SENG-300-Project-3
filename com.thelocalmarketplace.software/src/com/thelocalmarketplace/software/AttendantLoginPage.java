@@ -51,7 +51,7 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Map;
 
-public class AttendantStationSoftware extends JFrame{
+public class AttendantLoginPage extends JFrame{
 //	private AttendantStation attendantStation;
 //	
 //	public AttendantStationSoftware (AttendantStation attendantStation) {
@@ -75,7 +75,7 @@ public class AttendantStationSoftware extends JFrame{
 	private JTextField idField;
     private JPasswordField passwordField;
 
-    public AttendantStationSoftware() { 
+    public AttendantLoginPage() { 
     	setTitle("Attendant Station Login");
 	    setSize(900, 700);
 	    setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -101,7 +101,7 @@ public class AttendantStationSoftware extends JFrame{
 	            if (isValidLogin(id, password)) {
 	                openAttendantPage();
 	            } else {
-	                JOptionPane.showMessageDialog(AttendantStationSoftware.this,
+	                JOptionPane.showMessageDialog(AttendantLoginPage.this,
 	                        "Invalid ID or password. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
 	                idField.setText("");
 	                passwordField.setText("");
@@ -141,55 +141,7 @@ public class AttendantStationSoftware extends JFrame{
 	    dispose();
 	}
 	
-	public void emptyCoinStorage(SelfCheckoutStationSoftware cSoftware) {
-		ISelfCheckoutStation cS = cSoftware.getStationHardware();
-		CoinStorageUnit storage = cS.getCoinStorage();
-		storage.unload();
-	}
-	
-	public void emptyBanknoteStorage(SelfCheckoutStationSoftware cSoftware) {
-		ISelfCheckoutStation cS = cSoftware.getStationHardware();
-		BanknoteStorageUnit storage = cS.getBanknoteStorage();
-		storage.unload();
-	}
-	
-	public void refillCoinDispensers(SelfCheckoutStationSoftware cSoftware) throws SimulationException, CashOverloadException {
-		ISelfCheckoutStation cS = cSoftware.getStationHardware();
-		Currency currency = Currency.getInstance("CAD");
-		List<BigDecimal> denominations = cS.getCoinDenominations();
-		Map<BigDecimal, ICoinDispenser> dispensers = cS.getCoinDispensers();
-		for (BigDecimal denomination : denominations) {
-			ICoinDispenser dispenser = dispensers.get(denomination);
-			while (dispenser.hasSpace())
-				dispenser.load(new Coin(currency, denomination));
-		}
-	}
-	
-	public void refillBanknoteDispensers(SelfCheckoutStationSoftware cSoftware) throws SimulationException, CashOverloadException {
-		ISelfCheckoutStation cS = cSoftware.getStationHardware();
-		Currency currency = Currency.getInstance("CAD");
-		BigDecimal[] denominations = cS.getBanknoteDenominations();
-		Map<BigDecimal, IBanknoteDispenser> dispensers = cS.getBanknoteDispensers();
-		for (BigDecimal denomination : denominations) {
-			IBanknoteDispenser dispenser = dispensers.get(denomination);
-			while (dispenser.size() <= dispenser.getCapacity())
-				dispenser.load(new Banknote(currency, denomination));
-		}
-	}
-	
-	public void refillPrinterInk(SelfCheckoutStationSoftware cSoftware) throws OverloadedDevice {
-		ISelfCheckoutStation cS = cSoftware.getStationHardware();
-		IReceiptPrinter printer = cS.getPrinter();
-		printer.addInk(ReceiptPrinterBronze.MAXIMUM_INK - printer.inkRemaining());
-	}
-	
-	public void refillPrinterPaper(SelfCheckoutStationSoftware cSoftware) throws OverloadedDevice {
-		ISelfCheckoutStation cS = cSoftware.getStationHardware();
-		IReceiptPrinter printer = cS.getPrinter();
-		printer.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER - printer.paperRemaining());
-	}
-
     public static void main(final String[] args) {
-        SwingUtilities.invokeLater(AttendantStationSoftware::new); 
+        SwingUtilities.invokeLater(AttendantLoginPage::new); 
     }
 }

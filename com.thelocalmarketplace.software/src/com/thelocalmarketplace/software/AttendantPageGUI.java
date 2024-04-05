@@ -215,7 +215,7 @@ public class AttendantPageGUI extends JFrame {
                 stationEnabled[selectedStation] = true; // Enable the selected station
                 if (customerStation[selectedStation] != null && stationSoftwareInstances[selectedStation].getStationBlock()== true) { // Check if GUI is created for the selected station
                 	stationSoftwareInstances[selectedStation].setStationUnblock();
-                    startSessions[selectedStation].unfreezeCustomerGUI(); // Unfreeze the GUI
+                	customerStation[selectedStation].unfreezeGUI(); // Unfreeze the GUI
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");
@@ -231,7 +231,9 @@ public class AttendantPageGUI extends JFrame {
                 stationEnabled[selectedStation] = false; // Disable the selected station
                 if (customerStation[selectedStation] != null && stationSoftwareInstances[selectedStation].getStationBlock()== false) { // Check if GUI is created for the selected station
                 	stationSoftwareInstances[selectedStation].setStationBlock();
-                	startSessions[selectedStation].freezeCustomerGUI(); // Freeze the GUI
+                	customerStation[selectedStation].freezeGUI(); // Freeze the GUI
+                	customerStation[selectedStation].customerPopUp("Out of Order.");
+                	
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");
