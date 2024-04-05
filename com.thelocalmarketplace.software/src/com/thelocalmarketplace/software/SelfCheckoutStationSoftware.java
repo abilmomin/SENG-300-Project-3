@@ -51,6 +51,7 @@ import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
+import com.thelocalmarketplace.software.communication.CustomerStation;
 import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.product.Products;
 import com.thelocalmarketplace.software.product.ProductsListener;
@@ -71,6 +72,7 @@ public class SelfCheckoutStationSoftware {
 	private IBarcodeScanner mainScanner;
 	private IBarcodeScanner handheldScanner;
 	private CoinSlot coinSlot;
+	private CustomerStation gui;
 	
 	// Listeners
 	public ScannerListener scannerListener;
@@ -109,9 +111,23 @@ public class SelfCheckoutStationSoftware {
 		// Make facades
 		this.funds = new Funds(this);
 		this.products = new Products(this);
-		this.coordination = new Coordination(funds, products);
+		this.coordination = new Coordination(this, funds, products);
 
 		setStationActive(false);
+	}
+	
+	/**
+	 * 
+	 */
+	public void setGUI(CustomerStation gui) {
+		this.gui = gui;
+	}
+	
+	/**
+	 * 
+	 */
+	public CustomerStation getGUI() {
+		return gui;
 	}
 
 	/**

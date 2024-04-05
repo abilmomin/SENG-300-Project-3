@@ -40,6 +40,8 @@ public class CustomerStation extends JFrame {
     public CustomerStation(int selectedStation, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale) {
     	this.scale = scale;
     	this.stationSoftwareInstance = stationSoftwareInstance;
+    	stationSoftwareInstance.setGUI(this);
+    	
         setTitle("Self-Checkout Station " + selectedStation);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 700);
@@ -67,8 +69,6 @@ public class CustomerStation extends JFrame {
             // Get the weight of that product
             double productWeight = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode).getExpectedWeight();
             Mass mass = new Mass(productWeight);
-            
-            // Make a barcoded item to scan
             BarcodedItem barcodedItem = new BarcodedItem(barcode, mass);
         	
         	IBarcodeScanner scanner = stationSoftwareInstance.getStationHardware().getMainScanner();
@@ -215,7 +215,8 @@ public class CustomerStation extends JFrame {
         AttendantPageGUI.notifyAssistanceRequired(selectedStation-1);
     }
     
-    private void addProductToCart(String productName, double price) {
+    // I MADE THIS PUBLIC IDK IF IM RIGHT BUT IM USING THIS IN COORDINATION!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public void addProductToCart(String productName, double price) {
         cartTextArea.append(productName + " - $" + price + "\n");
         double currentTotal = Double.parseDouble(totalPriceLabel.getText().replace("Total Price: $", ""));
         currentTotal += price;

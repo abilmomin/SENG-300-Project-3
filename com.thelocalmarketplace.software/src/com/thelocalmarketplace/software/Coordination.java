@@ -1,7 +1,11 @@
 package com.thelocalmarketplace.software;
 
 import java.math.BigDecimal;
+
+import com.thelocalmarketplace.hardware.BarcodedProduct;
+import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.Product;
+import com.thelocalmarketplace.software.communication.CustomerStation;
 import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.funds.FundsObserver;
 import com.thelocalmarketplace.software.funds.PaymentKind.Kind;
@@ -9,10 +13,12 @@ import com.thelocalmarketplace.software.product.Products;
 import com.thelocalmarketplace.software.product.ProductsListener;
 
 public class Coordination implements FundsObserver, ProductsListener {
+	SelfCheckoutStationSoftware software;
     Funds funds;
     Products products;
 
-    public Coordination(Funds funds, Products products) {
+    public Coordination(SelfCheckoutStationSoftware software, Funds funds, Products products) {
+        this.software = software;
         this.funds = funds;
         this.products = products;
     }
@@ -54,7 +60,17 @@ public class Coordination implements FundsObserver, ProductsListener {
     
     @Override
     public void productAdded(Products productFacade, Product product) {
+    	String name = "";
     	
+    	if (product instanceof BarcodedProduct) {
+    		BarcodedProduct barcodedProduct = (BarcodedProduct) product;
+    		name = barcodedProduct.getDescription();
+    	} else if (product instanceof PLUCodedProduct) {
+    		PLUCodedProduct pluCodedProduct = (PLUCodedProduct) product;
+    		name = pluCodedProduct.getDescription();
+    	}
+    	CustomerStation gui = software.getGUI();
+    	gui.addProductToCart(name, product.getPrice());
     }
     
     @Override
