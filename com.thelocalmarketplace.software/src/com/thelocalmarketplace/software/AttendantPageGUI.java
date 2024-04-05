@@ -5,11 +5,13 @@ import javax.swing.*;
 import com.jjjwelectronics.OverloadedDevice;
 import com.tdc.CashOverloadException;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
+import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
 import com.thelocalmarketplace.software.communication.CustomerStation;
 import com.thelocalmarketplace.software.communication.StartSession;
+import com.thelocalmarketplace.software.product.Products;
 
 import ca.ucalgary.seng300.simulation.SimulationException;
 import powerutility.PowerGrid;
@@ -185,6 +187,20 @@ public class AttendantPageGUI extends JFrame {
         JLabel customerServicesLabel = new JLabel("Customer Services: ");
         JPanel customerServicesPanel = new JPanel(new FlowLayout());
         JButton addItembyText = new JButton("Add Item by Text Search");
+        
+        addItembyText.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Create a pop-up dialog with a search bar
+                String searchText = JOptionPane.showInputDialog(null, "Enter search text:");
+
+                // Call the method in Products class to add item by text search
+                if (searchText != null && !searchText.isEmpty()) {
+                	Products product = new Products( stationSoftwareInstances[selectedStation]);
+                	//product.addItemByTextSearch(searchText, null);
+                }
+            }
+        });
 
         customerServicesPanel.add(addItembyText);
 
