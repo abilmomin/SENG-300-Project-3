@@ -23,6 +23,7 @@ public class AddownBag implements ElectronicScaleListener {
 	
 	//constructor
 	public AddownBag(SelfCheckoutStationSoftware weight_order, AbstractElectronicScale scale1) {
+		instance = weight_order;
 
         theMassOnTheScaleHasChanged(scale1, mass_test);
 	}
@@ -85,7 +86,7 @@ public class AddownBag implements ElectronicScaleListener {
 				instance.setStationBlock(); // block station
 				double order = p1.getTotalOrderWeightInGrams();
 				AttendantPageGUI attendant_test = new AttendantPageGUI();
-				attendant_test.bagdiscpreancydectected();
+				attendant_test.bagdiscpreancydectected(instance);
 				
 			}
 			else {

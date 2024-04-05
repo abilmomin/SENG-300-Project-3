@@ -356,11 +356,11 @@ public class AttendantPageGUI extends JFrame {
         }
     }
     
-    public void bagdiscpreancydectected() {
+    public void bagdiscpreancydectected(SelfCheckoutStationSoftware instance) {
     	// Attendant approves discrepancy 
-    	SelfCheckoutStationSoftware checkout = new SelfCheckoutStationSoftware(null);
-    	checkout.setStationBlock();
-   
+    	JOptionPane.showMessageDialog(this, "Bags Too Heavy, Inspect.");
+    	instance.setStationUnblock();
+    	JOptionPane.showMessageDialog(this, "Customer may now continue.");
     }
      
 }
