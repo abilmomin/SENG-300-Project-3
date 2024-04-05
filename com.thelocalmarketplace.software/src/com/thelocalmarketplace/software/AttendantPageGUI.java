@@ -6,6 +6,9 @@ import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.software.communication.CustomerStation;
 import com.thelocalmarketplace.software.communication.StartSession;
+
+import powerutility.PowerGrid;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -22,6 +25,9 @@ public class AttendantPageGUI extends JFrame {
         setSize(900, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        
+        // Initialize the stationSoftwareInstances array here
+        stationSoftwareInstances = new SelfCheckoutStationSoftware[4];
 
         // Main panel
         JPanel mainPanel = new JPanel(new GridLayout(9, 1));
@@ -123,27 +129,39 @@ public class AttendantPageGUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (selectedStation != -1) { // Check if a station is selected
-            	System.out.println("after 1st if statement!");
-            	 checkoutStation = new SelfCheckoutStationBronze();
-            	 System.out.println("make bronze station!");
-            	  stationSoftwareInstances[selectedStation] = new SelfCheckoutStationSoftware(checkoutStation);
-            	  System.out.println("make + store selfcheckout station station!");
-                  stationSoftwareInstances[selectedStation].setStationUnblock();
-                  System.out.println("unblocked!");
+                // Use a separate thread to initialize SelfCheckoutStationBronze
+                new Thread(() -> {
+                    try {
+                        System.out.println("Initializing SelfCheckoutStationBronze");
+                        checkoutStation = new SelfCheckoutStationBronze();
+                        checkoutStation.plugIn(PowerGrid.instance());
+                        checkoutStation.turnOn();
+                        System.out.println("SelfCheckoutStationBronze initialized");
 
-                if (stationEnabled[selectedStation]) { // Check if station is enabled
-                    if (startSessions[selectedStation] == null) { // Check if StartSession is not already created for this station
-                        startSessions[selectedStation] = new StartSession(selectedStation + 1);
-                        startSessions[selectedStation].setVisible(true);
+                        SwingUtilities.invokeLater(() -> {
+                            stationSoftwareInstances[selectedStation] = new SelfCheckoutStationSoftware(checkoutStation);
+                            stationSoftwareInstances[selectedStation].setStationUnblock();
+
+                            if (stationEnabled[selectedStation]) {
+                                if (startSessions[selectedStation] == null) {
+                                    startSessions[selectedStation] = new StartSession(selectedStation + 1);
+                                    startSessions[selectedStation].setVisible(true);
+                                }
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Selected station is disabled. Please enable it.");
+                            }
+                        });
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, "Error initializing station."));
                     }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Selected station is disabled. Please enable it.");
-                }
+                }).start();
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");
             }
         }
     }
+
 
     // Action listener for close station button
     private class CloseStationButtonListener implements ActionListener {
