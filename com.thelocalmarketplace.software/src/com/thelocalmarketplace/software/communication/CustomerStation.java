@@ -4,7 +4,13 @@ import javax.swing.*;
 
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.scale.AbstractElectronicScale;
+import com.jjjwelectronics.scale.IElectronicScale;
+import com.jjjwelectronics.scanner.Barcode;
+import com.jjjwelectronics.scanner.BarcodedItem;
+import com.jjjwelectronics.scanner.IBarcodeScanner;
+import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.AddownBag;
+import com.thelocalmarketplace.software.AttendantLoginPage;
 import com.thelocalmarketplace.software.AttendantPageGUI;
 import com.thelocalmarketplace.software.MembershipCard;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
@@ -13,6 +19,7 @@ import com.thelocalmarketplace.software.communication.StartSession;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class CustomerStation extends JFrame {
@@ -49,7 +56,28 @@ public class CustomerStation extends JFrame {
         // the following nulls inside the buttons should be replaced by the corresponding callback functions 
         //associated with the popups
         JButton useOwnBagsBtn = createButton("Use Own Bags", null);
-        JButton scanBarcodeBtn = createButton("Scan Barcode", null);
+        
+        JButton scanBarcodeBtn = createButton("Scan Barcode", e -> {
+        	// Get a random barcode from the available barcoded products
+        	ArrayList<Barcode> barcodes = AttendantLoginPage.getBarcodes();    	
+        	Random random = new Random();   	
+            int randomIndex = random.nextInt(barcodes.size());
+            Barcode barcode = barcodes.get(randomIndex);
+            
+            // Get the weight of that product
+            double productWeight = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode).getExpectedWeight();
+            Mass mass = new Mass(productWeight);
+            
+            // Make a barcoded item to scan
+            BarcodedItem barcodedItem = new BarcodedItem(barcode, mass);
+        	
+        	IBarcodeScanner scanner = stationSoftwareInstance.getStationHardware().getMainScanner();
+        	scanner.scan(barcodedItem);
+        	
+        	IElectronicScale baggingArea = stationSoftwareInstance.getStationHardware().getBaggingArea();
+        	baggingArea.addAnItem(barcodedItem);
+        });
+        
         JButton enterPLUBtn = createButton("Enter PLU Code", null);
         JButton searchProductBtn = createButton("Search Product", null);
         JButton removeItemBtn = createButton("Remove Item", null);
@@ -373,7 +401,5 @@ public class CustomerStation extends JFrame {
 	public static void main(String[] args ) {
 		CustomerStation2 station = new CustomerStation2(1);	// USING ARBITRARY TEST VALUE ATM
 	}
-
-    
 }
 

@@ -30,9 +30,11 @@ package com.thelocalmarketplace.software;
 
 import javax.swing.*;
 
+import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.printer.IReceiptPrinter;
 import com.jjjwelectronics.printer.ReceiptPrinterBronze;
+import com.jjjwelectronics.scanner.Barcode;
 import com.tdc.CashOverloadException;
 import com.tdc.banknote.Banknote;
 import com.tdc.banknote.BanknoteStorageUnit;
@@ -40,13 +42,18 @@ import com.tdc.banknote.IBanknoteDispenser;
 import com.tdc.coin.Coin;
 import com.tdc.coin.CoinStorageUnit;
 import com.tdc.coin.ICoinDispenser;
+import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
+import com.thelocalmarketplace.hardware.PLUCodedProduct;
+import com.thelocalmarketplace.hardware.PriceLookUpCode;
+import com.thelocalmarketplace.hardware.external.ProductDatabases;
 
 import ca.ucalgary.seng300.simulation.SimulationException;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +81,8 @@ public class AttendantLoginPage extends JFrame{
 	private static final long serialVersionUID = 1L; 
 	private JTextField idField;
     private JPasswordField passwordField;
+    private static ArrayList<Barcode> barcodes;
+    private static ArrayList<PriceLookUpCode> pluCodes;
 
     public AttendantLoginPage() { 
     	setTitle("Attendant Station Login");
@@ -124,6 +133,36 @@ public class AttendantLoginPage extends JFrame{
 	    add(mainPanel);
 	    
 	    setVisible(true);
+	    
+	    // Make PLU products
+	    PriceLookUpCode pluCode1 = new PriceLookUpCode("1111");
+	    PLUCodedProduct apple = new PLUCodedProduct(pluCode1, "Apple", 2L);
+	    PriceLookUpCode pluCode2 = new PriceLookUpCode("2222");
+	    PLUCodedProduct banana = new PLUCodedProduct(pluCode2, "Banana", 1L);
+	    PriceLookUpCode pluCode3 = new PriceLookUpCode("3333");
+	    PLUCodedProduct carrot = new PLUCodedProduct(pluCode3, "Carrot", 1L);
+	    PriceLookUpCode pluCode4 = new PriceLookUpCode("4444");
+	    PLUCodedProduct asparagus = new PLUCodedProduct(pluCode4, "Asparagus", 3L);
+	    
+	    // Make barcoded products
+	    Numeral[] barcode1 = {Numeral.five, Numeral.five, Numeral.five, Numeral.five};
+	    BarcodedProduct cereal = new BarcodedProduct(new Barcode(barcode1), "Cereal", 9L, 500);
+	    Numeral[] barcode2 = {Numeral.six, Numeral.six, Numeral.six, Numeral.six};
+	    BarcodedProduct soup = new BarcodedProduct(new Barcode(barcode2), "Soup", 4L, 500);
+	    Numeral[] barcode3 = {Numeral.seven, Numeral.seven, Numeral.seven, Numeral.seven};
+	    BarcodedProduct frozenPizza = new BarcodedProduct(new Barcode(barcode3), "Frozen pizza", 12L, 400);
+	    Numeral[] barcode4 = {Numeral.eight, Numeral.eight, Numeral.eight, Numeral.eight};
+	    BarcodedProduct gum = new BarcodedProduct(new Barcode(barcode4), "Gum", 2L, 50);
+	    
+        // Populate the product databases
+        ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCode1, apple);
+        ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCode2, banana);
+        ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCode3, carrot);
+        ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCode4, asparagus);
+        ProductDatabases.BARCODED_PRODUCT_DATABASE.put(new Barcode(barcode1), cereal);
+        ProductDatabases.BARCODED_PRODUCT_DATABASE.put(new Barcode(barcode2), soup);
+        ProductDatabases.BARCODED_PRODUCT_DATABASE.put(new Barcode(barcode3), frozenPizza);
+        ProductDatabases.BARCODED_PRODUCT_DATABASE.put(new Barcode(barcode4), gum);
 	}
 	
 	private boolean isValidLogin(String id, String password) {
@@ -139,6 +178,14 @@ public class AttendantLoginPage extends JFrame{
 	    });
 	    // Close the login frame
 	    dispose();
+	}
+	
+	public static ArrayList<Barcode> getBarcodes() {
+		return barcodes;
+	}
+	
+	public static ArrayList<PriceLookUpCode> getPLUCodes() {
+		return pluCodes;
 	}
 	
     public static void main(final String[] args) {
