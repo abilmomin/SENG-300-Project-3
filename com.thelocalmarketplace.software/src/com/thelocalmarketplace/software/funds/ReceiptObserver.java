@@ -41,4 +41,7 @@ public interface ReceiptObserver {
 	 * Default method for a receipt has been printed.
 	 */
 	default public void receiptPrinted(ArrayList<Item> Order) {}
+
+	default public void inkAdded(IReceiptPrinter printer) {}
+	default public void paperAdded(IReceiptPrinter printer) {}
 }
