@@ -7,12 +7,11 @@ import com.tdc.coin.CoinStorageUnit;
 import com.tdc.coin.ICoinDispenser;
 
 public interface PredictError {
-	
-	 
-	default public void lowInkError(IReceiptPrinter printer) {}
-	
-	default public void lowPaperError(IReceiptPrinter printer) {}
-	
+
+
+	default public void noInkError(IReceiptPrinter printer) {}
+
+	default public void noPaperError(IReceiptPrinter printer) {}
 	default public void lowCoinsError(ICoinDispenser dispenser) {}
 	
 	default public void lowBanknotesError(IBanknoteDispenser dispenser) {}
