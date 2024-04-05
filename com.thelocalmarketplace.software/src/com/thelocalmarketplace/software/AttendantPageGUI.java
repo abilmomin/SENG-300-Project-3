@@ -2,6 +2,8 @@ package com.thelocalmarketplace.software;
 
 import javax.swing.*;
 
+import com.jjjwelectronics.OverloadedDevice;
+import com.tdc.CashOverloadException;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
@@ -9,6 +11,7 @@ import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
 import com.thelocalmarketplace.software.communication.CustomerStation;
 import com.thelocalmarketplace.software.communication.StartSession;
 
+import ca.ucalgary.seng300.simulation.SimulationException;
 import powerutility.PowerGrid;
 
 import java.awt.*;
@@ -99,6 +102,78 @@ public class AttendantPageGUI extends JFrame {
         JButton emptyCoins = new JButton("Empty Coins");
         JButton emptyBanknotes = new JButton("Empty Banknotes");
         JButton refillReceiptInk = new JButton("Refill Receipt Ink");
+        
+        // Add action listeners to buttons
+        refillCoins.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ALogic logic = new ALogic();
+                try {
+					logic.refillCoinDispensers(stationSoftwareInstances[selectedStation]);
+				} catch (SimulationException | CashOverloadException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            }
+        });
+
+        refillBanknotes.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ALogic logic = new ALogic();
+                try {
+					logic.refillBanknoteDispensers(stationSoftwareInstances[selectedStation]);
+				} catch (SimulationException | CashOverloadException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            }
+        });
+
+        refillReciptPaper.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ALogic logic = new ALogic();
+                try {
+					logic.refillPrinterPaper(stationSoftwareInstances[selectedStation]);
+				} catch (OverloadedDevice e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            }
+        });
+
+        emptyCoins.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ALogic logic = new ALogic();
+                logic.emptyCoinStorage(stationSoftwareInstances[selectedStation]);
+            }
+        });
+
+        emptyBanknotes.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ALogic logic = new ALogic();
+                logic.emptyBanknoteStorage(stationSoftwareInstances[selectedStation]);
+            }
+        });
+
+        refillReceiptInk.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ALogic logic = new ALogic();
+                try {
+					logic.refillPrinterInk(stationSoftwareInstances[selectedStation]);
+				} catch (OverloadedDevice e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            }
+        });
+        
+        
+        
         
         stationServicesPanel.add(refillCoins);
         stationServicesPanel.add(refillBanknotes);
