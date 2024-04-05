@@ -28,7 +28,7 @@ public class CardPayment extends JFrame {
 
         JButton finishPaymentButton = new JButton("Finish Payment");
         finishPaymentButton.addActionListener(e -> {
-            // Placeholder action listener
+            // Placeholder action listen
             JOptionPane.showMessageDialog(this, "Payment Method Selected. Processing Payment...", "Payment", JOptionPane.INFORMATION_MESSAGE);
             dispose();
         });
