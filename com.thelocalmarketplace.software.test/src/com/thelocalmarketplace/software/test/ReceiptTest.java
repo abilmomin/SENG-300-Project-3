@@ -32,7 +32,11 @@
 
 package com.thelocalmarketplace.software.test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import org.junit.*;
 
@@ -40,6 +44,8 @@ import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.OverloadedDevice;
+import com.jjjwelectronics.printer.IReceiptPrinter;
+import com.jjjwelectronics.printer.ReceiptPrinterBronze;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
@@ -49,12 +55,15 @@ import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
+import com.thelocalmarketplace.software.PredictError;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.funds.*;
 
 public class ReceiptTest {
 
     private Receipt receipt;
+    public PredictError error;
+
     private Funds funds;
     private SelfCheckoutStationSoftware station;
     private BarcodedItem barcodedItem;
@@ -69,6 +78,7 @@ public class ReceiptTest {
         this.receipt = new Receipt(this.station.getStationHardware().getPrinter(), funds, station);
 
     }
+
 
     @Test
     public void testReceiptPrinterWithBarcodedProduct() throws EmptyDevice, OverloadedDevice {
@@ -132,151 +142,61 @@ public class ReceiptTest {
 
 
     @Test
-    public void testReceiptPrinterWithLowPaper() throws EmptyDevice, OverloadedDevice {
-        String pluDigits = "0001";
-        PriceLookUpCode pluCode = new PriceLookUpCode(pluDigits);
-        Mass mass = new Mass(1000000000); // Converts the weight of the product to a mass
-        pluCodeItem = new PLUCodedItem(pluCode, mass);
+    public void testRegisterAndNotifyReceiptPrinted() {
+        // Arrange
 
+        mockReceiptObserver observer = new mockReceiptObserver();
 
-        String pluCodeProductDescription = "orange";
-        long pluCodeProductPrice = 10;
+        // Act
+        this.receipt.register(observer, error);
+        this.receipt.notifyReceiptPrinted(new ArrayList<>());
 
-        pluProduct = new PLUCodedProduct(pluCode, pluCodeProductDescription, pluCodeProductPrice);
-
-        ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCode, pluProduct);
-
-
-        int paperRemaining = this.station.getStationHardware().getPrinter().paperRemaining();
-        System.out.println(paperRemaining);
-
-
-
-
-        for (int i = 0; i < this.station.getStationHardware().getPrinter().MAXIMUM_PAPER - 1; i++) {
-
-            this.station.addItemToOrder(pluCodeItem);
-
-        }
-
-
-        this.receipt.printReceipt();
-
-
-
+        // Assert
+        assertTrue(observer.receiptPrintedCalled);
     }
-
 
     @Test
-    public void testReceiptPrinterOutOfPaper() throws EmptyDevice, OverloadedDevice {
-        String pluDigits = "0001";
-        PriceLookUpCode pluCode = new PriceLookUpCode(pluDigits);
-        Mass mass = new Mass(1000000000); // Converts the weight of the product to a mass
-        pluCodeItem = new PLUCodedItem(pluCode, mass);
+    public void testDeregister() {
+        // Arrange
 
+        mockReceiptObserver observer = new mockReceiptObserver();
 
-        String pluCodeProductDescription = "orange";
-        long pluCodeProductPrice = 10;
+        // Act
+        this.receipt.register(observer, error);
+        this.receipt.deregister(observer, error);
+        this.receipt.notifyReceiptPrinted(new ArrayList<>());
 
-        pluProduct = new PLUCodedProduct(pluCode, pluCodeProductDescription, pluCodeProductPrice);
-
-        ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCode, pluProduct);
-
-
-        int paperRemaining = this.station.getStationHardware().getPrinter().paperRemaining();
-        System.out.println(paperRemaining);
-
-
-
-
-        for (int i = 0; i < this.station.getStationHardware().getPrinter().MAXIMUM_PAPER + 1; i++) {
-
-            this.station.addItemToOrder(pluCodeItem);
-
-        }
-
-
-        this.receipt.printReceipt();
-
-
-
+        // Assert
+        assertFalse(observer.receiptPrintedCalled);
     }
-
 
     @Test
-    public void testReceiptPrinterWithLowInk() throws EmptyDevice, OverloadedDevice {
-        String pluDigits = "0001";
-        PriceLookUpCode pluCode = new PriceLookUpCode(pluDigits);
-        Mass mass = new Mass(1000000000); // Converts the weight of the product to a mass
-        pluCodeItem = new PLUCodedItem(pluCode, mass);
+    public void testNotifyInkLow() {
+        // Arrange
 
+        mockReceiptObserver observer = new mockReceiptObserver();
 
-        String pluCodeProductDescription = "orange";
-        long pluCodeProductPrice = 10;
+        // Act
+        this.receipt.register(observer, error);
+        this.receipt.notifyInkLow(this.station.getStationHardware().getPrinter());
 
-        pluProduct = new PLUCodedProduct(pluCode, pluCodeProductDescription, pluCodeProductPrice);
-
-        ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCode, pluProduct);
-
-
-        int paperRemaining = this.station.getStationHardware().getPrinter().inkRemaining();
-        System.out.println(paperRemaining);
-
-
-
-
-        for (int i = 0; i < this.station.getStationHardware().getPrinter().MAXIMUM_INK - 1; i++) {
-
-            this.station.addItemToOrder(pluCodeItem);
-
-        }
-
-
-        this.receipt.printReceipt();
-
-
-
+        // Assert
+        assertTrue(observer.inkLowCalled);
     }
-
-
 
     @Test
-    public void testReceiptPrinterOutOfInk() throws EmptyDevice, OverloadedDevice {
-        String pluDigits = "0001";
-        PriceLookUpCode pluCode = new PriceLookUpCode(pluDigits);
-        Mass mass = new Mass(1000000000); // Converts the weight of the product to a mass
-        pluCodeItem = new PLUCodedItem(pluCode, mass);
+    public void testNotifyPaperLow() {
+        // Arrange
 
+        mockReceiptObserver observer = new mockReceiptObserver();
 
-        String pluCodeProductDescription = "orange";
-        long pluCodeProductPrice = 10;
+        // Act
+        this.receipt.register(observer, error);
+        this.receipt.notifyPaperLow(this.station.getStationHardware().getPrinter());
 
-        pluProduct = new PLUCodedProduct(pluCode, pluCodeProductDescription, pluCodeProductPrice);
-
-        ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCode, pluProduct);
-
-
-        int paperRemaining = this.station.getStationHardware().getPrinter().inkRemaining();
-        System.out.println(paperRemaining);
-
-
-
-
-        for (int i = 0; i < this.station.getStationHardware().getPrinter().MAXIMUM_INK + 1; i++) {
-
-            this.station.addItemToOrder(pluCodeItem);
-
-        }
-
-
-        this.receipt.printReceipt();
-
-
-
+        // Assert
+        assertTrue(observer.paperLowCalled);
     }
-
-
-
 
 
 
