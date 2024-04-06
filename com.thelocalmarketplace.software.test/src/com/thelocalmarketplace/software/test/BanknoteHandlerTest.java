@@ -89,7 +89,6 @@ public class BanknoteHandlerTest {
 		this.checkoutStationB.plugIn(PowerGrid.instance());
 		this.checkoutStationB.turnOn();
 		this.station = new SelfCheckoutStationSoftware(checkoutStationB);
-
 	}
 
 	@Test
@@ -117,6 +116,25 @@ public class BanknoteHandlerTest {
 		banknote1 = new Banknote(currency, new BigDecimal("10.0"));
 		BanknoteInsertionSlot bs = this.checkoutStationB.getBanknoteInput();
 		bs.receive(banknote1);
+	}
+	
+	@Test
+	public void coinAddedTestDIspenserChangeCoverage() throws DisabledException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		// Prepare some coins
+		banknote1 = new Banknote(currency, new BigDecimal("10.0"));
+		banknote2 = new Banknote(currency, new BigDecimal("5.0"));
+
+		BanknoteInsertionSlot cs = this.checkoutStationG.getBanknoteInput();
+		checkoutStationG.getBanknoteStorage().load(banknote2);
+		station.setOrderTotalPrice(5);
+		cs.receive(banknote1);
+		System.out.println(checkoutStationG.getBanknoteStorage().getBanknoteCount());
+		assertTrue(checkoutStationG.getBanknoteStorage().getBanknoteCount() == 1);
+		assertTrue(station.getTotalOrderPrice() == 0);
+		checkoutStationG.getBanknoteDispensers().get(new BigDecimal("5.0")).load(banknote2);
+		station.setOrderTotalPrice(0.05);
+		cs.receive(new Banknote(currency, new BigDecimal("5.0")));
 	}
 
 	@Test

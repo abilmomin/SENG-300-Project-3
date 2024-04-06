@@ -146,6 +146,25 @@ public class CoinHandlerTest {
 		CoinSlot cs = this.checkoutStationB.getCoinSlot();
 		cs.receive(coin1);
 	}
+	
+	@Test
+	public void coinAddedTestDIspenserChangeCoverage() throws DisabledException, CashOverloadException {
+		Currency currency = Currency.getInstance("CAD");
+		// Prepare some coins
+		coin1 = new Coin(currency, new BigDecimal("0.25"));
+		coin2 = new Coin(currency, new BigDecimal("0.10"));
+
+		CoinSlot cs = this.checkoutStationG.getCoinSlot();
+		checkoutStationG.getCoinDispensers().get(new BigDecimal("0.10")).receive(coin2);
+		stationG.setOrderTotalPrice(0.15);
+		cs.receive(coin1);
+		assertTrue(checkoutStationG.getCoinDispensers().get(new BigDecimal("0.25")).size() == 1);
+		assertTrue(stationG.getTotalOrderPrice() == 0);
+		checkoutStationG.getCoinDispensers().get(new BigDecimal("0.10")).receive(coin2);
+		stationG.setOrderTotalPrice(0.05);
+		cs.receive(new Coin(currency, new BigDecimal("0.10")));
+	}
+	
 
 	@Test
 	public void validCoinDetectedGoldTest() throws DisabledException, CashOverloadException {

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
+import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.printer.IReceiptPrinter;
 import com.jjjwelectronics.printer.ReceiptPrinterBronze;
