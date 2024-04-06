@@ -143,83 +143,49 @@ public class Products {
 		}
 	}
 	/**
-     * Adds an item to the order by text search of the description.
-     * 
-     * @param searchText The text to search for in the product descriptions.
+     * Adds an item to the customer's order by text search.
+     *
+     * @param searchText The text to search for the product.
      */
-    public void addItemByTextSearch(String searchText, PLUCodedItem pluItem) {
-       
-            // Search in barcoded products
-            for(BarcodedProduct barcodedProduct : ProductDatabases.BARCODED_PRODUCT_DATABASE.values()) {
-                if(barcodedProduct.getDescription().toLowerCase().contains(searchText.toLowerCase())) {
-                    
-                    addBarcodedProductToOrder(barcodedProduct);
-                    
-                    return; 
-                }
-            }
+    public void addItemByTextSearch(String searchText) {
+        BarcodedProduct product = findProductByTextSearch(searchText);
+
+        if (product != null) {
             
-            // Search in PLU-coded products
-            for(PLUCodedProduct pluCodedProduct : ProductDatabases.PLU_PRODUCT_DATABASE.values()) {
-                if(pluCodedProduct.getDescription().toLowerCase().contains(searchText.toLowerCase())) {
-                	BigDecimal itemWeightInGrams = pluItem.getMass().inGrams();
-        			double itemWeight = itemWeightInGrams.doubleValue();
-                    addPLUCodedProductToOrder(pluCodedProduct, itemWeight);
-                    
-                    return; 
-                }
-            
-            }
+            Mass itemMass = new Mass(product.getExpectedWeight());
+
+            // Create a BarcodedItem with the product's barcode and expected weight.
+            BarcodedItem barcodedItem = new BarcodedItem(product.getBarcode(), itemMass);
+
+            // Add the barcodedItem to the order.
+            software.addItemToOrder(barcodedItem);
+            System.out.println("Product added to the order: " + product.getDescription());
+        } else {
+            // If the product is not found, inform the attendant.
+            System.out.println("Product not found. Please try again.");
         }
+    }
     
     /**
-     * Adds a barcoded product to the current order.
+     * Finds a product in the product database using text search.
      *
-     * @param product The barcoded product to add to the order.
+     * @param searchText The text to search for in product descriptions.
+     * @return The product if found, null otherwise.
      */
-    private void addBarcodedProductToOrder(BarcodedProduct product) {
-        // Check for an active and unblocked station before proceeding
-        if(software.getStationActive() && !software.getStationBlock()) {
-        	Mass itemMass = new Mass(product.getExpectedWeight()); //  Mass has a constructor that accepts a double representing grams
-
-            BarcodedItem item = new BarcodedItem(product.getBarcode(), itemMass);
-            software.addItemToOrder(item); // Add the item to the order
-            
-            // Update the total weight and price in the software
-            software.addTotalOrderWeightInGrams(product.getExpectedWeight());
-            software.addTotalOrderPrice(product.getPrice());
-            
-            notifyProductAdded(product);
-        } else {
-            System.out.println("Unable to add product - station is inactive or blocked.");
+    private BarcodedProduct findProductByTextSearch(String searchText) {
+        // Loop through each entry in the barcoded product database
+        for (Map.Entry<Barcode, BarcodedProduct> entry : ProductDatabases.BARCODED_PRODUCT_DATABASE.entrySet()) {
+            BarcodedProduct product = entry.getValue();
+            // Check if the product description contains the search text, case insensitive
+            if (product.getDescription().toLowerCase().contains(searchText.toLowerCase())) {
+                // Return the first matching product
+                return product;
+            }
         }
+        // Return null if no matching product is found
+        return null;
     }
-
-    /**
-     * Adds a PLU-coded product to the current order.
-     *
-     * @param product The PLU-coded product to add to the order.
-     * @param weight The weight of the PLU-coded product to add.
-     */
-    private void addPLUCodedProductToOrder(PLUCodedProduct product, double weight) {
-        // Check for an active and unblocked station before proceeding
-        if(software.getStationActive() && !software.getStationBlock()) {
-            PLUCodedItem item = new PLUCodedItem(product.getPLUCode(), new Mass(weight));
-            software.addItemToOrder(item); // Add the item to the order
-            
-            // Update the total weight and price in the software
-            // price is per-kilogram and we need to convert weight to kilograms
-            double weightInKg = weight / 1000;
-            long priceForWeight = (long)(product.getPrice() * weightInKg);
-            
-            software.addTotalOrderWeightInGrams(weight);
-            software.addTotalOrderPrice(priceForWeight);
-            
-            notifyProductAdded(product);
-        } else {
-            System.out.println("Unable to add product - station is inactive or blocked.");
-        }
-    }
+	
 
 	/**
 	 * Adds an item after customer selects it from the visual catalog
