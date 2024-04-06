@@ -161,21 +161,24 @@ public class CardHandlerTest {
 	}
 
 	@Test
-	public void approveNullPurchaseB() {
+	public void approvePurchaseWithoutBankB() {
 		cardHandlerB = new CardHandler(fundsB);
 		assertFalse(cardHandlerB.approvePurchase(null, 0));
+        assertFalse(cardHandlerB.approvePurchase(creditCard.number, 10));
 	}
 
 	@Test
-	public void approveNullPurchaseS() {
+	public void approvePurchaseWithoutBankS() {
 		cardHandlerS = new CardHandler(fundsS);
 		assertFalse(cardHandlerS.approvePurchase(null, 0));
+        assertFalse(cardHandlerS.approvePurchase(creditCard.number, 10));
 	}
 
 	@Test
-	public void approveNullPurchaseG() {
+	public void approvePurchaseWithoutBankG() {
 		cardHandlerG = new CardHandler(fundsG);
 		assertFalse(cardHandlerG.approvePurchase(null, 0));
+        assertFalse(cardHandlerG.approvePurchase(creditCard.number, 10));
 	}
 	
 	@Test
@@ -200,23 +203,26 @@ public class CardHandlerTest {
 	}
 	
 	@Test
-	public void approveNegativePurchaseB() {
+	public void approveInvalidPurchaseB() {
         stationB.addBank(cardIssuer);
         cardHandlerB = new CardHandler(fundsB);
+        assertFalse(cardHandlerB.approvePurchase(null, 10));
         assertFalse(cardHandlerB.approvePurchase(creditCard.number, -1));
 	}
 	
 	@Test
-	public void approveNegativePurchaseS() {
+	public void approveInvalidPurchaseS() {
         stationS.addBank(cardIssuer);
         cardHandlerS = new CardHandler(fundsS);
+        assertFalse(cardHandlerS.approvePurchase(null, 10));
         assertFalse(cardHandlerS.approvePurchase(creditCard.number, -1));
 	}
 	
 	@Test
-	public void approveNegativePurchaseG() {
+	public void approveInvalidPurchaseG() {
         stationG.addBank(cardIssuer);
         cardHandlerG = new CardHandler(fundsG);
+        assertFalse(cardHandlerG.approvePurchase(null, 10));
         assertFalse(cardHandlerG.approvePurchase(creditCard.number, -1));
 	}
 }
