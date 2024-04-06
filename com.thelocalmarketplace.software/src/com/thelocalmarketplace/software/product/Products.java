@@ -108,7 +108,14 @@ public class Products {
 	 * @param pluItem
 	 */
 
-	public void addItemByPLUCode(PLUCodedItem pluItem) {
+	public PLUCodedProduct matchCodeAndPLUProduct(String code) {
+		PriceLookUpCode plu = new PriceLookUpCode(code);
+		PLUCodedProduct currentItem = ProductDatabases.PLU_PRODUCT_DATABASE.get(plu);
+		return currentItem;	
+	}
+	
+	
+	public boolean addItemByPLUCode(PLUCodedItem pluItem) {
 		if (software.getStationActive() && !software.getStationBlock()) {
 			software.setStationBlock();
 
@@ -130,6 +137,9 @@ public class Products {
 				
 				notifyProductAdded(product);
 			}
+			return true;
+		} else {
+			return false;
 		}
 	}
 	/**
