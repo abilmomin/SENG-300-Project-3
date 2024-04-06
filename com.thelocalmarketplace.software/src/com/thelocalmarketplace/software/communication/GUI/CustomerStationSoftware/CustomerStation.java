@@ -1,22 +1,22 @@
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
 
 import javax.swing.*;
-
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.jjjwelectronics.scale.IElectronicScale;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
+import com.thelocalmarketplace.hardware.BarcodedProduct;
+import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
+import com.thelocalmarketplace.hardware.Product;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.AddownBag;
 import com.thelocalmarketplace.software.ProductsDatabase;
-import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantLoginPage;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.product.Products;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -385,6 +385,33 @@ public class CustomerStation extends JFrame {
 
     public void customerPopUp(String message) {
         JOptionPane.showMessageDialog(this, message);
+    }
+    
+    public void customerBaggingAreaPopUp(Product product) {
+        JOptionPane.showMessageDialog(this, "Please add the item to the bagging area.");
+        
+        addItemToBaggingAreaAction(product);
+    }
+    
+    private void addItemToBaggingAreaAction(Product product) {
+    	
+    	if (product instanceof BarcodedProduct) {
+    		BarcodedProduct barcodedProduct = (BarcodedProduct) product;
+    		
+            double productWeight = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcodedProduct.getBarcode()).getExpectedWeight();
+            Mass mass = new Mass(productWeight);
+            BarcodedItem barcodedItem = new BarcodedItem(barcodedProduct.getBarcode(), mass);
+            
+        	IElectronicScale baggingArea = stationSoftwareInstance.getStationHardware().getBaggingArea();
+        	baggingArea.addAnItem(barcodedItem);
+    		
+    	} else {
+    		PLUCodedProduct pluCodedProduct = (PLUCodedProduct) product;
+    		PLUCodedItem pluItem = new PLUCodedItem(pluCodedProduct.getPLUCode(), new Mass(1.0));
+    		
+        	IElectronicScale baggingArea = stationSoftwareInstance.getStationHardware().getBaggingArea();
+        	baggingArea.addAnItem(pluItem);
+    	}
     }
 
     private void requestAssistance() {

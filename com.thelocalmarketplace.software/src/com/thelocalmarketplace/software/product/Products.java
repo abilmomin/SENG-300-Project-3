@@ -141,7 +141,7 @@ public class Products {
      *
      * @param searchText The text to search for the product.
      */
-    public boolean addItemByTextSearch(String searchText) {
+    public void addItemByTextSearch(String searchText) {
         Product product = findProductByTextSearch(searchText);
 
         if (product != null && software.getStationActive() && !software.getStationBlock()) {
@@ -162,22 +162,20 @@ public class Products {
                 software.addItemToOrder(barcodedItem); 
                 
                 notifyProductAdded(product);
-                
-                return true;
+                notifyAddProductToBaggingArea(product);
                 
         	} else {
         		PLUCodedProduct pluProduct = (PLUCodedProduct) product;
-        		PLUCodedItem pluItem = new PLUCodedItem(pluProduct.getPLUCode(), new Mass(1));
+        		PLUCodedItem pluItem = new PLUCodedItem(pluProduct.getPLUCode(), new Mass(1.0));
         		
                 software.addItemToOrder(pluItem);
                 
                 notifyProductAdded(product);
-                
-                return true;
+                notifyAddProductToBaggingArea(product);
         	}
         	
         } else {
-        	return false;
+        	// idk
         }
     }
     

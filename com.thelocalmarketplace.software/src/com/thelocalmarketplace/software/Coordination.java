@@ -80,6 +80,7 @@ public class Coordination implements FundsObserver, ProductsListener {
     
     @Override
     public void productToBaggingArea(Products productFacade, Product product) {
-    	
+    	CustomerStation gui = software.getGUI();
+    	gui.customerBaggingAreaPopUp(product);
     }
 }
