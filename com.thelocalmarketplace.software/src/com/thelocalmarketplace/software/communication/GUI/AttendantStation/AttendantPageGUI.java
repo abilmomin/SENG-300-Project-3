@@ -65,7 +65,9 @@ public class AttendantPageGUI extends JFrame {
     private AbstractSelfCheckoutStation checkoutStation;
     private final boolean[] stationAssistanceRequested = new boolean[NUM_STATIONS]; // Track assistance requests
 
+    private AttendantListeners attendantListeners;
     public AttendantPageGUI() {
+        this.attendantListeners = new AttendantListeners(this, selectedStation, stationSoftwareInstances, customerStation, startSessions, stationEnabled);
         // Initialize the GUI
         setupGUI();
         setupStationStartPanel();
@@ -108,7 +110,7 @@ public class AttendantPageGUI extends JFrame {
         // Create station buttons
         for (int i = 0; i < NUM_STATIONS; i++) {
             JButton checkoutButton = getjButton(i);
-            checkoutButton.addActionListener(new StationButtonListener(i));
+            checkoutButton.addActionListener(attendantListeners.getStationButtonListener(i));
             stationStartPanel.add(checkoutButton);
             stationStartButtons[i] = checkoutButton; // Add button to the array
             stationEnabled[i] = true; // Initialize station as enabled
@@ -116,9 +118,9 @@ public class AttendantPageGUI extends JFrame {
     }
 
     private void createStationControls() {
-        enableStation.addActionListener(new EnableStationButtonListener());
-        disableStation.addActionListener(new DisableStationButtonListener());
-        clearStationSignal.addActionListener(new ClearStationSignalButtonListener());
+        enableStation.addActionListener(attendantListeners.getEnableStationButtonListener());
+        disableStation.addActionListener(attendantListeners.getDisableStationButtonListener());
+        clearStationSignal.addActionListener(attendantListeners.getClearStationSignalButtonListener());
 
         stationControlPanel.add(enableStation);
         stationControlPanel.add(disableStation);
@@ -126,15 +128,15 @@ public class AttendantPageGUI extends JFrame {
     }
 
     private void createStationServices() {
-        startStation.addActionListener(new StartStationButtonListener());
-        closeStation.addActionListener(new CloseStationButtonListener());
+        startStation.addActionListener(attendantListeners.getStartStationButtonListener());
+        closeStation.addActionListener(attendantListeners.getCloseStationButtonListener());
 
-        refillCoins.addActionListener(new refillCoinServiceButtonListener());
-        refillBanknotes.addActionListener(new refillBanknotesServiceButtonListener());
-        refillReceiptPaper.addActionListener(new refillReceiptPaperServiceButtonListener());
-        refillReceiptInk.addActionListener(new refillReceiptInkServiceButtonListener());
-        emptyCoins.addActionListener(new emptyCoinServiceButtonListener());
-        emptyBanknotes.addActionListener(new emptyBanknotesServiceButtonListener());
+        refillCoins.addActionListener(attendantListeners.getRefillCoinServiceButtonListener());
+        refillBanknotes.addActionListener(attendantListeners.getRefillBanknotesServiceButtonListener());
+        refillReceiptPaper.addActionListener(attendantListeners.getRefillReceiptPaperServiceButtonListener());
+        refillReceiptInk.addActionListener(attendantListeners.getRefillReceiptInkServiceButtonListener());
+        emptyCoins.addActionListener(attendantListeners.getEmptyCoinServiceButtonListener());
+        emptyBanknotes.addActionListener(attendantListeners.getEmptyBanknotesServiceButtonListener());
 
         stationServicesPanel.add(startStation);
         stationServicesPanel.add(closeStation);
@@ -149,92 +151,11 @@ public class AttendantPageGUI extends JFrame {
     }
 
     private void createCustomerServices() {
-        addItemByText.addActionListener(new customerServiceButtonListener());
+        addItemByText.addActionListener(attendantListeners.getCustomerServiceButtonListener());
         customerServicesPanel.add(addItemByText);
     }
 
-    private class refillCoinServiceButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            ALogic logic = new ALogic();
-            try {
-                logic.refillCoinDispensers(stationSoftwareInstances[selectedStation]);
-            } catch (SimulationException | CashOverloadException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
-        }
-    }
-    private class refillBanknotesServiceButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            ALogic logic = new ALogic();
-            try {
-                logic.refillBanknoteDispensers(stationSoftwareInstances[selectedStation]);
-            } catch (SimulationException | CashOverloadException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
-        }
-    }
 
-    private class refillReceiptPaperServiceButtonListener implements ActionListener{
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            ALogic logic = new ALogic();
-//            try {
-                System.out.println("Refilling Receipt Paper"); // temporary
-                //logic.refillPrinterPaper(stationSoftwareInstances[selectedStation]);
-//            } catch (OverloadedDevice e1) {
-//                // TODO Auto-generated catch block
-//                e1.printStackTrace();
-//            }
-        }
-    }
-
-    private class emptyCoinServiceButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            ALogic logic = new ALogic();
-            logic.emptyCoinStorage(stationSoftwareInstances[selectedStation]);
-        }
-    }
-
-
-    private class emptyBanknotesServiceButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            ALogic logic = new ALogic();
-            logic.emptyBanknoteStorage(stationSoftwareInstances[selectedStation]);
-        }
-    }
-
-    private class refillReceiptInkServiceButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            ALogic logic = new ALogic();
-//                try {
-//                    logic.refillPrinterInk(stationSoftwareInstances[selectedStation]);
-//                } catch (OverloadedDevice e1) {
-//                    // TODO Auto-generated catch block
-//                    e1.printStackTrace();
-//                }
-        }
-    }
-
-    private class customerServiceButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // Create a pop-up dialog with a search bar
-            String searchText = JOptionPane.showInputDialog(null, "Enter search text:");
-
-            // Call the method in Products class to add item by text search
-            if (searchText != null && !searchText.isEmpty()) {
-                Products product = new Products(stationSoftwareInstances[selectedStation]);
-                //product.addItemByTextSearch(searchText, null);
-            }
-        }
-    }
 
     // Method to get the station button with the station number
     private static JButton getjButton(int i) {
@@ -256,151 +177,12 @@ public class AttendantPageGUI extends JFrame {
         return checkoutButton;
     }
 
-    // Action listener for station buttons
-    private class StationButtonListener implements ActionListener {
-        private int stationNumber;
-
-        public StationButtonListener(int stationNumber) {
-            this.stationNumber = stationNumber;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            selectedStation = stationNumber; // Store the selected station number
-            highlightSelectedStation(); // Highlight the selected station
-        }
-    }
-
- // Action listener for start station button
-    private class StartStationButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (selectedStation != -1 && (startSessions[selectedStation] == null || customerStation[selectedStation] == null)) { // Check if a station is selected
-                // Use a separate thread to initialize SelfCheckoutStationBronze
-                new Thread(() -> {
-                    try { 
-                        if (selectedStation == 0) {
-                            checkoutStation = new SelfCheckoutStationGold();
-                            scale = new ElectronicScaleGold();
-                            System.out.println("SelfCheckoutStationGold initialized");
-                        } else if (selectedStation == 1) {
-                            checkoutStation = new SelfCheckoutStationSilver();
-                            System.out.println("SelfCheckoutStationSilver initialized");
-                            scale = new ElectronicScaleSilver();
-                        } else {
-                            checkoutStation = new SelfCheckoutStationBronze();
-                             scale = new ElectronicScaleBronze();
-                            System.out.println("SelfCheckoutStationBronze initialized");
-                        }
-
-
-                        checkoutStation.plugIn(PowerGrid.instance());
-                        checkoutStation.turnOn();
-
-                        SwingUtilities.invokeLater(() -> {
-                            stationSoftwareInstances[selectedStation] = new SelfCheckoutStationSoftware(checkoutStation);
-                            stationSoftwareInstances[selectedStation].setStationUnblock();
-
-                            if (stationEnabled[selectedStation]) {
-                                if (startSessions[selectedStation] == null) {
-                                    startSessions[selectedStation] = new StartSession(selectedStation + 1, stationSoftwareInstances[selectedStation],scale);
-                                    startSessions[selectedStation].setVisible(true);
-                                    startSessions[selectedStation].setAttendantPageGUI(AttendantPageGUI.this); // Pass the reference to AttendantPageGUI
-                                }
-                            } else {
-                                JOptionPane.showMessageDialog(null, "Selected station is disabled. Please enable it.");
-                            }
-                        });
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, "Error initializing station."));
-                    }
-                }).start();
-            } else {
-                JOptionPane.showMessageDialog(null, "Please select a station first.");
-            }
-        }
-    }
-
     public void updateCustomerStation(int stationNumber, CustomerStation customerStation) {
         this.customerStation[stationNumber - 1] = customerStation;
     }
 
-
-    // Action listener for close station button
-    private class CloseStationButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (selectedStation != -1) {
-                if (customerStation[selectedStation] != null) { // Check if a station is selected and GUI is created
-                    customerStation[selectedStation].dispose(); // Close the Customer GUI page for the selected station
-                    customerStation[selectedStation] = null; // Reset the reference
-                    startSessions[selectedStation] = null; // Reset the reference
-                } else if(startSessions[selectedStation] != null) {
-                    startSessions[selectedStation].dispose(); // Close the StartSession page for the selected station
-                    startSessions[selectedStation] = null; // Reset the reference
-                }
-                else {
-                    JOptionPane.showMessageDialog(null, "Please select a station with an active Customer Station GUI.");
-                }
-            }
-        }
-    }
-
-    private class ClearStationSignalButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (selectedStation != -1) { // Check if a station is selected
-                if (customerStation[selectedStation] != null && customerStation[selectedStation].getSignal()) { // Check if GUI is created for the selected station
-                    customerStation[selectedStation].clearSignal();
-                }
-                else {
-                    JOptionPane.showMessageDialog(null, "Please select a station with an active Customer Station GUI that required assistance.");
-                }
-            }
-        }
-    }
-
-
-    // Action listener for enable station button
-    private class EnableStationButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (selectedStation != -1) { // Check if a station is selected
-
-                if (customerStation[selectedStation] != null && stationSoftwareInstances[selectedStation].getStationBlock()== true) { // Check if GUI is created for the selected station
-                	stationSoftwareInstances[selectedStation].setStationUnblock();
-                	customerStation[selectedStation].unfreezeGUI(); // Unfreeze the GUI
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "Please select a station first.");
-            }
-        }
-    }
-
- // Action listener for disable station button
-    private class DisableStationButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (selectedStation != -1) { // Check if a station is selected
-                if (customerStation[selectedStation] != null && stationSoftwareInstances[selectedStation].getStationBlock() == false) { // Check if GUI is created for the selected station
-                    if (stationSoftwareInstances[selectedStation].getStationActive() == false) {
-                        // If station is not active, disable it immediately
-                    	stationSoftwareInstances[selectedStation].setStationBlock();
-                    	customerStation[selectedStation].freezeGUI();
-                    } else {
-                        // If station is active, prompt user and disable after session completion
-                            new Thread(() -> waitForSessionCompletion(selectedStation)).start();
-                    }
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "Please select a station first.");
-            }
-        }
-    }
-
     // Method to wait for session completion
-    private void waitForSessionCompletion(int stationNumber) {
+    void waitForSessionCompletion(int stationNumber) {
         try {
             while (stationSoftwareInstances[stationNumber].getStationActive()) {
                 // Sleep for a certain period before checking again
@@ -430,7 +212,8 @@ public class AttendantPageGUI extends JFrame {
     }
 
     // Method to highlight the selected station button
-    private void highlightSelectedStation() {
+    void highlightSelectedStation(int selectedStation) {
+        this.selectedStation = selectedStation;
         for (int i = 0; i < stationStartButtons.length; i++) {
             if (i == selectedStation && !stationAssistanceRequested[i]) {
                 stationStartButtons[i].setBackground(Color.YELLOW); // Highlight selected station
