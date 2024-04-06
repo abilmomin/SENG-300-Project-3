@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.Product;
-import com.thelocalmarketplace.software.communication.CustomerStation;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.funds.FundsObserver;
 import com.thelocalmarketplace.software.funds.PaymentKind.Kind;

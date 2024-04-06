@@ -1,8 +1,7 @@
-package com.thelocalmarketplace.software;
+package com.thelocalmarketplace.software.communication.GUI.AttendantStation;
 
 import javax.swing.*;
 
-import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.jjjwelectronics.scale.ElectronicScaleBronze;
 import com.jjjwelectronics.scale.ElectronicScaleGold;
@@ -12,8 +11,10 @@ import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
-import com.thelocalmarketplace.software.communication.CustomerStation;
-import com.thelocalmarketplace.software.communication.StartSession;
+import com.thelocalmarketplace.software.ALogic;
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
 import com.thelocalmarketplace.software.product.Products;
 
 import ca.ucalgary.seng300.simulation.SimulationException;
@@ -28,42 +29,30 @@ public class AttendantPageGUI extends JFrame {
     private static final int WINDOW_WIDTH = 900;
     private static final int WINDOW_HEIGHT = 700;
 
-    // Variables for the GUI
-    private JPanel mainPanel = new JPanel(new GridLayout(9, 1));
-    // Label for stations
-    private JLabel stationsLabel = new JLabel("Checkout Stations: ");
     // Button panel for managing customer checkout stations
-    private JPanel stationPanel = new JPanel(new GridLayout(2, 2));
-    // Label for station controls
-    private JLabel stationControlLabel = new JLabel("Checkout Station Controls: ");
-
+    private final JPanel stationStartPanel = new JPanel(new GridLayout(2, 2));
 
     // Button panel for station controls
-    private JPanel stationControlPanel = new JPanel(new FlowLayout());
-    private JButton startStation = new JButton("Start Station");
-    private JButton closeStation = new JButton("Close Station");
-    private JButton enableStation = new JButton("Enable Station");
-    private JButton disableStation = new JButton("Disable Station");
-
-    // Label for station controls
-    private JLabel stationServicesLabel = new JLabel("Hardware Services: ");
+    private final JPanel stationControlPanel = new JPanel(new FlowLayout());
+    private final JButton startStation = new JButton("Start Station");
+    private final JButton closeStation = new JButton("Close Station");
+    private final JButton enableStation = new JButton("Enable Station");
+    private final JButton disableStation = new JButton("Disable Station");
 
     // Button panel for station controls
-    private JPanel stationServicesPanel = new JPanel(new GridLayout(2,1));
-    private JButton refillCoins = new JButton("Refill Coins");
-    private JButton refillBanknotes = new JButton("Refill Banknotes");
-    private JButton refillReceiptPaper = new JButton("Refill Receipt Paper");
-    private JButton emptyCoins = new JButton("Empty Coins");
-    private JButton emptyBanknotes = new JButton("Empty Banknotes");
-    private JButton refillReceiptInk = new JButton("Refill Receipt Ink");
+    private final JPanel stationServicesPanel = new JPanel(new GridLayout(2,1));
+    private final JButton refillCoins = new JButton("Refill Coins");
+    private final JButton refillBanknotes = new JButton("Refill Banknotes");
+    private final JButton refillReceiptPaper = new JButton("Refill Receipt Paper");
+    private final JButton emptyCoins = new JButton("Empty Coins");
+    private final JButton emptyBanknotes = new JButton("Empty Banknotes");
+    private final JButton refillReceiptInk = new JButton("Refill Receipt Ink");
+    private final JButton addItemByText = new JButton("Add Item by Text Search");
 
-    // Label for customer services
-    private JLabel customerServicesLabel = new JLabel("Customer Services: ");
-    private JPanel customerServicesPanel = new JPanel(new FlowLayout());
-    private JButton addItemByText = new JButton("Add Item by Text Search");
-
+    // Panel for customer services
+    private final JPanel customerServicesPanel = new JPanel(new FlowLayout());
     private int selectedStation = -1; // Variable to store the selected station number
-    private final JButton[] stationButtons = new JButton[NUM_STATIONS]; // Array to hold the station buttons
+    private final JButton[] stationStartButtons = new JButton[NUM_STATIONS]; // Array to hold the station buttons
     private final StartSession[] startSessions = new StartSession[NUM_STATIONS]; // Array to hold StartSession instances
     private final boolean[] stationEnabled = new boolean[NUM_STATIONS]; // Array to keep track of station status
     private final CustomerStation[] customerStation = new CustomerStation[NUM_STATIONS];
@@ -76,20 +65,28 @@ public class AttendantPageGUI extends JFrame {
     public AttendantPageGUI() {
         // Initialize the GUI
         setupGUI();
-        createStationButtons();
+        setupStationStartPanel();
         createStationControls();
         createStationServices();
         createCustomerServices();
 
-        customerServicesPanel.add(addItemByText);
-
         // Adding the panels to the main panel
+        // Variables for the GUI
+        JPanel mainPanel = new JPanel(new GridLayout(9, 1));
+        // Label for stations
+        JLabel stationsLabel = new JLabel("Checkout Stations: ");
         mainPanel.add(stationsLabel);
-        mainPanel.add(stationPanel);
+        mainPanel.add(stationStartPanel);
+        // Label for station controls
+        JLabel stationControlLabel = new JLabel("Checkout Station Controls: ");
         mainPanel.add(stationControlLabel);
         mainPanel.add(stationControlPanel);
+        // Label for station controls
+        JLabel stationServicesLabel = new JLabel("Hardware Services: ");
         mainPanel.add(stationServicesLabel);
         mainPanel.add(stationServicesPanel);
+        // Label for customer services
+        JLabel customerServicesLabel = new JLabel("Customer Services: ");
         mainPanel.add(customerServicesLabel);
         mainPanel.add(customerServicesPanel);
 
@@ -98,18 +95,18 @@ public class AttendantPageGUI extends JFrame {
 
     private void setupGUI() {
         setTitle("Attendant Page");
-        setSize(900, 700);
+        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Center the window
     }
 
-    private void createStationButtons() {
+    private void setupStationStartPanel() {
         // Create station buttons
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < NUM_STATIONS; i++) {
             JButton checkoutButton = getjButton(i);
             checkoutButton.addActionListener(new StationButtonListener(i));
-            stationPanel.add(checkoutButton);
-            stationButtons[i] = checkoutButton; // Add button to the array
+            stationStartPanel.add(checkoutButton);
+            stationStartButtons[i] = checkoutButton; // Add button to the array
             stationEnabled[i] = true; // Initialize station as enabled
         }
     }
@@ -238,6 +235,7 @@ public class AttendantPageGUI extends JFrame {
                 }
             }
         });
+        customerServicesPanel.add(addItemByText);
     }
 
     // Method to get the station button with the station number
@@ -405,11 +403,11 @@ public class AttendantPageGUI extends JFrame {
     
     // Method to highlight the selected station button
     private void highlightSelectedStation() {
-        for (int i = 0; i < stationButtons.length; i++) {
+        for (int i = 0; i < stationStartButtons.length; i++) {
             if (i == selectedStation) {
-                stationButtons[i].setBackground(Color.YELLOW); // Change background color for selected station
+                stationStartButtons[i].setBackground(Color.YELLOW); // Change background color for selected station
             } else {
-                stationButtons[i].setBackground(null); // Reset background color for other stations
+                stationStartButtons[i].setBackground(null); // Reset background color for other stations
             }
         }
     }

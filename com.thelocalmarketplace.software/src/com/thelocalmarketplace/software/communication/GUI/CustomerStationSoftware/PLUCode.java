@@ -1,9 +1,7 @@
-package com.thelocalmarketplace.software.communication;
+package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Random;
 
 import javax.swing.*;
 

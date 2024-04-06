@@ -27,7 +27,7 @@
  */
 
 
-package com.thelocalmarketplace.software.communication;
+package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
 
 import javax.swing.*;
 

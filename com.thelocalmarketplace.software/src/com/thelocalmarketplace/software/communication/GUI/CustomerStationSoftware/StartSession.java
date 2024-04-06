@@ -1,10 +1,10 @@
-package com.thelocalmarketplace.software.communication;
+package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
 
 import javax.swing.*;
 
 import com.jjjwelectronics.scale.AbstractElectronicScale;
-import com.thelocalmarketplace.software.AttendantPageGUI;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -14,7 +14,6 @@ public class StartSession extends JFrame {
     private CustomerStation customerStation; // Reference to the CustomerStation GUI
     private AttendantPageGUI attendantPageGUI;
     private SelfCheckoutStationSoftware stationSoftwareInstance;
-    private AbstractElectronicScale scale;
 
     // Method to start a customer session (this might be called based on some user interaction within StartSession)
     public void startCustomerSession(int stationNumber, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale) {
@@ -31,20 +30,7 @@ public class StartSession extends JFrame {
     public void setAttendantPageGUI(AttendantPageGUI attendantPageGUI) {
         this.attendantPageGUI = attendantPageGUI;
     }
- 
 
-    // Methods to control the CustomerStation GUI
-    public void freezeCustomerGUI() {
-        if (customerStation != null) {
-            customerStation.freezeGUI();
-        }
-    } 
-
-    public void unfreezeCustomerGUI() {
-        if (customerStation != null) {
-            customerStation.unfreezeGUI();
-        }
-    }
     public StartSession(int stationNumber, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale) {
     	this.stationSoftwareInstance = stationSoftwareInstance;
     	this.stationSoftwareInstance.setStationActive(false);

@@ -26,21 +26,22 @@ Nami Marwah              30178528
 
  */
 
-package com.thelocalmarketplace.software.communication;
+package com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class PayWithCoins extends JFrame {
+public class PayWithBanknotes extends JFrame {
 
-    private JLabel coinTotalLabel;
-    private int totalCount = 0;
+    private JLabel totalLabel;
+    private int totalAmount;
 
-    public PayWithCoins() {
-        setTitle("Coin Counter");
+    public PayWithBanknotes() {
+        setTitle("Banknote Counter");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 300);
+        setSize(600, 500);
         setLocationRelativeTo(null);
 
         // Main panel
@@ -48,44 +49,49 @@ public class PayWithCoins extends JFrame {
 
         // Header panel
         JPanel headerPanel = new JPanel();
-        JLabel headerLabel = new JLabel("Insert Coin", SwingConstants.CENTER);
+        JLabel headerLabel = new JLabel("Push Banknote", SwingConstants.CENTER);
         headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
         headerPanel.add(headerLabel);
 
-        // Coin options panel
-        JPanel coinPanel = new JPanel(new GridLayout(0, 3, 10, 10));
-        coinPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        // Banknote options panel
+        JPanel banknotePanel = new JPanel();
+        banknotePanel.setLayout(new GridLayout(0, 1, 10, 5)); // Increased vertical padding
+        banknotePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Coin denominations
-        int[] coinDenominations = {1, 5, 10, 25, 50, 100};
+        // Banknote denominations
+        int[] banknoteDenominations = {1, 5, 10, 20, 50, 100};
 
-        // Add coin buttons
-        for (int denomination : coinDenominations) {
-            JButton coinButton = createCoinButton(denomination);
-            coinPanel.add(coinButton);
+        // Add banknote buttons
+        for (int denomination : banknoteDenominations) {
+            JButton banknoteButton = createBanknoteButton(denomination);
+            banknotePanel.add(banknoteButton);
         }
 
-        // Coin total label
-        coinTotalLabel = new JLabel("Total Value of Coins Added: $0.00", SwingConstants.CENTER);
-        coinTotalLabel.setFont(new Font("Arial", Font.BOLD, 16));
-
-        // Total panel
+        // Total label
+        totalLabel = new JLabel("Total Amount: $0", SwingConstants.CENTER);
+        totalLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        
+     // Total panel
         JPanel totalPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        totalPanel.add(coinTotalLabel);
+        totalPanel.add(totalLabel);
 
         // Finish button
         JButton finishButton = new JButton("Finish");
+        finishButton.setFont(new Font("Arial", Font.BOLD, 24));
         finishButton.addActionListener(new ActionListener() {
-        	//this should replaced with a return to customer homepage instead later
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(PayWithCoins.this, "Total inserted: $" + (totalCount / 100.0));
+                JOptionPane.showMessageDialog(PayWithBanknotes.this, "Total Amount: $" + totalAmount);
             }
         });
 
-        // Add coin panel and total panel to a separate panel with FlowLayout
+        // Button panel for finish button
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(finishButton);
+
+     // Add coin panel and total panel to a separate panel with FlowLayout
         JPanel coinAndTotalPanel = new JPanel(new BorderLayout());
-        coinAndTotalPanel.add(coinPanel, BorderLayout.CENTER);
+        coinAndTotalPanel.add(banknotePanel, BorderLayout.CENTER);
         coinAndTotalPanel.add(totalPanel, BorderLayout.SOUTH);
 
         // Add components to main panel
@@ -100,13 +106,14 @@ public class PayWithCoins extends JFrame {
         setVisible(true);
     }
 
-    private JButton createCoinButton(int denomination) {
-        JButton button = new JButton("$" + (denomination / 100.0));
+    private JButton createBanknoteButton(int denomination) {
+        JButton button = new JButton("$" + denomination);
         button.setFont(new Font("Arial", Font.PLAIN, 16));
+        button.setPreferredSize(new Dimension(100, 50)); // Set preferred size
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                totalCount += denomination;
+                totalAmount += denomination;
                 updateTotalLabel();
             }
         });
@@ -114,11 +121,10 @@ public class PayWithCoins extends JFrame {
     }
 
     private void updateTotalLabel() {
-        double totalAmount = totalCount / 100.0;
-        coinTotalLabel.setText(String.format("Total Value of Coins Added: $%.2f", totalAmount));
+        totalLabel.setText("Total Amount: $" + totalAmount);
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(PayWithCoins::new);
+        SwingUtilities.invokeLater(PayWithBanknotes::new);
     }
 }

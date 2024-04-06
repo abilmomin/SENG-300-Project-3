@@ -1,4 +1,4 @@
-package com.thelocalmarketplace.software.communication;
+package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
 
 import javax.swing.*;
 
@@ -9,22 +9,17 @@ import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
-import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.AddownBag;
-import com.thelocalmarketplace.software.AttendantLoginPage;
-import com.thelocalmarketplace.software.AttendantPageGUI;
-import com.thelocalmarketplace.software.Initialization;
-import com.thelocalmarketplace.software.MembershipCard;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantLoginPage;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
-import com.thelocalmarketplace.software.communication.StartSession;
 import com.thelocalmarketplace.software.product.Products;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Random;
 
 public class CustomerStation extends JFrame {

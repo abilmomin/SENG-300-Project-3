@@ -25,11 +25,12 @@ Syed Haider              30143096
 Nami Marwah              30178528
 
  */
-package com.thelocalmarketplace.software.communication;
+package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
 
 import javax.swing.*;
 
 import com.thelocalmarketplace.software.MembershipCard;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 
 import java.awt.*;
 

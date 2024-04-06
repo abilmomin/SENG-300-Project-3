@@ -1,4 +1,7 @@
-package com.thelocalmarketplace.software.communication;
+package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
+
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.PayWithCoins;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.PayWithBanknotes;
 
 import javax.swing.*;
 import java.awt.*;

@@ -26,7 +26,7 @@
 
  */
 // WORK IN PROGRESS
-package com.thelocalmarketplace.software.communication;
+package com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware;
 
 import javax.swing.*;
 import java.awt.*;

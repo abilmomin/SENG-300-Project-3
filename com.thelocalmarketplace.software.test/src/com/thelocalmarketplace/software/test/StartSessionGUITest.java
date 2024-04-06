@@ -36,7 +36,7 @@ package com.thelocalmarketplace.software.test;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.thelocalmarketplace.software.communication.StartSession;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
 
 import javax.swing.*;
 

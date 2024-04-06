@@ -10,6 +10,7 @@ import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.jjjwelectronics.scale.ElectronicScaleListener;
 import com.jjjwelectronics.scale.IElectronicScale;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 
 
 public class AddownBag implements ElectronicScaleListener {

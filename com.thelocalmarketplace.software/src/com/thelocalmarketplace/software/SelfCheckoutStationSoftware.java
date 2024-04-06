@@ -51,10 +51,9 @@ import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
-import com.thelocalmarketplace.software.communication.CustomerStation;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.product.Products;
-import com.thelocalmarketplace.software.product.ProductsListener;
 import com.thelocalmarketplace.software.product.ScannerListener;
 import com.thelocalmarketplace.hardware.external.CardIssuer;
 
