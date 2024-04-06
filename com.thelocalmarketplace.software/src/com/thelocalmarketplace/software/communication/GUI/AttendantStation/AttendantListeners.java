@@ -160,7 +160,7 @@ public class AttendantListeners {
                             System.out.println("SelfCheckoutStationBronze initialized");
                         }
 
-
+                        PowerGrid.engageUninterruptiblePowerSource();
                         checkoutStation.plugIn(PowerGrid.instance());
                         checkoutStation.turnOn();
 
