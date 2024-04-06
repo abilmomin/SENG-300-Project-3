@@ -47,8 +47,6 @@ import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 public class Products {
-	// request attendants attention also goes in communication, but where? idk. Button needed in GUI
-	// safe to say most things go here for group 4 :))
 	// Things to listen to (hardware)
 	public SelfCheckoutStationSoftware software;
 	public ISelfCheckoutStation station;
@@ -110,7 +108,6 @@ public class Products {
 	 * 
 	 * @param code
 	 */
-	
 	public boolean addItemByPLUCode(PLUCodedItem pluItem) {
 		if (software.getStationActive() && !software.getStationBlock()) {
 			software.setStationBlock();
@@ -138,36 +135,49 @@ public class Products {
 			return false;
 		}
 	}
+	
 	/**
      * Adds an item to the customer's order by text search.
      *
      * @param searchText The text to search for the product.
      */
-    public void addItemByTextSearch(String searchText) {
+    public boolean addItemByTextSearch(String searchText) {
         Product product = findProductByTextSearch(searchText);
-        
-        software.setStationBlock();
 
         if (product != null && software.getStationActive() && !software.getStationBlock()) {
+            software.setStationBlock();
      
         	if (product instanceof BarcodedProduct) {
         		BarcodedProduct barcodedProduct = (BarcodedProduct) product;
-                BarcodedItem barcodedItem = new BarcodedItem(barcodedProduct.getBarcode(), new Mass(1));
+        		
+				double productWeight = barcodedProduct.getExpectedWeight(); 
+				long productPrice = product.getPrice();
 
-                software.addItemToOrder(barcodedItem);
+				software.addTotalOrderWeightInGrams(productWeight); 
+				software.addTotalOrderPrice(productPrice); 
+
+				Mass mass = new Mass(productWeight);
+				BarcodedItem barcodedItem = new BarcodedItem(barcodedProduct.getBarcode(), mass);
+
+                software.addItemToOrder(barcodedItem); 
+                
+                notifyProductAdded(product);
+                
+                return true;
+                
         	} else {
         		PLUCodedProduct pluProduct = (PLUCodedProduct) product;
         		PLUCodedItem pluItem = new PLUCodedItem(pluProduct.getPLUCode(), new Mass(1));
         		
                 software.addItemToOrder(pluItem);
+                
+                notifyProductAdded(product);
+                
+                return true;
         	}
         	
-        	notifyProductAdded(product);
-        	
-        	software.setStationUnblock();
-        	
         } else {
-        	// throw an exception maybe?
+        	return false;
         }
     }
     
@@ -329,5 +339,16 @@ public class Products {
 	public void notifyProductRemoved(Product product) {
 		for(ProductsListener listener : listeners)
 			listener.productRemoved(this, product);
+	}
+	
+	/**
+	 * Notifies observers that an item should be added to the bagging area.
+	 * 
+	 * @param product
+	 * 		The product that should be added to the bagging area.
+	 */
+	public void notifyAddProductToBaggingArea(Product product) {
+		for(ProductsListener listener : listeners)
+			listener.productToBaggingArea(this, product);
 	}
 }
