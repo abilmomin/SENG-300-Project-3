@@ -41,11 +41,12 @@ public class AddtoBagging extends JFrame {
 	    button.setFont(new Font("Arial", Font.PLAIN, 16));
 	    button.setPreferredSize(new Dimension(100, 30));
 
-	    /*
+	    
 	    button.addActionListener(e -> {
+	    	// CODE TO ADD ITEM TO ORDER GOES HERE
 	    	dispose();
 	    });
-	    */
+	    
 	   
 	    mainPanel.add(Box.createVerticalGlue());
 	    mainPanel.add(bigTextLabel);
