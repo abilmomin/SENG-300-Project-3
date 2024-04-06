@@ -79,7 +79,7 @@ public class ReceiptTest {
         this.station = new SelfCheckoutStationSoftware(new SelfCheckoutStationBronze());
         this.funds = new Funds(this.station);
         this.printer = this.station.getStationHardware().getPrinter();
-        this.receipt = new Receipt(printer, funds, station);
+        this.receipt = new Receipt(printer, funds);
 
 
     }
@@ -204,6 +204,32 @@ public class ReceiptTest {
         this.receipt.notifyPaperEmpty(printer);
 
         assertTrue(pError.noPaperCalled);
+    }
+
+    @Test
+    public void testNotifyPaperLow() {
+
+        mockReceiptObserver observer = new mockReceiptObserver();
+        mockPredictError pError = new mockPredictError();
+
+
+        this.receipt.register(observer, pError);
+        this.receipt.notifyPaperLow(printer);
+
+        assertTrue(pError.lowPaperCalled);
+    }
+
+    @Test
+    public void testNotifyInkLow() {
+
+        mockReceiptObserver observer = new mockReceiptObserver();
+        mockPredictError pError = new mockPredictError();
+
+
+        this.receipt.register(observer, pError);
+        this.receipt.notifyInkLow(printer);
+
+        assertTrue(pError.lowInkCalled);
     }
 
     @Test
