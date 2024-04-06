@@ -30,11 +30,9 @@ package com.thelocalmarketplace.software;
 
 import ca.ucalgary.seng300.simulation.InvalidStateSimulationException;
 import static com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation.resetConfigurationToDefaults;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.Scanner;
+
+import java.util.*;
+
 import com.jjjwelectronics.Item;
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.bag.IReusableBagDispenser;
@@ -57,6 +55,7 @@ import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.product.Products;
 import com.thelocalmarketplace.software.product.ScannerListener;
 import com.thelocalmarketplace.hardware.external.CardIssuer;
+import com.jjjwelectronics.card.Card;
 
 /**
  * This class acts as the central unit that communicates with 
@@ -93,6 +92,9 @@ public class SelfCheckoutStationSoftware {
 	private boolean activeSession = false;
 
 	private Set<CardIssuer> banks = new HashSet<>();
+
+	private Card creditCard;
+	private Card debitCard;
 
 	/**
 	 * Creates an instance of the software for a self-checkout station.
@@ -369,6 +371,24 @@ public class SelfCheckoutStationSoftware {
 
 	public void addBank(CardIssuer cardIssuer) {
 		this.banks.add(cardIssuer);
+	}
+
+	public void addPaymentCard(Card card, String type) {
+		if (Objects.equals(type, "credit")) {
+			creditCard = card;
+		}
+		else if (Objects.equals(type, "debit")){
+			debitCard = card;
+		}
+	}
+
+	public Card getCard(String type) {
+		if (Objects.equals(type, "credit")) {
+			return creditCard;
+		}
+		else {
+			return debitCard;
+		}
 	}
 	
 	public Products getProductHandler() {

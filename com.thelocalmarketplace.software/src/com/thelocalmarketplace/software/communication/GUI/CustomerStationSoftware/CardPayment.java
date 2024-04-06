@@ -4,6 +4,7 @@ import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class CardPayment extends JFrame {
 
@@ -41,13 +42,17 @@ public class CardPayment extends JFrame {
 
         JButton finishPaymentButton = new JButton("Finish Payment");
         finishPaymentButton.addActionListener(e -> {
+            try {
 
-            switch (paymentType) {
-                case 1 -> software.getStationHardware().getCardReader().swipe();
-                case 2 -> software.getStationHardware().getCardReader().tap();
-                case 3 -> software.getStationHardware().getCardReader().insert();
-                default ->
-                        JOptionPane.showMessageDialog(this, "Please select a payment method.", "Payment", JOptionPane.INFORMATION_MESSAGE);
+                switch (paymentType) {
+                    case 1 -> software.getStationHardware().getCardReader().swipe(software.getCard(typeOfCard));
+                    case 2 -> software.getStationHardware().getCardReader().tap(software.getCard(typeOfCard));
+                    case 3 -> software.getStationHardware().getCardReader().insert(software.getCard(typeOfCard));
+                    default -> JOptionPane.showMessageDialog(this, "Please select a payment method.", "Payment", JOptionPane.INFORMATION_MESSAGE);
+                }
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
             // Placeholder action listen
             JOptionPane.showMessageDialog(this, "Payment Method Selected. Processing Payment...", "Payment", JOptionPane.INFORMATION_MESSAGE);
