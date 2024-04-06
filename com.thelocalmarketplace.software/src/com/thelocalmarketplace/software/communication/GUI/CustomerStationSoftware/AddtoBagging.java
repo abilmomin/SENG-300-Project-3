@@ -4,6 +4,12 @@ import java.awt.*;
 
 import javax.swing.*;
 
+import com.jjjwelectronics.Mass;
+import com.thelocalmarketplace.hardware.PLUCodedItem;
+import com.thelocalmarketplace.hardware.PLUCodedProduct;
+import com.thelocalmarketplace.hardware.PriceLookUpCode;
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+
 
 // GENERAL LAYOUT
 // Box layout is used to arrange items vertically or horizontally
@@ -11,7 +17,7 @@ import javax.swing.*;
 
 public class AddtoBagging extends JFrame {
 	
-	public AddtoBagging(String item) {
+	public AddtoBagging(PLUCodedProduct product, String item, SelfCheckoutStationSoftware stationSoftwareInstance) {
 
 	    setTitle("Add to Bag");
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -40,7 +46,9 @@ public class AddtoBagging extends JFrame {
 
 	    
 	    button.addActionListener(e -> {
-	    	// CODE TO ADD ITEM TO ORDER GOES HERE
+	    	PriceLookUpCode plu = product.getPLUCode();
+	    	PLUCodedItem newItem = new PLUCodedItem(plu, new Mass(50)); // arbitrary mass value
+	    	stationSoftwareInstance.addItemToOrder(newItem);
 	    	dispose();
 	    });
 	    

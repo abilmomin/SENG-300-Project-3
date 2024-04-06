@@ -200,8 +200,8 @@ public class CustomerStation extends JFrame {
         add(mainPanel);
 
         // Add sample products to the cart
-        addProductToCart("Apple", 1.99);
-        addProductToCart("Banana", 0.99);
+        // addProductToCart("Apple", 1.99);
+        // addProductToCart("Banana", 0.99);
 
         // Set frame visible
         setVisible(true);
@@ -220,10 +220,12 @@ public class CustomerStation extends JFrame {
     }
     
     // I MADE THIS PUBLIC IDK IF IM RIGHT BUT IM USING THIS IN COORDINATION!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // Currently PLU prices are in cents, 
     public void addProductToCart(String productName, double price) {
-        cartTextArea.append(productName + " - $" + price + "\n");
+    	double priceInDollars = price / 100.0;
+        cartTextArea.append(productName + " - $" + priceInDollars + "\n");
         double currentTotal = Double.parseDouble(totalPriceLabel.getText().replace("Total Price: $", ""));
-        currentTotal += price;
+        currentTotal += priceInDollars;
         totalPriceLabel.setText("Total Price: $" + String.format("%.2f", currentTotal));
     }
 
@@ -290,12 +292,12 @@ public class CustomerStation extends JFrame {
         	
     		String description = product.getDescription();
     		
-    		
-    		AddtoBagging popup  = new AddtoBagging(description);
+    		AddtoBagging popup  = new AddtoBagging(product, description, stationSoftwareInstance);
         	popup.setVisible(true);
+        	
+        	addProductToCart(product.getDescription(), product.getPrice());
         });
     	
-    	// Return from popup:
     	 return keypadPanel;
     }
    
