@@ -52,61 +52,62 @@ public class ReceiptHandlerTest {
     private SelfCheckoutStationSoftware station;
     private IReceiptPrinter printer;
     private Receipt receipt;
+    private mockReceiptObserver observer;
 
     @Before
     public void setUp() {
         this.station = new SelfCheckoutStationSoftware(new SelfCheckoutStationBronze());
-        this.handler = new ReceiptHandler(new Receipt(this.station.getStationHardware().getPrinter(), funds, station));
         this.funds = new Funds(this.station);
         this.printer = this.station.getStationHardware().getPrinter();
-        this.receipt = new Receipt(printer, funds, station);
+        this.receipt = new Receipt(printer, funds);
+        this.handler = new ReceiptHandler(this.receipt);
+        this.observer = new mockReceiptObserver();
+
+        this.receipt.register(observer);
     }
 
     @Test
     public void testOutOfPaper() {
-        mockReceiptObserver observer = new mockReceiptObserver();
-        mockPredictError pError = new mockPredictError();
-
-        // Act
         this.handler.thePrinterIsOutOfPaper();
-        assertTrue(pError.noPaperCalled);
-        assertTrue(observer.paperAddedCalled);
-
+        assertTrue(observer.noPaperCalled);
 
     }
 
     @Test
     public void testOutOfInk() {
-
-        mockReceiptObserver observer = new mockReceiptObserver();
-        mockPredictError pError = new mockPredictError();
-
-        // Act
         this.handler.thePrinterIsOutOfInk();
-        assertTrue(pError.noInkCalled);
-        assertTrue(observer.inkAddedCalled);
-
+        assertTrue(observer.noInkCalled);
 
     }
 
     @Test
-    public void testPaperHasBeenAdded() {
-        mockReceiptObserver observer = new mockReceiptObserver();
+    public void testLowInk() {
+        this.handler.thePrinterHasLowInk();;
+        assertTrue(observer.lowInkCalled);
 
+    }
+
+    @Test
+    public void testLowPaper() {
+        this.handler.thePrinterHasLowPaper();;
+        assertTrue(observer.lowPaperCalled);
+
+    }
+
+
+
+    @Test
+    public void testPaperHasBeenAdded() {
         this.handler.paperHasBeenAddedToThePrinter();
         assertTrue(observer.paperAddedCalled);
     }
 
     @Test
     public void testInkHasBeenAdded() {
-
-        mockReceiptObserver observer = new mockReceiptObserver();
-
         this.handler.inkHasBeenAddedToThePrinter();
         assertTrue(observer.inkAddedCalled);
 
     }
-
 
 
 

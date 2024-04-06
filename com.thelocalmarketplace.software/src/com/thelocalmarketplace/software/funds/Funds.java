@@ -61,7 +61,6 @@ import com.tdc.coin.CoinStorageUnit;
 import com.tdc.coin.ICoinDispenser;
 
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
-import com.thelocalmarketplace.software.PredictError;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 
@@ -74,7 +73,6 @@ public class Funds {
 	protected Map<BigDecimal, Number> banknotesAvailable;
 	protected final SelfCheckoutStationSoftware checkoutStationSoftware;
 	protected Set<FundsObserver> observers = new HashSet<>();
-	protected Set<PredictError> errorObservers = new HashSet<>();
 
 	/**
 	 * Funds constructor which initializes all individual fund facades.
@@ -123,9 +121,8 @@ public class Funds {
 	 *            The listener to be registered. No effect if it is already
 	 *            registered. Cannot be null.
 	 */
-	public void register(FundsObserver listener, PredictError error) {
+	public void register(FundsObserver listener) {
 		observers.add(listener);
-		errorObservers.add(error);
 	}
 
 	/**
@@ -136,9 +133,8 @@ public class Funds {
 	 *            The listener to be de-registered. No effect if it is not already
 	 *            registered or null.
 	 */
-	public void deregister(FundsObserver listener, PredictError error) {
+	public void deregister(FundsObserver listener) {
 		observers.remove(listener);
-		errorObservers.remove(error);
 	}
 
 	/**
@@ -190,22 +186,22 @@ public class Funds {
 	}
 	
 	protected void notifyCoinsHigh(CoinStorageUnit storage) {
-		for (PredictError observer : errorObservers)
+		for (FundsObserver observer : observers)
 			observer.highCoinsError(storage);
 	}
 	
 	protected void notifyCoinsLow(ICoinDispenser dispenser) {
-		for (PredictError observer : errorObservers)
+		for (FundsObserver observer : observers)
 			observer.lowCoinsError(dispenser);
 	}
 	
 	protected void notifyBanknotesHigh(BanknoteStorageUnit storage) {
-		for (PredictError observer : errorObservers)
+		for (FundsObserver observer : observers)
 			observer.highBanknotesError(storage);
 	}
 	
 	protected void notifyBanknotesLow(IBanknoteDispenser dispenser) {
-		for (PredictError observer : errorObservers)
+		for (FundsObserver observer : observers)
 			observer.lowBanknotesError(dispenser);
 	}
 	

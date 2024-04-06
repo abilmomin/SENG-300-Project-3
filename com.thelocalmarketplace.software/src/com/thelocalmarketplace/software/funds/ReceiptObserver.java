@@ -46,4 +46,12 @@ public interface ReceiptObserver {
 	default public void inkAdded(IReceiptPrinter printer) {}
 	
 	default public void paperAdded(IReceiptPrinter printer) {}
+	
+	default public void noInkError(IReceiptPrinter printer) {}
+
+	default public void noPaperError(IReceiptPrinter printer) {}
+
+	default public void lowInkError(IReceiptPrinter printer) {}
+
+	default public void lowPaperError(IReceiptPrinter printer) {}
 }

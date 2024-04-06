@@ -87,13 +87,6 @@ public class ReceiptHandler implements ReceiptPrinterListener{
 	@Override
 	public void thePrinterIsOutOfPaper() {
 		this.receipt.notifyPaperEmpty(receiptPrinter);
-		try {
-			logic.refillPrinterPaper(this.receipt.checkoutStationSoftware, receipt);
-		} catch (OverloadedDevice e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 	}
 
 	/**
@@ -102,27 +95,18 @@ public class ReceiptHandler implements ReceiptPrinterListener{
 	@Override
 	public void thePrinterIsOutOfInk() {
 		this.receipt.notifyInkEmpty(receiptPrinter);
-		try {
-			logic.refillPrinterInk(this.receipt.checkoutStationSoftware, receipt);
-		} catch (OverloadedDevice e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-
 	}
 
 
 	@Override
 	public void thePrinterHasLowInk(){
-		// TODO Auto-generated catch block
-
+		this.receipt.notifyInkLow(receiptPrinter);
 
 	}
 
 	@Override
 	public void thePrinterHasLowPaper() {
-		// TODO Auto-generated catch block
+		this.receipt.notifyPaperLow(receiptPrinter);
 
 
 	}

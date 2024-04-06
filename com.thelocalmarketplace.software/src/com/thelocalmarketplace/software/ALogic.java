@@ -83,6 +83,46 @@ public class ALogic {
 
 	}
 
+	public void refillPrinterPaperWhenLow(SelfCheckoutStationSoftware cSoftware, Receipt receipt) throws OverloadedDevice {
+		ISelfCheckoutStation cS = cSoftware.getStationHardware();
+		IReceiptPrinter printer = cS.getPrinter();
+
+
+		for (int i = 0; i < ReceiptPrinterBronze.MAXIMUM_PAPER; i++) {
+			try {
+				printer.print('c');
+			} catch (EmptyDevice e) {
+				// TODO Auto-generated catch block
+
+			}
+		}
+
+
+		printer.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
+		receipt.notifyPaperAdded(printer);
+
+	}
+
+	public void refillPrinterInkWhenLow(SelfCheckoutStationSoftware cSoftware, Receipt receipt) throws OverloadedDevice {
+		ISelfCheckoutStation cS = cSoftware.getStationHardware();
+		IReceiptPrinter printer = cS.getPrinter();
+
+
+		for (int i = 0; i < ReceiptPrinterBronze.MAXIMUM_INK; i++) {
+			try {
+				printer.print('c');
+			} catch (EmptyDevice e) {
+				// TODO Auto-generated catch block
+
+			}
+		}
+
+
+		printer.addInk(ReceiptPrinterBronze.MAXIMUM_INK);
+		receipt.notifyInkAdded(printer);
+
+	}
+
 
 
 }

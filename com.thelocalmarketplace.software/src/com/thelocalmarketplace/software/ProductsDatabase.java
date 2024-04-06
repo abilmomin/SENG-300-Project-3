@@ -27,17 +27,15 @@ public class ProductsDatabase {
 
 	// private ArrayList<BarcodedItems> items 
 	public ProductsDatabase() {
-		InitializeProducts();
+		InitializeBarcodedProducts();
+		InitializePLUProducts();
 	}
 
-	private static void InitializeProducts() {
-
-		// how to integrate with scs instance??
+	private static void InitializeBarcodedProducts() {
+		// Do we need to initialize machine currency?
 		Currency c = Currency.getInstance(Locale.CANADA);
 		int[] noteAmounts = {5, 10, 20, 50, 100};
 		BigDecimal[] coinAmounts = {new BigDecimal("0.05"), new BigDecimal("0.10"),  new BigDecimal("0.25"), new BigDecimal("1.00"), new BigDecimal("2.00")};
-
-
 
 		Numeral[] code1Digits = {Numeral.one, Numeral.two, Numeral.three, Numeral.four};
 		Barcode barcode1 = new Barcode(code1Digits);
@@ -48,33 +46,29 @@ public class ProductsDatabase {
 		Numeral[] code3Digits = {Numeral.six, Numeral.seven, Numeral.eight, Numeral.nine};
 		Barcode barcode3 = new Barcode(code3Digits);
 
-		// Add to each station? Or add to a database that each station can then access
-			// I think we'd need to add a function in SelfCheckoutStationSoftware either way
-
-		// Not sure whether we use BarcodedItem or BarcodedProduct but here's both;
-
-			// BarcodedItem(Barcode barcode, Mass mass)
-		BarcodedItem i_milk = new BarcodedItem(barcode1, new Mass(new BigDecimal("3894.8")));
-
 			// BarcodedProduct(Barcode barcode, String description, long price, double expectedWeightInGrams)
 				// I assumed price is in cents since longs can't have decimals
 		BarcodedProduct milk = new BarcodedProduct(barcode1, "Milk", 350, 3894.8);
-
+		BarcodedProduct chocolate = new BarcodedProduct(barcode1, "Chocolate bar", 300, 49);
+		BarcodedProduct sushi = new BarcodedProduct(barcode1, "20pc Sushi", 1000, 600);
+		 
 		productDatabase.put(barcode1, milk); // Adding milk to the product database with its barcode as the key
-
-		// PLU Code Items
-
-		PriceLookUpCode plu1 = new PriceLookUpCode("1234");
-
-			//PLUCodedItem(PriceLookUpCode pluCode, Mass mass) 
-		PLUCodedItem i_apple = new PLUCodedItem(plu1, new Mass(new BigDecimal("150.0")));
-
-			//PLUCodedProduct(PriceLookUpCode pluCode, String description, long price)
-				// Does not have expectedWeight >> BUG??
-		PLUCodedProduct apple = new PLUCodedProduct(plu1, "Apple", 150);
-
-		PLUDatabase.put(plu1, apple);
-
+		productDatabase.put(barcode2, chocolate);
+		productDatabase.put(barcode3, sushi);
 	}
 
+	private static void InitializePLUProducts() {
+		PriceLookUpCode plu1 = new PriceLookUpCode("1234");
+		PriceLookUpCode plu2 = new PriceLookUpCode("2345");
+		PriceLookUpCode plu3 = new PriceLookUpCode("6789");
+		
+			//PLUCodedProduct(PriceLookUpCode pluCode, String description, long price)
+				// Assuming price in cents
+		PLUCodedProduct apple = new PLUCodedProduct(plu1, "Apple", 150);
+		PLUCodedProduct banana = new PLUCodedProduct(plu1, "Banana", 125);
+		PLUCodedProduct kiwi = new PLUCodedProduct(plu1, "Kiwi", 175);
+		PLUDatabase.put(plu1, apple);
+		PLUDatabase.put(plu2, banana);
+		PLUDatabase.put(plu3, kiwi);
+	}
 }
