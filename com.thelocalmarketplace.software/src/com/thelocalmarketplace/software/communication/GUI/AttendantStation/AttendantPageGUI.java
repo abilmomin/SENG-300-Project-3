@@ -153,19 +153,6 @@ public class AttendantPageGUI extends JFrame {
         customerServicesPanel.add(addItemByText);
     }
 
-    private class ClearStationSignalButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (selectedStation != -1 && customerStation[selectedStation].getSignal()) { // Check if a station is selected
-                if (customerStation[selectedStation] != null) { // Check if GUI is created for the selected station
-                    customerStation[selectedStation].clearSignal();
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "Please select a station with an active Customer Station GUI that required assistance.");
-            }
-        }
-    }
-
     private class refillCoinServiceButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -288,7 +275,7 @@ public class AttendantPageGUI extends JFrame {
     private class StartStationButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (selectedStation != -1) { // Check if a station is selected
+            if (selectedStation != -1 && (startSessions[selectedStation] == null || customerStation[selectedStation] == null)) { // Check if a station is selected
                 // Use a separate thread to initialize SelfCheckoutStationBronze
                 new Thread(() -> {
                     try { 
@@ -305,6 +292,7 @@ public class AttendantPageGUI extends JFrame {
                              scale = new ElectronicScaleBronze();
                             System.out.println("SelfCheckoutStationBronze initialized");
                         }
+
 
                         checkoutStation.plugIn(PowerGrid.instance());
                         checkoutStation.turnOn();
@@ -343,10 +331,32 @@ public class AttendantPageGUI extends JFrame {
     private class CloseStationButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (selectedStation != -1 && customerStation[selectedStation] != null) { // Check if a station is selected and GUI is created
-            	customerStation[selectedStation].dispose(); // Close the Customer GUI page for the selected station
-            } else {
-                JOptionPane.showMessageDialog(null, "Please select a station with an active Customer Station GUI.");
+            if (selectedStation != -1) {
+                if (customerStation[selectedStation] != null) { // Check if a station is selected and GUI is created
+                    customerStation[selectedStation].dispose(); // Close the Customer GUI page for the selected station
+                    customerStation[selectedStation] = null; // Reset the reference
+                    startSessions[selectedStation] = null; // Reset the reference
+                } else if(startSessions[selectedStation] != null) {
+                    startSessions[selectedStation].dispose(); // Close the StartSession page for the selected station
+                    startSessions[selectedStation] = null; // Reset the reference
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "Please select a station with an active Customer Station GUI.");
+                }
+            }
+        }
+    }
+
+    private class ClearStationSignalButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (selectedStation != -1) { // Check if a station is selected
+                if (customerStation[selectedStation] != null && customerStation[selectedStation].getSignal()) { // Check if GUI is created for the selected station
+                    customerStation[selectedStation].clearSignal();
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "Please select a station with an active Customer Station GUI that required assistance.");
+                }
             }
         }
     }
@@ -424,8 +434,10 @@ public class AttendantPageGUI extends JFrame {
         for (int i = 0; i < stationStartButtons.length; i++) {
             if (i == selectedStation && !stationAssistanceRequested[i]) {
                 stationStartButtons[i].setBackground(Color.YELLOW); // Highlight selected station
+                stationStartButtons[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
             } else if (!stationAssistanceRequested[i]) { // Check if the station has not requested assistance
                 stationStartButtons[i].setBackground(null); // Reset background color only if no assistance is requested
+                stationStartButtons[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
             }
             // If stationAssistanceRequested[i] is true, do nothing to preserve the red color
         }

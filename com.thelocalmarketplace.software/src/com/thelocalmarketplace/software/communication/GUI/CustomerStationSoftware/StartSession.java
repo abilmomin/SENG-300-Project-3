@@ -56,7 +56,6 @@ public class StartSession extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 // Implement session start logic here
             	stationSoftwareInstance.setStationActive(true);
-                JOptionPane.showMessageDialog(StartSession.this, "Session Started!");
                 // Once the session is started, dispose the current frame and open the CustomerStation GUI
                 StartSession.this.dispose(); // Close StartSession window
                 startCustomerSession(stationNumber,stationSoftwareInstance,scale); // Create and display a new instance of CustomerStation (using station 1 for this example)
