@@ -304,7 +304,7 @@ public class CustomerStation extends JFrame {
         });
     	
     	// Return from popup:
-    	// return keypadPanel;
+    	 return keypadPanel;
     }
    
     ActionListener addNum = e -> {

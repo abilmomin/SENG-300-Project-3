@@ -30,6 +30,7 @@ package com.thelocalmarketplace.software.product;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import com.jjjwelectronics.EmptyDevice;
@@ -38,6 +39,7 @@ import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.bag.IReusableBagDispenser;
 import com.jjjwelectronics.bag.ReusableBag;
 import com.jjjwelectronics.scale.IElectronicScale;
+import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
 import com.thelocalmarketplace.hardware.*;
@@ -105,7 +107,7 @@ public class Products {
 	 * 
 	 * Adds item to order by PLU code
 	 * 
-	 * @param pluItem
+	 * @param code
 	 */
 
 	public PLUCodedProduct matchCodeAndPLUProduct(String code) {

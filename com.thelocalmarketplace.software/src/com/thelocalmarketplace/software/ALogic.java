@@ -21,6 +21,7 @@ import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
 
 import ca.ucalgary.seng300.simulation.SimulationException;
+import com.thelocalmarketplace.software.funds.Receipt;
 import powerutility.PowerGrid;
 
 public class ALogic {

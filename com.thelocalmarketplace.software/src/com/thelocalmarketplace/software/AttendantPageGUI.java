@@ -9,7 +9,6 @@ import com.jjjwelectronics.scale.ElectronicScaleGold;
 import com.jjjwelectronics.scale.ElectronicScaleSilver;
 import com.tdc.CashOverloadException;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
-import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
@@ -24,191 +23,65 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class AttendantPageGUI extends JFrame {
+    // CONSTANTS FOR THE GUI
+    private static final int NUM_STATIONS = 4;
+    private static final int WINDOW_WIDTH = 900;
+    private static final int WINDOW_HEIGHT = 700;
+
+    // Variables for the GUI
+    private JPanel mainPanel = new JPanel(new GridLayout(9, 1));
+    // Label for stations
+    private JLabel stationsLabel = new JLabel("Checkout Stations: ");
+    // Button panel for managing customer checkout stations
+    private JPanel stationPanel = new JPanel(new GridLayout(2, 2));
+    // Label for station controls
+    private JLabel stationControlLabel = new JLabel("Checkout Station Controls: ");
+
+
+    // Button panel for station controls
+    private JPanel stationControlPanel = new JPanel(new FlowLayout());
+    private JButton startStation = new JButton("Start Station");
+    private JButton closeStation = new JButton("Close Station");
+    private JButton enableStation = new JButton("Enable Station");
+    private JButton disableStation = new JButton("Disable Station");
+
+    // Label for station controls
+    private JLabel stationServicesLabel = new JLabel("Hardware Services: ");
+
+    // Button panel for station controls
+    private JPanel stationServicesPanel = new JPanel(new GridLayout(2,1));
+    private JButton refillCoins = new JButton("Refill Coins");
+    private JButton refillBanknotes = new JButton("Refill Banknotes");
+    private JButton refillReceiptPaper = new JButton("Refill Receipt Paper");
+    private JButton emptyCoins = new JButton("Empty Coins");
+    private JButton emptyBanknotes = new JButton("Empty Banknotes");
+    private JButton refillReceiptInk = new JButton("Refill Receipt Ink");
+
+    // Label for customer services
+    private JLabel customerServicesLabel = new JLabel("Customer Services: ");
+    private JPanel customerServicesPanel = new JPanel(new FlowLayout());
+    private JButton addItemByText = new JButton("Add Item by Text Search");
+
     private int selectedStation = -1; // Variable to store the selected station number
-    private JButton[] stationButtons; // Array to hold the station buttons
-    private StartSession[] startSessions; // Array to hold StartSession instances
-    private boolean[] stationEnabled; // Array to keep track of station status
-    private CustomerStation[] customerStation;
-    private SelfCheckoutStationSoftware[] stationSoftwareInstances;
+    private final JButton[] stationButtons = new JButton[NUM_STATIONS]; // Array to hold the station buttons
+    private final StartSession[] startSessions = new StartSession[NUM_STATIONS]; // Array to hold StartSession instances
+    private final boolean[] stationEnabled = new boolean[NUM_STATIONS]; // Array to keep track of station status
+    private final CustomerStation[] customerStation = new CustomerStation[NUM_STATIONS];
+    private final SelfCheckoutStationSoftware[] stationSoftwareInstances = new SelfCheckoutStationSoftware[NUM_STATIONS];
+
+    // Variables for station hardware
     private AbstractElectronicScale scale;
-    private  AbstractSelfCheckoutStation checkoutStation;
+    private AbstractSelfCheckoutStation checkoutStation;
+
     public AttendantPageGUI() {
-        // Setup
-        setTitle("Attendant Page");
-        setSize(900, 700);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        
-        // Initialize the stationSoftwareInstances array here
-        stationSoftwareInstances = new SelfCheckoutStationSoftware[4];
+        // Initialize the GUI
+        setupGUI();
+        createStationButtons();
+        createStationControls();
+        createStationServices();
+        createCustomerServices();
 
-        // Main panel
-        JPanel mainPanel = new JPanel(new GridLayout(9, 1));
-
-        // Label for stations
-        JLabel stationsLabel = new JLabel("Checkout Stations: ");
-
-        // Button panel for managing customer checkout stations
-        JPanel stationPanel = new JPanel(new GridLayout(2, 2));
-        stationButtons = new JButton[4]; // Initialize the station buttons array
-        startSessions = new StartSession[4]; // Initialize the StartSession instances array
-        stationEnabled = new boolean[4]; // Initialize the station status array
-        customerStation = new CustomerStation[4];
-     // Create station buttons
-        for (int i = 0; i < 4; i++) {
-            JButton checkoutButton = new JButton("Checkout Station " + (i + 1));
-            String stationTypeLabel = "";
-            switch (i) {
-                case 0:
-                    stationTypeLabel = " (Gold)";
-                    break;
-                case 1:
-                    stationTypeLabel = " (Silver)";
-                    break;
-                case 2:
-                case 3:
-                    stationTypeLabel = " (Bronze)";
-                    break;
-            }
-            checkoutButton.setText(checkoutButton.getText() + stationTypeLabel);
-            checkoutButton.addActionListener(new StationButtonListener(i));
-            stationPanel.add(checkoutButton);
-            stationButtons[i] = checkoutButton; // Add button to the array
-            stationEnabled[i] = true; // Initialize station as enabled
-        }
-
-        // Label for station controls
-        JLabel stationControlLabel = new JLabel("Checkout Station Controls: ");
-
-        // Button panel for station controls
-        JPanel stationControlPanel = new JPanel(new FlowLayout());
-        JButton startStation = new JButton("Start Station");
-        JButton closeStation = new JButton("Close Station");
-        JButton enableStation = new JButton("Enable Station");
-        JButton disableStation = new JButton("Disable Station");
-
-        startStation.addActionListener(new StartStationButtonListener());
-        closeStation.addActionListener(new CloseStationButtonListener());
-        enableStation.addActionListener(new EnableStationButtonListener());
-        disableStation.addActionListener(new DisableStationButtonListener());
-
-        stationControlPanel.add(startStation);
-        stationControlPanel.add(closeStation);
-        stationControlPanel.add(enableStation);
-        stationControlPanel.add(disableStation);
-
-        // Label for station controls
-        JLabel stationServicesLabel = new JLabel("Hardware Services: ");
-
-        // Button panel for station controls
-        JPanel stationServicesPanel = new JPanel(new GridLayout(2,1));
-       
-        JButton refillCoins = new JButton("Refill Coins");
-        JButton refillBanknotes = new JButton("Refill Banknotes");
-        JButton refillReciptPaper = new JButton("Refill Receipt Paper");
-        JButton emptyCoins = new JButton("Empty Coins");
-        JButton emptyBanknotes = new JButton("Empty Banknotes");
-        JButton refillReceiptInk = new JButton("Refill Receipt Ink");
-        
-        // Add action listeners to buttons
-        refillCoins.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ALogic logic = new ALogic();
-                try {
-					logic.refillCoinDispensers(stationSoftwareInstances[selectedStation]);
-				} catch (SimulationException | CashOverloadException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-            }
-        });
-
-        refillBanknotes.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ALogic logic = new ALogic();
-                try {
-					logic.refillBanknoteDispensers(stationSoftwareInstances[selectedStation]);
-				} catch (SimulationException | CashOverloadException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-            }
-        });
-
-        refillReciptPaper.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ALogic logic = new ALogic();
-                try {
-					logic.refillPrinterPaper(stationSoftwareInstances[selectedStation]);
-				} catch (OverloadedDevice e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-            }
-        });
-
-        emptyCoins.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ALogic logic = new ALogic();
-                logic.emptyCoinStorage(stationSoftwareInstances[selectedStation]);
-            }
-        });
-
-        emptyBanknotes.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ALogic logic = new ALogic();
-                logic.emptyBanknoteStorage(stationSoftwareInstances[selectedStation]);
-            }
-        });
-
-        refillReceiptInk.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ALogic logic = new ALogic();
-                try {
-					logic.refillPrinterInk(stationSoftwareInstances[selectedStation]);
-				} catch (OverloadedDevice e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-            }
-        });
-        
-        
-        
-        
-        stationServicesPanel.add(refillCoins);
-        stationServicesPanel.add(refillBanknotes);
-        stationServicesPanel.add(refillReciptPaper);
-        stationServicesPanel.add(refillReceiptInk);
-        stationServicesPanel.add(emptyCoins);
-        stationServicesPanel.add(emptyBanknotes);
-        
-        JLabel customerServicesLabel = new JLabel("Customer Services: ");
-        JPanel customerServicesPanel = new JPanel(new FlowLayout());
-        JButton addItembyText = new JButton("Add Item by Text Search");
-        
-        addItembyText.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Create a pop-up dialog with a search bar
-                String searchText = JOptionPane.showInputDialog(null, "Enter search text:");
-
-                // Call the method in Products class to add item by text search
-                if (searchText != null && !searchText.isEmpty()) {
-                	Products product = new Products( stationSoftwareInstances[selectedStation]);
-                	//product.addItemByTextSearch(searchText, null);
-                }
-            }
-        });
-
-        customerServicesPanel.add(addItembyText);
-
+        customerServicesPanel.add(addItemByText);
 
         // Adding the panels to the main panel
         mainPanel.add(stationsLabel);
@@ -221,6 +94,170 @@ public class AttendantPageGUI extends JFrame {
         mainPanel.add(customerServicesPanel);
 
         add(mainPanel);
+    }
+
+    private void setupGUI() {
+        setTitle("Attendant Page");
+        setSize(900, 700);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null); // Center the window
+    }
+
+    private void createStationButtons() {
+        // Create station buttons
+        for (int i = 0; i < 4; i++) {
+            JButton checkoutButton = getjButton(i);
+            checkoutButton.addActionListener(new StationButtonListener(i));
+            stationPanel.add(checkoutButton);
+            stationButtons[i] = checkoutButton; // Add button to the array
+            stationEnabled[i] = true; // Initialize station as enabled
+        }
+    }
+
+    private void createStationControls() {
+        startStation.addActionListener(new StartStationButtonListener());
+        closeStation.addActionListener(new CloseStationButtonListener());
+        enableStation.addActionListener(new EnableStationButtonListener());
+        disableStation.addActionListener(new DisableStationButtonListener());
+
+        stationControlPanel.add(startStation);
+        stationControlPanel.add(closeStation);
+        stationControlPanel.add(enableStation);
+        stationControlPanel.add(disableStation);
+    }
+
+    private void createStationServices() {
+        createRefillCoinServices();
+        createRefillBanknotesServices();
+        createRefillReceiptPaperServices();
+        createEmptyCoinsServices();
+        createEmptyBanknotesServices();
+        createRefillReceiptInkServices();
+
+        stationServicesPanel.add(refillCoins);
+        stationServicesPanel.add(refillBanknotes);
+        stationServicesPanel.add(refillReceiptPaper);
+        stationServicesPanel.add(refillReceiptInk);
+        stationServicesPanel.add(emptyCoins);
+        stationServicesPanel.add(emptyBanknotes);
+    }
+
+    private void createRefillCoinServices() {
+        // Add action listeners to buttons
+        refillCoins.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ALogic logic = new ALogic();
+                try {
+                    logic.refillCoinDispensers(stationSoftwareInstances[selectedStation]);
+                } catch (SimulationException | CashOverloadException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void createRefillBanknotesServices() {
+        refillBanknotes.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ALogic logic = new ALogic();
+                try {
+                    logic.refillBanknoteDispensers(stationSoftwareInstances[selectedStation]);
+                } catch (SimulationException | CashOverloadException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void createRefillReceiptPaperServices() {
+        refillReceiptPaper.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ALogic logic = new ALogic();
+//                try {
+//                    logic.refillPrinterPaper(stationSoftwareInstances[selectedStation]);
+//                } catch (OverloadedDevice e1) {
+//                    // TODO Auto-generated catch block
+//                    e1.printStackTrace();
+//                }
+            }
+        });
+    }
+
+    private void createEmptyCoinsServices() {
+        emptyCoins.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ALogic logic = new ALogic();
+                logic.emptyCoinStorage(stationSoftwareInstances[selectedStation]);
+            }
+        });
+    }
+
+
+    private void createEmptyBanknotesServices() {
+        emptyBanknotes.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ALogic logic = new ALogic();
+                logic.emptyBanknoteStorage(stationSoftwareInstances[selectedStation]);
+            }
+        });
+    }
+
+    private void createRefillReceiptInkServices() {
+        refillReceiptInk.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ALogic logic = new ALogic();
+//                try {
+//                    logic.refillPrinterInk(stationSoftwareInstances[selectedStation]);
+//                } catch (OverloadedDevice e1) {
+//                    // TODO Auto-generated catch block
+//                    e1.printStackTrace();
+//                }
+            }
+        });
+    }
+
+    private void createCustomerServices() {
+        addItemByText.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Create a pop-up dialog with a search bar
+                String searchText = JOptionPane.showInputDialog(null, "Enter search text:");
+
+                // Call the method in Products class to add item by text search
+                if (searchText != null && !searchText.isEmpty()) {
+                    Products product = new Products(stationSoftwareInstances[selectedStation]);
+                    //product.addItemByTextSearch(searchText, null);
+                }
+            }
+        });
+    }
+
+    // Method to get the station button with the station number
+    private static JButton getjButton(int i) {
+        JButton checkoutButton = new JButton("Checkout Station " + (i + 1));
+        String stationTypeLabel = "";
+        switch (i) {
+            case 0:
+                stationTypeLabel = " (Gold)";
+                break;
+            case 1:
+                stationTypeLabel = " (Silver)";
+                break;
+            case 2:
+            case 3:
+                stationTypeLabel = " (Bronze)";
+                break;
+        }
+        checkoutButton.setText(checkoutButton.getText() + stationTypeLabel);
+        return checkoutButton;
     }
 
     // Action listener for station buttons
