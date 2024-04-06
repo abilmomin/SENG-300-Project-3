@@ -28,6 +28,7 @@ public class AttendantListeners {
     private CustomerStation[] customerStation;
     private StartSession[] startSessions;
     private boolean[] stationEnabled;
+    private ALogic logic;
 
     private AbstractSelfCheckoutStation checkoutStation;
     private AbstractElectronicScale scale;
@@ -39,12 +40,12 @@ public class AttendantListeners {
         this.customerStation = customerStation;
         this.startSessions = startSessions;
         this.stationEnabled = stationEnabled;
+        this.logic = new ALogic();
     }
 
     private class refillCoinServiceButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            ALogic logic = new ALogic();
             try {
                 logic.refillCoinDispensers(stationSoftwareInstances[selectedStation]);
             } catch (SimulationException | CashOverloadException e1) {
@@ -57,7 +58,6 @@ public class AttendantListeners {
     private class refillBanknotesServiceButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            ALogic logic = new ALogic();
             try {
                 logic.refillBanknoteDispensers(stationSoftwareInstances[selectedStation]);
             } catch (SimulationException | CashOverloadException e1) {
@@ -70,20 +70,18 @@ public class AttendantListeners {
     private class refillReceiptPaperServiceButtonListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-            ALogic logic = new ALogic();
-//            try {
-            System.out.println("Refilling Receipt Paper"); // temporary
-            //logic.refillPrinterPaper(stationSoftwareInstances[selectedStation]);
-//            } catch (OverloadedDevice e1) {
-//                // TODO Auto-generated catch block
-//                e1.printStackTrace();
-//            }
+            try {
+	            System.out.println("Refilling Receipt Paper"); // temporary
+	            logic.refillPrinterPaper(stationSoftwareInstances[selectedStation]);
+            } catch (OverloadedDevice e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         }
     }
     private class emptyCoinServiceButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            ALogic logic = new ALogic();
             logic.emptyCoinStorage(stationSoftwareInstances[selectedStation]);
         }
     }
@@ -91,7 +89,6 @@ public class AttendantListeners {
     private class emptyBanknotesServiceButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            ALogic logic = new ALogic();
             logic.emptyBanknoteStorage(stationSoftwareInstances[selectedStation]);
         }
     }
@@ -99,7 +96,6 @@ public class AttendantListeners {
     private class refillReceiptInkServiceButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            ALogic logic = new ALogic();
 //                try {
 //                    logic.refillPrinterInk(stationSoftwareInstances[selectedStation]);
 //                } catch (OverloadedDevice e1) {
