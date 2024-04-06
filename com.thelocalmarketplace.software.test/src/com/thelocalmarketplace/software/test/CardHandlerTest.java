@@ -31,14 +31,20 @@
 
 package com.thelocalmarketplace.software.test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.math.BigDecimal;
 
+import java.util.Calendar;
 import java.util.Currency;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.Test.None;
+
+import com.jjjwelectronics.card.Card;
 
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
@@ -60,15 +66,28 @@ public class CardHandlerTest {
 	private SelfCheckoutStationBronze checkoutStationB;
 	private SelfCheckoutStationSilver checkoutStationS;
 	private SelfCheckoutStationGold checkoutStationG;
-	private Funds funds;
-	private CardHandler cardHandler;
+	private Funds fundsB;
+	private Funds fundsS;
+	private Funds fundsG;
+	private CardHandler cardHandlerB;
+	private CardHandler cardHandlerS;
+	private CardHandler cardHandlerG;
 	private CardIssuer cardIssuer;
+	private Card creditCard;
+	private Calendar expiry;
 	
 	@Before
 	public void setUp() {
 		BigDecimal[] coinDenominations = { new BigDecimal("0.25"), new BigDecimal("0.10"), new BigDecimal("0.50"),
 				new BigDecimal("1.0") };
 		PowerGrid.engageUninterruptiblePowerSource();
+		
+		int holdCount = 10;
+		cardIssuer = new CardIssuer("Seng300 Bank", holdCount);
+		creditCard = new Card("Credit", "21", "Holder1", "211", null, false, false);
+		expiry = Calendar.getInstance();
+		expiry.add(Calendar.YEAR, 5);
+		cardIssuer.addCardData(creditCard.number, creditCard.cardholder, expiry, creditCard.cvv, 2000);
 		
 		// Set up Bronze selfCheckoutStation
 		SelfCheckoutStationBronze.resetConfigurationToDefaults();
@@ -78,7 +97,8 @@ public class CardHandlerTest {
 		this.checkoutStationB.plugIn(PowerGrid.instance());
 		this.checkoutStationB.turnOn();
 		this.stationB = new SelfCheckoutStationSoftware(checkoutStationB);
-
+		fundsB = new Funds(stationB);
+		
 		// Set up Silver selfCheckoutStation
 		SelfCheckoutStationSilver.resetConfigurationToDefaults();
 		SelfCheckoutStationSilver.configureCoinDenominations(coinDenominations);
@@ -87,6 +107,7 @@ public class CardHandlerTest {
 		this.checkoutStationS.plugIn(PowerGrid.instance());
 		this.checkoutStationS.turnOn();
 		this.stationS = new SelfCheckoutStationSoftware(checkoutStationB);
+		fundsS = new Funds(stationS);
 		
 		// Set up Gold selfCheckoutStation
 		SelfCheckoutStationGold.resetConfigurationToDefaults();
@@ -96,60 +117,106 @@ public class CardHandlerTest {
 		this.checkoutStationG.plugIn(PowerGrid.instance());
 		this.checkoutStationG.turnOn();
 		this.stationG = new SelfCheckoutStationSoftware(checkoutStationB);
+        fundsG = new Funds(stationG);
 	}
 	
 	@After
 	public void tearDown() {
-		stationG = null;
-		stationS = null;
-		stationB = null;
 		checkoutStationB = null;
 		checkoutStationS = null;
 		checkoutStationG = null;
+		stationB = null;
+		stationS = null;
+		stationG = null;
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void nullFundControllerInConstructor() {
-		cardHandler = new CardHandler(null);
+	public void nullFundControllerInConstructorB() {
+		cardHandlerB = new CardHandler(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void nullFundControllerInConstructorS() {
+		cardHandlerS = new CardHandler(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void nullFundControllerInConstructorG() {
+		cardHandlerG = new CardHandler(null);
 	}
 
 	@Test(expected = None.class)
 	public void testCardHandlerConstructorB() {
-		funds = new Funds(stationB);
-		cardHandler = new CardHandler(funds);
+		cardHandlerB = new CardHandler(fundsB);
 	}
 
 	@Test(expected = None.class)
 	public void testCardHandlerConstructorS() {
-		funds = new Funds(stationS);
-		cardHandler = new CardHandler(funds);
+		cardHandlerS = new CardHandler(fundsS);
 	}
 
 	@Test(expected = None.class)
 	public void testCardHandlerConstructorG() {
-		funds = new Funds(stationG);
-		cardHandler = new CardHandler(funds);
+		cardHandlerG = new CardHandler(fundsG);
 	}
 
-	@Test(expected = None.class)
+	@Test
 	public void approveNullPurchaseB() {
-		funds = new Funds(stationB);
-		cardHandler = new CardHandler(funds);
-		cardHandler.approvePurchase(null, 0);
+		cardHandlerB = new CardHandler(fundsB);
+		assertFalse(cardHandlerB.approvePurchase(null, 0));
 	}
 
-	@Test(expected = None.class)
+	@Test
 	public void approveNullPurchaseS() {
-		funds = new Funds(stationS);
-		cardHandler = new CardHandler(funds);
-		cardHandler.approvePurchase(null, 0);
+		cardHandlerS = new CardHandler(fundsS);
+		assertFalse(cardHandlerS.approvePurchase(null, 0));
 	}
 
-	@Test(expected = None.class)
+	@Test
 	public void approveNullPurchaseG() {
-		funds = new Funds(stationG);
-		cardHandler = new CardHandler(funds);
-		cardHandler.approvePurchase(null, 0);
+		cardHandlerG = new CardHandler(fundsG);
+		assertFalse(cardHandlerG.approvePurchase(null, 0));
 	}
 	
+	@Test
+	public void approveValidPurchaseB() {
+		stationB.addBank(cardIssuer);
+        cardHandlerB = new CardHandler(fundsB);
+        assertTrue(cardHandlerB.approvePurchase(creditCard.number, 10));
+	}
+	
+	@Test
+	public void approveValidPurchaseS() {
+		stationS.addBank(cardIssuer);
+        cardHandlerS = new CardHandler(fundsS);
+        assertTrue(cardHandlerS.approvePurchase(creditCard.number, 10));
+	}
+	
+	@Test
+	public void approveValidPurchaseG() {
+        stationG.addBank(cardIssuer);
+        cardHandlerG = new CardHandler(fundsG);
+        assertTrue(cardHandlerG.approvePurchase(creditCard.number, 10));
+	}
+	
+	@Test
+	public void approveNegativePurchaseB() {
+        stationB.addBank(cardIssuer);
+        cardHandlerB = new CardHandler(fundsB);
+        assertFalse(cardHandlerB.approvePurchase(creditCard.number, -1));
+	}
+	
+	@Test
+	public void approveNegativePurchaseS() {
+        stationS.addBank(cardIssuer);
+        cardHandlerS = new CardHandler(fundsS);
+        assertFalse(cardHandlerS.approvePurchase(creditCard.number, -1));
+	}
+	
+	@Test
+	public void approveNegativePurchaseG() {
+        stationG.addBank(cardIssuer);
+        cardHandlerG = new CardHandler(fundsG);
+        assertFalse(cardHandlerG.approvePurchase(creditCard.number, -1));
+	}
 }
