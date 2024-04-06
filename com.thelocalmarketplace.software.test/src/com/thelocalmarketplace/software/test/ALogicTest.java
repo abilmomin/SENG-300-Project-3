@@ -22,11 +22,13 @@ import com.tdc.banknote.IBanknoteDispenser;
 import com.tdc.coin.Coin;
 import com.tdc.coin.CoinStorageUnit;
 import com.tdc.coin.ICoinDispenser;
-
+import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
+import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.software.ALogic;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.funds.Receipt;
 import com.thelocalmarketplace.software.funds.ReceiptObserver;
@@ -40,6 +42,11 @@ public class ALogicTest {
 	public ReceiptObserver rO;
 
 	private SelfCheckoutStationSoftware station;
+	
+	 private CustomerStation[] customerStations;
+	 private SelfCheckoutStationSoftware[] stationSoftwareInstances;
+	 private AbstractSelfCheckoutStation checkoutStation;
+	 private SelfCheckoutStationBronze teststation;
 
 
 	@Before
@@ -59,6 +66,14 @@ public class ALogicTest {
 		checkoutStationG.turnOn();
 		this.station = new SelfCheckoutStationSoftware(checkoutStationG);
 		this.aLogic = new ALogic();
+		
+		
+		customerStations = new CustomerStation[4]; // Example size
+        stationSoftwareInstances = new SelfCheckoutStationSoftware[4];
+        teststation = new SelfCheckoutStationBronze();
+        teststation.resetConfigurationToDefaults();
+		teststation.plugIn(PowerGrid.instance());
+		teststation.turnOn();
 	}
 
 	@Test
@@ -139,6 +154,17 @@ public class ALogicTest {
 	}
 
 
+	@Test
+	  public void testEnableStation_StationNotSelected() {
+	      //assertEquals(aLogic.EnableStation(0, customerStations, stationSoftwareInstances, teststation));
+	  }
+
+	  
+	  @Test
+	  public void testDisableStation_StationNotSelected() {
+	      assertFalse(aLogic.DisableStation(0, customerStations, stationSoftwareInstances, teststation));
+	  }
+	  
 
 	@After
 	public void tearDown() {
