@@ -91,6 +91,7 @@ public class AttendantPageGUI extends JFrame {
         mainPanel.add(customerServicesPanel);
 
         add(mainPanel);
+        setVisible(true);
     }
 
     private void setupGUI() {
@@ -423,6 +424,9 @@ public class AttendantPageGUI extends JFrame {
     	// Attendant approves discrepancy 
     	JOptionPane.showMessageDialog(this, "Weight Discrepancy Detected.");
     	instance.setStationUnblock();
+    }
+    public static void main(final String[] args) {
+        SwingUtilities.invokeLater(AttendantPageGUI::new);
     }
      
 }

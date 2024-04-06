@@ -14,6 +14,7 @@ public class StartSession extends JFrame {
     private CustomerStation customerStation; // Reference to the CustomerStation GUI
     private AttendantPageGUI attendantPageGUI;
     private SelfCheckoutStationSoftware stationSoftwareInstance;
+    private AbstractElectronicScale scale;
 
     // Method to start a customer session (this might be called based on some user interaction within StartSession)
     public void startCustomerSession(int stationNumber, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale) {
