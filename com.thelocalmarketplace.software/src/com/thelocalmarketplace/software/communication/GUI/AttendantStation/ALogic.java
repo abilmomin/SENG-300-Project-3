@@ -1,4 +1,4 @@
-package com.thelocalmarketplace.software;
+package com.thelocalmarketplace.software.communication.GUI.AttendantStation;
 
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -23,6 +23,7 @@ import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
 
 import ca.ucalgary.seng300.simulation.SimulationException;
 
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.funds.Receipt;
 import powerutility.PowerGrid;
