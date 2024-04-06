@@ -15,26 +15,26 @@ import com.thelocalmarketplace.software.communication.GUI.AttendantStation.Atten
 
 public class AddownBag implements ElectronicScaleListener {
 	
-	private SelfCheckoutStationSoftware weight_order;
+	private SelfCheckoutStationSoftware weightOrder;
 	private SelfCheckoutStationSoftware instance;
     private AbstractElectronicScale scale1;
-    private Mass mass_test;
-    private int station_number;
+    private Mass massTest;
+    private int stationNumber;
     
 	
 	//constructor
-	public AddownBag(SelfCheckoutStationSoftware weight_order, AbstractElectronicScale scale1) {
-		instance = weight_order;
+	public AddownBag(SelfCheckoutStationSoftware weightOrder, AbstractElectronicScale scale1) {
+		instance = weightOrder;
 
-        theMassOnTheScaleHasChanged(scale1, mass_test);
+        theMassOnTheScaleHasChanged(scale1, massTest);
 	}
 			
 	
 	@Override
 	public void theMassOnTheScaleHasChanged(IElectronicScale scale, Mass mass) {
 		// TODO Auto-generated method stub
-		double bag_grams = getBagWeight(weight_order, scale1); 
-		addbagweight(weight_order, scale1, bag_grams,station_number); 
+		double bag_grams = getBagWeight(weightOrder, scale1); 
+		addBagWeight(weightOrder, scale1, bag_grams,stationNumber); 
 		}
 		
 	
@@ -44,23 +44,23 @@ public class AddownBag implements ElectronicScaleListener {
 	 * @return
 	 */
 	public double getBagWeight(SelfCheckoutStationSoftware p1, AbstractElectronicScale p2 ) {  
-		double order_weight = p1.getTotalOrderWeightInGrams(); 
-		double bag_weight = 0;
+		double orderWeight = p1.getTotalOrderWeightInGrams(); 
+		double bagWeight = 0;
 		//get order weight
-		BigDecimal order_weight_double = new BigDecimal(Double.toString(order_weight));
-		BigDecimal scale_weight;
+		BigDecimal orderWeightDouble = new BigDecimal(Double.toString(orderWeight));
+		BigDecimal scaleWeight;
 		try {
 			//scale - order = bag weight
-			Mass get_mass = p2.getCurrentMassOnTheScale();
-			scale_weight = get_mass.inGrams();
-			BigDecimal bag_weight_grams = scale_weight.subtract(order_weight_double);
-			bag_weight = bag_weight_grams.doubleValue(); //convert to double 
+			Mass getMass = p2.getCurrentMassOnTheScale();
+			scaleWeight = getMass.inGrams();
+			BigDecimal bagWeightGrams = scaleWeight.subtract(orderWeightDouble);
+			bagWeight = bagWeightGrams.doubleValue(); //convert to double 
 		} catch (OverloadedDevice e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		return bag_weight;
+		return bagWeight;
 	}
 	
 	
@@ -70,30 +70,30 @@ public class AddownBag implements ElectronicScaleListener {
 	 * next if there is no difference, we set station block to false add weight to order and print you may now continue
 	 * if any exceptions are called catch and print message
 	 * @param scale
-	 * @param weight_of_bag
+	 * @param weightOfBag
 	 */
 	// now that customer has signaled they want to add their own bags, pass in the weight of their own bags
-	public void addbagweight(SelfCheckoutStationSoftware p1, AbstractElectronicScale scale, double weight_of_bag, int station_num) {
+	public void addBagWeight(SelfCheckoutStationSoftware p1, AbstractElectronicScale scale, double weightOfBag, int stationNum) {
 		
 		//threshold = scale limit in mcg 
 		BigInteger threshold = scale.getMassLimit().inMicrograms();
 		
 		try {
 			//compare scale mass which bag mass to mass limit 
-			int compare_to_threshold = scale.getCurrentMassOnTheScale().compareTo(new Mass(threshold));
+			int compareToThreshold = scale.getCurrentMassOnTheScale().compareTo(new Mass(threshold));
 			
-			if (compare_to_threshold>=0) {
+			if (compareToThreshold>=0) {
 				System.out.println("Bags too heavy, not allowed");
 				instance.setStationBlock(); // block station
 				double order = p1.getTotalOrderWeightInGrams();
-				AttendantPageGUI attendant_test = new AttendantPageGUI();
-				attendant_test.bagdiscpreancydectected(instance);
+				AttendantPageGUI attendantTest = new AttendantPageGUI();
+				attendantTest.bagdiscpreancydectected(instance);
 				
 			}
 			else {
 				//bag weight is fine, add weight of bag to order, system unblocks
 				instance.setStationUnblock();  // change to unblock and continue
-				p1.addTotalOrderWeightInGrams(weight_of_bag);
+				p1.addTotalOrderWeightInGrams(weightOfBag);
 				System.out.println("You may now continue");
 			}
 
@@ -105,7 +105,7 @@ public class AddownBag implements ElectronicScaleListener {
 		
 	}  
 	
-	public void print_mess() {
+	public void printMessage() {
 		System.out.print("You may now continue");
 	}
 
