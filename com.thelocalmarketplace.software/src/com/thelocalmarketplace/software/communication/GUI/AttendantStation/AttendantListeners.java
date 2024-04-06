@@ -119,7 +119,7 @@ public class AttendantListeners {
             if (searchText != null && !searchText.isEmpty()) {
                 Products product = stationSoftwareInstances[selectedStation].getProductHandler();
                 if (product.addItemByTextSearch(searchText) == true) {
-                	customerStation[selectedStation].customerPopUp("Item added");
+                	customerStation[selectedStation].customerPopUp("Add item to bagging area.");
                 }
                 
             }
