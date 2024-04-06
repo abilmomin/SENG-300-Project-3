@@ -70,12 +70,11 @@ public class BanknoteHandlerTest {
 	@Before
 	public void setUp() {
 
-		BigDecimal[] banknoteDenominations = { new BigDecimal("5.0"), new BigDecimal("10.0"), new BigDecimal("20.0"),
+		BigDecimal[] banknoteDenominations = new BigDecimal[] { new BigDecimal("5.0"), new BigDecimal("10.0"), new BigDecimal("20.0"),
 				new BigDecimal("50.0"), new BigDecimal("100.0") };
 
 		// Set up Gold selfCheckoutStation
-		SelfCheckoutStationGold.resetConfigurationToDefaults();
-		SelfCheckoutStationGold.configureCoinDenominations(banknoteDenominations);
+		SelfCheckoutStationGold.configureBanknoteDenominations(banknoteDenominations);
 		SelfCheckoutStationGold.configureCurrency(Currency.getInstance("CAD"));
 		this.checkoutStationG = new SelfCheckoutStationGold();
 		this.checkoutStationG.plugIn(PowerGrid.instance());
@@ -83,33 +82,18 @@ public class BanknoteHandlerTest {
 		this.stationG = new SelfCheckoutStationSoftware(checkoutStationG);
 
 		// Set up Silver selfCheckoutStation
-		SelfCheckoutStationSilver.resetConfigurationToDefaults();
-		SelfCheckoutStationSilver.configureCoinDenominations(banknoteDenominations);
-		SelfCheckoutStationSilver.configureCurrency(Currency.getInstance("CAD"));
 		this.checkoutStationS = new SelfCheckoutStationSilver();
 		this.checkoutStationS.plugIn(PowerGrid.instance());
 		this.checkoutStationS.turnOn();
 		this.stationS = new SelfCheckoutStationSoftware(checkoutStationS);
 
 		// Set up Bronze selfCheckoutStation
-		SelfCheckoutStationBronze.resetConfigurationToDefaults();
-		SelfCheckoutStationBronze.configureCoinDenominations(banknoteDenominations);
-		SelfCheckoutStationBronze.configureCurrency(Currency.getInstance("CAD"));
 		this.checkoutStationB = new SelfCheckoutStationBronze();
 		this.checkoutStationB.plugIn(PowerGrid.instance());
 		this.checkoutStationB.turnOn();
 		this.stationB = new SelfCheckoutStationSoftware(checkoutStationB);
 	}
 
-	@After
-	public void tearDown() {
-		stationG = null;
-		stationS = null;
-		stationB = null;
-		checkoutStationB = null;
-		checkoutStationS = null;
-		checkoutStationG = null;
-	}
 
 	@Test
 	public void banknoteAddedTestG() throws DisabledException, CashOverloadException {
@@ -141,22 +125,21 @@ public class BanknoteHandlerTest {
 
 		BanknoteInsertionSlot bs = this.checkoutStationB.getBanknoteInput();
 		bs.receive(banknote1);
-
 	}
 	
 	@Test
-	public void coinAddedTestDIspenserChangeCoverage() throws DisabledException, CashOverloadException {
+	public void coinAddedTestDispenserChangeCoverage() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		// Prepare some coins
 		banknote1 = new Banknote(currency, new BigDecimal("10.0"));
 		banknote2 = new Banknote(currency, new BigDecimal("5.0"));
 
 		BanknoteInsertionSlot cs = this.checkoutStationG.getBanknoteInput();
-		checkoutStationG.getBanknoteStorage().load(banknote2);
+		checkoutStationG.getBanknoteDispensers().get(new BigDecimal("5.0")).load(banknote2);
 		stationG.setOrderTotalPrice(5);
 		cs.receive(banknote1);
-		System.out.println(checkoutStationG.getBanknoteStorage().getBanknoteCount());
-		assertTrue(checkoutStationG.getBanknoteStorage().getBanknoteCount() == 1);
+		
+		assertTrue(checkoutStationG.getBanknoteDispensers().get(new BigDecimal("5.0")).size() == 0);
 		assertTrue(stationG.getTotalOrderPrice() == 0);
 		checkoutStationG.getBanknoteDispensers().get(new BigDecimal("5.0")).load(banknote2);
 		stationG.setOrderTotalPrice(0.05);

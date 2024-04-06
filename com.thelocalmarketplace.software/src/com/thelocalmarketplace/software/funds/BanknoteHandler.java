@@ -86,7 +86,7 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 		this.fundController.addToTotalPaid(denomination);
 //		this.fundController.totalPaid = this.fundController.totalPaid.add(denomination);
 		BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(this.fundController.totalPaid);
-        amountDue = amountDue.setScale(2, RoundingMode.CEILING);
+        amountDue = amountDue.setScale(1, RoundingMode.CEILING);
 
 		if (amountDue.compareTo(BigDecimal.ZERO) <= 0) {
         	this.fundController.checkoutStationSoftware.setOrderTotalPrice(0);
@@ -154,7 +154,7 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	@Override
 	public void banknotesLoaded(IBanknoteDispenser dispenser, Banknote... banknotes) {
 		for (Banknote b : banknotes) {
-			this.fundController.banknotesAvailable.put(b.getDenomination(), (int)this.fundController.banknotesAvailable.get(b.getDenomination()) - 1);
+			this.fundController.banknotesAvailable.put(b.getDenomination(), (int)this.fundController.banknotesAvailable.get(b.getDenomination()) + 1);
 		}
 	}
 
