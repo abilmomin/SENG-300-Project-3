@@ -29,7 +29,7 @@ Nami Marwah              30178528
 package com.thelocalmarketplace.software.funds;
 
 import java.math.BigDecimal;
-
+import java.math.RoundingMode;
 import java.util.Currency;
 
 import com.jjjwelectronics.EmptyDevice;
@@ -86,14 +86,17 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 		this.fundController.addToTotalPaid(denomination);
 //		this.fundController.totalPaid = this.fundController.totalPaid.add(denomination);
 		BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(this.fundController.totalPaid);
+        amountDue = amountDue.setScale(2, RoundingMode.CEILING);
+
 		if (amountDue.compareTo(BigDecimal.ZERO) <= 0) {
+        	this.fundController.checkoutStationSoftware.setOrderTotalPrice(0);
+
 			amountDue = amountDue.abs();
 			
 			boolean missed = false;
 			try {
 				missed = this.fundController.dispenseAccurateChange(amountDue);
-			} catch (DisabledException | CashOverloadException | NoCashAvailableException | EmptyDevice
-					| OverloadedDevice e) {
+			} catch (DisabledException | CashOverloadException | NoCashAvailableException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -102,6 +105,9 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 				this.fundController.notifyPaidFunds(amountDue);
 			}
 		}
+		else {
+        	this.fundController.checkoutStationSoftware.removeTotalOrderPrice(denomination.doubleValue());
+        }
 	}
 
 	/**

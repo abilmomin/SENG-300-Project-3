@@ -211,7 +211,8 @@ public class Funds {
 	}
 
 	public BigDecimal addToTotalPaid(BigDecimal amountPaid) {
-		return totalPaid.add(amountPaid);
+		totalPaid = totalPaid.add(amountPaid);
+		return totalPaid;
 	}
 
 	public BigDecimal getMoneyLeft() {
@@ -234,8 +235,7 @@ public class Funds {
 	 * @throws OverloadedDevice
 	 * @throws EmptyDevice
 	 */
-	public boolean dispenseAccurateChange(BigDecimal changeValue)
-			throws DisabledException, CashOverloadException, NoCashAvailableException, EmptyDevice, OverloadedDevice {
+	public boolean dispenseAccurateChange(BigDecimal changeValue) throws CashOverloadException, NoCashAvailableException, DisabledException{
 		AbstractSelfCheckoutStation station = (AbstractSelfCheckoutStation) checkoutStationSoftware.getStationHardware();
 		
 		BigDecimal amountDispensed = new BigDecimal("0.0");
@@ -255,8 +255,17 @@ public class Funds {
 			// If neither banknotes nor coins can be used, break the loop
 			BigDecimal lowestCoin = coinDenominations.get(coinDenominations.size() - 1);
 			BigDecimal lowestBankNote = bankNoteDenominations.get(bankNoteDenominations.size() - 1);
-			BigDecimal lowestVal = lowestCoin.min(lowestBankNote);
-			if (remainingAmount.compareTo(lowestVal) < 0 && remainingAmount.compareTo(BigDecimal.ZERO) > 0) {
+			BigDecimal lowestVal;
+			int sizeOfLowest;
+			if(lowestCoin.compareTo(lowestBankNote) > 0) {
+				lowestVal = lowestBankNote;
+				sizeOfLowest = (int)banknotesAvailable.get(lowestVal);
+			}
+			else {
+				lowestVal = lowestCoin;
+				sizeOfLowest = (int)coinsAvailable.get(lowestVal);
+			}
+			if (remainingAmount.compareTo(lowestVal) < 0 && ( sizeOfLowest > 0) ) {
 				station.getCoinDispensers().get(lowestVal).emit();
 				amountDispensed = changeValue;
 				remainingAmount = BigDecimal.ZERO;

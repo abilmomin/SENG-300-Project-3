@@ -82,7 +82,7 @@ public class SelfCheckoutStationSoftware {
 	// Order stuff
 	private ArrayList<Item> order;
 	private double totalOrderWeight;
-	private long totalOrderPrice;
+	private double totalOrderPrice;
 	
 	// Facades and listeners
 	private Funds funds;
@@ -312,7 +312,7 @@ public class SelfCheckoutStationSoftware {
 	 * 
 	 * @return The total price of order.
 	 */
-	public long getTotalOrderPrice() {
+	public double getTotalOrderPrice() {
 		return this.totalOrderPrice;
 	}
 
@@ -322,7 +322,7 @@ public class SelfCheckoutStationSoftware {
 	 * @return The total price of order.
 	 */
 	
-	public void setOrderTotalPrice(long price) {
+	public void setOrderTotalPrice(double price) {
 		this.totalOrderPrice = price;
 	}
 	
@@ -339,10 +339,10 @@ public class SelfCheckoutStationSoftware {
 	/**
 	 * Updates the total price of the order
 	 */
-	public void addTotalOrderPrice(long price) {
+	public void addTotalOrderPrice(double price) {
 		this.totalOrderPrice += price;
 	}
-	public void removeTotalOrderPrice(long price) {
+	public void removeTotalOrderPrice(double price) {
 		this.totalOrderPrice -= price;
 	}
 
