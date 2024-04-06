@@ -109,13 +109,6 @@ public class Products {
 	 * 
 	 * @param code
 	 */
-
-	public PLUCodedProduct matchCodeAndPLUProduct(String code) {
-		PriceLookUpCode plu = new PriceLookUpCode(code);
-		PLUCodedProduct currentItem = ProductDatabases.PLU_PRODUCT_DATABASE.get(plu);
-		return currentItem;	
-	}
-	
 	
 	public boolean addItemByPLUCode(PLUCodedItem pluItem) {
 		if (software.getStationActive() && !software.getStationBlock()) {

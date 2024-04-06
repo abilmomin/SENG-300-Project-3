@@ -291,16 +291,13 @@ public class CustomerStation extends JFrame {
     		String userInput = screenTextField.getText();
     		
     		// Convert string > plu code using method in Products.java
-    		PLUCodedProduct product = products.matchCodeAndPLUProduct(userInput);
+    		PLUCodedProduct product = stationSoftwareInstance.matchCodeAndPLUProduct(userInput);
         	
-    		// Convert from product > corresponding item
-    		// OR just make an items Map in Initialize.java and change method above
+    		String description = product.getDescription();
     		
-    		// products.addItemByPLUCode( subsequent item)
     		
-    		// Make popup visible:
-    		// AddtoBagging popup  = new AddtoBagging(this);
-        	// popup.setVisible(true);
+    		AddtoBagging popup  = new AddtoBagging(description);
+        	popup.setVisible(true);
         });
     	
     	// Return from popup:
