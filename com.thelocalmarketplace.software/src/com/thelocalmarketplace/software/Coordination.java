@@ -77,4 +77,9 @@ public class Coordination implements FundsObserver, ProductsListener {
     public void productRemoved(Products productFacade, Product product) {
     	
     }
+    
+    @Override
+    public void productToBaggingArea(Products productFacade, Product product) {
+    	
+    }
 }

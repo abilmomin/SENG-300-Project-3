@@ -47,8 +47,6 @@ import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 public class Products {
-	// request attendants attention also goes in communication, but where? idk. Button needed in GUI
-	// safe to say most things go here for group 4 :))
 	// Things to listen to (hardware)
 	public SelfCheckoutStationSoftware software;
 	public ISelfCheckoutStation station;
@@ -93,7 +91,7 @@ public class Products {
 	 * 
 	 * @param productWeight
 	 * 			The weight of the bulky item 
-	 * */
+	 */
 	public void handleBulkyItem(double productWeight) {
 		software.setStationBlock();
 		System.out.println("No-bagging request is in progress.");
@@ -110,7 +108,6 @@ public class Products {
 	 * 
 	 * @param code
 	 */
-	
 	public boolean addItemByPLUCode(PLUCodedItem pluItem) {
 		if (software.getStationActive() && !software.getStationBlock()) {
 			software.setStationBlock();
@@ -138,51 +135,94 @@ public class Products {
 			return false;
 		}
 	}
+	
 	/**
      * Adds an item to the customer's order by text search.
      *
      * @param searchText The text to search for the product.
      */
-    public void addItemByTextSearch(String searchText) {
-        BarcodedProduct product = findProductByTextSearch(searchText);
+    public boolean addItemByTextSearch(String searchText) {
+        Product product = findProductByTextSearch(searchText);
 
-        if (product != null) {
-            
-            Mass itemMass = new Mass(product.getExpectedWeight());
+        if (product != null && software.getStationActive() && !software.getStationBlock()) {
+            software.setStationBlock();
+     
+        	if (product instanceof BarcodedProduct) {
+        		BarcodedProduct barcodedProduct = (BarcodedProduct) product;
+        		
+				double productWeight = barcodedProduct.getExpectedWeight(); 
+				long productPrice = product.getPrice();
 
-            // Create a BarcodedItem with the product's barcode and expected weight.
-            BarcodedItem barcodedItem = new BarcodedItem(product.getBarcode(), itemMass);
+				software.addTotalOrderWeightInGrams(productWeight); 
+				software.addTotalOrderPrice(productPrice); 
 
-            // Add the barcodedItem to the order.
-            software.addItemToOrder(barcodedItem);
-            System.out.println("Product added to the order: " + product.getDescription());
+				Mass mass = new Mass(productWeight);
+				BarcodedItem barcodedItem = new BarcodedItem(barcodedProduct.getBarcode(), mass);
+
+                software.addItemToOrder(barcodedItem); 
+                
+                notifyProductAdded(product);
+                
+                return true;
+                
+        	} else {
+        		PLUCodedProduct pluProduct = (PLUCodedProduct) product;
+        		PLUCodedItem pluItem = new PLUCodedItem(pluProduct.getPLUCode(), new Mass(1));
+        		
+                software.addItemToOrder(pluItem);
+                
+                notifyProductAdded(product);
+                
+                return true;
+        	}
+        	
         } else {
-            // If the product is not found, inform the attendant.
-            System.out.println("Product not found. Please try again.");
+        	return false;
         }
     }
     
-    /**
-     * Finds a product in the product database using text search.
-     *
-     * @param searchText The text to search for in product descriptions.
-     * @return The product if found, null otherwise.
-     */
-    private BarcodedProduct findProductByTextSearch(String searchText) {
-        // Loop through each entry in the barcoded product database
+    private Product findProductByTextSearch(String searchText) {
+        // Split the search text into keywords
+        String[] keywords = searchText.toLowerCase().split("\\s+");
+        
         for (Map.Entry<Barcode, BarcodedProduct> entry : ProductDatabases.BARCODED_PRODUCT_DATABASE.entrySet()) {
             BarcodedProduct product = entry.getValue();
-            // Check if the product description contains the search text, case insensitive
-            if (product.getDescription().toLowerCase().contains(searchText.toLowerCase())) {
-                // Return the first matching product
+            
+            if (containsAllKeywords(product.getDescription().toLowerCase(), keywords)) {
                 return product;
             }
         }
-        // Return null if no matching product is found
+        
+        for (Map.Entry<PriceLookUpCode, PLUCodedProduct> entry : ProductDatabases.PLU_PRODUCT_DATABASE.entrySet()) {
+            PLUCodedProduct product = entry.getValue();
+
+            if (containsAllKeywords(product.getDescription().toLowerCase(), keywords)) {
+                return product;
+            }
+        }
+
         return null;
     }
-	
 
+    /**
+     * Checks if the product text search contains all the keywords.
+     * 
+     * @param text 
+     * 		The text to search in.
+     * @param keywords 
+     * 		The keywords to search for.
+     * @return true if all keywords are found in the text, false otherwise.
+     */
+    private boolean containsAllKeywords(String text, String[] keywords) {
+        for (String keyword : keywords) {
+            if (!text.contains(keyword)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+	
 	/**
 	 * Adds an item after customer selects it from the visual catalog
 	 * @param visualCatalogueItem
@@ -299,5 +339,16 @@ public class Products {
 	public void notifyProductRemoved(Product product) {
 		for(ProductsListener listener : listeners)
 			listener.productRemoved(this, product);
+	}
+	
+	/**
+	 * Notifies observers that an item should be added to the bagging area.
+	 * 
+	 * @param product
+	 * 		The product that should be added to the bagging area.
+	 */
+	public void notifyAddProductToBaggingArea(Product product) {
+		for(ProductsListener listener : listeners)
+			listener.productToBaggingArea(this, product);
 	}
 }

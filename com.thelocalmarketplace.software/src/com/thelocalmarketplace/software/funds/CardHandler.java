@@ -84,7 +84,7 @@ public class CardHandler implements CardReaderListener {
             return;
         }
 
-        long totalOrderPrice = fundController.checkoutStationSoftware.getTotalOrderPrice();
+        double totalOrderPrice = fundController.checkoutStationSoftware.getTotalOrderPrice();
         boolean purchaseStatus = approvePurchase(data.getNumber(), totalOrderPrice);
 
         if (purchaseStatus) {
