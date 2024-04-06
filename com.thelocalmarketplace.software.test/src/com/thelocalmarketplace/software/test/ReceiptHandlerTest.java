@@ -53,7 +53,6 @@ public class ReceiptHandlerTest {
     private IReceiptPrinter printer;
     private Receipt receipt;
     private mockReceiptObserver observer;
-    private mockPredictError pError;
 
     @Before
     public void setUp() {
@@ -63,36 +62,35 @@ public class ReceiptHandlerTest {
         this.receipt = new Receipt(printer, funds);
         this.handler = new ReceiptHandler(this.receipt);
         this.observer = new mockReceiptObserver();
-        this.pError = new mockPredictError();
 
-        this.receipt.register(observer, pError);
+        this.receipt.register(observer);
     }
 
     @Test
     public void testOutOfPaper() {
         this.handler.thePrinterIsOutOfPaper();
-        assertTrue(pError.noPaperCalled);
+        assertTrue(observer.noPaperCalled);
 
     }
 
     @Test
     public void testOutOfInk() {
         this.handler.thePrinterIsOutOfInk();
-        assertTrue(pError.noInkCalled);
+        assertTrue(observer.noInkCalled);
 
     }
 
     @Test
     public void testLowInk() {
         this.handler.thePrinterHasLowInk();;
-        assertTrue(pError.lowInkCalled);
+        assertTrue(observer.lowInkCalled);
 
     }
 
     @Test
     public void testLowPaper() {
         this.handler.thePrinterHasLowPaper();;
-        assertTrue(pError.lowPaperCalled);
+        assertTrue(observer.lowPaperCalled);
 
     }
 

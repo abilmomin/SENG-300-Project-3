@@ -69,7 +69,6 @@ import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
-import com.thelocalmarketplace.software.PredictError;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 import powerutility.PowerGrid;
@@ -83,7 +82,6 @@ public class Receipt {
     protected final SelfCheckoutStationSoftware checkoutStationSoftware;
     private Funds funds;
     protected Set<ReceiptObserver> observers = new HashSet<>();
-    protected Set<PredictError> errorObservers = new HashSet<>();
     private ArrayList<Item> order;
     private AbstractSelfCheckoutStation station;
 
@@ -170,14 +168,12 @@ public class Receipt {
         return this.receiptPrinter.removeReceipt();
     }
 
-    public void register(ReceiptObserver listener, PredictError error) {
+    public void register(ReceiptObserver listener) {
         observers.add(listener);
-        errorObservers.add(error);
     }
 
-    public void deregister(ReceiptObserver listener, PredictError error) {
+    public void deregister(ReceiptObserver listener) {
         observers.remove(listener);
-        errorObservers.remove(error);
     }
 
     public void notifyReceiptPrinted(ArrayList<Item> order) {
@@ -186,22 +182,22 @@ public class Receipt {
     }
 
     public void notifyInkEmpty(IReceiptPrinter printer) {
-        for (PredictError observer : errorObservers)
+    	for(ReceiptObserver observer : observers)
             observer.noInkError(printer);
     }
 
     public void notifyPaperEmpty(IReceiptPrinter printer) {
-        for (PredictError observer : errorObservers)
+    	for(ReceiptObserver observer : observers)
             observer.noPaperError(printer);
     }
 
     public void notifyInkLow(IReceiptPrinter printer) {
-        for (PredictError observer : errorObservers)
+    	for(ReceiptObserver observer : observers)
             observer.lowInkError(printer);
     }
 
     public void notifyPaperLow(IReceiptPrinter printer) {
-        for (PredictError observer : errorObservers)
+    	for(ReceiptObserver observer : observers)
             observer.lowPaperError(printer);
     }
 
