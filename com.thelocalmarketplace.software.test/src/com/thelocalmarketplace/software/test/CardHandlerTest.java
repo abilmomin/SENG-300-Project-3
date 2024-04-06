@@ -31,12 +31,11 @@
 
 package com.thelocalmarketplace.software.test;
 
-import static org.junit.Assert.assertFalse;
-
 import java.math.BigDecimal;
 
 import java.util.Currency;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.Test.None;
@@ -55,7 +54,9 @@ import com.thelocalmarketplace.software.funds.Funds;
 import powerutility.PowerGrid;
 
 public class CardHandlerTest {
-	private SelfCheckoutStationSoftware station;
+	private SelfCheckoutStationSoftware stationB;
+	private SelfCheckoutStationSoftware stationS;
+	private SelfCheckoutStationSoftware stationG;
 	private SelfCheckoutStationBronze checkoutStationB;
 	private SelfCheckoutStationSilver checkoutStationS;
 	private SelfCheckoutStationGold checkoutStationG;
@@ -67,6 +68,7 @@ public class CardHandlerTest {
 	public void setUp() {
 		BigDecimal[] coinDenominations = { new BigDecimal("0.25"), new BigDecimal("0.10"), new BigDecimal("0.50"),
 				new BigDecimal("1.0") };
+		PowerGrid.engageUninterruptiblePowerSource();
 		
 		// Set up Bronze selfCheckoutStation
 		SelfCheckoutStationBronze.resetConfigurationToDefaults();
@@ -75,6 +77,7 @@ public class CardHandlerTest {
 		this.checkoutStationB = new SelfCheckoutStationBronze();
 		this.checkoutStationB.plugIn(PowerGrid.instance());
 		this.checkoutStationB.turnOn();
+		this.stationB = new SelfCheckoutStationSoftware(checkoutStationB);
 
 		// Set up Silver selfCheckoutStation
 		SelfCheckoutStationSilver.resetConfigurationToDefaults();
@@ -83,6 +86,7 @@ public class CardHandlerTest {
 		this.checkoutStationS = new SelfCheckoutStationSilver();
 		this.checkoutStationS.plugIn(PowerGrid.instance());
 		this.checkoutStationS.turnOn();
+		this.stationS = new SelfCheckoutStationSoftware(checkoutStationB);
 		
 		// Set up Gold selfCheckoutStation
 		SelfCheckoutStationGold.resetConfigurationToDefaults();
@@ -91,6 +95,17 @@ public class CardHandlerTest {
 		this.checkoutStationG = new SelfCheckoutStationGold();
 		this.checkoutStationG.plugIn(PowerGrid.instance());
 		this.checkoutStationG.turnOn();
+		this.stationG = new SelfCheckoutStationSoftware(checkoutStationB);
+	}
+	
+	@After
+	public void tearDown() {
+		stationG = null;
+		stationS = null;
+		stationB = null;
+		checkoutStationB = null;
+		checkoutStationS = null;
+		checkoutStationG = null;
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -99,40 +114,40 @@ public class CardHandlerTest {
 	}
 
 	@Test(expected = None.class)
-	public void testCardHandlerConstructor() {
-		// Test with SelfCheckoutStationBronze
-		station = new SelfCheckoutStationSoftware(checkoutStationB);
-		funds = new Funds(station);
-		cardHandler = new CardHandler(funds);
-
-		// Test with SelfCheckoutStationSilver
-		station = new SelfCheckoutStationSoftware(checkoutStationS);
-		funds = new Funds(station);
-		cardHandler = new CardHandler(funds);
-
-		// Test with SelfCheckoutStationGold
-		station = new SelfCheckoutStationSoftware(checkoutStationG);
-		funds = new Funds(station);
+	public void testCardHandlerConstructorB() {
+		funds = new Funds(stationB);
 		cardHandler = new CardHandler(funds);
 	}
-	
+
 	@Test(expected = None.class)
-	public void approveNullPurchase() {
-		// Test with SelfCheckoutStationBronze
-		station = new SelfCheckoutStationSoftware(checkoutStationB);
-		funds = new Funds(station);
+	public void testCardHandlerConstructorS() {
+		funds = new Funds(stationS);
+		cardHandler = new CardHandler(funds);
+	}
+
+	@Test(expected = None.class)
+	public void testCardHandlerConstructorG() {
+		funds = new Funds(stationG);
+		cardHandler = new CardHandler(funds);
+	}
+
+	@Test(expected = None.class)
+	public void approveNullPurchaseB() {
+		funds = new Funds(stationB);
 		cardHandler = new CardHandler(funds);
 		cardHandler.approvePurchase(null, 0);
+	}
 
-		// Test with SelfCheckoutStationSilver
-		station = new SelfCheckoutStationSoftware(checkoutStationS);
-		funds = new Funds(station);
+	@Test(expected = None.class)
+	public void approveNullPurchaseS() {
+		funds = new Funds(stationS);
 		cardHandler = new CardHandler(funds);
 		cardHandler.approvePurchase(null, 0);
+	}
 
-		// Test with SelfCheckoutStationGold
-		station = new SelfCheckoutStationSoftware(checkoutStationG);
-		funds = new Funds(station);
+	@Test(expected = None.class)
+	public void approveNullPurchaseG() {
+		funds = new Funds(stationG);
 		cardHandler = new CardHandler(funds);
 		cardHandler.approvePurchase(null, 0);
 	}
