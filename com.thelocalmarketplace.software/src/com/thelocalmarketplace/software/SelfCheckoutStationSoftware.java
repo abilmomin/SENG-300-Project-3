@@ -114,6 +114,8 @@ public class SelfCheckoutStationSoftware {
 		this.funds = new Funds(this);
 		this.products = new Products(this);
 		this.coordination = new Coordination(this, funds, products);
+		
+		products.register(coordination);
 
 		allProducts = new ProductsDatabase();
 		setStationActive(false);
@@ -131,6 +133,10 @@ public class SelfCheckoutStationSoftware {
 	 */
 	public CustomerStation getGUI() {
 		return gui;
+	}
+	
+	public ProductsDatabase getAllProducts() {
+		return allProducts;
 	}
 
 	/**

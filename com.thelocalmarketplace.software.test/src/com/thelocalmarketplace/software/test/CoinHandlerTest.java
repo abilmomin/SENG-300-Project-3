@@ -217,8 +217,6 @@ public class CoinHandlerTest {
 		cs.receive(coin1);
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////
-	// Everything below this line the tests are passing but coverage isn't
 
 	@Test
 	public void coinsLoadedG() throws DisabledException, CashOverloadException {

@@ -11,6 +11,7 @@ import com.jjjwelectronics.scanner.IBarcodeScanner;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.AddownBag;
+import com.thelocalmarketplace.software.ProductsDatabase;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantLoginPage;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
@@ -69,7 +70,7 @@ public class CustomerStation extends JFrame {
         
         JButton scanBarcodeBtn = createButton("Scan Barcode", e -> {
         	// Get a random barcode from the available barcoded products
-        	ArrayList<Barcode> barcodes = AttendantLoginPage.getBarcodes();    	
+        	ArrayList<Barcode> barcodes = ProductsDatabase.getBarcodes();    	
         	Random random = new Random();   	
             int randomIndex = random.nextInt(barcodes.size());
             Barcode barcode = barcodes.get(randomIndex);
@@ -86,7 +87,10 @@ public class CustomerStation extends JFrame {
         	baggingArea.addAnItem(barcodedItem);
         });
         
-        JButton enterPLUBtn = createButton("Enter PLU Code", null);
+        JButton enterPLUBtn = createButton("Enter PLU Code", e -> {
+        	
+        });
+        
         JButton searchProductBtn = createButton("Search Product", null);
         JButton removeItemBtn = createButton("Remove Item", null);
         JButton doNotBagBtn = createButton("Do Not Bag", null);
