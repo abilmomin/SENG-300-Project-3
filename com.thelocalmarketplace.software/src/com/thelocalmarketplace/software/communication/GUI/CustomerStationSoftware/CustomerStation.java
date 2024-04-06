@@ -37,11 +37,15 @@ public class CustomerStation extends JFrame {
     private SelfCheckoutStationSoftware stationSoftwareInstance;
     private AbstractElectronicScale scale;
     private Products products;
+    private AttendantPageGUI attendantGUI;
+    private boolean needsAssistance = false;
+    private int selectedStation;
     
-    public CustomerStation(int selectedStation, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale) {
+    public CustomerStation(int selectedStation, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale, AttendantPageGUI attendantGUI) {
     	this.scale = scale;
     	this.stationSoftwareInstance = stationSoftwareInstance;
-    	
+    	this.attendantGUI = attendantGUI;
+        this.selectedStation = selectedStation;
     	stationSoftwareInstance.setGUI(this);
     	
         setTitle("Self-Checkout Station " + selectedStation);
@@ -93,7 +97,7 @@ public class CustomerStation extends JFrame {
         helpButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                notifyAttendant(selectedStation);
+                requestAssistance();
             }
         });
         
@@ -213,11 +217,7 @@ public class CustomerStation extends JFrame {
     	   // Initialize the AddownBag instance
          addOwnBag = new AddownBag(stationSoftwareInstance, scale);
     }
-    
-    private void notifyAttendant(int selectedStation) {
-        // Notify the AttendantPageGUI that assistance is required at this station
-        AttendantPageGUI.notifyAssistanceRequired(selectedStation-1);
-    }
+
     
     // I MADE THIS PUBLIC IDK IF IM RIGHT BUT IM USING THIS IN COORDINATION!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // Currently PLU prices are in cents, 
@@ -394,7 +394,21 @@ public class CustomerStation extends JFrame {
     public void customerPopUp(String message) {
         JOptionPane.showMessageDialog(this, message);
     }
-    
+
+    private void requestAssistance() {
+        needsAssistance = true;
+        attendantGUI.setStationAssistanceRequested(selectedStation - 1, true);
+
+    }
+
+    public void clearSignal() {
+        needsAssistance = false;
+        attendantGUI.setStationAssistanceRequested(selectedStation - 1, false);}
+
+    public boolean getSignal() {
+        return needsAssistance;
+    }
+
     public void unfreezeGUI() {
         for (Component component : getContentPane().getComponents()) {
             component.setEnabled(true);
