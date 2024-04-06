@@ -74,6 +74,7 @@ public class SelfCheckoutStationSoftware {
 	private IBarcodeScanner handheldScanner;
 	private CoinSlot coinSlot;
 	private CustomerStation gui;
+	private ProductsDatabase allProducts; 
 
 	
 	// Listeners
@@ -115,6 +116,7 @@ public class SelfCheckoutStationSoftware {
 		this.products = new Products(this);
 		this.coordination = new Coordination(this, funds, products);
 
+		allProducts = new ProductsDatabase();
 		setStationActive(false);
 	}
 	

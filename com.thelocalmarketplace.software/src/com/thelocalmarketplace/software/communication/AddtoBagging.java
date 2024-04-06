@@ -14,7 +14,7 @@ import javax.swing.*;
 
 public class AddtoBagging extends JFrame {
 	
-	public AddtoBagging(String string) {
+	public AddtoBagging(String item) {
 
 	    setTitle("Add to Bag");
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -26,7 +26,7 @@ public class AddtoBagging extends JFrame {
 	    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
 	    // Label for the large text display
-	    JLabel bigTextLabel = new JLabel("Item: ");
+	    JLabel bigTextLabel = new JLabel("Item: " + item);
 	    bigTextLabel.setFont(new Font("Arial", Font.BOLD, 32));
 	    bigTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -58,9 +58,5 @@ public class AddtoBagging extends JFrame {
 
 	    add(mainPanel);
 	    setVisible(true);
-	}
-
-	public static void main(String[] args) {
-		AddtoBagging test = new AddtoBagging();
 	}
 }
