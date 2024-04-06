@@ -11,6 +11,7 @@ import com.jjjwelectronics.scanner.IBarcodeScanner;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.AddownBag;
+import com.thelocalmarketplace.software.ProductsDatabase;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantLoginPage;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
@@ -37,11 +38,15 @@ public class CustomerStation extends JFrame {
     private SelfCheckoutStationSoftware stationSoftwareInstance;
     private AbstractElectronicScale scale;
     private Products products;
+    private AttendantPageGUI attendantGUI;
+    private boolean needsAssistance = false;
+    private int selectedStation;
     
-    public CustomerStation(int selectedStation, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale) {
+    public CustomerStation(int selectedStation, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale, AttendantPageGUI attendantGUI) {
     	this.scale = scale;
     	this.stationSoftwareInstance = stationSoftwareInstance;
-    	
+    	this.attendantGUI = attendantGUI;
+        this.selectedStation = selectedStation;
     	stationSoftwareInstance.setGUI(this);
     	
         setTitle("Self-Checkout Station " + selectedStation);
@@ -65,7 +70,7 @@ public class CustomerStation extends JFrame {
         
         JButton scanBarcodeBtn = createButton("Scan Barcode", e -> {
         	// Get a random barcode from the available barcoded products
-        	ArrayList<Barcode> barcodes = AttendantLoginPage.getBarcodes();    	
+        	ArrayList<Barcode> barcodes = ProductsDatabase.getBarcodes();    	
         	Random random = new Random();   	
             int randomIndex = random.nextInt(barcodes.size());
             Barcode barcode = barcodes.get(randomIndex);
@@ -82,7 +87,10 @@ public class CustomerStation extends JFrame {
         	baggingArea.addAnItem(barcodedItem);
         });
         
-        JButton enterPLUBtn = createButton("Enter PLU Code", null);
+        JButton enterPLUBtn = createButton("Enter PLU Code", e -> {
+        	
+        });
+        
         JButton searchProductBtn = createButton("Search Product", null);
         JButton removeItemBtn = createButton("Remove Item", null);
         JButton doNotBagBtn = createButton("Do Not Bag", null);
@@ -93,7 +101,7 @@ public class CustomerStation extends JFrame {
         helpButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                notifyAttendant(selectedStation);
+                requestAssistance();
             }
         });
         
@@ -213,11 +221,7 @@ public class CustomerStation extends JFrame {
     	   // Initialize the AddownBag instance
          addOwnBag = new AddownBag(stationSoftwareInstance, scale);
     }
-    
-    private void notifyAttendant(int selectedStation) {
-        // Notify the AttendantPageGUI that assistance is required at this station
-        AttendantPageGUI.notifyAssistanceRequired(selectedStation-1);
-    }
+
     
     // I MADE THIS PUBLIC IDK IF IM RIGHT BUT IM USING THIS IN COORDINATION!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // Currently PLU prices are in cents, 
@@ -394,7 +398,21 @@ public class CustomerStation extends JFrame {
     public void customerPopUp(String message) {
         JOptionPane.showMessageDialog(this, message);
     }
-    
+
+    private void requestAssistance() {
+        needsAssistance = true;
+        attendantGUI.setStationAssistanceRequested(selectedStation - 1, true);
+
+    }
+
+    public void clearSignal() {
+        needsAssistance = false;
+        attendantGUI.setStationAssistanceRequested(selectedStation - 1, false);}
+
+    public boolean getSignal() {
+        return needsAssistance;
+    }
+
     public void unfreezeGUI() {
         for (Component component : getContentPane().getComponents()) {
             component.setEnabled(true);

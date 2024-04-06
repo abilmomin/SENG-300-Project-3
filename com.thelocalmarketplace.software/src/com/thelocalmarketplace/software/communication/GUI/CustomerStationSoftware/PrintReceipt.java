@@ -62,7 +62,7 @@ public class PrintReceipt extends JFrame{
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Receipt rec = new Receipt(receiptPrinter, funds, checkoutStationSoftware);
+                Receipt rec = new Receipt(receiptPrinter, funds);
                 try {
                     JOptionPane.showMessageDialog(PrintReceipt.this, rec.printReceipt());
                 } catch (HeadlessException | EmptyDevice | OverloadedDevice e1) {

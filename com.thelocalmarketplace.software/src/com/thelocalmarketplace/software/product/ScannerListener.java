@@ -74,6 +74,8 @@ public class ScannerListener implements BarcodeScannerListener {
 				barcodedItem = new BarcodedItem(barcode, mass);
 				
 				software.addItemToOrder(barcodedItem);
+				
+				handler.notifyProductAdded(product);
 			}
 		}
 	}

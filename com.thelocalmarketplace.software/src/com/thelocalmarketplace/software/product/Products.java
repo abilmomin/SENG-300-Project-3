@@ -85,6 +85,7 @@ public class Products {
 		// Attach the listeners to the hardware
 		mainScanner.register(scannerListener);
 		handheldScanner.register(scannerListener);
+		baggingArea.register(scaleListener);
 	}
 	
 	/**
