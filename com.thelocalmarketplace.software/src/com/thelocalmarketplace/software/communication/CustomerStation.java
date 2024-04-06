@@ -8,18 +8,23 @@ import com.jjjwelectronics.scale.IElectronicScale;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
+import com.thelocalmarketplace.hardware.PLUCodedProduct;
+import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.AddownBag;
 import com.thelocalmarketplace.software.AttendantLoginPage;
 import com.thelocalmarketplace.software.AttendantPageGUI;
+import com.thelocalmarketplace.software.Initialization;
 import com.thelocalmarketplace.software.MembershipCard;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.StartSession;
+import com.thelocalmarketplace.software.product.Products;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 
 public class CustomerStation extends JFrame {
@@ -36,10 +41,12 @@ public class CustomerStation extends JFrame {
     private AddownBag addOwnBag;
     private SelfCheckoutStationSoftware stationSoftwareInstance;
     private AbstractElectronicScale scale;
+    private Products products;
     
     public CustomerStation(int selectedStation, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale) {
     	this.scale = scale;
     	this.stationSoftwareInstance = stationSoftwareInstance;
+    	
     	stationSoftwareInstance.setGUI(this);
     	
         setTitle("Self-Checkout Station " + selectedStation);
@@ -47,6 +54,8 @@ public class CustomerStation extends JFrame {
         setSize(900, 700);
         setLocationRelativeTo(null);
 
+
+        
         // Main panel
         mainPanel = new JPanel(new BorderLayout());
 
@@ -276,13 +285,24 @@ public class CustomerStation extends JFrame {
         	}
         });
     	
-    	/*
+    	
     	enter.addActionListener(e -> {
-        	AddtoBagging popup  = new AddtoBagging(this);
-        	popup.setVisible(true);
+    		
+    		String userInput = screenTextField.getText();
+    		
+    		// Convert string > plu code using method in Products.java
+    		PLUCodedProduct product = products.matchCodeAndPLUProduct(userInput);
+        	
+    		// Convert from product > corresponding item
+    		// OR just make an items Map in initialize and change method above
+    		
+    		// Make popup visible:
+    		// AddtoBagging popup  = new AddtoBagging(this);
+        	// popup.setVisible(true);
         });
-    	*/
-    	return keypadPanel;
+    	
+    	// Return from popup:
+    	// return keypadPanel;
     }
    
     ActionListener addNum = e -> {
@@ -399,8 +419,6 @@ public class CustomerStation extends JFrame {
             }
         }
     } 
-	public static void main(String[] args ) {
-		CustomerStation2 station = new CustomerStation2(1);	// USING ARBITRARY TEST VALUE ATM
-	}
+
 }
 

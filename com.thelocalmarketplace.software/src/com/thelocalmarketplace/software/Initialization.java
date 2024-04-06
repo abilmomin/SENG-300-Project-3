@@ -20,14 +20,15 @@ import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 public class Initialization {
-	private static SelfCheckoutStationSoftware bronzeStation1;
 
 	private static Map<Barcode, BarcodedProduct> productDatabase = ProductDatabases.BARCODED_PRODUCT_DATABASE;
 	private Map<Product, Integer> inventoryDatabase = ProductDatabases.INVENTORY; 
 	private static Map<PriceLookUpCode, PLUCodedProduct> PLUDatabase = ProductDatabases.PLU_PRODUCT_DATABASE; 
 
 	// private ArrayList<BarcodedItems> items 
-
+	public Initialization() {
+		InitializeItems();
+	}
 
 	private static void InitializeItems() {
 
@@ -36,9 +37,7 @@ public class Initialization {
 		int[] noteAmounts = {5, 10, 20, 50, 100};
 		BigDecimal[] coinAmounts = {new BigDecimal("0.05"), new BigDecimal("0.10"),  new BigDecimal("0.25"), new BigDecimal("1.00"), new BigDecimal("2.00")};
 
-		SelfCheckoutStationBronze bs = new SelfCheckoutStationBronze();
 
-		bronzeStation1 = new SelfCheckoutStationSoftware(bs);
 
 		Numeral[] code1Digits = {Numeral.one, Numeral.two, Numeral.three, Numeral.four};
 		Barcode barcode1 = new Barcode(code1Digits);
