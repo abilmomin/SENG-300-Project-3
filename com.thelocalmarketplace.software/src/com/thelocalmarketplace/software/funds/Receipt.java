@@ -94,9 +94,10 @@ public class Receipt {
      * @param funds The Funds facade.
      * @param checkoutStation The checkout station software.
      */
-    public Receipt (IReceiptPrinter printer, Funds funds, SelfCheckoutStationSoftware checkoutStation) {
-        this.receiptPrinter = checkoutStation.getStationHardware().getPrinter();
-        this.checkoutStationSoftware = checkoutStation;
+    public Receipt (IReceiptPrinter printer, Funds funds) {
+        this.funds = funds;
+        this.receiptPrinter = funds.checkoutStationSoftware.getStationHardware().getPrinter();
+        this.checkoutStationSoftware = funds.checkoutStationSoftware;
 //        if  (printer == null)
 //            throw new NullPointerException("No argument may be null.");
 //        if (printer instanceof ReceiptPrinterBronze)
@@ -110,9 +111,9 @@ public class Receipt {
 //        receiptPrinter.turnOn();
 
         ReceiptHandler rh = new ReceiptHandler(this);
-        checkoutStation.station.getPrinter().register(rh);
+        checkoutStationSoftware.station.getPrinter().register(rh);
 
-        this.funds = funds;
+
 
         this.order = checkoutStationSoftware.getOrder();
 
@@ -193,6 +194,17 @@ public class Receipt {
         for (PredictError observer : errorObservers)
             observer.noPaperError(printer);
     }
+
+    public void notifyInkLow(IReceiptPrinter printer) {
+        for (PredictError observer : errorObservers)
+            observer.lowInkError(printer);
+    }
+
+    public void notifyPaperLow(IReceiptPrinter printer) {
+        for (PredictError observer : errorObservers)
+            observer.lowPaperError(printer);
+    }
+
 
     public void notifyInkAdded(IReceiptPrinter printer) {
         for(ReceiptObserver observer : observers)
