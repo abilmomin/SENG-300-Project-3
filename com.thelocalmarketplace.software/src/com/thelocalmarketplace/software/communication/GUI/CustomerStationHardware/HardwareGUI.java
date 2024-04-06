@@ -4,7 +4,6 @@ package com.thelocalmarketplace.software.communication.GUI.CustomerStationHardwa
 import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
-import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantLoginPage;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
 

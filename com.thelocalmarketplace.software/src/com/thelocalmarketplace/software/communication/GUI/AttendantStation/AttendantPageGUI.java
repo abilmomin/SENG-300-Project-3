@@ -12,7 +12,6 @@ import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
-import com.thelocalmarketplace.software.ALogic;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
