@@ -10,6 +10,8 @@ import com.thelocalmarketplace.software.funds.ReceiptObserver;
 public class mockPredictError implements PredictError {
     boolean noInkCalled = false;
     boolean noPaperCalled = false;
+    boolean lowInkCalled = false;
+    boolean lowPaperCalled = false;
 
 
     @Override
@@ -20,6 +22,16 @@ public class mockPredictError implements PredictError {
     @Override
     public void noPaperError(IReceiptPrinter printer) {
         noPaperCalled = true;
+    }
+
+    @Override
+    public void lowPaperError(IReceiptPrinter printer) {
+        lowPaperCalled = true;
+    }
+
+    @Override
+    public void lowInkError(IReceiptPrinter printer) {
+        lowInkCalled = true;
     }
 
 
