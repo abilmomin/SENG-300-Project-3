@@ -382,26 +382,6 @@ public class CustomerStation extends JFrame {
         revalidate();
         repaint();
     }
-    
-    public void freezeGUI() {
-        for (Component component : getContentPane().getComponents()) {
-            component.setEnabled(false);
-        }
-        // Disable buttons in the menuPanel
-        for (Component component : menuPanel.getComponents()) {
-            if (component instanceof JButton) {
-                component.setEnabled(false);
-            }
-        }
-        // Disable pay button
-        Component[] cartComponents = payButtonPanel.getComponents();
-        for (Component component : cartComponents) {
-            if (component instanceof JButton && ((JButton) component).getText().equals("Pay")) {
-                component.setEnabled(false);
-            }
-        }
-        
-    }
 
     public void customerPopUp(String message) {
         JOptionPane.showMessageDialog(this, message);
@@ -421,26 +401,6 @@ public class CustomerStation extends JFrame {
         return needsAssistance;
     }
 
-    public void unfreezeGUI() {
-        for (Component component : getContentPane().getComponents()) {
-            component.setEnabled(true);
-        }
-        // Enable buttons in the menuPanel
-        if (menuPanel != null) {
-            for (Component component : menuPanel.getComponents()) {
-                if (component instanceof JButton) {
-                    component.setEnabled(true);
-                }
-            }
-            // Enable pay button
-            Component[] cartComponents = payButtonPanel.getComponents();
-            for (Component component : cartComponents) {
-                if (component instanceof JButton && ((JButton) component).getText().equals("Pay")) {
-                    component.setEnabled(true);
-                }
-            }
-        }
-    } 
 
 }
 
