@@ -26,4 +26,14 @@ public interface ProductsListener {
 	 *            The product involved.
 	 */
 	default public void productAdded(Products productFacade, Product product) {}
+	
+	/**
+	 * Signals an event in which one product must be added to the bagging area.
+	 * 
+	 * @param productFacade
+	 *            The facade in which the event occurred.
+	 * @param product
+	 *            The product involved.
+	 */
+	default public void productToBaggingArea(Products productFacade, Product product) {}
 }
