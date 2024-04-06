@@ -302,6 +302,7 @@ public class CustomerStation extends JFrame {
         	addProductToCart(product.getDescription(), product.getPrice());
 
         	screenTextField.setText("");       	
+        	replaceCartPanelWithKeypadPanel();
         });
     	
     	 return keypadPanel;
@@ -343,8 +344,12 @@ public class CustomerStation extends JFrame {
             revalidate();
             repaint();
     	} else {
-    		if (!PLUPanel.isVisible()) {
+    		if (PLUPanel.isVisible()) {
+    			PLUPanel.setVisible(false);
+    			getContentPane().add(cartPanel, BorderLayout.EAST);
     			cartPanel.setVisible(true);
+                revalidate();
+                repaint();
     		}
     	}
     }
