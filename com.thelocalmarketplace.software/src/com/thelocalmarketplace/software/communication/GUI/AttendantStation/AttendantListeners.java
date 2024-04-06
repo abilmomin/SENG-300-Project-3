@@ -118,9 +118,6 @@ public class AttendantListeners {
             // Call the method in Products class to add item by text search
             if (searchText != null && !searchText.isEmpty()) {
                 Products product = stationSoftwareInstances[selectedStation].getProductHandler();
-                if (product.addItemByTextSearch(searchText) == true) {
-                	customerStation[selectedStation].customerPopUp("Add item to bagging area.");
-                }
                 
             }
         }
