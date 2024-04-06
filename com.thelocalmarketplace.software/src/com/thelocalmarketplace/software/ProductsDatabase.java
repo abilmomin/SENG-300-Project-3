@@ -1,6 +1,7 @@
 package com.thelocalmarketplace.software;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Currency;
 import java.util.HashMap;
 import java.util.Locale;
@@ -24,6 +25,7 @@ public class ProductsDatabase {
 	private static Map<Barcode, BarcodedProduct> productDatabase = ProductDatabases.BARCODED_PRODUCT_DATABASE;
 	private Map<Product, Integer> inventoryDatabase = ProductDatabases.INVENTORY; 
 	private static Map<PriceLookUpCode, PLUCodedProduct> PLUDatabase = ProductDatabases.PLU_PRODUCT_DATABASE; 
+	private static ArrayList<Barcode> barcodes = new ArrayList<>();
 
 	// private ArrayList<BarcodedItems> items 
 	public ProductsDatabase() {
@@ -45,10 +47,14 @@ public class ProductsDatabase {
 
 		Numeral[] code3Digits = {Numeral.six, Numeral.seven, Numeral.eight, Numeral.nine};
 		Barcode barcode3 = new Barcode(code3Digits);
+		
+		barcodes.add(barcode1);
+		barcodes.add(barcode2);
+		barcodes.add(barcode3);
 
 			// BarcodedProduct(Barcode barcode, String description, long price, double expectedWeightInGrams)
 				// I assumed price is in cents since longs can't have decimals
-		BarcodedProduct milk = new BarcodedProduct(barcode1, "Milk", 350, 3894.8);
+		BarcodedProduct milk = new BarcodedProduct(barcode1, "Milk", 350, 3894);
 		BarcodedProduct chocolate = new BarcodedProduct(barcode1, "Chocolate bar", 300, 49);
 		BarcodedProduct sushi = new BarcodedProduct(barcode1, "20pc Sushi", 1000, 600);
 		 
@@ -70,5 +76,13 @@ public class ProductsDatabase {
 		PLUDatabase.put(plu1, apple);
 		PLUDatabase.put(plu2, banana);
 		PLUDatabase.put(plu3, kiwi);
+	}
+	
+	/**
+	 * Returns a list of all the barcodes available for products.
+	 * @return
+	 */
+	public static ArrayList<Barcode> getBarcodes() {
+		return barcodes;
 	}
 }

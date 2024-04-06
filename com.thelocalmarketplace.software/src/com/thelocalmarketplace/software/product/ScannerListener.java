@@ -65,6 +65,7 @@ public class ScannerListener implements BarcodeScannerListener {
 			
 			if (product != null) {
 				double productWeight = product.getExpectedWeight(); 
+				System.out.println("product weight: " + productWeight);
 				long productPrice = product.getPrice();
 
 				software.addTotalOrderWeightInGrams(productWeight); 
@@ -74,6 +75,8 @@ public class ScannerListener implements BarcodeScannerListener {
 				barcodedItem = new BarcodedItem(barcode, mass);
 				
 				software.addItemToOrder(barcodedItem);
+				
+				handler.notifyProductAdded(product);
 			}
 		}
 	}
