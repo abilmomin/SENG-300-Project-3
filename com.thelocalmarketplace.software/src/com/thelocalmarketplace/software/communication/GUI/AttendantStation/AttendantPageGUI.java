@@ -191,7 +191,7 @@ public class AttendantPageGUI extends JFrame {
             // Once the session is complete, disable the station
             SwingUtilities.invokeLater(() -> {
                 stationSoftwareInstances[selectedStation].setStationBlock();
-                customerStation[selectedStation].freezeGUI();
+                
             });
         } catch (InterruptedException ex) {
             ex.printStackTrace();
