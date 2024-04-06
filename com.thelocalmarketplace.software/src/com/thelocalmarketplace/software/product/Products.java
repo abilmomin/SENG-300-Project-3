@@ -141,7 +141,7 @@ public class Products {
      *
      * @param searchText The text to search for the product.
      */
-    public void addItemByTextSearch(String searchText) {
+    public boolean addItemByTextSearch(String searchText) {
         Product product = findProductByTextSearch(searchText);
 
         if (product != null && software.getStationActive() && !software.getStationBlock()) {
@@ -159,19 +159,25 @@ public class Products {
 				Mass mass = new Mass(productWeight);
 				BarcodedItem barcodedItem = new BarcodedItem(barcodedProduct.getBarcode(), mass);
 
-                software.addItemToOrder(barcodedItem);  
+                software.addItemToOrder(barcodedItem); 
+                
+                notifyProductAdded(product);
+                
+                return true;
                 
         	} else {
         		PLUCodedProduct pluProduct = (PLUCodedProduct) product;
         		PLUCodedItem pluItem = new PLUCodedItem(pluProduct.getPLUCode(), new Mass(1));
         		
                 software.addItemToOrder(pluItem);
+                
+                notifyProductAdded(product);
+                
+                return true;
         	}
-        	notifyProductAdded(product);
-        	notifyAddProductToBaggingArea(product);
         	
         } else {
-        	// throw an exception maybe?
+        	return false;
         }
     }
     
