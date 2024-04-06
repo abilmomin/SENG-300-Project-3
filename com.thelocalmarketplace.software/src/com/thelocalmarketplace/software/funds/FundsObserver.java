@@ -31,6 +31,11 @@ package com.thelocalmarketplace.software.funds;
 
 import java.math.BigDecimal;
 
+import com.tdc.banknote.BanknoteStorageUnit;
+import com.tdc.banknote.IBanknoteDispenser;
+import com.tdc.coin.CoinStorageUnit;
+import com.tdc.coin.ICoinDispenser;
+
 /**
  * Permits objects to listen to one or more Funds when registered with them.
  */
@@ -90,4 +95,12 @@ public interface FundsObserver {
 	 * @param blockedStatus Whether the station is blocked.
 	 */
 	public void fundsStationBlocked(Funds fundsFacade, boolean blockedStatus);
+	
+	default public void lowCoinsError(ICoinDispenser dispenser) {}
+	
+	default public void lowBanknotesError(IBanknoteDispenser dispenser) {}
+	
+	default public void highCoinsError(CoinStorageUnit storage) {}
+	
+	default public void highBanknotesError(BanknoteStorageUnit storage) {}
 }

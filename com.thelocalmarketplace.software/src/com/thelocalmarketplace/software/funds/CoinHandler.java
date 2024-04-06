@@ -54,7 +54,6 @@ import com.tdc.coin.CoinValidator;
 import com.tdc.coin.CoinValidatorObserver;
 
 import com.tdc.coin.ICoinDispenser;
-import com.thelocalmarketplace.software.PredictError;
 
 /**
  * Handles coin payment events, implementing observer interfaces for CoinValidator and CoinDispenser.
