@@ -236,7 +236,7 @@ public class AttendantListeners {
 
                 if (customerStation[selectedStation] != null && stationSoftwareInstances[selectedStation].getStationBlock()== true) { // Check if GUI is created for the selected station
                     stationSoftwareInstances[selectedStation].setStationUnblock();
-                    customerStation[selectedStation].unfreezeGUI(); // Unfreeze the GUI
+                   
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");
@@ -253,7 +253,7 @@ public class AttendantListeners {
                     if (stationSoftwareInstances[selectedStation].getStationActive() == false) {
                         // If station is not active, disable it immediately
                         stationSoftwareInstances[selectedStation].setStationBlock();
-                        customerStation[selectedStation].freezeGUI();
+                        
                     } else {
                         // If station is active, prompt user and disable after session completion
                         new Thread(() -> gui.waitForSessionCompletion(selectedStation)).start();
