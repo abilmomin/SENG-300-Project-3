@@ -14,8 +14,7 @@ import org.junit.Test;
 
 import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.printer.IReceiptPrinter;
-import com.jjjwelectronics.printer.ReceiptPrinterBronze;
-import com.jjjwelectronics.scanner.BarcodedItem;
+
 import com.tdc.CashOverloadException;
 import com.tdc.banknote.Banknote;
 import com.tdc.banknote.BanknoteStorageUnit;
@@ -23,15 +22,10 @@ import com.tdc.banknote.IBanknoteDispenser;
 import com.tdc.coin.Coin;
 import com.tdc.coin.CoinStorageUnit;
 import com.tdc.coin.ICoinDispenser;
-import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
-import com.thelocalmarketplace.hardware.BarcodedProduct;
+
 import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
-import com.thelocalmarketplace.hardware.PLUCodedItem;
-import com.thelocalmarketplace.hardware.PLUCodedProduct;
-import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.software.ALogic;
-import com.thelocalmarketplace.software.PredictError;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.funds.Receipt;
@@ -43,7 +37,6 @@ import powerutility.PowerGrid;
 public class ALogicTest {
 
 	private ALogic aLogic;
-	public PredictError error;
 	public ReceiptObserver rO;
 
 	private SelfCheckoutStationSoftware station;
@@ -92,25 +85,24 @@ public class ALogicTest {
 		assertTrue(storage.getBanknoteCount() == 0);
 	}
 
-//    @Test
-//    public void testFillBanknoteDispensers() throws SimulationException, CashOverloadException {
-//    	ISelfCheckoutStation cS = station.getStationHardware();
-//    	AbstractSelfCheckoutStation aCS = (AbstractSelfCheckoutStation) cS;
-//		BigDecimal[] denominations = aCS.getBanknoteDenominations();
-//		Map<BigDecimal, IBanknoteDispenser> dispensers = aCS.getBanknoteDispensers();
-//		for (BigDecimal denomination : denominations) {
-//			IBanknoteDispenser dispenser = dispensers.get(denomination);
-//			dispenser.unload();
-//			assertTrue(dispenser.size() == 0);
-//		}
-//		aCS.plugIn(PowerGrid.instance());
-//		aCS.turnOn();
-//		aLogic.refillBanknoteDispensers(station);
-//		for (BigDecimal denomination : denominations) {
-//			IBanknoteDispenser dispenser = dispensers.get(denomination);
-//			assertTrue(dispenser.size() == dispenser.getCapacity());
-//		}
-//    }
+    @Test
+    public void testFillBanknoteDispensers() throws SimulationException, CashOverloadException {
+    	ISelfCheckoutStation cS = station.getStationHardware();
+		BigDecimal[] denominations = cS.getBanknoteDenominations();
+		Map<BigDecimal, IBanknoteDispenser> dispensers = cS.getBanknoteDispensers();
+		for (BigDecimal denomination : denominations) {
+			IBanknoteDispenser dispenser = dispensers.get(denomination);
+			dispenser.unload();
+			assertTrue(dispenser.size() == 0);
+		}
+		cS.plugIn(PowerGrid.instance());
+		cS.turnOn();
+		aLogic.refillBanknoteDispensers(station);
+		for (BigDecimal denomination : denominations) {
+			IBanknoteDispenser dispenser = dispensers.get(denomination);
+			assertTrue(dispenser.size() == dispenser.getCapacity());
+		}
+    }
 
 	@Test
 	public void testFillCoinDispensers() throws SimulationException, CashOverloadException {
@@ -134,7 +126,7 @@ public class ALogicTest {
 	public void testRefillInk() throws OverloadedDevice {
 		ISelfCheckoutStation cS = station.getStationHardware();
 		IReceiptPrinter printer = cS.getPrinter();
-		Receipt receipt = new Receipt(printer, new Funds(station), station);
+		Receipt receipt = new Receipt(printer, new Funds(station));
 		aLogic.refillPrinterInk(station, receipt);
 	}
 
@@ -142,7 +134,7 @@ public class ALogicTest {
 	public void testRefillPaper() throws OverloadedDevice {
 		ISelfCheckoutStation cS = station.getStationHardware();
 		IReceiptPrinter printer = cS.getPrinter();
-		Receipt receipt = new Receipt(printer, new Funds(station), station);
+		Receipt receipt = new Receipt(printer, new Funds(station));
 		aLogic.refillPrinterPaper(station, receipt);
 	}
 
