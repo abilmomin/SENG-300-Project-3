@@ -294,7 +294,9 @@ public class CustomerStation extends JFrame {
     		PLUCodedProduct product = products.matchCodeAndPLUProduct(userInput);
         	
     		// Convert from product > corresponding item
-    		// OR just make an items Map in initialize and change method above
+    		// OR just make an items Map in Initialize.java and change method above
+    		
+    		// products.addItemByPLUCode( subsequent item)
     		
     		// Make popup visible:
     		// AddtoBagging popup  = new AddtoBagging(this);
