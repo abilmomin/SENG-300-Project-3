@@ -11,7 +11,7 @@ import javax.swing.*;
 
 public class AddtoBagging extends JFrame {
 	
-	public AddtoBagging() {
+	public AddtoBagging(String item) {
 
 	    setTitle("Add to Bag");
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -23,12 +23,12 @@ public class AddtoBagging extends JFrame {
 	    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
 	    // Label for the large text display
-	    JLabel bigTextLabel = new JLabel("Place Item in Bagging Area");
+	    JLabel bigTextLabel = new JLabel("Item: " + item);
 	    bigTextLabel.setFont(new Font("Arial", Font.BOLD, 32));
 	    bigTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 	    // Label for the small text display
-	    JLabel smallTextLabel = new JLabel("**** item ****");
+	    JLabel smallTextLabel = new JLabel("Please add item to bagging area.");
 	    smallTextLabel.setFont(new Font("Arial", Font.PLAIN, 12)); 
 	    smallTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT); 
 
@@ -38,11 +38,12 @@ public class AddtoBagging extends JFrame {
 	    button.setFont(new Font("Arial", Font.PLAIN, 16));
 	    button.setPreferredSize(new Dimension(100, 30));
 
-	    /*
+	    
 	    button.addActionListener(e -> {
+	    	// CODE TO ADD ITEM TO ORDER GOES HERE
 	    	dispose();
 	    });
-	    */
+	    
 	   
 	    mainPanel.add(Box.createVerticalGlue());
 	    mainPanel.add(bigTextLabel);
@@ -55,9 +56,5 @@ public class AddtoBagging extends JFrame {
 
 	    add(mainPanel);
 	    setVisible(true);
-	}
-
-	public static void main(String[] args) {
-		AddtoBagging test = new AddtoBagging();
 	}
 }

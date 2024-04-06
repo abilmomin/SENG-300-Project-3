@@ -19,18 +19,18 @@ import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
-public class Initialization {
+public class ProductsDatabase {
 
 	private static Map<Barcode, BarcodedProduct> productDatabase = ProductDatabases.BARCODED_PRODUCT_DATABASE;
 	private Map<Product, Integer> inventoryDatabase = ProductDatabases.INVENTORY; 
 	private static Map<PriceLookUpCode, PLUCodedProduct> PLUDatabase = ProductDatabases.PLU_PRODUCT_DATABASE; 
 
 	// private ArrayList<BarcodedItems> items 
-	public Initialization() {
-		InitializeItems();
+	public ProductsDatabase() {
+		InitializeProducts();
 	}
 
-	private static void InitializeItems() {
+	private static void InitializeProducts() {
 
 		// how to integrate with scs instance??
 		Currency c = Currency.getInstance(Locale.CANADA);

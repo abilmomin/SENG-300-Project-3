@@ -32,6 +32,7 @@ import ca.ucalgary.seng300.simulation.InvalidStateSimulationException;
 import static com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation.resetConfigurationToDefaults;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.Scanner;
 import com.jjjwelectronics.Item;
@@ -72,6 +73,8 @@ public class SelfCheckoutStationSoftware {
 	private IBarcodeScanner handheldScanner;
 	private CoinSlot coinSlot;
 	private CustomerStation gui;
+	private ProductsDatabase allProducts; 
+
 	
 	// Listeners
 	public ScannerListener scannerListener;
@@ -112,6 +115,7 @@ public class SelfCheckoutStationSoftware {
 		this.products = new Products(this);
 		this.coordination = new Coordination(this, funds, products);
 
+		allProducts = new ProductsDatabase();
 		setStationActive(false);
 	}
 	
@@ -270,6 +274,13 @@ public class SelfCheckoutStationSoftware {
 		
 	
 	}
+	
+	public PLUCodedProduct matchCodeAndPLUProduct(String code) {
+		PriceLookUpCode plu = new PriceLookUpCode(code);
+		PLUCodedProduct currentItem = ProductDatabases.PLU_PRODUCT_DATABASE.get(plu);
+		return currentItem;	
+	}
+	
 
 	
 	/**
@@ -357,4 +368,5 @@ public class SelfCheckoutStationSoftware {
 	public Products getProductHandler() {
 		return products;
 	}
+	
 }
