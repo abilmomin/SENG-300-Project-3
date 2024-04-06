@@ -118,7 +118,10 @@ public class AttendantListeners {
             // Call the method in Products class to add item by text search
             if (searchText != null && !searchText.isEmpty()) {
                 Products product = stationSoftwareInstances[selectedStation].getProductHandler();
-                product.addItemByTextSearch(searchText);
+                if (product.addItemByTextSearch(searchText) == true) {
+                	customerStation[selectedStation].customerPopUp("Add item to bagging area.");
+                }
+                
             }
         }
     }
@@ -229,11 +232,10 @@ public class AttendantListeners {
     private class EnableStationButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+        	ALogic logic = new ALogic();
             if (selectedStation != -1) { // Check if a station is selected
-
-                if (customerStation[selectedStation] != null && stationSoftwareInstances[selectedStation].getStationBlock()== true) { // Check if GUI is created for the selected station
-                    stationSoftwareInstances[selectedStation].setStationUnblock();
-                   
+            	
+                logic.EnableStation(selectedStation, customerStation, stationSoftwareInstances, checkoutStation); { // Check if GUI is created for the selected station    
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");
@@ -241,27 +243,32 @@ public class AttendantListeners {
         }
     }
 
-    // Action listener for disable station button
+    
+ // Action listener for disable station button
     private class DisableStationButtonListener implements ActionListener {
-        @Override
+        @Override 
         public void actionPerformed(ActionEvent e) {
+        	ALogic logic = new ALogic();
             if (selectedStation != -1) { // Check if a station is selected
-                if (customerStation[selectedStation] != null && stationSoftwareInstances[selectedStation].getStationBlock() == false) { // Check if GUI is created for the selected station
-                    if (stationSoftwareInstances[selectedStation].getStationActive() == false) {
-                        // If station is not active, disable it immediately
-                        stationSoftwareInstances[selectedStation].setStationBlock();
-                        
-                    } else {
+            	
+                if (logic.DisableStation(selectedStation, customerStation, stationSoftwareInstances, checkoutStation)==true) { // Check if GUI is created for the selected station       
+                	
+                        boolean notactive_notnull = true; }
+                
+                     else {
                         // If station is active, prompt user and disable after session completion
                         new Thread(() -> gui.waitForSessionCompletion(selectedStation)).start();
                     }
                 }
-            } else {
+             else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");
             }
         }
     }
 
+    
+  
+    
     // get action listeners
     public ActionListener getRefillCoinServiceButtonListener() {
         return new refillCoinServiceButtonListener();

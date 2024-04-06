@@ -22,6 +22,8 @@ import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
 
 import ca.ucalgary.seng300.simulation.SimulationException;
+
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.funds.Receipt;
 import powerutility.PowerGrid;
 
@@ -124,6 +126,27 @@ public class ALogic {
 
 	}
 
+	public void EnableStation(int selectedStation,CustomerStation[] customerStation, SelfCheckoutStationSoftware[] stationSoftwareInstances,AbstractSelfCheckoutStation checkoutStation )  {
+	     
+		if (customerStation[selectedStation] != null && stationSoftwareInstances[selectedStation].getStationBlock()== true) {
+			stationSoftwareInstances[selectedStation].setStationUnblock();	
+	}	
+	}
+	
+	public boolean DisableStation(int selectedStation,CustomerStation[] customerStation, SelfCheckoutStationSoftware[] stationSoftwareInstances,AbstractSelfCheckoutStation checkoutStation) {
+		
+        if (customerStation[selectedStation] != null && stationSoftwareInstances[selectedStation].getStationBlock() == false) {
+        	if (stationSoftwareInstances[selectedStation].getStationActive() == false) {
+        		stationSoftwareInstances[selectedStation].setStationBlock();}
+        		return true;
+        }
+        	
+        else {
+        	return false;		
+        }
+        
+	}
+		
 
 
 }
