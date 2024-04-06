@@ -5,6 +5,7 @@ import java.awt.*;
 import javax.swing.*;
 
 import com.jjjwelectronics.Mass;
+import com.jjjwelectronics.scale.IElectronicScale;
 import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
@@ -48,7 +49,11 @@ public class AddtoBagging extends JFrame {
 	    button.addActionListener(e -> {
 	    	PriceLookUpCode plu = product.getPLUCode();
 	    	PLUCodedItem newItem = new PLUCodedItem(plu, new Mass(50)); // arbitrary mass value
-	    	stationSoftwareInstance.addItemToOrder(newItem);
+	    	//stationSoftwareInstance.addItemToOrder(newItem);
+	    	
+	    	IElectronicScale baggingArea = stationSoftwareInstance.getStationHardware().getBaggingArea();
+        	baggingArea.addAnItem(newItem);
+        	
 	    	dispose();
 	    });
 	    

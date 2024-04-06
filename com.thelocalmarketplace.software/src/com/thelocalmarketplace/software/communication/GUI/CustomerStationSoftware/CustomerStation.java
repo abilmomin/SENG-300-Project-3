@@ -300,6 +300,8 @@ public class CustomerStation extends JFrame {
         	popup.setVisible(true);
         	
         	addProductToCart(product.getDescription(), product.getPrice());
+
+        	screenTextField.setText("");       	
         });
     	
     	 return keypadPanel;
