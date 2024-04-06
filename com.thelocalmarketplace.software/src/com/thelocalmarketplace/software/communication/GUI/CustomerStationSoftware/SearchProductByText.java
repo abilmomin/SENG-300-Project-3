@@ -187,7 +187,7 @@ public class SearchProductByText extends JFrame {
 
         public Product(String name, String imageName) {
             this.name = name;
-            this.image = resizeImage("./images/" + imageName, 50, 50); // Adjust size as needed
+            this.image = resizeImage("../../images/" + imageName, 50, 50); // Adjust size as needed
         }
 
         public String getName() {
