@@ -20,6 +20,8 @@ import com.thelocalmarketplace.software.product.Products;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -297,10 +299,12 @@ public class CustomerStation extends JFrame {
     		String description = product.getDescription();
     		
     		AddtoBagging popup  = new AddtoBagging(product, description, stationSoftwareInstance);
-        	popup.setVisible(true);
-        	
+    		
         	addProductToCart(product.getDescription(), product.getPrice());
 
+        	popup.setVisible(true);
+        	
+        	
         	screenTextField.setText("");       	
         	replaceCartPanelWithKeypadPanel();
         });
@@ -344,13 +348,10 @@ public class CustomerStation extends JFrame {
             revalidate();
             repaint();
     	} else {
-    		if (PLUPanel.isVisible()) {
-    			PLUPanel.setVisible(false);
-    			getContentPane().add(cartPanel, BorderLayout.EAST);
+    		if (!PLUPanel.isVisible()) {
     			cartPanel.setVisible(true);
-                revalidate();
-                repaint();
-    		}
+
+    		} 
     	}
     }
     private void replaceGrids() {
