@@ -382,8 +382,8 @@ public class SelfCheckoutStationSoftware {
 		}
 	}
 
-	public Card getCard(String type) {
-		if (Objects.equals(type, "credit")) {
+	public Card getCard(String cardType) {
+		if (Objects.equals(cardType, "credit")) {
 			return creditCard;
 		}
 		else {
