@@ -16,6 +16,7 @@ import com.jjjwelectronics.bag.IReusableBagDispenser;
 import com.jjjwelectronics.bag.ReusableBagDispenserGold;
 import com.jjjwelectronics.card.CardReaderGold;
 import com.jjjwelectronics.printer.ReceiptPrinterBronze;
+import com.jjjwelectronics.printer.ReceiptPrinterGold;
 import com.jjjwelectronics.scale.ElectronicScaleGold;
 import com.jjjwelectronics.scale.ElectronicScaleSilver;
 import com.jjjwelectronics.scale.IElectronicScale;
@@ -119,7 +120,7 @@ public class SelfCheckoutStationGold extends AbstractSelfCheckoutStation {
 	 */
 	public SelfCheckoutStationGold() {
 		super(new ElectronicScaleGold(), new ElectronicScaleSilver(), new TouchScreenBronze(),
-			new ReusableBagDispenserGold(reusableBagDispenserCapacityConfiguration), new ReceiptPrinterBronze(),
+			new ReusableBagDispenserGold(reusableBagDispenserCapacityConfiguration), new ReceiptPrinterGold(),
 			new CardReaderGold(), new BarcodeScannerGold(), new BarcodeScannerSilver(), new BanknoteInsertionSlot(),
 			new BanknoteDispensationSlot(),
 			new BanknoteValidator(currencyConfiguration, banknoteDenominationsConfiguration),

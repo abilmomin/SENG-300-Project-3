@@ -17,7 +17,6 @@ import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
-import com.thelocalmarketplace.software.AddownBag;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
