@@ -80,9 +80,8 @@ public class ProductTest {
 		
 	}
 	@Test
-	public void testHandleBulkyItemReducesTotalOrderWeight() {
-	    
-	    double initialItemWeightInGrams = 2000.0; 
+	public void testHandleBulkyItemReducesTotalOrderWeightWithAttendantApproval() {
+	    double initialItemWeightInGrams = 2000.0;
 	    Numeral[] barcodeDigits = {Numeral.zero, Numeral.one, Numeral.two, Numeral.three, Numeral.four};
 	    Barcode barcode = new Barcode(barcodeDigits);
 	    BarcodedProduct initialProduct = new BarcodedProduct(barcode, "Initial Product", 20, initialItemWeightInGrams);
@@ -90,21 +89,30 @@ public class ProductTest {
 	    testProducts.addItemViaBarcodeScan(barcode); // Adds the initial item to the order
 
 	    // The weight of the bulky item to handle
-	    double bulkyItemWeightInGrams = 1000.0; 
+	    double bulkyItemWeightInGrams = 1000.0;
 
-	    // total order weight 
+	    // total order weight before handling the bulky item
 	    double initialTotalWeight = station.getTotalOrderWeightInGrams();
 
-	    // Handle the bulky item
-	    testProducts.handleBulkyItem(bulkyItemWeightInGrams, attendantGUI);
+	    // Create a stub for AttendantPageGUI that simulates attendant approval
+	    AttendantPageGUI attendantGUIStub = new AttendantPageGUI() {
+	        @Override
+	        public boolean bulkItemRequest(String message) {
+	            return true; // Simulate attendant approval
+	        }
+	    };
 
-	    // total order weight is reduced by the weight of the bulky item
+	    // Handle the bulky item with simulated attendant approval
+	    testProducts.handleBulkyItem(bulkyItemWeightInGrams, attendantGUIStub);
+
+	    // total order weight is expected to be reduced by the weight of the bulky item after approval
 	    double expectedTotalWeightAfterHandling = initialTotalWeight - bulkyItemWeightInGrams;
 	    double actualTotalWeightAfterHandling = station.getTotalOrderWeightInGrams();
 
-	    assertTrue("The total order weight should be reduced by the weight of the bulky item",
-	               actualTotalWeightAfterHandling == expectedTotalWeightAfterHandling);
+	    assertEquals("The total order weight should be reduced by the weight of the bulky item upon attendant's approval",
+	                 expectedTotalWeightAfterHandling, actualTotalWeightAfterHandling, 0.001);
 	}
+	
 	
 	@Test
 	public void testPriceChangeAfterAddItemByVisualCatalogue() {
