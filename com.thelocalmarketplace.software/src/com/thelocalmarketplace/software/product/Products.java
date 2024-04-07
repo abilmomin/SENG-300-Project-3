@@ -306,12 +306,16 @@ public class Products {
 					}	
 				}
 			double reusableBagWeightTotal = 0; 
+			
 			Product rbag = null;
 			long reusableBagPrice = rbag.getPrice();
+			
 			for(ReusableBag bag: bags) {
 				reusableBagWeightTotal += bag.getMass().inGrams().doubleValue(); 
 				long totalBagPrice = reusableBagPrice * bags.length; 
 				software.addTotalOrderPrice(totalBagPrice); 
+				
+				notifyBagsPurchased(totalBagPrice);
 			}
 			// add the total weight of all purchased bags to the weight of the order 
 			software.addTotalOrderWeightInGrams(reusableBagWeightTotal); 
@@ -381,5 +385,16 @@ public class Products {
 	public void notifyAddProductToBaggingArea(Product product) {
 		for(ProductsListener listener : listeners)
 			listener.productToBaggingArea(this, product);
+	}
+	
+	/**
+	 * Notifies observers that bag(s) have been purchased.
+	 * 
+	 * @param totalCost
+	 * 		The total cost of the bag(s) purchased.
+	 */
+	public void notifyBagsPurchased(long totalPrice) {
+		for(ProductsListener listener : listeners)
+			listener.bagsPurchased(null, totalPrice);
 	}
 }

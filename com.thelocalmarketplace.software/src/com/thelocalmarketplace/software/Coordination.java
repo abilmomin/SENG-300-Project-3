@@ -29,7 +29,7 @@ public class Coordination implements FundsObserver, ProductsListener {
     }
     
     public void noValidChange() {
-        gui.customerPopUp("Attendant Assistance required");
+        gui.handleRequestAssistance();
     }
 
     @Override
@@ -86,5 +86,10 @@ public class Coordination implements FundsObserver, ProductsListener {
     public void productToBaggingArea(Products productFacade, Product product) {
     	CustomerStation gui = software.getGUI();
     	gui.customerBaggingAreaPopUp(product);
+    }
+
+    @Override
+    public void bagsPurchased(Products productFacade, long totalCost) {
+    	gui.addProductToCart("Reusable Bag", totalCost);
     }
 }

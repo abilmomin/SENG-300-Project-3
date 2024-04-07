@@ -1,9 +1,12 @@
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
 
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
+import com.jjjwelectronics.Item;
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.scale.IElectronicScale;
 import com.jjjwelectronics.scanner.BarcodedItem;
@@ -14,6 +17,7 @@ import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.Product;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 
 
 // GENERAL LAYOUT
@@ -21,9 +25,13 @@ import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 // Glue is like a spring << add on before and after box components to squish them to the middle
 
 public class AddtoBagging extends JFrame {
+	SelfCheckoutStationSoftware stationSoftwareInstance;
+	AttendantPageGUI attendantGUI;
 	
-	public AddtoBagging(Product product, SelfCheckoutStationSoftware stationSoftwareInstance, double weight) {
-
+	public AddtoBagging(Product product, SelfCheckoutStationSoftware stationSoftwareInstance, double weight, AttendantPageGUI attendantGUI) {
+		this.stationSoftwareInstance = stationSoftwareInstance;
+		this.attendantGUI = attendantGUI;
+		
 	    setTitle("Add to Bag");
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setSize(600, 500);
@@ -53,11 +61,15 @@ public class AddtoBagging extends JFrame {
 	    smallTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT); 
 
 	    // Button
-	    JButton button = new JButton("Place item");
+	    JButton button = new JButton("Place Item in Bagging Area");
 	    button.setAlignmentX(Component.CENTER_ALIGNMENT);
 	    button.setFont(new Font("Arial", Font.PLAIN, 16));
 	    button.setPreferredSize(new Dimension(100, 30));
-
+	    
+	    JButton doNotBagBtn = new JButton("Don't Bag Item");
+	    doNotBagBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    doNotBagBtn.setFont(new Font("Arial", Font.PLAIN, 16));
+	    doNotBagBtn.setPreferredSize(new Dimension(100, 30));
 	    
 	    button.addActionListener(e -> {
 	    	if (product instanceof BarcodedProduct) {
@@ -83,17 +95,38 @@ public class AddtoBagging extends JFrame {
 	    	dispose();
 	    });
 	    
-	   
+	    doNotBagBtn.addActionListener(e -> {
+	    	dontBagItem();
+	    	dispose();
+	    });
+	    
 	    mainPanel.add(Box.createVerticalGlue());
 	    mainPanel.add(bigTextLabel);
-	    mainPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Small space between big text and small text
+	    mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 	    mainPanel.add(smallTextLabel);
 	    mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 	    mainPanel.add(button);
+	    mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+	    mainPanel.add(doNotBagBtn);
 	    mainPanel.add(Box.createVerticalGlue());
-
 
 	    add(mainPanel);
 	    setVisible(true);
+	}
+	
+    private void dontBagItem() {
+		// TODO Auto-generated method stub
+    	ArrayList<Item> orderList = stationSoftwareInstance.getOrder();
+    	if (!orderList.isEmpty()) {
+    		int lastIndex = orderList.size() - 1;
+
+            // Extract the last item from the list
+            Item lastItem = orderList.get(lastIndex);
+            double massInGramsDouble = lastItem.getMass().inGrams().doubleValue();
+            stationSoftwareInstance.getProductHandler().handleBulkyItem(massInGramsDouble,this.attendantGUI);
+    	} else {
+    	    // Handle the case when the list is empty
+    		JOptionPane.showMessageDialog(this, "Scan Item First");
+    	}
 	}
 }

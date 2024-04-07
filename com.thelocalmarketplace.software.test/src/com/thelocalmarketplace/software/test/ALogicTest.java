@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.printer.IReceiptPrinter;
-
+import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.tdc.CashOverloadException;
 import com.tdc.banknote.Banknote;
 import com.tdc.banknote.BanknoteStorageUnit;
@@ -29,6 +29,7 @@ import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.ALogic;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
 import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.funds.Receipt;
 import com.thelocalmarketplace.software.funds.ReceiptObserver;
@@ -47,7 +48,7 @@ public class ALogicTest {
 	 private SelfCheckoutStationSoftware[] stationSoftwareInstances;
 	 private AbstractSelfCheckoutStation checkoutStation;
 	 private SelfCheckoutStationBronze teststation;
-
+	 private StartSession[] startSessions;
 
 	@Before
 	public void setUp() {
@@ -149,14 +150,46 @@ public class ALogicTest {
 
 	@Test
 	  public void testEnableStation_StationNotSelected() {
-	      //assertEquals(aLogic.EnableStation(0, customerStations, stationSoftwareInstances, teststation));
+		ALogic logic = new ALogic();
+		int selectedStation = 1;
+		SelfCheckoutStationBronze bronzeS = new SelfCheckoutStationBronze();
+		startSessions = new StartSession[5];
+		startSessions[1] = new StartSession(selectedStation, station, null);
+		PowerGrid.engageUninterruptiblePowerSource();
+        bronzeS.plugIn(PowerGrid.instance());
+        bronzeS.turnOn();
+        stationSoftwareInstances = new SelfCheckoutStationSoftware[5];
+		stationSoftwareInstances[selectedStation] = new SelfCheckoutStationSoftware(bronzeS);
+		stationSoftwareInstances[selectedStation].setStationBlock();
+		assertTrue(stationSoftwareInstances[1].getStationBlock());
+		logic.EnableStation(selectedStation, customerStations, stationSoftwareInstances, bronzeS, startSessions);
+		assertFalse(stationSoftwareInstances[1].getStationBlock());
+		
 	  }
 
 	  
+	
 	  @Test
 	  public void testDisableStation_StationNotSelected() {
-	      assertFalse(aLogic.DisableStation(0, customerStations, stationSoftwareInstances, teststation));
+		  	ALogic logic = new ALogic();
+			int selectedStation = 1; 
+			SelfCheckoutStationBronze bronzeS = new SelfCheckoutStationBronze(); 
+			startSessions = new StartSession[5];	
+			startSessions[1] = new StartSession(selectedStation, station, null);	
+			PowerGrid.engageUninterruptiblePowerSource();
+	        bronzeS.plugIn(PowerGrid.instance());
+	        bronzeS.turnOn();
+	        stationSoftwareInstances = new SelfCheckoutStationSoftware[5];   
+			stationSoftwareInstances[selectedStation] = new SelfCheckoutStationSoftware(bronzeS);	
+			stationSoftwareInstances[selectedStation].setStationUnblock();	
+			assertFalse(stationSoftwareInstances[1].getStationBlock());	
+			logic.DisableStation(selectedStation, customerStations, stationSoftwareInstances, bronzeS, startSessions);
+			assertTrue(stationSoftwareInstances[1].getStationBlock());	
+			boolean result = logic.DisableStation(selectedStation, customerStations, stationSoftwareInstances, bronzeS, startSessions);  
+		    assertFalse(result);
+		  
 	  }
+	  
 	  
 
 	@After
@@ -165,4 +198,7 @@ public class ALogicTest {
 		aLogic = null;
 	}
 
-}
+	
+	
+	
+	}
