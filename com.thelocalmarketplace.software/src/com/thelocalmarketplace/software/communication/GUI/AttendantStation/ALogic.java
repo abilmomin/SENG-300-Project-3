@@ -25,6 +25,7 @@ import ca.ucalgary.seng300.simulation.SimulationException;
 
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
 import com.thelocalmarketplace.software.funds.Receipt;
 import powerutility.PowerGrid;
 
@@ -134,11 +135,15 @@ public class ALogic {
 	}	
 	}
 	
-	public boolean DisableStation(int selectedStation,CustomerStation[] customerStation, SelfCheckoutStationSoftware[] stationSoftwareInstances,AbstractSelfCheckoutStation checkoutStation) {
+	public boolean DisableStation(int selectedStation,CustomerStation[] customerStation, SelfCheckoutStationSoftware[] stationSoftwareInstances,AbstractSelfCheckoutStation checkoutStation, StartSession[] startSessions) {
 		
-        if (customerStation[selectedStation] != null && stationSoftwareInstances[selectedStation].getStationBlock() == false) {
+        if (stationSoftwareInstances[selectedStation].getStationBlock() == false) {
         	if (stationSoftwareInstances[selectedStation].getStationActive() == false) {
-        		stationSoftwareInstances[selectedStation].setStationBlock();}
+        		stationSoftwareInstances[selectedStation].setStationBlock();
+        		startSessions[selectedStation].sessionPopUp("Out of order");
+ 	
+        	}
+       
         		return true;
         }
         	
@@ -147,6 +152,8 @@ public class ALogic {
         }
         
 	}
+		
+
 		
 
 

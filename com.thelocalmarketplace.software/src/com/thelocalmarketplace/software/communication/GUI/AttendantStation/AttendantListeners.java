@@ -69,13 +69,13 @@ public class AttendantListeners {
     private class refillReceiptPaperServiceButtonListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-            try {
-	            System.out.println("Refilling Receipt Paper"); // temporary
-	            logic.refillPrinterPaper(stationSoftwareInstances[selectedStation]);
-            } catch (OverloadedDevice e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
+//            try {
+//	            System.out.println("Refilling Receipt Paper"); // temporary
+//	            logic.refillPrinterPaper(stationSoftwareInstances[selectedStation]);
+//            } catch (OverloadedDevice e1) {
+//                // TODO Auto-generated catch block
+//                e1.printStackTrace();
+//            }
         }
     }
     private class emptyCoinServiceButtonListener implements ActionListener {
@@ -244,7 +244,7 @@ public class AttendantListeners {
         	ALogic logic = new ALogic();
             if (selectedStation != -1) { // Check if a station is selected
             	
-                if (logic.DisableStation(selectedStation, customerStation, stationSoftwareInstances, checkoutStation)==true) { // Check if GUI is created for the selected station       
+                if (logic.DisableStation(selectedStation, customerStation, stationSoftwareInstances, checkoutStation,startSessions)==true) { // Check if GUI is created for the selected station       
                 	
                         boolean notactive_notnull = true; }
                 
@@ -258,6 +258,7 @@ public class AttendantListeners {
             }
         }
     }
+
 
     
   
