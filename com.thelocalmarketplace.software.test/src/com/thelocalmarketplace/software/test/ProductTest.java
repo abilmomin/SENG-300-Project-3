@@ -155,16 +155,7 @@ public class ProductTest {
         // Invoke the PurchaseBags method
         testProducts.PurchaseBags(bags);  
         
-        // Assertions
-        // Verify total order weight is updated correctly
-        //assertEquals(/* Expected total order weight */, testProducts.station.getTotalOrderWeightInGrams(), 0.01);
-        
-        // Verify total order price is updated correctly
-        //assertEquals(/* Expected total order price */, testProducts.station.getTotalOrderPrice());
-        
-        // Verify dispenser quantity remaining is updated correctly
-        //assertEquals(/* Expected remaining quantity in dispenser */, dispenser.getQuantityRemaining());
-  
+       
 	}
 	
 }
