@@ -250,12 +250,15 @@ public class ProductTest {
 		@Test 
 		public void testPurchaseBags_JustEnoughBags() throws OverloadedDevice, EmptyDevice{
 			MockReusableBagDispenser dispenser = new MockReusableBagDispenser(3, 100); 
-			ReusableBag bag1 = new ReusableBag(); 
-	        ReusableBag bag2 = new ReusableBag();
-	        ReusableBag bag3 = new ReusableBag();
-	        ReusableBag[] bags = {bag1, bag2, bag3}; 
-	        dispenser.load(bags);
-	        testProducts.PurchaseBags(bags);
+			ReusableBag[] bags = new ReusableBag[3];
+		    for (int i = 0; i < 3; i++) {
+		        bags[i] = new ReusableBag();
+		    }
+		    dispenser.load(bags);
+		    
+		    // Ensure dispenser notifies that bags are empty after being dispensed
+		    testProducts.PurchaseBags(bags);
+		    assertTrue(dispenser.getQuantityRemaining() == 0);
 		}
 		
 	
