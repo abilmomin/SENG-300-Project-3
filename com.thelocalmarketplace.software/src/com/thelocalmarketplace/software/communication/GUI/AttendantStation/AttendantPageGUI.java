@@ -108,7 +108,8 @@ public class AttendantPageGUI extends JFrame {
     private void setupStationStartPanel() {
         // Create station buttons
         for (int i = 0; i < NUM_STATIONS; i++) {
-            JButton checkoutButton = getjButton(i);
+            String buttonText = getjButtonText(i);
+            JButton checkoutButton = new JButton(buttonText);
             checkoutButton.addActionListener(attendantListeners.getStationButtonListener(i));
             stationStartPanel.add(checkoutButton);
             stationStartButtons[i] = checkoutButton; // Add button to the array
@@ -157,23 +158,15 @@ public class AttendantPageGUI extends JFrame {
 
 
     // Method to get the station button with the station number
-    private static JButton getjButton(int i) {
-        JButton checkoutButton = new JButton("Checkout Station " + (i + 1));
-        String stationTypeLabel = "";
-        switch (i) {
-            case 0:
-                stationTypeLabel = " (Gold)";
-                break;
-            case 1:
-                stationTypeLabel = " (Silver)";
-                break;
-            case 2:
-            case 3:
-                stationTypeLabel = " (Bronze)";
-                break;
-        }
-        checkoutButton.setText(checkoutButton.getText() + stationTypeLabel);
-        return checkoutButton;
+    private static String getjButtonText(int i) {
+        String checkoutButtonText = "Checkout Station " + (i + 1);
+        String stationTypeLabel = switch (i) {
+            case 0 -> " (Gold)";
+            case 1 -> " (Silver)";
+            case 2, 3 -> " (Bronze)";
+            default -> "";
+        };
+        return checkoutButtonText + stationTypeLabel;
     }
 
     public void updateCustomerStation(int stationNumber, CustomerStation customerStation) {
@@ -225,30 +218,33 @@ public class AttendantPageGUI extends JFrame {
     	instance.setStationUnblock();
     }
 
-    
+
     // Method to highlight the selected station button
     void highlightSelectedStation(int selectedStation) {
         this.selectedStation = selectedStation;
         for (int i = 0; i < stationStartButtons.length; i++) {
-            if (i == selectedStation && !stationAssistanceRequested[i]) {
-                stationStartButtons[i].setBackground(Color.YELLOW); // Highlight selected station
-                stationStartButtons[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
-            } else if (!stationAssistanceRequested[i]) { // Check if the station has not requested assistance
-                stationStartButtons[i].setBackground(null); // Reset background color only if no assistance is requested
+            String buttonText = getjButtonText(i);
+
+            if (i == selectedStation) {
+                stationStartButtons[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 4));
+            } else {
                 stationStartButtons[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
             }
-            // If stationAssistanceRequested[i] is true, do nothing to preserve the red color
+
+            // If stationAssistanceRequested[i] is true, additional handling may be needed to reflect assistance requested state
+            if (stationAssistanceRequested[i]) {
+                stationStartButtons[i].setText("(Assistance Requested) " + buttonText);
+                stationStartButtons[i].setBackground(Color.ORANGE); // Mark as needing assistance
+            } else {
+                stationStartButtons[i].setBackground(null); // Reset background color if no assistance is requested
+            }
         }
     }
 
     public void setStationAssistanceRequested(int stationNumber, boolean requested) {
         if (stationNumber >= 0 && stationNumber < stationStartButtons.length) {
             stationAssistanceRequested[stationNumber] = requested;
-            if (requested) {
-                stationStartButtons[stationNumber].setBackground(Color.RED); // Mark as needing assistance
-            } else { // Reset color if not selected
-                stationStartButtons[stationNumber].setBackground(null);
-            } // If it is the selected station, it should remain yellow, handled by highlightSelectedStation
+            highlightSelectedStation(stationNumber);
         }
     } 
 

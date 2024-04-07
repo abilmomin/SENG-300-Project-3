@@ -85,7 +85,7 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 		this.fundController.notifyFundsAdded(denomination);
 		this.fundController.addToTotalPaid(denomination);
 //		this.fundController.totalPaid = this.fundController.totalPaid.add(denomination);
-		BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(this.fundController.totalPaid);
+		BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(denomination);
         amountDue = amountDue.setScale(1, RoundingMode.CEILING);
 
 		if (amountDue.compareTo(BigDecimal.ZERO) <= 0) {

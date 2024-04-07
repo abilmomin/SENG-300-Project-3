@@ -10,12 +10,15 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class StartSession extends JFrame {
+    private final int SCREEN_WIDTH = 900; // Width of the window
+    private final int SCREEN_HEIGHT = 700; // Height of the window
     private int selectedStation; // Variable to hold the selected station number
     private CustomerStation customerStation; // Reference to the CustomerStation GUI
     private AttendantPageGUI attendantPageGUI;
     private SelfCheckoutStationSoftware stationSoftwareInstance;
     private AbstractElectronicScale scale;
     private boolean mouseListenerEnabled = true;
+
 
     // Method to start a customer session (this might be called based on some user interaction within StartSession)
     public void startCustomerSession(int stationNumber, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale) {
@@ -40,19 +43,19 @@ public class StartSession extends JFrame {
         this.selectedStation = stationNumber; // Set the selected station number
         // Frame initialization
         setTitle("Welcome to the Market - Station " + selectedStation);
-        setSize(900, 700); // Set the size of the window
+        setSize(SCREEN_WIDTH, SCREEN_HEIGHT); // Set the size of the window
         setLocationRelativeTo(null); // Center the window
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Main panel with GridBagLayout
-        JPanel panel = new JPanel(new GridBagLayout());
+        // Content panel for the main content
+        JPanel contentPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER; // End row after this component
         gbc.fill = GridBagConstraints.HORIZONTAL; // Stretch component horizontally
         gbc.anchor = GridBagConstraints.CENTER; // Center component
 
         // Make the panel clickable
-        panel.addMouseListener(new MouseAdapter() {
+        contentPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (mouseListenerEnabled) {
@@ -66,27 +69,28 @@ public class StartSession extends JFrame {
         });
 
         // Welcome label
-        JLabel welcomeLabel = new JLabel("Welcome!");
+        JLabel welcomeLabel = new JLabel("Welcome to the Self-Checkout Station!");
         welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Set the font size of the welcome label
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 24));
 
         // Start session label
-        JLabel startSessionLabel = new JLabel("Click anywhere to start a session");
+        JLabel startSessionLabel = new JLabel("Touch Anywhere to Start");
         startSessionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // set the font size of the start session label
         startSessionLabel.setFont(new Font("Arial", Font.PLAIN, 18));
 
         // Add components to the panel with constraints
-        panel.add(Box.createVerticalStrut(50)); // Vertical spacer
-        panel.add(welcomeLabel, gbc);
-        panel.add(Box.createVerticalStrut(50)); // Vertical spacer
-        panel.add(startSessionLabel, gbc);
+        contentPanel.add(Box.createVerticalStrut(50)); // Vertical spacer
+        contentPanel.add(welcomeLabel, gbc);
+        contentPanel.add(Box.createVerticalStrut(50)); // Vertical spacer
+        contentPanel.add(startSessionLabel, gbc);
 
-        // Adding the panel to the frame
-        add(panel);
+        add(contentPanel, BorderLayout.CENTER);
+        SettingsPanel settingsPanel = new SettingsPanel();
+        add(settingsPanel, BorderLayout.NORTH);
 
         // Make the GUI visible
         setVisible(true);

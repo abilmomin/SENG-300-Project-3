@@ -124,11 +124,15 @@ public class PayWithBanknotes extends JFrame {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                totalCount = totalCount.add(denomination);
-                updateTotalLabel();
-                Banknote banknote = new Banknote(Currency.getInstance("CAD"), denomination);
                 try {
+                	if(software.station.getBanknoteInput().hasDanglingBanknotes())
+                		software.station.getBanknoteInput().removeDanglingBanknote();
+                	
+	                Banknote banknote = new Banknote(Currency.getInstance("CAD"), denomination);
 					software.station.getBanknoteInput().receive(banknote);
+					
+					totalCount = totalCount.add(denomination);
+	                updateTotalLabel();
 				} catch (DisabledException | CashOverloadException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
