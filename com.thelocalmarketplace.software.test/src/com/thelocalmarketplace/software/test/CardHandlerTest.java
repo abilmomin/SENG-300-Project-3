@@ -31,6 +31,7 @@
 
 package com.thelocalmarketplace.software.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -48,6 +49,7 @@ import org.junit.Test.None;
 
 import com.jjjwelectronics.card.Card;
 import com.jjjwelectronics.card.Card.CardData;
+import com.jjjwelectronics.card.CardReaderGold;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
@@ -76,6 +78,7 @@ public class CardHandlerTest {
 	private CardHandler cardHandlerG;
 	private CardIssuer cardIssuer;
 	private Card creditCard;
+	private CardReaderGold cardReader;
 	private Calendar expiry;
 	
 	@Before
@@ -90,35 +93,38 @@ public class CardHandlerTest {
 		expiry = Calendar.getInstance();
 		expiry.add(Calendar.YEAR, 5);
 		cardIssuer.addCardData(creditCard.number, creditCard.cardholder, expiry, creditCard.cvv, 2000);
+		cardReader = new CardReaderGold();
+		cardReader.plugIn(PowerGrid.instance());
+		cardReader.turnOn();
 		
 		// Set up Bronze selfCheckoutStation
 		SelfCheckoutStationBronze.resetConfigurationToDefaults();
 		SelfCheckoutStationBronze.configureCoinDenominations(coinDenominations);
 		SelfCheckoutStationBronze.configureCurrency(Currency.getInstance("CAD"));
-		this.checkoutStationB = new SelfCheckoutStationBronze();
-		this.checkoutStationB.plugIn(PowerGrid.instance());
-		this.checkoutStationB.turnOn();
-		this.stationB = new SelfCheckoutStationSoftware(checkoutStationB);
+		checkoutStationB = new SelfCheckoutStationBronze();
+		checkoutStationB.plugIn(PowerGrid.instance());
+		checkoutStationB.turnOn();
+		stationB = new SelfCheckoutStationSoftware(checkoutStationB);
 		fundsB = new Funds(stationB);
 		
 		// Set up Silver selfCheckoutStation
 		SelfCheckoutStationSilver.resetConfigurationToDefaults();
 		SelfCheckoutStationSilver.configureCoinDenominations(coinDenominations);
 		SelfCheckoutStationSilver.configureCurrency(Currency.getInstance("CAD"));
-		this.checkoutStationS = new SelfCheckoutStationSilver();
-		this.checkoutStationS.plugIn(PowerGrid.instance());
-		this.checkoutStationS.turnOn();
-		this.stationS = new SelfCheckoutStationSoftware(checkoutStationB);
+		checkoutStationS = new SelfCheckoutStationSilver();
+		checkoutStationS.plugIn(PowerGrid.instance());
+		checkoutStationS.turnOn();
+		stationS = new SelfCheckoutStationSoftware(checkoutStationB);
 		fundsS = new Funds(stationS);
 		
 		// Set up Gold selfCheckoutStation
 		SelfCheckoutStationGold.resetConfigurationToDefaults();
 		SelfCheckoutStationGold.configureCoinDenominations(coinDenominations);
 		SelfCheckoutStationGold.configureCurrency(Currency.getInstance("CAD"));
-		this.checkoutStationG = new SelfCheckoutStationGold();
-		this.checkoutStationG.plugIn(PowerGrid.instance());
-		this.checkoutStationG.turnOn();
-		this.stationG = new SelfCheckoutStationSoftware(checkoutStationB);
+		checkoutStationG = new SelfCheckoutStationGold();
+		checkoutStationG.plugIn(PowerGrid.instance());
+		checkoutStationG.turnOn();
+		stationG = new SelfCheckoutStationSoftware(checkoutStationB);
         fundsG = new Funds(stationG);
 	}
 	
@@ -231,7 +237,7 @@ public class CardHandlerTest {
 	@Test(expected = None.class)
 	public void theDataFromACardHasBeenReadWhileBlockedB() throws IOException {
 		cardHandlerB = new CardHandler(fundsB);
-		CardData data = creditCard.swipe();
+		CardData data = cardReader.swipe(creditCard);
 		stationB.setStationBlock();
 		cardHandlerB.theDataFromACardHasBeenRead(data);
 	}
@@ -239,7 +245,7 @@ public class CardHandlerTest {
 	@Test(expected = None.class)
 	public void theDataFromACardHasBeenReadWhileBlockedS() throws IOException {
 		cardHandlerS = new CardHandler(fundsS);
-		CardData data = creditCard.swipe();
+		CardData data = cardReader.swipe(creditCard);
 		stationS.setStationBlock();
 		cardHandlerS.theDataFromACardHasBeenRead(data);
 	}
@@ -247,7 +253,7 @@ public class CardHandlerTest {
 	@Test(expected = None.class)
 	public void theDataFromACardHasBeenReadWhileBlockedG() throws IOException {
 		cardHandlerG = new CardHandler(fundsG);
-		CardData data = creditCard.swipe();
+		CardData data = cardReader.swipe(creditCard);
 		stationG.setStationBlock();
 		cardHandlerG.theDataFromACardHasBeenRead(data);
 	}
@@ -256,7 +262,50 @@ public class CardHandlerTest {
 	public void theDataFromACardHasBeenReadInvalidB() throws IOException {
 		stationB.addBank(cardIssuer);
 		cardHandlerB = new CardHandler(fundsB);
-		CardData data = creditCard.swipe();
+		CardData data = cardReader.swipe(creditCard);
 		cardHandlerB.theDataFromACardHasBeenRead(data);
+	}
+	
+	@Test(expected = None.class)
+	public void theDataFromACardHasBeenReadInvalidS() throws IOException {
+		stationS.addBank(cardIssuer);
+		cardHandlerS = new CardHandler(fundsS);
+		CardData data = cardReader.swipe(creditCard);
+		cardHandlerS.theDataFromACardHasBeenRead(data);
+	}
+	
+	@Test(expected = None.class)
+	public void theDataFromACardHasBeenReadInvalidG() throws IOException {
+		stationG.addBank(cardIssuer);
+		cardHandlerG = new CardHandler(fundsG);
+		CardData data = cardReader.swipe(creditCard);
+		cardHandlerG.theDataFromACardHasBeenRead(data);
+	}
+	
+	@Test(expected = None.class)
+	public void theDataFromACardHasBeenReadValidB() throws IOException {
+		stationB.addBank(cardIssuer);
+		stationB.setOrderTotalPrice(1);
+		cardHandlerB = new CardHandler(fundsB);
+		CardData data = cardReader.swipe(creditCard);
+		cardHandlerB.theDataFromACardHasBeenRead(data);
+	}
+	
+	@Test(expected = None.class)
+	public void theDataFromACardHasBeenReadValidS() throws IOException {
+		stationS.addBank(cardIssuer);
+		stationS.setOrderTotalPrice(1);
+		cardHandlerS = new CardHandler(fundsS);
+		CardData data = cardReader.swipe(creditCard);
+		cardHandlerS.theDataFromACardHasBeenRead(data);
+	}
+	
+	@Test(expected = None.class)
+	public void theDataFromACardHasBeenReadValidG() throws IOException {
+		stationG.addBank(cardIssuer);
+		stationG.setOrderTotalPrice(1);
+		cardHandlerG = new CardHandler(fundsG);
+		CardData data = cardReader.swipe(creditCard);
+		cardHandlerG.theDataFromACardHasBeenRead(data);
 	}
 }
