@@ -23,7 +23,7 @@ public class SelectPayment extends JFrame {
     public SelectPayment(SelfCheckoutStationSoftware software) {
     	this.software = software;
     	this.debitWindow = new CardPayment(software, "debit");
-    	this.creditWindow = new CardPayment(software, "crebit");
+    	this.creditWindow = new CardPayment(software, "credit");
     	this.banknoteWindow = new PayWithBanknotes(software);
     	this.coinWindow = new PayWithCoins(software);
     	
