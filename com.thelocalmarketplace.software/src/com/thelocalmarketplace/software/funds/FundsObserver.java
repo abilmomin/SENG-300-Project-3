@@ -92,9 +92,8 @@ public interface FundsObserver {
 	 * Signals an event in which the station is blocked at payment state.
 	 *
 	 * @param fundsFacade The facade in which the event occurred.
-	 * @param blockedStatus Whether the station is blocked.
 	 */
-	public void fundsStationBlocked(Funds fundsFacade, boolean blockedStatus);
+	public void fundsStationBlocked(Funds fundsFacade);
 	
 	default public void lowCoinsError(ICoinDispenser dispenser) {}
 	

@@ -183,7 +183,7 @@ public class Funds {
 	 */
 	protected void notifyFundsStationBlocked() {
 		for (FundsObserver observer : observers)
-			observer.fundsStationBlocked(this, true);
+			observer.fundsStationBlocked(this);
 	}
 	
 	protected void notifyCoinsHigh(CoinStorageUnit storage) {

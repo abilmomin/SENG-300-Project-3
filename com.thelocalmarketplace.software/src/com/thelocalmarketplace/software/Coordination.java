@@ -44,8 +44,7 @@ public class Coordination implements FundsObserver, ProductsListener {
 
     @Override
     public void fundsInvalid(Funds fundsFacade, Kind kind) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'fundsInvalid'");
+        gui.customerPopUp("The payment method was invalid.");
     }
 
     @Override
@@ -54,9 +53,8 @@ public class Coordination implements FundsObserver, ProductsListener {
     }
 
     @Override
-    public void fundsStationBlocked(Funds fundsFacade, boolean blockedStatus) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'fundsStationBlocked'");
+    public void fundsStationBlocked(Funds fundsFacade) {
+        gui.customerPopUp("Payment failed due to the station being blocked.");
     }
     
     @Override
