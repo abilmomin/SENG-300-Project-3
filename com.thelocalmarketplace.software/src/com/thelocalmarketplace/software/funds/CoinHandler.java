@@ -78,7 +78,6 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
     @Override
     public void validCoinDetected(CoinValidator validator, BigDecimal value)  {
         this.fundController.addToTotalPaid(value);
-        this.fundController.notifyFundsAdded(value);
         BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(value);
         amountDue = amountDue.setScale(2, RoundingMode.CEILING);
         
@@ -126,7 +125,7 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
     @Override
 	public void coinAdded(ICoinDispenser dispenser, Coin coin) {
         this.fundController.coinsAvailable.put(coin.getValue(), (int)this.fundController.coinsAvailable.get(coin.getValue()) + 1);
-        
+        this.fundController.notifyFundsAdded(coin.getValue());
     }
 
     /**
@@ -140,6 +139,7 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
     public void coinRemoved(ICoinDispenser dispenser, Coin coin) {
         if((int)this.fundController.coinsAvailable.get(coin.getValue()) > 0) {
             this.fundController.coinsAvailable.put(coin.getValue(), (int)this.fundController.coinsAvailable.get(coin.getValue()) - 1);
+            this.fundController.notifyFundsRemoved(coin.getValue());
         }
         else {
             throw new NullPointerException();
@@ -158,6 +158,7 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
     public void coinsLoaded(ICoinDispenser dispenser, Coin... coins) {
         for (Coin c : coins) {
             this.fundController.coinsAvailable.put(c.getValue(), (int)this.fundController.coinsAvailable.get(c.getValue()) + 1);
+            this.fundController.notifyFundsStored(c.getValue());
         }
     }
 
@@ -173,6 +174,8 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
         for (Coin c : coins) {
             if((int)this.fundController.coinsAvailable.get(c.getValue()) > 0) {
                 this.fundController.coinsAvailable.put(c.getValue(), (int)this.fundController.coinsAvailable.get(c.getValue()) - 1);
+                this.fundController.notifyFundsRemoved(c.getValue());
+
             }
             else {
                 throw new NullPointerException();
@@ -242,7 +245,6 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
 	@Override
 	public void coinsUnloaded(CoinStorageUnit unit) {
 		// TODO Auto-generated method stub
-		
 	}
 
 

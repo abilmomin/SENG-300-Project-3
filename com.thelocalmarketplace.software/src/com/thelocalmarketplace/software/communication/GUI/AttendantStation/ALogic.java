@@ -35,12 +35,24 @@ public class ALogic {
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
 		CoinStorageUnit storage = cS.getCoinStorage();
 		storage.unload();
+		
+		Map<BigDecimal, ICoinDispenser> coinDispensersMap = cS.getCoinDispensers();
+		for( BigDecimal coin: coinDispensersMap.keySet()) {
+			ICoinDispenser dispenser = coinDispensersMap.get(coin);
+			dispenser.unload();
+		}
 	}
 	
 	public void emptyBanknoteStorage(SelfCheckoutStationSoftware cSoftware) {
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
 		BanknoteStorageUnit storage = cS.getBanknoteStorage();
 		storage.unload();
+		
+		Map<BigDecimal, IBanknoteDispenser> banknoteDispensersMap = cS.getBanknoteDispensers();
+		for( BigDecimal banknote: banknoteDispensersMap.keySet()) {
+			IBanknoteDispenser dispenser = banknoteDispensersMap.get(banknote);
+			dispenser.unload();
+		}
 	}
 	
 	public void refillCoinDispensers(SelfCheckoutStationSoftware cSoftware) throws SimulationException, CashOverloadException {

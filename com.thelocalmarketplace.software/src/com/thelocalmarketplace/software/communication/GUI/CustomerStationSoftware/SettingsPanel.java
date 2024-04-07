@@ -1,7 +1,11 @@
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
-
 import javax.swing.*;
+
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class SettingsPanel extends JPanel {
     private JComboBox<String> languageDropdown;
@@ -9,8 +13,12 @@ public class SettingsPanel extends JPanel {
 
     private String[] languages = {"English"};
     private String[] accessibilitySettings = {"Default"};
+    
+    private StatusOfStation status;
 
-    public SettingsPanel() {
+    public SettingsPanel(SelfCheckoutStationSoftware software) {
+    	if(software != null) 
+    		this.status = new StatusOfStation(software);
         setLayout(new FlowLayout(FlowLayout.LEFT));
 
         // Language settings
@@ -27,5 +35,23 @@ public class SettingsPanel extends JPanel {
 
         add(languagePanel);
         add(accessibilityPanel);
+
+        if(software != null) {
+	        // Button to open StatusOfStation pop-up
+	        JButton statusButton = new JButton("Status of Station");
+	        statusButton.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	            	status.setVisible(true);
+	            }
+	        });
+	        add(statusButton);
+        }
+        
+        setVisible(true);
+    }
+
+    public void updateStatus() {
+    	status.updateLabels();
     }
 }

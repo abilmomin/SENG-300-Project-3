@@ -95,6 +95,7 @@ public class Funds {
 		// register the coin payment handler to track coin available and that were entered into the checkout station
 		CoinHandler coinHandler = new CoinHandler(this);
 		checkoutStation.station.getCoinValidator().attach(coinHandler);
+		
 		Map<BigDecimal, ICoinDispenser> coinDispensersMap = this.checkoutStationSoftware.getStationHardware().getCoinDispensers();
 		for( BigDecimal coin: coinDispensersMap.keySet()) {
 			ICoinDispenser dispenser = coinDispensersMap.get(coin);
@@ -104,8 +105,8 @@ public class Funds {
 		// register the banknote payment handler to track banknotes available and that were entered into the checkout station
 		BanknoteHandler banknoteHandler = new BanknoteHandler(this);
 		checkoutStation.station.getBanknoteValidator().attach(banknoteHandler);
+		
 		Map<BigDecimal, IBanknoteDispenser> banknoteDispensersMap = this.checkoutStationSoftware.getStationHardware().getBanknoteDispensers();
-
 		for( BigDecimal banknote: banknoteDispensersMap.keySet()) {
 			IBanknoteDispenser dispenser = banknoteDispensersMap.get(banknote);
 			dispenser.attach(banknoteHandler);
@@ -178,6 +179,11 @@ public class Funds {
 	protected void notifyFundsRemoved(BigDecimal amount) {
 		for(FundsObserver observer : observers)
 			observer.fundsRemoved(this, amount);
+	}
+	
+	protected void notifyFundsStored(BigDecimal amount) {
+		for(FundsObserver observer : observers)
+			observer.fundsStored(this, amount);
 	}
 
 	/**

@@ -32,7 +32,8 @@ import java.util.Random;
 
 public class CustomerStation extends JFrame {
 
-    private JTextArea cartTextArea;
+    //private JTextArea cartTextArea;
+    private JPanel cartItemsPanel;
     private JLabel totalPriceLabel;
     private JPanel menuPanel;
     private JPanel mainPanel;
@@ -50,7 +51,10 @@ public class CustomerStation extends JFrame {
     private int selectedStation;
     private SelectPayment paymentWindow;
     private SearchProductByText visualAddPanel;
-    
+    private SettingsPanel settingsPanel;
+
+    private JButton selectedCartItemButton = null; // Variable to track the selected cart item button
+
     public CustomerStation(int selectedStation, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale, AttendantPageGUI attendantGUI) {
     	this.scale = scale;
     	this.stationSoftwareInstance = stationSoftwareInstance;
@@ -61,11 +65,17 @@ public class CustomerStation extends JFrame {
     	paymentWindow = new SelectPayment(stationSoftwareInstance);
     	visualAddPanel = new SearchProductByText();
     	
-    	
         setTitle("Self-Checkout Station " + selectedStation);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 700);
         setLocationRelativeTo(null);
+
+        cartPanel = new JPanel(new BorderLayout());
+        cartPanel.setBorder(BorderFactory.createTitledBorder("Cart"));
+
+        cartItemsPanel = new JPanel();
+        cartItemsPanel.setLayout(new BoxLayout(cartItemsPanel, BoxLayout.Y_AXIS));
+        JScrollPane cartScrollPane = new JScrollPane(cartItemsPanel);
         
         // Main panel
         mainPanel = new JPanel(new BorderLayout());
@@ -73,7 +83,7 @@ public class CustomerStation extends JFrame {
         // Menu panel
         menuPanel = new JPanel(new GridLayout(3, 3, 10, 10));
         menuPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        SettingsPanel settingsPanel = new SettingsPanel();
+        settingsPanel = new SettingsPanel(stationSoftwareInstance);
         add(settingsPanel, BorderLayout.NORTH);
         // Buttons
         // the following nulls inside the buttons should be replaced by the corresponding callback functions 
@@ -96,6 +106,7 @@ public class CustomerStation extends JFrame {
         
 
         JButton removeItemBtn = createButton("Remove Item", e -> {
+            handleRemoveItem();
         	
         });
         
@@ -144,9 +155,9 @@ public class CustomerStation extends JFrame {
         cartPanel.setBorder(BorderFactory.createTitledBorder("Cart"));
 
         // Cart contents
-        cartTextArea = new JTextArea(20, 30);
-        cartTextArea.setEditable(false);
-        JScrollPane cartScrollPane = new JScrollPane(cartTextArea);
+//        cartTextArea = new JTextArea(20, 30);
+//        cartTextArea.setEditable(false);
+//        JScrollPane cartScrollPane = new JScrollPane(cartTextArea);
 
         // Total price label
         totalPriceLabel = new JLabel("Total Price: $0.00");
@@ -224,6 +235,10 @@ public class CustomerStation extends JFrame {
     
     public void updatePaidDisplay(double addedFunds) {
     	paymentWindow.updateTotalPaidValueLabel(addedFunds);
+    }
+    
+    public void updateStatusDisplay() {
+    	settingsPanel.updateStatus();
     }
     
     public void updateTotalOwedDisplay() {
@@ -309,11 +324,36 @@ public class CustomerStation extends JFrame {
     // I MADE THIS PUBLIC IDK IF IM RIGHT BUT IM USING THIS IN COORDINATION!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // Currently PLU prices are in cents, 
     public void addProductToCart(String productName, double price) {
-    	double priceInDollars = price;
-        cartTextArea.append(productName + " - $" + priceInDollars + "\n");
-        double currentTotal = Double.parseDouble(totalPriceLabel.getText().replace("Total Price: $", ""));
-        currentTotal += priceInDollars;
-        totalPriceLabel.setText("Total Price: $" + String.format("%.2f", currentTotal));
+        JButton itemButton = new JButton(productName + " - $" + String.format("%.2f", price));
+        itemButton.addActionListener(e -> {
+            if (selectedCartItemButton != null) {
+                // Optionally reset the visual state of the previously selected button
+                selectedCartItemButton.setBackground(null);
+            }
+            selectedCartItemButton = itemButton; // Update the selected item button
+            // Optionally update the visual state of the selected button
+            itemButton.setBackground(Color.LIGHT_GRAY);
+        });
+        cartItemsPanel.add(itemButton);
+        refreshCartPanel();
+
+    }
+
+    public void handleRemoveItem() {
+        if (selectedCartItemButton != null) {
+            cartItemsPanel.remove(selectedCartItemButton); // Remove the selected item button from the panel
+            selectedCartItemButton = null; // Clear the selected item
+            refreshCartPanel(); // Refresh the UI to reflect the removal
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select an item to remove."); // Prompt if no item is selected
+        }
+    }
+
+    // Method to refresh the cart panel UI
+    private void refreshCartPanel() {
+        cartItemsPanel.revalidate();
+        cartItemsPanel.repaint();
+        // Update the total price display...
     }
 
     private JButton createButton(String text, ActionListener actionListener) {
