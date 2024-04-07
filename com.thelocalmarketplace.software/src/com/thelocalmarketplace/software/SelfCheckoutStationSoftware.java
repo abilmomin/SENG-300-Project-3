@@ -229,6 +229,7 @@ public class SelfCheckoutStationSoftware {
 	 * @return true if the item was successfully removed, false otherwise.
 	 */
 	public boolean removeItemFromOrder(Item item) {
+		System.out.println("Removing item from order");
 		if (this.order.contains(item)) {
 			this.order.remove(item);
 			
