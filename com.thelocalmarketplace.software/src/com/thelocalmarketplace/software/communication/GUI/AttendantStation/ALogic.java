@@ -61,8 +61,7 @@ public class ALogic {
 		Currency currency = Currency.getInstance("CAD");
 		BigDecimal[] denominations = cS.getBanknoteDenominations();
 		Map<BigDecimal, IBanknoteDispenser> dispensers = aCS.getBanknoteDispensers();
-		aCS.plugIn(PowerGrid.instance());
-		aCS.turnOn();
+
 		for (BigDecimal denomination : denominations) {
 			IBanknoteDispenser dispenser = dispensers.get(denomination);
 			while (dispenser.size() < dispenser.getCapacity())
@@ -71,59 +70,61 @@ public class ALogic {
 	}
 
 	// ONLY USE ONCE INK IS EMPTY
-	public void refillPrinterInk(SelfCheckoutStationSoftware cSoftware, Receipt receipt) throws OverloadedDevice {
+	public void refillPrinterInk(SelfCheckoutStationSoftware cSoftware) throws OverloadedDevice {
+		Receipt receipt = cSoftware.getReceipt();
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
 		IReceiptPrinter printer = cS.getPrinter();
 		printer.addInk(ReceiptPrinterBronze.MAXIMUM_INK);
 		receipt.notifyInkAdded(printer);
-
 	}
 
 	// ONLY USE ONCE PAPER IS EMPTY
-	public void refillPrinterPaper(SelfCheckoutStationSoftware cSoftware, Receipt receipt) throws OverloadedDevice {
+	public void refillPrinterPaper(SelfCheckoutStationSoftware cSoftware) throws OverloadedDevice {
+		Receipt receipt = cSoftware.getReceipt();
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
 		IReceiptPrinter printer = cS.getPrinter();
 		printer.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
 		receipt.notifyPaperAdded(printer);
-
 	}
 
-	public void refillPrinterPaperWhenLow(SelfCheckoutStationSoftware cSoftware, Receipt receipt) throws OverloadedDevice {
+	public void refillPrinterPaperWhenLow(SelfCheckoutStationSoftware cSoftware) throws OverloadedDevice {
+		Receipt receipt = cSoftware.getReceipt();
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
 		IReceiptPrinter printer = cS.getPrinter();
 
-
-		for (int i = 0; i < ReceiptPrinterBronze.MAXIMUM_PAPER; i++) {
-			try {
-				printer.print('c');
-			} catch (EmptyDevice e) {
-				// TODO Auto-generated catch block
-
+		try {
+			printer.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER - printer.paperRemaining());
+		} catch (UnsupportedOperationException e) {
+			for (int i = 0; i < ReceiptPrinterBronze.MAXIMUM_PAPER; i++) {
+				try {
+					printer.print('c');
+				} catch (EmptyDevice x) {
+					// TODO Auto-generated catch block
+				}
 			}
+			printer.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
 		}
-
-
-		printer.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
+		
 		receipt.notifyPaperAdded(printer);
-
 	}
 
-	public void refillPrinterInkWhenLow(SelfCheckoutStationSoftware cSoftware, Receipt receipt) throws OverloadedDevice {
+	public void refillPrinterInkWhenLow(SelfCheckoutStationSoftware cSoftware) throws OverloadedDevice {
+		Receipt receipt = cSoftware.getReceipt();
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
 		IReceiptPrinter printer = cS.getPrinter();
 
-
-		for (int i = 0; i < ReceiptPrinterBronze.MAXIMUM_INK; i++) {
-			try {
-				printer.print('c');
-			} catch (EmptyDevice e) {
-				// TODO Auto-generated catch block
-
+		try {
+			printer.addInk(ReceiptPrinterBronze.MAXIMUM_INK - printer.inkRemaining());
+		} catch (UnsupportedOperationException e) {
+			for (int i = 0; i < ReceiptPrinterBronze.MAXIMUM_INK; i++) {
+				try {
+					printer.print('c');
+				} catch (EmptyDevice x) {
+					// TODO Auto-generated catch block
+				}
 			}
+			printer.addInk(ReceiptPrinterBronze.MAXIMUM_INK);
 		}
-
-
-		printer.addInk(ReceiptPrinterBronze.MAXIMUM_INK);
 		receipt.notifyInkAdded(printer);
 
 	}
@@ -132,7 +133,8 @@ public class ALogic {
 	     
 		if (stationSoftwareInstances[selectedStation].getStationBlock()== true) {
 			stationSoftwareInstances[selectedStation].setStationUnblock();	
-	}		startSessions[selectedStation].enableMouseListener();
+		}		
+		startSessions[selectedStation].enableMouseListener();
 	}
 	
 	public boolean DisableStation(int selectedStation,CustomerStation[] customerStation, SelfCheckoutStationSoftware[] stationSoftwareInstances,AbstractSelfCheckoutStation checkoutStation, StartSession[] startSessions) {
@@ -142,21 +144,13 @@ public class ALogic {
         		stationSoftwareInstances[selectedStation].setStationBlock();
         		startSessions[selectedStation].disableMouseListener();
         		startSessions[selectedStation].sessionPopUp("Out of order");
-        		
- 	
         	}
-       
-        		return true;
+        	return true;
         }
-        	
         else {
         	return false;		
         }
         
 	}
-		
-
-		
-
 
 }

@@ -83,7 +83,6 @@ public class Receipt {
     private Funds funds;
     protected Set<ReceiptObserver> observers = new HashSet<>();
     private ArrayList<Item> order;
-    private AbstractSelfCheckoutStation station;
 
     /**
      * Constructor for the receipt class.
@@ -94,29 +93,13 @@ public class Receipt {
      */
     public Receipt (IReceiptPrinter printer, Funds funds) {
         this.funds = funds;
-        this.receiptPrinter = funds.checkoutStationSoftware.getStationHardware().getPrinter();
+        this.receiptPrinter = printer;
         this.checkoutStationSoftware = funds.checkoutStationSoftware;
-//        if  (printer == null)
-//            throw new NullPointerException("No argument may be null.");
-//        if (printer instanceof ReceiptPrinterBronze)
-//            this.receiptPrinter = (ReceiptPrinterBronze) printer;
-//        else if (printer instanceof ReceiptPrinterSilver)
-//            this.receiptPrinter = (ReceiptPrinterSilver) printer;
-//        else if (printer instanceof ReceiptPrinterGold)
-//            this.receiptPrinter = (ReceiptPrinterGold) printer;
-//
-//        receiptPrinter.plugIn(PowerGrid.instance());
-//        receiptPrinter.turnOn();
 
         ReceiptHandler rh = new ReceiptHandler(this);
-        checkoutStationSoftware.station.getPrinter().register(rh);
-
-
+        receiptPrinter.register(rh);
 
         this.order = checkoutStationSoftware.getOrder();
-
-        this.checkoutStationSoftware.getStationHardware().plugIn(PowerGrid.instance());
-        this.checkoutStationSoftware.getStationHardware().turnOn();
     }
 
     public String printReceipt() throws EmptyDevice, OverloadedDevice {

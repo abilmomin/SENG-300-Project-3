@@ -51,7 +51,7 @@ public class ReceiptHandler implements ReceiptPrinterListener{
 
 
 	public ReceiptHandler(Receipt receipt) {
-		receiptPrinter = receipt.checkoutStationSoftware.getStationHardware().getPrinter();
+		receiptPrinter = receipt.receiptPrinter;
 		this.receipt = receipt;
 	}
 

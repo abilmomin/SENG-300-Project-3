@@ -71,9 +71,9 @@ public class Funds {
 	protected BigDecimal totalPaid = BigDecimal.ZERO;
 	protected Map<BigDecimal, Number> coinsAvailable;
 	protected Map<BigDecimal, Number> banknotesAvailable;
-	protected final SelfCheckoutStationSoftware checkoutStationSoftware;
+	protected SelfCheckoutStationSoftware checkoutStationSoftware;
 	protected Set<FundsObserver> observers = new HashSet<>();
-	
+	public Receipt receipt;
 
 	/**
 	 * Funds constructor which initializes all individual fund facades.
@@ -82,6 +82,8 @@ public class Funds {
 	 */
 	public Funds(SelfCheckoutStationSoftware checkoutStation) {
 		
+		this.checkoutStationSoftware = checkoutStation;
+		receipt = new Receipt(checkoutStation.station.getPrinter(), this);
 		coinsAvailable = new HashMap<BigDecimal, Number>();
 		banknotesAvailable = new HashMap<BigDecimal, Number>();
 		
