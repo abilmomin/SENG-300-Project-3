@@ -218,11 +218,18 @@ public class CustomerStation extends JFrame {
     }
     
     private void handleUseOwnBags() {
-    	
-        // Call the method in the AddownBag instance to handle bagging
-    	   // Initialize the AddownBag instance
-         addOwnBag = new AddownBag(stationSoftwareInstance, scale);
+        // Display a message dialog to prompt the user
+        int option = JOptionPane.showConfirmDialog(this, "Please add your bags now, click OK when complete.", "Add Bags", JOptionPane.OK_CANCEL_OPTION);
+        
+        // Check if the user clicked OK
+        if (option == JOptionPane.OK_OPTION) {
+            // User clicked OK, proceed with bagging
+            
+            // Initialize the AddownBag instance
+            addOwnBag = new AddownBag(stationSoftwareInstance, scale, this, this.attendantGUI);
+        } 
     }
+
 
     public void setPaymentSuccesful(double change) {
         this.dispose();

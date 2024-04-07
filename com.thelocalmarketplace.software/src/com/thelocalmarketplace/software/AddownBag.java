@@ -11,23 +11,25 @@ import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.jjjwelectronics.scale.ElectronicScaleListener;
 import com.jjjwelectronics.scale.IElectronicScale;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 
 
 public class AddownBag implements ElectronicScaleListener {
 	
 	private SelfCheckoutStationSoftware weightOrder;
-	private SelfCheckoutStationSoftware instance;
     private AbstractElectronicScale scale1;
     private Mass massTest;
     private int stationNumber;
+    private CustomerStation customerStation;
+    private AttendantPageGUI attendantGUI;
     
 	
 	//constructor
-	public AddownBag(SelfCheckoutStationSoftware weightOrder, AbstractElectronicScale scale1) {
+	public AddownBag(SelfCheckoutStationSoftware weightOrder, AbstractElectronicScale scale1, CustomerStation customerStation, AttendantPageGUI attendantGUI) {
 		this.weightOrder = weightOrder;
 		this.scale1 = scale1;
-		instance = weightOrder;
-
+		this.customerStation = customerStation;
+		this.attendantGUI = attendantGUI;
         theMassOnTheScaleHasChanged(scale1, massTest);
 	}
 			
@@ -86,15 +88,15 @@ public class AddownBag implements ElectronicScaleListener {
 			
 			if (compareToThreshold>=0) {
 				System.out.println("Bags too heavy, not allowed");
-				instance.setStationBlock(); // block station
+				weightOrder.setStationBlock(); // block station
 				double order = weightOrder.getTotalOrderWeightInGrams();
 				AttendantPageGUI attendantTest = new AttendantPageGUI();
-				attendantTest.bagdiscpreancydectected(instance);
+				attendantTest.bagdiscpreancydectected(weightOrder);
 				
 			}
 			else {
 				//bag weight is fine, add weight of bag to order, system unblocks
-				instance.setStationUnblock();  // change to unblock and continue
+				weightOrder.setStationUnblock();  // change to unblock and continue
 				weightOrder.addTotalOrderWeightInGrams(weightOfBag);
 				System.out.println("You may now continue");
 			}
