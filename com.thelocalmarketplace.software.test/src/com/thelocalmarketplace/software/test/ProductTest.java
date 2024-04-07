@@ -9,17 +9,21 @@ import org.junit.Test;
 
 import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.Mass;
+import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.bag.AbstractReusableBagDispenser;
 import com.jjjwelectronics.bag.IReusableBagDispenser;
 import com.jjjwelectronics.bag.ReusableBag;
 import com.jjjwelectronics.bag.ReusableBagDispenserBronze;
+import com.jjjwelectronics.scanner.Barcode;
+import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.product.Products;
 import powerutility.PowerGrid;
 
@@ -33,9 +37,9 @@ public class ProductTest {
 	private PriceLookUpCode pluCode;
 	private Products testProducts;
 	private ReusableBag bags; 
+	private AttendantPageGUI attendantGUI;
 	//private ReusableBagDispenserBronze reusableBagDispenserBronze;
 	private mockReusableBagDispenser dispenser; 
-	private AbstractReusableBagDispenser abstractDispenser; 
 	
 	
 	@Before
@@ -46,17 +50,17 @@ public class ProductTest {
 		PowerGrid.engageUninterruptiblePowerSource();
 		grid.forcePowerRestore();
 		
+		attendantGUI = new AttendantPageGUI();
+		
 		checkoutStationBronze = new SelfCheckoutStationBronze();
 		checkoutStationBronze.plugIn(grid);
 		checkoutStationBronze.turnOn();
 		
-		//reusableBagDispenserBronze = new ReusableBagDispenserBronze(10);
-		//reusableBagDispenserBronze.plugIn(grid);
-		//reusableBagDispenserBronze.turnOn(); 
 		
 		dispenser = new mockReusableBagDispenser(3, 100); 
 		dispenser.plugIn(grid);
-		dispenser.turnOn(); 
+		dispenser.turnOn();
+		
 		
 		station = new SelfCheckoutStationSoftware(checkoutStationBronze);
 		station.setStationActive(true);
@@ -72,13 +76,12 @@ public class ProductTest {
 		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCode, pluCodedProduct);
 		
 		testProducts = new Products(station);
-		testProducts.reusableBagDispenser = checkoutStationBronze.getReusableBagDispenser(); 
+		testProducts.reusableBagDispenser = dispenser; 
 		
 	}
 	@Test
-	public void testHandleBulkyItemReducesTotalOrderWeight() {
-	    
-	    double initialItemWeightInGrams = 2000.0; 
+	public void testHandleBulkyItemReducesTotalOrderWeightWithAttendantApproval() {
+	    double initialItemWeightInGrams = 2000.0;
 	    Numeral[] barcodeDigits = {Numeral.zero, Numeral.one, Numeral.two, Numeral.three, Numeral.four};
 	    Barcode barcode = new Barcode(barcodeDigits);
 	    BarcodedProduct initialProduct = new BarcodedProduct(barcode, "Initial Product", 20, initialItemWeightInGrams);
@@ -86,21 +89,30 @@ public class ProductTest {
 	    testProducts.addItemViaBarcodeScan(barcode); // Adds the initial item to the order
 
 	    // The weight of the bulky item to handle
-	    double bulkyItemWeightInGrams = 1000.0; 
+	    double bulkyItemWeightInGrams = 1000.0;
 
-	    // total order weight 
+	    // total order weight before handling the bulky item
 	    double initialTotalWeight = station.getTotalOrderWeightInGrams();
 
-	    // Handle the bulky item
-	    testProducts.handleBulkyItem(bulkyItemWeightInGrams);
+	    // Create a stub for AttendantPageGUI that simulates attendant approval
+	    AttendantPageGUI attendantGUIStub = new AttendantPageGUI() {
+	        @Override
+	        public boolean bulkItemRequest(String message) {
+	            return true; // Simulate attendant approval
+	        }
+	    };
 
-	    // total order weight is reduced by the weight of the bulky item
+	    // Handle the bulky item with simulated attendant approval
+	    testProducts.handleBulkyItem(bulkyItemWeightInGrams, attendantGUIStub);
+
+	    // total order weight is expected to be reduced by the weight of the bulky item after approval
 	    double expectedTotalWeightAfterHandling = initialTotalWeight - bulkyItemWeightInGrams;
 	    double actualTotalWeightAfterHandling = station.getTotalOrderWeightInGrams();
 
-	    assertTrue("The total order weight should be reduced by the weight of the bulky item",
-	               actualTotalWeightAfterHandling == expectedTotalWeightAfterHandling);
+	    assertEquals("The total order weight should be reduced by the weight of the bulky item upon attendant's approval",
+	                 expectedTotalWeightAfterHandling, actualTotalWeightAfterHandling, 0.001);
 	}
+	
 	
 	@Test
 	public void testPriceChangeAfterAddItemByVisualCatalogue() {
@@ -143,45 +155,64 @@ public class ProductTest {
 	    assertTrue("The total order weight should be updated to include the product weight.",
 	               station.getTotalOrderWeightInGrams() == expectedProduct.getExpectedWeight());
 	}
+	@Test
+	public void testAddBarcodedProductByTextSearch() {
+	    
+	    station.setStationActive(true);
+	    
+
+	    // Create and add a barcoded product to the database for the test
+	    Numeral[] barcodeDigits = {Numeral.one, Numeral.two, Numeral.three};
+	    Barcode barcode = new Barcode(barcodeDigits);
+	    BarcodedProduct testProduct = new BarcodedProduct(barcode, "Test", 100, 500.0);
+	    ProductDatabases.BARCODED_PRODUCT_DATABASE.put(barcode, testProduct);
+
+	    // Perform the action to add an item by text search
+	    testProducts.addItemByTextSearch("Test");
+
+	    // Assertions to verify the product was added successfully
+	    assertTrue("The total order weight should include the weight of the added product",
+	               station.getTotalOrderWeightInGrams() == 500.0);
+	    assertEquals("The total order weight should include the weight of the added product", 500.0, station.getTotalOrderWeightInGrams(), 0.001);
+	    assertEquals("The total order price should include the price of the added product", 100, station.getTotalOrderPrice(), 0.001);
+
+	}
+	@Test
+	public void testProductNotFoundByTextSearch() {
+	    
+	    station.setStationActive(true);
+	    
+
+	    // Record the initial total order weight and price
+	    double initialWeight = station.getTotalOrderWeightInGrams();
+	    double initialPrice = station.getTotalOrderPrice();
+
+	   
+	    testProducts.addItemByTextSearch("Non-existent Product");
+
+	    // Assertions to verify that nothing was added since the product was not found
+	    assertTrue("The total order weight should not change when the product is not found",
+	               station.getTotalOrderWeightInGrams() == initialWeight);
+	    assertTrue("The total order price should not change when the product is not found",
+	               station.getTotalOrderPrice() == initialPrice);
+	}
+	
 	
 	
 	//testing when not enough bags are in the dispenser 
-	@Test 
+	@Test (expected = OverloadedDevice.class)
 	public void testPurchaseBags_notEnoughBags() throws OverloadedDevice, EmptyDevice {
-		mockReusableBagDispenser dispenser = new mockReusableBagDispenser(1, 1);
-		
-		
-		Products testProducts = new Products(station);
-        testProducts.reusableBagDispenser = dispenser;
-
-        // Test the PurchaseBags method with the stub dispenser
-        try {
-            ReusableBag bag1 = new ReusableBag(); 
-            ReusableBag bag2 = new ReusableBag(); 
-            testProducts.PurchaseBags(bag1, bag2);
-
-            // If the dispenser is unable to provide enough bags, it should throw an EmptyDevice exception
-            fail("Expected EmptyDevice exception, but it was not thrown");
-        } catch (EmptyDevice e) {
-            // Verify that the exception message is as expected
-            assertEquals("Dispenser does not have enough bags", e.getMessage());
-        }
-		
-		
-		
-		
-		
-	//	int quantityRemaining = reusableBagDispenserBronze.getQuantityRemaining(); 
-		//int capacity = reusableBagDispenserBronze.getCapacity(); 
-		//ReusableBag bag1 = new ReusableBag(); 
-	//	ReusableBag[] bags = {bag1}; 
-		//testProducts.PurchaseBags(bags);
-	//	int newQuantityRemaining = reusableBagDispenserBronze.getQuantityRemaining(); ;
-	//	assertEquals("Quantity remaining should be decreased by 1", quantityRemaining - 1, checkoutStationBronze.getReusableBagDispenser().getQuantityRemaining());
-		
-		
-     
-  
+		//initializing a new dispenser that has 2 bags loaded and a capacity of 100 reusable bags 
+		mockReusableBagDispenser dispenser = new mockReusableBagDispenser(2, 100); 
+		ReusableBag bag1 = new ReusableBag(); 
+        ReusableBag bag2 = new ReusableBag();
+        ReusableBag bag3 = new ReusableBag();
+        ReusableBag[] bags = {bag1, bag2, bag3}; 
+        
+        // Invoke the PurchaseBags method
+        testProducts.PurchaseBags(bags);  
+        
+       
 	}
 	
 }

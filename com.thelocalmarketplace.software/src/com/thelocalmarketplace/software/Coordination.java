@@ -2,6 +2,7 @@ package com.thelocalmarketplace.software;
 
 import java.math.BigDecimal;
 
+import com.jjjwelectronics.OverloadedDevice;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.Product;

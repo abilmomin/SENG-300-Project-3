@@ -46,7 +46,8 @@ import org.junit.Test;
 import com.tdc.CashOverloadException;
 import com.tdc.DisabledException;
 import com.tdc.NoCashAvailableException;
-
+import com.tdc.banknote.Banknote;
+import com.tdc.banknote.BanknoteInsertionSlot;
 import com.tdc.coin.Coin;
 import com.tdc.coin.CoinSlot;
 import com.tdc.coin.CoinStorageUnit;
@@ -62,8 +63,9 @@ import com.thelocalmarketplace.software.funds.*;
 
 import ca.ucalgary.seng300.simulation.NullPointerSimulationException;
 import ca.ucalgary.seng300.simulation.SimulationException;
-
+import powerutility.NoPowerException;
 import powerutility.PowerGrid;
+import powerutility.PowerSurge;
 
 public class CoinHandlerTest {
 	private SelfCheckoutStationSoftware stationG;
@@ -126,7 +128,10 @@ public class CoinHandlerTest {
 		coin1 = new Coin(currency, new BigDecimal("0.10"));
 
 		CoinSlot cs = this.checkoutStationG.getCoinSlot();
+		stationG.setOrderTotalPrice(0.25);
 		cs.receive(coin1);
+		assertTrue(stationG.getTotalOrderPrice() == 0.15);
+		
 	}
 
 	@Test
@@ -136,7 +141,9 @@ public class CoinHandlerTest {
 		coin1 = new Coin(currency, new BigDecimal("0.10"));
 
 		CoinSlot cs = this.checkoutStationS.getCoinSlot();
+		stationS.setOrderTotalPrice(0.25);
 		cs.receive(coin1);
+		assertTrue(stationS.getTotalOrderPrice() == 0.15);
 	}
 
 	@Test
@@ -146,7 +153,9 @@ public class CoinHandlerTest {
 		coin1 = new Coin(currency, new BigDecimal("0.10"));
 
 		CoinSlot cs = this.checkoutStationB.getCoinSlot();
+		stationB.setOrderTotalPrice(0.25);
 		cs.receive(coin1);
+		assertTrue(stationB.getTotalOrderPrice() == 0.15);
 	}
 	
 	@Test

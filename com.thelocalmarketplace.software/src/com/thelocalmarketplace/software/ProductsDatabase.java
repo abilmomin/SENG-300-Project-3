@@ -54,9 +54,9 @@ public class ProductsDatabase {
 
 			// BarcodedProduct(Barcode barcode, String description, long price, double expectedWeightInGrams)
 				// I assumed price is in cents since longs can't have decimals
-		BarcodedProduct milk = new BarcodedProduct(barcode1, "Milk", 350, 3894);
-		BarcodedProduct chocolate = new BarcodedProduct(barcode1, "Chocolate bar", 300, 49);
-		BarcodedProduct sushi = new BarcodedProduct(barcode1, "20pc Sushi", 1000, 600);
+		BarcodedProduct milk = new BarcodedProduct(barcode1, "Milk", 3, 3894);
+		BarcodedProduct chocolate = new BarcodedProduct(barcode1, "Chocolate bar", 2, 49);
+		BarcodedProduct sushi = new BarcodedProduct(barcode1, "20pc Sushi", 10, 600);
 		 
 		productDatabase.put(barcode1, milk); // Adding milk to the product database with its barcode as the key
 		productDatabase.put(barcode2, chocolate);
@@ -70,9 +70,9 @@ public class ProductsDatabase {
 		
 			//PLUCodedProduct(PriceLookUpCode pluCode, String description, long price)
 				// Assuming price in cents
-		PLUCodedProduct apple = new PLUCodedProduct(plu1, "Apple", 150);
-		PLUCodedProduct banana = new PLUCodedProduct(plu1, "Banana", 125);
-		PLUCodedProduct kiwi = new PLUCodedProduct(plu1, "Kiwi", 175);
+		PLUCodedProduct apple = new PLUCodedProduct(plu1, "Apple", 1);
+		PLUCodedProduct banana = new PLUCodedProduct(plu1, "Banana", 1);
+		PLUCodedProduct kiwi = new PLUCodedProduct(plu1, "Kiwi", 2);
 		PLUDatabase.put(plu1, apple);
 		PLUDatabase.put(plu2, banana);
 		PLUDatabase.put(plu3, kiwi);
