@@ -3,6 +3,8 @@ package com.thelocalmarketplace.software.communication.GUI.AttendantStation;
 import ca.ucalgary.seng300.simulation.SimulationException;
 
 import com.jjjwelectronics.OverloadedDevice;
+import com.jjjwelectronics.card.Card;
+import com.jjjwelectronics.printer.ReceiptPrinterBronze;
 import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.jjjwelectronics.scale.ElectronicScaleBronze;
 import com.jjjwelectronics.scale.ElectronicScaleGold;
@@ -12,6 +14,7 @@ import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
+import com.thelocalmarketplace.hardware.external.CardIssuer;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
@@ -22,6 +25,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Currency;
 
 public class AttendantListeners {
@@ -188,9 +192,30 @@ public class AttendantListeners {
                        
                         scale.turnOn();
 
+                        Card creditCard = new Card("credit", "99988877", "User", "111", "1234", true, true);
+                        Card debitCard = new Card("debit", "11122233", "User", "222", "1234", true, true);
+
+                        CardIssuer cardIssuer = new CardIssuer("TD", 100);
+
+                        Calendar expiryDate = Calendar.getInstance();
+                        expiryDate.set(2027, Calendar.DECEMBER, 1);
+
+                        cardIssuer.addCardData("99988877", "User", expiryDate, "111", 1000000);
+                        cardIssuer.addCardData("11122233", "User", expiryDate, "222", 1000000);
+
                         SwingUtilities.invokeLater(() -> {
                             stationSoftwareInstances[selectedStation] = new SelfCheckoutStationSoftware(checkoutStation);
                             stationSoftwareInstances[selectedStation].setStationUnblock();
+                            stationSoftwareInstances[selectedStation].addPaymentCard(creditCard, "credit");
+                            stationSoftwareInstances[selectedStation].addPaymentCard(debitCard, "debit");
+                            stationSoftwareInstances[selectedStation].addBank(cardIssuer);
+
+                            try {
+                                stationSoftwareInstances[selectedStation].getStationHardware().getPrinter().addInk(ReceiptPrinterBronze.MAXIMUM_INK);
+                                stationSoftwareInstances[selectedStation].getStationHardware().getPrinter().addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
+                            } catch (OverloadedDevice ex) {
+                                throw new RuntimeException(ex);
+                            }
 
                             if (stationEnabled[selectedStation]) {
                                 if (startSessions[selectedStation] == null) {
