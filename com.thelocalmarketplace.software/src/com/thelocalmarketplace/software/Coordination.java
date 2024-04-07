@@ -29,17 +29,20 @@ public class Coordination implements FundsObserver, ProductsListener {
     }
     
     public void noValidChange() {
-        gui.handleRequestAssistance();
+    	if(gui != null)
+    		gui.handleRequestAssistance();
     }
 
     @Override
     public void fundsAdded(Funds fundsFacade, BigDecimal funds) {
-        gui.updatePayDisplay(funds.doubleValue());
+    	if(gui != null)
+    		gui.updatePayDisplay(funds.doubleValue());
     }
 
     @Override
     public void fundsRemoved(Funds fundsFacade, BigDecimal funds) {
-    	gui.updatePayDisplay(-1*funds.doubleValue());
+    	if(gui != null)
+    		gui.updatePayDisplay(-1*funds.doubleValue());
     }
 
     @Override
@@ -50,46 +53,55 @@ public class Coordination implements FundsObserver, ProductsListener {
 
     @Override
     public void fundsInvalid(Funds fundsFacade, Kind kind) {
-        gui.customerPopUp("The payment method was invalid.");
+    	if(gui != null)
+    		gui.customerPopUp("The payment method was invalid.");
     }
 
     @Override
     public void fundsPaidInFull(Funds fundsFacade, BigDecimal changeReturned) {
-        gui.setPaymentSuccesful(changeReturned.doubleValue());
+    	if(gui != null)
+    		gui.setPaymentSuccesful(changeReturned.doubleValue());
     }
 
     @Override
     public void fundsStationBlocked(Funds fundsFacade) {
-        gui.customerPopUp("Payment failed due to the station being blocked.");
+    	if(gui != null)
+    		gui.customerPopUp("Payment failed due to the station being blocked.");
     }
     
     @Override
     public void productAdded(Products productFacade, Product product) {
-    	gui.updatePayDisplay(0);
-    	String name = "";
+    	if(gui != null) {
+    		gui.updatePayDisplay(0);
     	
-    	if (product instanceof BarcodedProduct) {
-    		BarcodedProduct barcodedProduct = (BarcodedProduct) product;
-    		name = barcodedProduct.getDescription();
-    	} else if (product instanceof PLUCodedProduct) {
-    		PLUCodedProduct pluCodedProduct = (PLUCodedProduct) product;
-    		name = pluCodedProduct.getDescription();
+	    	String name = "";
+	    	
+	    	if (product instanceof BarcodedProduct) {
+	    		BarcodedProduct barcodedProduct = (BarcodedProduct) product;
+	    		name = barcodedProduct.getDescription();
+	    	} else if (product instanceof PLUCodedProduct) {
+	    		PLUCodedProduct pluCodedProduct = (PLUCodedProduct) product;
+	    		name = pluCodedProduct.getDescription();
+	    	}
+	    	gui.addProductToCart(name, product.getPrice());
     	}
-    	gui.addProductToCart(name, product.getPrice());
     }
     
     @Override
     public void productRemoved(Products productFacade, Product product) {
-    	gui.updatePayDisplay(0);
+    	if(gui != null)
+    		gui.updatePayDisplay(0);
     }
     
     @Override
     public void productToBaggingArea(Products productFacade, Product product) {
-    	gui.customerBaggingAreaPopUp(product);
+    	if(gui != null)
+    		gui.customerBaggingAreaPopUp(product);
     }
 
     @Override
     public void bagsPurchased(Products productFacade, long totalCost) {
-    	gui.addProductToCart("Reusable Bag", totalCost);
+    	if(gui != null)
+    		gui.addProductToCart("Reusable Bag", totalCost);
     }
 }

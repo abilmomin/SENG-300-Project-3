@@ -48,12 +48,12 @@ public class StartSessionGUITest {
 
     @Before
     public void setUp() {
-        StartSession session = new StartSession(1);
+        StartSession session = new StartSession(1, null, null);
     }
 
     @Test
     public void testConstructor() {
-    	StartSession session = new StartSession(1);
+    	StartSession session = new StartSession(1, null, null);
         assertNotNull(session.getContentPane());
         assertEquals("Welcome to the Market", session.getTitle());
         assertEquals(900, session.getWidth());
@@ -72,7 +72,7 @@ public class StartSessionGUITest {
     
     // Utility method for testing the button
     private JButton findButtonByText(String text) {
-    	StartSession session = new StartSession(1);
+    	StartSession session = new StartSession(1, null, null);
         for (int i = 0; i < session.getContentPane().getComponentCount(); i++) {
             if (session.getContentPane().getComponent(i) instanceof JButton) {
                 JButton button = (JButton) session.getContentPane().getComponent(i);

@@ -259,9 +259,9 @@ public class SelfCheckoutStationSoftwareTest {
     
     @Test
     public void testAddTotalOrderPrice() {
-    	long oldTotalOrderPrice = software.getTotalOrderPrice();
+    	double oldTotalOrderPrice = software.getTotalOrderPrice();
     	software.addTotalOrderPrice(10);
-    	long newTotalOrderPrice = software.getTotalOrderPrice() + oldTotalOrderPrice ;
+    	double newTotalOrderPrice = software.getTotalOrderPrice() + oldTotalOrderPrice ;
     	assertEquals(newTotalOrderPrice,software.getTotalOrderPrice(),0.0001);
     	
     
