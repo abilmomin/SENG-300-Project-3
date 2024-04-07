@@ -1,5 +1,5 @@
 package com.thelocalmarketplace.software.test;
-
+import com.thelocalmarketplace.software.product.AddownBag;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
