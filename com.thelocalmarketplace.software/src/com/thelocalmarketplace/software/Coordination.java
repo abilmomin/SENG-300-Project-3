@@ -59,8 +59,13 @@ public class Coordination implements FundsObserver, ProductsListener {
 
     @Override
     public void fundsPaidInFull(Funds fundsFacade, BigDecimal changeReturned) {
-    	if(gui != null)
-    		gui.setPaymentSuccesful(changeReturned.doubleValue());
+        if(gui != null)
+            try {
+                gui.setPaymentSuccesful(changeReturned.doubleValue());
+            } catch (OverloadedDevice e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
     }
 
     @Override
