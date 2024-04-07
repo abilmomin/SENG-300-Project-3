@@ -88,6 +88,10 @@ public class StartSession extends JFrame {
         // Make the GUI visible
         setVisible(true);
     }
+    
+    public void sessionPopUp(String message) {
+        JOptionPane.showMessageDialog(this, message);
+    }
 
 }
 
