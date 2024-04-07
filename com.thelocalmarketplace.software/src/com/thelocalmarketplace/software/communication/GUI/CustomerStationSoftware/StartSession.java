@@ -89,7 +89,8 @@ public class StartSession extends JFrame {
         contentPanel.add(startSessionLabel, gbc);
 
         add(contentPanel, BorderLayout.CENTER);
-        SettingsPanel settingsPanel = new SettingsPanel();
+        SettingsPanel settingsPanel = new SettingsPanel(null);
+        settingsPanel.setVisible(true);
         add(settingsPanel, BorderLayout.NORTH);
 
         // Make the GUI visible

@@ -35,20 +35,24 @@ public class Coordination implements FundsObserver, ProductsListener {
 
     @Override
     public void fundsAdded(Funds fundsFacade, BigDecimal funds) {
-    	if(gui != null)
+    	if(gui != null) {
     		gui.updatePaidDisplay(funds.doubleValue());
+    		gui.updateStatusDisplay();
+    	}
     }
 
     @Override
     public void fundsRemoved(Funds fundsFacade, BigDecimal funds) {
-    	if(gui != null)
+    	if(gui != null) {
     		gui.updatePaidDisplay(-1*funds.doubleValue());
+			gui.updateStatusDisplay();
+    	}
     }
 
     @Override
     public void fundsStored(Funds fundsFacade, BigDecimal funds) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'fundsStored'");
+    	if(gui != null)
+    		gui.updateStatusDisplay();
     }
 
     @Override
@@ -60,12 +64,7 @@ public class Coordination implements FundsObserver, ProductsListener {
     @Override
     public void fundsPaidInFull(Funds fundsFacade, BigDecimal changeReturned) {
         if(gui != null)
-            try {
-                gui.setPaymentSuccesful(changeReturned.doubleValue());
-            } catch (OverloadedDevice e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+			gui.setPaymentSuccesful(changeReturned.doubleValue());
     }
 
     @Override

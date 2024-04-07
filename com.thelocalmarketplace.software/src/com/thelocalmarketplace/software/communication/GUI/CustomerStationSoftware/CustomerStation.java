@@ -50,6 +50,7 @@ public class CustomerStation extends JFrame {
     private int selectedStation;
     private SelectPayment paymentWindow;
     private SearchProductByText visualAddPanel;
+    private SettingsPanel settingsPanel;
     
     public CustomerStation(int selectedStation, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale, AttendantPageGUI attendantGUI) {
     	this.scale = scale;
@@ -73,7 +74,7 @@ public class CustomerStation extends JFrame {
         // Menu panel
         menuPanel = new JPanel(new GridLayout(3, 3, 10, 10));
         menuPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        SettingsPanel settingsPanel = new SettingsPanel();
+        settingsPanel = new SettingsPanel(stationSoftwareInstance);
         add(settingsPanel, BorderLayout.NORTH);
         // Buttons
         // the following nulls inside the buttons should be replaced by the corresponding callback functions 
@@ -224,6 +225,10 @@ public class CustomerStation extends JFrame {
     
     public void updatePaidDisplay(double addedFunds) {
     	paymentWindow.updateTotalPaidValueLabel(addedFunds);
+    }
+    
+    public void updateStatusDisplay() {
+    	settingsPanel.updateStatus();
     }
     
     public void updateTotalOwedDisplay() {
