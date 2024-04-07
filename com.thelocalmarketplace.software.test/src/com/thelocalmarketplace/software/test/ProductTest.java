@@ -2,6 +2,7 @@ package com.thelocalmarketplace.software.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +33,9 @@ public class ProductTest {
 	private PriceLookUpCode pluCode;
 	private Products testProducts;
 	private ReusableBag bags; 
-	private ReusableBagDispenserBronze reusableBagDispenserBronze;
+	//private ReusableBagDispenserBronze reusableBagDispenserBronze;
+	private mockReusableBagDispenser dispenser; 
+	private AbstractReusableBagDispenser abstractDispenser; 
 	
 	
 	@Before
@@ -47,9 +50,13 @@ public class ProductTest {
 		checkoutStationBronze.plugIn(grid);
 		checkoutStationBronze.turnOn();
 		
-		reusableBagDispenserBronze = new ReusableBagDispenserBronze(10);
-		reusableBagDispenserBronze.plugIn(grid);
-		reusableBagDispenserBronze.turnOn(); 
+		//reusableBagDispenserBronze = new ReusableBagDispenserBronze(10);
+		//reusableBagDispenserBronze.plugIn(grid);
+		//reusableBagDispenserBronze.turnOn(); 
+		
+		dispenser = new mockReusableBagDispenser(3, 100); 
+		dispenser.plugIn(grid);
+		dispenser.turnOn(); 
 		
 		station = new SelfCheckoutStationSoftware(checkoutStationBronze);
 		station.setStationActive(true);
@@ -133,13 +140,36 @@ public class ProductTest {
 	//testing when not enough bags are in the dispenser 
 	@Test 
 	public void testPurchaseBags_notEnoughBags() throws OverloadedDevice, EmptyDevice {
-		int quantityRemaining = reusableBagDispenserBronze.getQuantityRemaining(); 
-		int capacity = reusableBagDispenserBronze.getCapacity(); 
-		ReusableBag bag1 = new ReusableBag(); 
-		ReusableBag[] bags = {bag1}; 
-		testProducts.PurchaseBags(bags);
-		int newQuantityRemaining = reusableBagDispenserBronze.getQuantityRemaining(); ;
-		assertEquals("Quantity remaining should be decreased by 1", quantityRemaining - 1, checkoutStationBronze.getReusableBagDispenser().getQuantityRemaining());
+		mockReusableBagDispenser dispenser = new mockReusableBagDispenser(1, 1);
+		
+		
+		Products testProducts = new Products(station);
+        testProducts.reusableBagDispenser = dispenser;
+
+        // Test the PurchaseBags method with the stub dispenser
+        try {
+            ReusableBag bag1 = new ReusableBag(); 
+            ReusableBag bag2 = new ReusableBag(); 
+            testProducts.PurchaseBags(bag1, bag2);
+
+            // If the dispenser is unable to provide enough bags, it should throw an EmptyDevice exception
+            fail("Expected EmptyDevice exception, but it was not thrown");
+        } catch (EmptyDevice e) {
+            // Verify that the exception message is as expected
+            assertEquals("Dispenser does not have enough bags", e.getMessage());
+        }
+		
+		
+		
+		
+		
+	//	int quantityRemaining = reusableBagDispenserBronze.getQuantityRemaining(); 
+		//int capacity = reusableBagDispenserBronze.getCapacity(); 
+		//ReusableBag bag1 = new ReusableBag(); 
+	//	ReusableBag[] bags = {bag1}; 
+		//testProducts.PurchaseBags(bags);
+	//	int newQuantityRemaining = reusableBagDispenserBronze.getQuantityRemaining(); ;
+	//	assertEquals("Quantity remaining should be decreased by 1", quantityRemaining - 1, checkoutStationBronze.getReusableBagDispenser().getQuantityRemaining());
 		
 		
      

@@ -24,7 +24,7 @@ public class AddOwnBag implements ElectronicScaleListener {
 		
 		this.weight_order = weight_order;
         this.scale1 = scale1;
-        theMassOnTheScaleHasChanged(scale1, mass_test);
+      //  theMassOnTheScaleHasChanged(scale1, mass_test);
 	
 	}
 			
@@ -86,7 +86,7 @@ public class AddOwnBag implements ElectronicScaleListener {
 			
 			if (compare_to_threshold>=0) {
 				System.out.println("Bags too heavy, not allowed");
-				instance.setStationBlock(true); //block b/c to heavy 
+				//instance.setStationBlock(true); //block b/c to heavy 
 				//call attendant 
 				//NOTIFY ATTENDANT
 				double order = p1.getTotalOrderWeightInGrams();

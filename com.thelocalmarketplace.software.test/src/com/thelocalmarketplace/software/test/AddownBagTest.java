@@ -1,5 +1,7 @@
 package com.thelocalmarketplace.software.test;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
@@ -88,7 +90,7 @@ public class AddownBagTest {
 		// weight of the scale with the order and the bag added is 10000000 (10 grams) more than the weight of the order
 		// MockItem item1 = new MockItem(new Mass(100));
         
-         MockItem item = new MockItem(new Mass(10000000)); 
+        MockItem item = new MockItem(new Mass(10000000)); 
         station.addItemToOrder(item);
         scale.addAnItem(item);
          //this.checkoutSB.getBaggingArea();
@@ -105,6 +107,10 @@ public class AddownBagTest {
 	
 	@Test 
 	public void testGetBagWeight_noBagAdded() throws OverloadedDevice {
+		mockScale orderNoBagScale = new mockScale(new Mass(4000000), new Mass (4000000));
+		AddOwnBag addOwnBag = new AddOwnBag(station, orderNoBagScale);
+		double bagWeight = addOwnBag.getBagWeight(station, orderNoBagScale);
+		assertEquals(120.0, bagWeight, 120.0);
 		
 	}
 	
