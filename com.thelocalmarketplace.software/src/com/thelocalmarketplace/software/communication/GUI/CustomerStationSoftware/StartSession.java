@@ -15,6 +15,7 @@ public class StartSession extends JFrame {
     private AttendantPageGUI attendantPageGUI;
     private SelfCheckoutStationSoftware stationSoftwareInstance;
     private AbstractElectronicScale scale;
+    private boolean mouseListenerEnabled = true;
 
     // Method to start a customer session (this might be called based on some user interaction within StartSession)
     public void startCustomerSession(int stationNumber, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale) {
@@ -54,11 +55,13 @@ public class StartSession extends JFrame {
         panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Implement session start logic here
-            	stationSoftwareInstance.setStationActive(true);
-                // Once the session is started, dispose the current frame and open the CustomerStation GUI
-                StartSession.this.dispose(); // Close StartSession window
-                startCustomerSession(stationNumber,stationSoftwareInstance,scale); // Create and display a new instance of CustomerStation (using station 1 for this example)
+                if (mouseListenerEnabled) {
+                    // Implement session start logic here
+                    stationSoftwareInstance.setStationActive(true);
+                    // Once the session is started, dispose the current frame and open the CustomerStation GUI
+                    StartSession.this.dispose(); // Close StartSession window
+                    startCustomerSession(stationNumber, stationSoftwareInstance, scale); // Create and display a new instance of CustomerStation (using station 1 for this example)
+                }
             }
         });
 
@@ -93,5 +96,13 @@ public class StartSession extends JFrame {
         JOptionPane.showMessageDialog(this, message);
     }
 
+    public void enableMouseListener() {
+        mouseListenerEnabled = true;
+    }
+
+    // Method to disable the mouse listener
+    public void disableMouseListener() {
+        mouseListenerEnabled = false;
+    }
 }
 
