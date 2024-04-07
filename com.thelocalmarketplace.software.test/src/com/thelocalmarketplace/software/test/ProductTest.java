@@ -50,6 +50,32 @@ public class ProductTest {
 		
 		testProducts = new Products(station);
 	}
+	@Test
+	public void testHandleBulkyItemReducesTotalOrderWeight() {
+	    
+	    double initialItemWeightInGrams = 2000.0; 
+	    Numeral[] barcodeDigits = {Numeral.zero, Numeral.one, Numeral.two, Numeral.three, Numeral.four};
+	    Barcode barcode = new Barcode(barcodeDigits);
+	    BarcodedProduct initialProduct = new BarcodedProduct(barcode, "Initial Product", 20, initialItemWeightInGrams);
+	    ProductDatabases.BARCODED_PRODUCT_DATABASE.put(barcode, initialProduct);
+	    testProducts.addItemViaBarcodeScan(barcode); // Adds the initial item to the order
+
+	    // The weight of the bulky item to handle
+	    double bulkyItemWeightInGrams = 1000.0; 
+
+	    // total order weight 
+	    double initialTotalWeight = station.getTotalOrderWeightInGrams();
+
+	    // Handle the bulky item
+	    testProducts.handleBulkyItem(bulkyItemWeightInGrams);
+
+	    // total order weight is reduced by the weight of the bulky item
+	    double expectedTotalWeightAfterHandling = initialTotalWeight - bulkyItemWeightInGrams;
+	    double actualTotalWeightAfterHandling = station.getTotalOrderWeightInGrams();
+
+	    assertTrue("The total order weight should be reduced by the weight of the bulky item",
+	               actualTotalWeightAfterHandling == expectedTotalWeightAfterHandling);
+	}
 	
 	@Test(expected = NullPointerException.class)
 	public void testAddNullItemByVisualCatalogue() {
@@ -69,7 +95,21 @@ public class ProductTest {
 		double newWeight = station.getTotalOrderWeightInGrams();
 		assertTrue(prevWeight < newWeight);
 	}
-	
+	@Test
+	public void testAddItemViaBarcodeScanWithValidBarcode() {
+	    Numeral[] barcodeDigits = {Numeral.one, Numeral.two, Numeral.three, Numeral.four, Numeral.five};
+	    Barcode validBarcode = new Barcode(barcodeDigits);
+	    BarcodedProduct expectedProduct = new BarcodedProduct(validBarcode, "Test Product", 10, 100.0);
+	    ProductDatabases.BARCODED_PRODUCT_DATABASE.put(validBarcode, expectedProduct);
+
+	    station.setStationActive(true);
+	    testProducts.addItemViaBarcodeScan(validBarcode);
+
+	    assertTrue("The total order price should be updated to match the product price.",
+	               station.getTotalOrderPrice() == expectedProduct.getPrice());
+	    assertTrue("The total order weight should be updated to include the product weight.",
+	               station.getTotalOrderWeightInGrams() == expectedProduct.getExpectedWeight());
+	}
 	
 	
 }
