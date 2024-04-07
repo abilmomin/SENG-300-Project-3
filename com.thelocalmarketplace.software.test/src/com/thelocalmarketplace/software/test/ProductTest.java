@@ -23,6 +23,7 @@ import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.product.Products;
 import powerutility.PowerGrid;
 
@@ -36,6 +37,7 @@ public class ProductTest {
 	private PriceLookUpCode pluCode;
 	private Products testProducts;
 	private ReusableBag bags; 
+	private AttendantPageGUI attendantGUI;
 	//private ReusableBagDispenserBronze reusableBagDispenserBronze;
 	private mockReusableBagDispenser dispenser; 
 	
@@ -47,6 +49,8 @@ public class ProductTest {
 		// to avoid power outages when there is a power surge
 		PowerGrid.engageUninterruptiblePowerSource();
 		grid.forcePowerRestore();
+		
+		attendantGUI = new AttendantPageGUI();
 		
 		checkoutStationBronze = new SelfCheckoutStationBronze();
 		checkoutStationBronze.plugIn(grid);
@@ -92,7 +96,7 @@ public class ProductTest {
 	    double initialTotalWeight = station.getTotalOrderWeightInGrams();
 
 	    // Handle the bulky item
-	    testProducts.handleBulkyItem(bulkyItemWeightInGrams);
+	    testProducts.handleBulkyItem(bulkyItemWeightInGrams, attendantGUI);
 
 	    // total order weight is reduced by the weight of the bulky item
 	    double expectedTotalWeightAfterHandling = initialTotalWeight - bulkyItemWeightInGrams;
