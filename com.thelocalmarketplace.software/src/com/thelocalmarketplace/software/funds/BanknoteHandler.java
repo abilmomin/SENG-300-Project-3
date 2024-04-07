@@ -82,7 +82,6 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	 */
 	@Override
 	public void goodBanknote(BanknoteValidator validator, Currency currency, BigDecimal denomination) {
-		this.fundController.notifyFundsAdded(denomination);
 		this.fundController.addToTotalPaid(denomination);
 //		this.fundController.totalPaid = this.fundController.totalPaid.add(denomination);
 		BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(denomination);
@@ -132,6 +131,8 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	 */
 	@Override
 	public void banknoteAdded(IBanknoteDispenser dispenser, Banknote banknote) {
+        this.fundController.banknotesAvailable.put(banknote.getDenomination(), (int)this.fundController.banknotesAvailable.get(banknote.getDenomination()) + 1);
+		this.fundController.notifyFundsAdded(banknote.getDenomination());
 	}
 
 	/**
@@ -142,7 +143,13 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	 */
 	@Override
 	public void banknoteRemoved(IBanknoteDispenser dispenser, Banknote banknote) {
-		this.fundController.banknotesAvailable.put(banknote.getDenomination(), (int)this.fundController.banknotesAvailable.get(banknote.getDenomination()) - 1);
+        if((int)this.fundController.banknotesAvailable.get(banknote.getDenomination()) > 0) {
+			this.fundController.banknotesAvailable.put(banknote.getDenomination(), (int)this.fundController.banknotesAvailable.get(banknote.getDenomination()) - 1);
+	        this.fundController.notifyFundsRemoved(banknote.getDenomination());
+        }
+        else {
+            throw new NullPointerException();
+        }
 		if (dispenser.size() < 5)
         	this.fundController.notifyBanknotesLow(dispenser);
 	}
@@ -157,6 +164,7 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	public void banknotesLoaded(IBanknoteDispenser dispenser, Banknote... banknotes) {
 		for (Banknote b : banknotes) {
 			this.fundController.banknotesAvailable.put(b.getDenomination(), (int)this.fundController.banknotesAvailable.get(b.getDenomination()) + 1);
+            this.fundController.notifyFundsStored(b.getDenomination());
 		}
 	}
 
@@ -172,6 +180,7 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 		for (Banknote b : banknotes) {
 			if((int)this.fundController.banknotesAvailable.get(b.getDenomination()) > 0) {
 				this.fundController.banknotesAvailable.put(b.getDenomination(), (int)this.fundController.banknotesAvailable.get(b.getDenomination()) - 1);
+		        this.fundController.notifyFundsRemoved(b.getDenomination());
 			}
 			else {
 				throw new NullPointerException();

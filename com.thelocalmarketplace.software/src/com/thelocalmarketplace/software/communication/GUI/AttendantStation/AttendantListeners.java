@@ -55,6 +55,7 @@ public class AttendantListeners {
         public void actionPerformed(ActionEvent e) {
             try {
                 logic.refillCoinDispensers(stationSoftwareInstances[selectedStation]);
+                customerStation[selectedStation].updateStatusDisplay();
             } catch (SimulationException | CashOverloadException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -67,6 +68,7 @@ public class AttendantListeners {
         public void actionPerformed(ActionEvent e) {
             try {
                 logic.refillBanknoteDispensers(stationSoftwareInstances[selectedStation]);
+                customerStation[selectedStation].updateStatusDisplay();
             } catch (SimulationException | CashOverloadException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -80,6 +82,7 @@ public class AttendantListeners {
             try {
 	            System.out.println("Refilling Receipt Paper"); // temporary
 	            logic.refillPrinterPaper(stationSoftwareInstances[selectedStation]);
+	            customerStation[selectedStation].updateStatusDisplay();
             } catch (OverloadedDevice e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -90,6 +93,7 @@ public class AttendantListeners {
         @Override
         public void actionPerformed(ActionEvent e) {
             logic.emptyCoinStorage(stationSoftwareInstances[selectedStation]);
+            customerStation[selectedStation].updateStatusDisplay();
         }
     }
 
@@ -97,6 +101,7 @@ public class AttendantListeners {
         @Override
         public void actionPerformed(ActionEvent e) {
             logic.emptyBanknoteStorage(stationSoftwareInstances[selectedStation]);
+            customerStation[selectedStation].updateStatusDisplay();
         }
     }
 
@@ -104,8 +109,8 @@ public class AttendantListeners {
         @Override
         public void actionPerformed(ActionEvent e) {
                 try {
-                    System.out.println("Refilling Receipt Ink"); // temporary
                     logic.refillPrinterInk(stationSoftwareInstances[selectedStation]);
+                    customerStation[selectedStation].updateStatusDisplay();
                 } catch (OverloadedDevice e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
@@ -313,9 +318,6 @@ public class AttendantListeners {
     }
 
 
-    
-  
-    
     // get action listeners
     public ActionListener getRefillCoinServiceButtonListener() {
         return new refillCoinServiceButtonListener();
@@ -330,7 +332,7 @@ public class AttendantListeners {
         return new emptyCoinServiceButtonListener();
     }
     public ActionListener getEmptyBanknotesServiceButtonListener() {
-        return new refillReceiptInkServiceButtonListener();
+        return new emptyBanknotesServiceButtonListener();
     }
     public ActionListener getCustomerServiceButtonListener() {
         return new customerServiceButtonListener();
