@@ -65,6 +65,7 @@ public class Coordination implements FundsObserver, ProductsListener {
     
     @Override
     public void productAdded(Products productFacade, Product product) {
+    	gui.updatePayDisplay(0);
     	String name = "";
     	
     	if (product instanceof BarcodedProduct) {
@@ -79,7 +80,7 @@ public class Coordination implements FundsObserver, ProductsListener {
     
     @Override
     public void productRemoved(Products productFacade, Product product) {
-    	
+    	gui.updatePayDisplay(0);
     }
     
     @Override

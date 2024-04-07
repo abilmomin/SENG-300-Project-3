@@ -159,7 +159,7 @@ public class CustomerStation extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
             	// Open SelectPayment window after payment
-            	paymentWindow.showPanel();
+            	paymentWindow.setVisible(true);
             }
         });
         
@@ -204,7 +204,9 @@ public class CustomerStation extends JFrame {
     }
     
     public void updatePayDisplay(double addedFunds) {
+    	System.out.println("HELP");
     	paymentWindow.updateTotalPaidValueLabel(addedFunds);
+    	paymentWindow.showPanel();
     }
     
     private void dontBagItem() {
@@ -221,10 +223,6 @@ public class CustomerStation extends JFrame {
     	    // Handle the case when the list is empty
     		JOptionPane.showMessageDialog(this, "Scan Item First");
     	}
-    	
-    	
-    	
-    
 	}
     
     private void handleScanBarcode() {
