@@ -129,7 +129,6 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	 */
 	@Override
 	public void banknoteAdded(IBanknoteDispenser dispenser, Banknote banknote) {
-		this.fundController.banknotesAvailable.put(banknote.getDenomination(), (int)this.fundController.banknotesAvailable.get(banknote.getDenomination()) - 1);
 	}
 
 	/**
