@@ -29,8 +29,11 @@ Nami Marwah              30178528
 package com.thelocalmarketplace.software;
 
 import ca.ucalgary.seng300.simulation.InvalidStateSimulationException;
+import powerutility.PowerGrid;
+
 import static com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation.resetConfigurationToDefaults;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import com.jjjwelectronics.Item;
@@ -119,6 +122,7 @@ public class SelfCheckoutStationSoftware {
 		this.coordination = new Coordination(this, funds, products);
 		
 		products.register(coordination);
+		funds.register(coordination);
 
 		allProducts = new ProductsDatabase();
 		setStationActive(false);

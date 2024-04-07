@@ -19,6 +19,8 @@ import powerutility.PowerGrid;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.util.Currency;
 
 public class AttendantListeners {
     private AttendantPageGUI gui;
@@ -142,6 +144,24 @@ public class AttendantListeners {
                 // Use a separate thread to initialize SelfCheckoutStationBronze
                 new Thread(() -> {
                     try {
+                    	BigDecimal[] coinDenominations = { new BigDecimal("0.25"), new BigDecimal("0.10"), new BigDecimal("0.50"),
+                    			new BigDecimal("1.0") };
+                    	BigDecimal[] banknoteDenominations = { new BigDecimal("5.0"), new BigDecimal("10.0"), new BigDecimal("20.0"),
+                				new BigDecimal("50.0"), new BigDecimal("100.0") };
+                    	PowerGrid.engageUninterruptiblePowerSource();
+                    	
+                		SelfCheckoutStationGold.configureCurrency(Currency.getInstance("CAD"));
+                		SelfCheckoutStationSilver.configureCurrency(Currency.getInstance("CAD"));
+                		SelfCheckoutStationBronze.configureCurrency(Currency.getInstance("CAD"));
+
+                    	SelfCheckoutStationGold.configureCoinDenominations(coinDenominations);
+                    	SelfCheckoutStationSilver.configureCoinDenominations(coinDenominations);
+                    	SelfCheckoutStationBronze.configureCoinDenominations(coinDenominations);
+                    	
+                    	SelfCheckoutStationGold.configureBanknoteDenominations(banknoteDenominations);
+                		SelfCheckoutStationSilver.configureBanknoteDenominations(banknoteDenominations);
+                		SelfCheckoutStationBronze.configureBanknoteDenominations(banknoteDenominations);
+
                         if (selectedStation == 0) {
                             checkoutStation = new SelfCheckoutStationGold();
                             scale = new ElectronicScaleGold();

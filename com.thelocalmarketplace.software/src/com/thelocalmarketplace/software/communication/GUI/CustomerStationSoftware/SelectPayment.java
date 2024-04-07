@@ -8,8 +8,25 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SelectPayment extends JFrame {
+	
+	private SelfCheckoutStationSoftware software;
+	private double totalPaid = 0;
+	private double totalPrice = 0;
+	private JLabel totalPaidValueLabel;
+	private JLabel amountOwingValueLabel;
+	private JLabel billTotalValueLabel;
+	private CardPayment debitWindow;
+	private CardPayment creditWindow;
+	private PayWithBanknotes banknoteWindow;
+	private PayWithCoins coinWindow;
 
     public SelectPayment(SelfCheckoutStationSoftware software) {
+    	this.software = software;
+    	this.debitWindow = new CardPayment(software, "debit");
+    	this.creditWindow = new CardPayment(software, "crebit");
+    	this.banknoteWindow = new PayWithBanknotes(software);
+    	this.coinWindow = new PayWithCoins(software);
+    	
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
@@ -29,9 +46,10 @@ public class SelectPayment extends JFrame {
         labelsPanel.add(amountOwingLabel);
 
         JPanel valuesPanel = new JPanel(new GridLayout(3, 1));
-        JLabel billTotalValueLabel = new JLabel("$56.44");
-        JLabel totalPaidValueLabel = new JLabel("$0.00");
-        JLabel amountOwingValueLabel = new JLabel("$56.44");
+        totalPrice = software.getTotalOrderPrice();
+        billTotalValueLabel = new JLabel("$" + String.format("%.2f", totalPrice));
+        totalPaidValueLabel = new JLabel("$" + String.format("%.2f", totalPaid));
+        amountOwingValueLabel = new JLabel("$" + String.format("%.2f", (totalPrice - totalPaid)));
 
         billTotalValueLabel.setFont(new Font("Arial", Font.BOLD, 18));
         totalPaidValueLabel.setFont(new Font("Arial", Font.BOLD, 18));
@@ -61,13 +79,10 @@ public class SelectPayment extends JFrame {
         JButton addMembershipButton = createColoredButton("Add Membership", new Color(0, 128, 128));
         JButton returnToCheckoutButton = createColoredButton("Return to Checkout", new Color(255, 127, 80));
 
-        debitButton.addActionListener(e -> new CardPayment(software, "debit"));
-        creditButton.addActionListener(e -> new CardPayment(software, "debit"));
-        cashButton.addActionListener(e -> new PayWithBanknotes());
-        coinButton.addActionListener(e -> new PayWithCoins());
-        
-        
-        
+        debitButton.addActionListener(e -> debitWindow.setVisible(true));
+        creditButton.addActionListener(e -> creditWindow.setVisible(true));        
+        cashButton.addActionListener(e -> banknoteWindow.setVisible(true));
+        coinButton.addActionListener(e -> coinWindow.setVisible(true));
         
         bottomPanel.add(addMembershipButton);
         bottomPanel.add(returnToCheckoutButton);
@@ -81,7 +96,31 @@ public class SelectPayment extends JFrame {
         setTitle("Select Payment Method");
         pack();
         setLocationRelativeTo(null);
+        setVisible(false);
+    }
+    
+	// Method to update totalPaidValueLabel
+    public void updateTotalPaidValueLabel(double addedFunds) {
+    	totalPaid += addedFunds;
+    	updatePanelsAndVariables();
+    }
+    
+    // Method to make the panel visible
+    public void showPanel() {
+    	totalPrice = software.getTotalOrderPrice();
+        billTotalValueLabel.setText("$" + String.format("%.2f", totalPrice)); // Update text of existing label
+    	updatePanelsAndVariables();
         setVisible(true);
+    }
+
+    // Method to close the panel
+    public void closePanel() {
+        setVisible(false);
+    }
+    
+    private void updatePanelsAndVariables() {
+        totalPaidValueLabel.setText("$" + String.format("%.2f", totalPaid)); // Update text of existing label
+        amountOwingValueLabel.setText("$" + String.format("%.2f", (totalPrice - totalPaid))); // Update text of existing label
     }
 
     private JButton createColoredButton(String text, Color color) {
@@ -92,7 +131,7 @@ public class SelectPayment extends JFrame {
         button.setFont(new Font("Arial", Font.BOLD, 16));
         return button;
     }
-//
+
 //    public static void main(final String[] args) {
 //        SwingUtilities.invokeLater(SelectPayment::new);
 //    }

@@ -208,7 +208,11 @@ public class Funds {
 			observer.lowBanknotesError(dispenser);
 	}
 	
-
+	protected void notifyNoValidChange() {
+		for (FundsObserver observer : observers)
+			observer.noValidChange();
+	}
+	
 	public BigDecimal getTotalPaid() {
 		return totalPaid;
 	}

@@ -62,6 +62,6 @@ public class CardPayment extends JFrame {
         add(radioPanel);
         add(finishPaymentButton);
 
-        setVisible(true);
+        setVisible(false);
     }
 }

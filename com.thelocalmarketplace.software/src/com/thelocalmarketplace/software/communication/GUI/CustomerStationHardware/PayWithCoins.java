@@ -28,16 +28,27 @@ Nami Marwah              30178528
 
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware;
 import javax.swing.*;
+
+import com.tdc.CashOverloadException;
+import com.tdc.DisabledException;
+import com.tdc.coin.Coin;
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.util.Currency;
+import java.util.List;
 
 public class PayWithCoins extends JFrame {
 
     private JLabel coinTotalLabel;
-    private int totalCount = 0;
+    private BigDecimal totalCount = BigDecimal.ZERO;
+    private SelfCheckoutStationSoftware software;
 
-    public PayWithCoins() {
+    public PayWithCoins(SelfCheckoutStationSoftware software) {
+    	this.software = software;
         setTitle("Coin Counter");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 300);
@@ -57,10 +68,10 @@ public class PayWithCoins extends JFrame {
         coinPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         // Coin denominations
-        int[] coinDenominations = {1, 5, 10, 25, 50, 100};
+        List<BigDecimal> coinDenominations = software.station.getCoinDenominations();
 
         // Add coin buttons
-        for (int denomination : coinDenominations) {
+        for (BigDecimal denomination : coinDenominations) {
             JButton coinButton = createCoinButton(denomination);
             coinPanel.add(coinButton);
         }
@@ -79,7 +90,7 @@ public class PayWithCoins extends JFrame {
         	//this should replaced with a return to customer homepage instead later
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(PayWithCoins.this, "Total inserted: $" + (totalCount / 100.0));
+            	setVisible(false);
             }
         });
 
@@ -97,28 +108,36 @@ public class PayWithCoins extends JFrame {
         add(mainPanel);
 
         // Set frame visible
-        setVisible(true);
+        setVisible(false);
     }
 
-    private JButton createCoinButton(int denomination) {
-        JButton button = new JButton("$" + (denomination / 100.0));
+    private JButton createCoinButton(BigDecimal denomination) {
+        JButton button = new JButton("$" + (denomination));
         button.setFont(new Font("Arial", Font.PLAIN, 16));
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                totalCount += denomination;
+                totalCount = totalCount.add(denomination);
                 updateTotalLabel();
+                Coin coin = new Coin(Currency.getInstance("CAD"), denomination);
+                try {
+                	System.out.println(denomination.doubleValue());
+					software.station.getCoinSlot().receive(coin);
+				} catch (DisabledException | CashOverloadException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
             }
         });
         return button;
     }
 
     private void updateTotalLabel() {
-        double totalAmount = totalCount / 100.0;
+        BigDecimal totalAmount = totalCount;
         coinTotalLabel.setText(String.format("Total Value of Coins Added: $%.2f", totalAmount));
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(PayWithCoins::new);
-    }
+//    public static void main(String[] args) {
+//        SwingUtilities.invokeLater(PayWithCoins::new);
+//    }
 }

@@ -77,7 +77,6 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
      */
     @Override
     public void validCoinDetected(CoinValidator validator, BigDecimal value)  {
-//        this.fundController.totalPaid.add(value);
         this.fundController.addToTotalPaid(value);
         this.fundController.notifyFundsAdded(value);
         BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(value);
@@ -98,6 +97,9 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
             if (missed) {                
                 this.fundController.notifyPaidFunds(amountDue);
             }
+            else {
+				this.fundController.notifyNoValidChange();
+			}
         }
         else {
         	this.fundController.checkoutStationSoftware.removeTotalOrderPrice(value.doubleValue());
@@ -111,6 +113,7 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
      */
     @Override
     public void invalidCoinDetected(CoinValidator validator) {
+    	System.out.println("SHIT");
         this.fundController.notifyInvalidFunds(PaymentKind.Kind.CASH);
     }
     

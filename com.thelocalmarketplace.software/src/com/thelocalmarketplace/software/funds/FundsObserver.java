@@ -102,4 +102,6 @@ public interface FundsObserver {
 	default public void highCoinsError(CoinStorageUnit storage) {}
 	
 	default public void highBanknotesError(BanknoteStorageUnit storage) {}
+	
+	default public void noValidChange() {}
 }

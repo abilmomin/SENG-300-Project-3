@@ -27,16 +27,19 @@ public class Coordination implements FundsObserver, ProductsListener {
     public void setGUI(CustomerStation gui) {
     	this.gui = gui;
     }
+    
+    public void noValidChange() {
+        gui.customerPopUp("Attendant Assistance required");
+    }
 
     @Override
     public void fundsAdded(Funds fundsFacade, BigDecimal funds) {
-        
+        gui.updatePayDisplay(funds.doubleValue());
     }
 
     @Override
     public void fundsRemoved(Funds fundsFacade, BigDecimal funds) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'fundsRemoved'");
+    	gui.updatePayDisplay(-1*funds.doubleValue());
     }
 
     @Override

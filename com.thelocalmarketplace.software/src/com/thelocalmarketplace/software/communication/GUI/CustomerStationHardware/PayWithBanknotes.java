@@ -29,16 +29,28 @@ Nami Marwah              30178528
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware;
 
 import javax.swing.*;
+
+import com.tdc.CashOverloadException;
+import com.tdc.DisabledException;
+import com.tdc.banknote.Banknote;
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.util.Currency;
+import java.util.List;
 
 public class PayWithBanknotes extends JFrame {
 
     private JLabel totalLabel;
-    private int totalAmount;
+    private BigDecimal totalCount = BigDecimal.ZERO;
+    private SelfCheckoutStationSoftware software;
 
-    public PayWithBanknotes() {
+    public PayWithBanknotes(SelfCheckoutStationSoftware software) {
+    	this.software = software;
+    	
         setTitle("Banknote Counter");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 500);
@@ -59,10 +71,10 @@ public class PayWithBanknotes extends JFrame {
         banknotePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         // Banknote denominations
-        int[] banknoteDenominations = {1, 5, 10, 20, 50, 100};
+        BigDecimal[] banknoteDenominations = software.station.getBanknoteDenominations();
 
         // Add banknote buttons
-        for (int denomination : banknoteDenominations) {
+        for (BigDecimal denomination : banknoteDenominations) {
             JButton banknoteButton = createBanknoteButton(denomination);
             banknotePanel.add(banknoteButton);
         }
@@ -81,7 +93,7 @@ public class PayWithBanknotes extends JFrame {
         finishButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(PayWithBanknotes.this, "Total Amount: $" + totalAmount);
+            	setVisible(false);
             }
         });
 
@@ -89,42 +101,48 @@ public class PayWithBanknotes extends JFrame {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.add(finishButton);
 
-     // Add coin panel and total panel to a separate panel with FlowLayout
-        JPanel coinAndTotalPanel = new JPanel(new BorderLayout());
-        coinAndTotalPanel.add(banknotePanel, BorderLayout.CENTER);
-        coinAndTotalPanel.add(totalPanel, BorderLayout.SOUTH);
+     // Add banknote panel and total panel to a separate panel with FlowLayout
+        JPanel banknoteAndTotalPanel = new JPanel(new BorderLayout());
+        banknoteAndTotalPanel.add(banknotePanel, BorderLayout.CENTER);
+        banknoteAndTotalPanel.add(totalPanel, BorderLayout.SOUTH);
 
         // Add components to main panel
         mainPanel.add(headerPanel, BorderLayout.NORTH);
-        mainPanel.add(coinAndTotalPanel, BorderLayout.CENTER);
+        mainPanel.add(banknoteAndTotalPanel, BorderLayout.CENTER);
         mainPanel.add(finishButton, BorderLayout.SOUTH);
 
         // Add main panel to frame
         add(mainPanel);
 
         // Set frame visible
-        setVisible(true);
+        setVisible(false);
     }
 
-    private JButton createBanknoteButton(int denomination) {
-        JButton button = new JButton("$" + denomination);
+    private JButton createBanknoteButton(BigDecimal denomination) {
+        JButton button = new JButton("$" + (denomination));
         button.setFont(new Font("Arial", Font.PLAIN, 16));
-        button.setPreferredSize(new Dimension(100, 50)); // Set preferred size
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                totalAmount += denomination;
+                totalCount = totalCount.add(denomination);
                 updateTotalLabel();
+                Banknote banknote = new Banknote(Currency.getInstance("CAD"), denomination);
+                try {
+					software.station.getBanknoteInput().receive(banknote);
+				} catch (DisabledException | CashOverloadException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
             }
         });
         return button;
     }
 
     private void updateTotalLabel() {
-        totalLabel.setText("Total Amount: $" + totalAmount);
+        totalLabel.setText("Total Amount: $" + totalCount);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(PayWithBanknotes::new);
-    }
+//    public static void main(String[] args) {
+//        SwingUtilities.invokeLater(PayWithBanknotes::new);
+//    }
 }

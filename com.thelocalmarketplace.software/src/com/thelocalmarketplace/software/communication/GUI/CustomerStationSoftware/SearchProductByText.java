@@ -100,15 +100,16 @@ public class SearchProductByText extends JFrame {
         for (Product product : products) {
             listModel.addElement(product);
         }
+        setVisible(false);
     }
 
-    public static void main(String[] args) {
-    	//for testing, delete main when integrating all of gui together
-        SwingUtilities.invokeLater(() -> {
-            SearchProductByText app = new SearchProductByText();
-            app.setVisible(true);
-        });
-    }
+//    public static void main(String[] args) {
+//    	//for testing, delete main when integrating all of gui together
+//        SwingUtilities.invokeLater(() -> {
+//            SearchProductByText app = new SearchProductByText();
+//            app.setVisible(true);
+//        });
+//    }
 
     class FilterDocumentListener implements DocumentListener {
         public void insertUpdate(DocumentEvent e) {

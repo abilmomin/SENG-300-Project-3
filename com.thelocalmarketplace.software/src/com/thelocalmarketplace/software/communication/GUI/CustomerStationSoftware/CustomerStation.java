@@ -45,6 +45,8 @@ public class CustomerStation extends JFrame {
     private AttendantPageGUI attendantGUI;
     private boolean needsAssistance = false;
     private int selectedStation;
+    private SelectPayment paymentWindow;
+    private SearchProductByText visualAddPanel;
     
     public CustomerStation(int selectedStation, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale, AttendantPageGUI attendantGUI) {
     	this.scale = scale;
@@ -53,13 +55,14 @@ public class CustomerStation extends JFrame {
         this.selectedStation = selectedStation;
     	stationSoftwareInstance.setGUI(this);
     	products = new Products(stationSoftwareInstance);
+    	paymentWindow = new SelectPayment(stationSoftwareInstance);
+    	visualAddPanel = new SearchProductByText();
+    	
     	
         setTitle("Self-Checkout Station " + selectedStation);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 700);
         setLocationRelativeTo(null);
-
-
         
         // Main panel
         mainPanel = new JPanel(new BorderLayout());
@@ -94,7 +97,7 @@ public class CustomerStation extends JFrame {
         });
         
         JButton enterPLUBtn = createButton("Enter PLU Code", null);
-        JButton searchProductBtn = createButton("Search Product", null);
+        JButton searchProductBtn = createButton("Search Product", e -> visualAddPanel.setVisible(true));
         JButton removeItemBtn = createButton("Remove Item", null);
         JButton doNotBagBtn = createButton("Do Not Bag Item", null);
         
@@ -119,9 +122,6 @@ public class CustomerStation extends JFrame {
         
         JButton addItem = createButton("Add Item", null);
         JButton back = createButton("Back", null);
-        
-        
-     
 
         // Add ActionListener to the "Use Own Bags" button
         useOwnBagsBtn.addActionListener(new ActionListener() {
@@ -179,11 +179,8 @@ public class CustomerStation extends JFrame {
         payButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Perform payment action here
-                JOptionPane.showMessageDialog(CustomerStation.this, "Payment processed successfully!");
-                // Clear cart after payment
-                cartTextArea.setText("");
-                totalPriceLabel.setText("Total Price: $0.00");
+            	// Open SelectPayment window after payment
+            	paymentWindow.showPanel();
             }
         });
         
@@ -225,6 +222,10 @@ public class CustomerStation extends JFrame {
 
         // Set frame visible
         setVisible(true);
+    }
+    
+    public void updatePayDisplay(double addedFunds) {
+    	paymentWindow.updateTotalPaidValueLabel(addedFunds);
     }
     
     private void dontBagItem() {
@@ -270,7 +271,7 @@ public class CustomerStation extends JFrame {
     // I MADE THIS PUBLIC IDK IF IM RIGHT BUT IM USING THIS IN COORDINATION!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // Currently PLU prices are in cents, 
     public void addProductToCart(String productName, double price) {
-    	double priceInDollars = price / 100.0;
+    	double priceInDollars = price;
         cartTextArea.append(productName + " - $" + priceInDollars + "\n");
         double currentTotal = Double.parseDouble(totalPriceLabel.getText().replace("Total Price: $", ""));
         currentTotal += priceInDollars;

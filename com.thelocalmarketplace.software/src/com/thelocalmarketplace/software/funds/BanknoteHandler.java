@@ -104,6 +104,9 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 			if (missed) {				
 				this.fundController.notifyPaidFunds(amountDue);
 			}
+			else {
+				this.fundController.notifyNoValidChange();
+			}
 		}
 		else {
         	this.fundController.checkoutStationSoftware.removeTotalOrderPrice(denomination.doubleValue());
