@@ -129,6 +129,8 @@ public class ProductTest {
 	               station.getTotalOrderWeightInGrams() == expectedProduct.getExpectedWeight());
 	}
 	
+	
+	//testing when not enough bags are in the dispenser 
 	@Test 
 	public void testPurchaseBags_notEnoughBags() throws OverloadedDevice, EmptyDevice {
 		int quantityRemaining = reusableBagDispenserBronze.getQuantityRemaining(); 
