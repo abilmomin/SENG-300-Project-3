@@ -62,7 +62,7 @@ public class AttendantPageGUI extends JFrame {
     // Variables for station hardware
     private AbstractElectronicScale scale;
     private AbstractSelfCheckoutStation checkoutStation;
-    private final boolean[] stationAssistanceRequested = new boolean[NUM_STATIONS]; // Track assistance requests
+    public final boolean[] stationAssistanceRequested = new boolean[NUM_STATIONS]; // Track assistance requests
 
     private AttendantListeners attendantListeners;
     public AttendantPageGUI() {
@@ -250,7 +250,7 @@ public class AttendantPageGUI extends JFrame {
                 stationStartButtons[stationNumber].setBackground(null);
             } // If it is the selected station, it should remain yellow, handled by highlightSelectedStation
         }
-    }
+    } 
 
 
     public static void main(final String[] args) {

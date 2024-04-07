@@ -27,6 +27,7 @@ import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.ALogic;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
@@ -190,6 +191,15 @@ public class ALogicTest {
 		  
 	  }
 	  
+	  @Test
+	  public void notifyAttedant_test() {
+		  AttendantPageGUI test = new AttendantPageGUI();
+		  test.setStationAssistanceRequested(0, false);
+		  boolean request = true;
+		  test.setStationAssistanceRequested(0, request);
+	      assertTrue(test.stationAssistanceRequested[0]);
+
+	  }
 	  
 
 	@After
