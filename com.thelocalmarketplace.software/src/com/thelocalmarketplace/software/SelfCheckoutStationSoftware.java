@@ -128,6 +128,7 @@ public class SelfCheckoutStationSoftware {
 	 */
 	public void setGUI(CustomerStation gui) {
 		this.gui = gui;
+		coordination.setGUI(gui);
 	}
 	
 	/**

@@ -22,7 +22,10 @@ public class Coordination implements FundsObserver, ProductsListener {
         this.software = software;
         this.funds = funds;
         this.products = products;
-        this.gui = software.getGUI();
+    }
+    
+    public void setGUI(CustomerStation gui) {
+    	this.gui = gui;
     }
 
     @Override
@@ -59,6 +62,8 @@ public class Coordination implements FundsObserver, ProductsListener {
     
     @Override
     public void productAdded(Products productFacade, Product product) {
+        System.out.println(this.gui);
+    	
     	String name = "";
     	
     	if (product instanceof BarcodedProduct) {
