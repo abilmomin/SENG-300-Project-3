@@ -145,15 +145,15 @@ public class AttendantListeners {
                         if (selectedStation == 0) {
                             checkoutStation = new SelfCheckoutStationGold();
                             scale = new ElectronicScaleGold();
-                            System.out.println("SelfCheckoutStationGold initialized");
+                
                         } else if (selectedStation == 1) {
                             checkoutStation = new SelfCheckoutStationSilver();
-                            System.out.println("SelfCheckoutStationSilver initialized");
+                        
                             scale = new ElectronicScaleSilver();
                         } else {
                             checkoutStation = new SelfCheckoutStationBronze();
                             scale = new ElectronicScaleBronze();
-                            System.out.println("SelfCheckoutStationBronze initialized");
+                      
                         }
 
                         PowerGrid.engageUninterruptiblePowerSource();
