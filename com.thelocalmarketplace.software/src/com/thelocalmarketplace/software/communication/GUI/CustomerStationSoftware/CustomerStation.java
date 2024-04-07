@@ -11,10 +11,7 @@ import com.jjjwelectronics.scale.IElectronicScale;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
-import com.thelocalmarketplace.hardware.BarcodedProduct;
-import com.thelocalmarketplace.hardware.PLUCodedItem;
-import com.thelocalmarketplace.hardware.PLUCodedProduct;
-import com.thelocalmarketplace.hardware.Product;
+import com.thelocalmarketplace.hardware.*;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.ProductsDatabase;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
@@ -29,6 +26,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CustomerStation extends JFrame {
 
@@ -315,6 +314,22 @@ public class CustomerStation extends JFrame {
         PaymentSuccess paymentSuccess = new PaymentSuccess(change, stationSoftwareInstance);
 
     }
+
+    // Method to extract the product name from the button's text
+    private String extractProductName(String buttonText) {
+        // Define the regex pattern
+        String regex = "^(.*?)\\s-\\s\\$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(buttonText);
+
+        if (matcher.find()) {
+            // Return the first capturing group, which contains the product name
+            return matcher.group(1);
+        }
+
+        // Return an empty string or a default value if the pattern does not match
+        return "";
+    }
     
     // I MADE THIS PUBLIC IDK IF IM RIGHT BUT IM USING THIS IN COORDINATION!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // Currently PLU prices are in cents, 
@@ -332,13 +347,59 @@ public class CustomerStation extends JFrame {
         cartItemsPanel.add(itemButton);
         refreshCartPanel();
 
+        double totalPrice = stationSoftwareInstance.getTotalOrderPrice();
+        totalPriceLabel.setText("Total Price: $" + String.format("%.2f", totalPrice));
+
     }
 
     public void handleRemoveItem() {
         if (selectedCartItemButton != null) {
+            // look through the order and remove the item
+            ArrayList<Item> listOfOrders = stationSoftwareInstance.getOrder();
+            for (Item item : listOfOrders) {
+                if (item instanceof PLUCodedItem) {
+                    PLUCodedItem pluItem = (PLUCodedItem) item;
+
+                    PriceLookUpCode pluCode = pluItem.getPLUCode();
+                    PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(pluCode);
+
+                    // create regex to match the product description
+                    String productGettingRemoved = extractProductName(selectedCartItemButton.getText());
+
+
+                    if (product.getDescription().equals(productGettingRemoved)) {
+                        stationSoftwareInstance.removeItemFromOrder(pluItem);
+                        AbstractElectronicScale scale = (AbstractElectronicScale) stationSoftwareInstance.getStationHardware().getBaggingArea();
+
+                        scale.removeAnItem(pluItem);
+                        break;
+                    }
+                } else if (item instanceof BarcodedItem) {
+                    BarcodedItem barcodeItem = (BarcodedItem) item;
+
+                    Barcode barcode = barcodeItem.getBarcode();
+                    BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+
+                    // create regex to match the product description
+                    String productGettingRemoved = extractProductName(selectedCartItemButton.getText());
+
+                    if (product.getDescription().equals(productGettingRemoved)) {
+                        System.out.println("Removing item: " + product.getDescription());
+                        stationSoftwareInstance.removeItemFromOrder(barcodeItem);
+                        AbstractElectronicScale scale = (AbstractElectronicScale) stationSoftwareInstance.getStationHardware().getBaggingArea();
+
+                        scale.removeAnItem(barcodeItem);
+                        break;
+                    }
+                }
+            }
             cartItemsPanel.remove(selectedCartItemButton); // Remove the selected item button from the panel
             selectedCartItemButton = null; // Clear the selected item
             refreshCartPanel(); // Refresh the UI to reflect the removal
+
+            double totalPrice = stationSoftwareInstance.getTotalOrderPrice();
+
+            totalPriceLabel.setText("Total Price: $" + String.format("%.2f", totalPrice));
         } else {
             JOptionPane.showMessageDialog(this, "Please select an item to remove."); // Prompt if no item is selected
         }
