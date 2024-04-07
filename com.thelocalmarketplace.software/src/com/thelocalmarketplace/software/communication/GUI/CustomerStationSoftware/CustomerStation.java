@@ -73,7 +73,8 @@ public class CustomerStation extends JFrame {
         // Menu panel
         menuPanel = new JPanel(new GridLayout(3, 3, 10, 10));
         menuPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
+        SettingsPanel settingsPanel = new SettingsPanel();
+        add(settingsPanel, BorderLayout.NORTH);
         // Buttons
         // the following nulls inside the buttons should be replaced by the corresponding callback functions 
         //associated with the popups
