@@ -24,6 +24,8 @@ public class AddownBag implements ElectronicScaleListener {
 	
 	//constructor
 	public AddownBag(SelfCheckoutStationSoftware weightOrder, AbstractElectronicScale scale1) {
+		this.weightOrder = weightOrder;
+		this.scale1 = scale1;
 		instance = weightOrder;
 
         theMassOnTheScaleHasChanged(scale1, massTest);
@@ -44,7 +46,7 @@ public class AddownBag implements ElectronicScaleListener {
 	 * @return
 	 */
 	public double getBagWeight(SelfCheckoutStationSoftware p1, AbstractElectronicScale p2 ) {  
-		double orderWeight = p1.getTotalOrderWeightInGrams(); 
+		double orderWeight = weightOrder.getTotalOrderWeightInGrams(); 
 		double bagWeight = 0;
 		//get order weight
 		BigDecimal orderWeightDouble = new BigDecimal(Double.toString(orderWeight));
@@ -85,7 +87,7 @@ public class AddownBag implements ElectronicScaleListener {
 			if (compareToThreshold>=0) {
 				System.out.println("Bags too heavy, not allowed");
 				instance.setStationBlock(); // block station
-				double order = p1.getTotalOrderWeightInGrams();
+				double order = weightOrder.getTotalOrderWeightInGrams();
 				AttendantPageGUI attendantTest = new AttendantPageGUI();
 				attendantTest.bagdiscpreancydectected(instance);
 				
@@ -93,7 +95,7 @@ public class AddownBag implements ElectronicScaleListener {
 			else {
 				//bag weight is fine, add weight of bag to order, system unblocks
 				instance.setStationUnblock();  // change to unblock and continue
-				p1.addTotalOrderWeightInGrams(weightOfBag);
+				weightOrder.addTotalOrderWeightInGrams(weightOfBag);
 				System.out.println("You may now continue");
 			}
 

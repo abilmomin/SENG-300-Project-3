@@ -159,6 +159,11 @@ public class AttendantListeners {
                         PowerGrid.engageUninterruptiblePowerSource();
                         checkoutStation.plugIn(PowerGrid.instance());
                         checkoutStation.turnOn();
+                        PowerGrid test = PowerGrid.instance();
+                        test.engageUninterruptiblePowerSource();
+                        scale.plugIn(test);
+                       
+                        scale.turnOn();
 
                         SwingUtilities.invokeLater(() -> {
                             stationSoftwareInstances[selectedStation] = new SelfCheckoutStationSoftware(checkoutStation);
