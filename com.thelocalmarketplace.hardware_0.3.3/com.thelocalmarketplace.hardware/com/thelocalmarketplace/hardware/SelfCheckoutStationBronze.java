@@ -137,7 +137,7 @@ public class SelfCheckoutStationBronze extends AbstractSelfCheckoutStation {
 			coinDispensers.put(coinDenominations.get(i), new CoinDispenserBronze(coinDispenserCapacityConfiguration));
 		 
 		// Hook up everything.
-		interconnect(banknoteInput, banknoteValidator);
+		interconnect(banknoteInput, banknoteValidator);  
 		 
 		interconnect(banknoteValidator, banknoteStorage);
 
