@@ -34,6 +34,8 @@ package com.thelocalmarketplace.software.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+
 import java.math.BigDecimal;
 
 import java.util.Calendar;
@@ -45,7 +47,7 @@ import org.junit.Test;
 import org.junit.Test.None;
 
 import com.jjjwelectronics.card.Card;
-
+import com.jjjwelectronics.card.Card.CardData;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
@@ -224,5 +226,37 @@ public class CardHandlerTest {
         cardHandlerG = new CardHandler(fundsG);
         assertFalse(cardHandlerG.approvePurchase(null, 10));
         assertFalse(cardHandlerG.approvePurchase(creditCard.number, -1));
+	}
+	
+	@Test(expected = None.class)
+	public void theDataFromACardHasBeenReadWhileBlockedB() throws IOException {
+		cardHandlerB = new CardHandler(fundsB);
+		CardData data = creditCard.swipe();
+		stationB.setStationBlock();
+		cardHandlerB.theDataFromACardHasBeenRead(data);
+	}
+	
+	@Test(expected = None.class)
+	public void theDataFromACardHasBeenReadWhileBlockedS() throws IOException {
+		cardHandlerS = new CardHandler(fundsS);
+		CardData data = creditCard.swipe();
+		stationS.setStationBlock();
+		cardHandlerS.theDataFromACardHasBeenRead(data);
+	}
+	
+	@Test(expected = None.class)
+	public void theDataFromACardHasBeenReadWhileBlockedG() throws IOException {
+		cardHandlerG = new CardHandler(fundsG);
+		CardData data = creditCard.swipe();
+		stationG.setStationBlock();
+		cardHandlerG.theDataFromACardHasBeenRead(data);
+	}
+	
+	@Test(expected = None.class)
+	public void theDataFromACardHasBeenReadInvalidB() throws IOException {
+		stationB.addBank(cardIssuer);
+		cardHandlerB = new CardHandler(fundsB);
+		CardData data = creditCard.swipe();
+		cardHandlerB.theDataFromACardHasBeenRead(data);
 	}
 }
