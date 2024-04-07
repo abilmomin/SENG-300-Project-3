@@ -16,6 +16,7 @@ public class mockScale extends AbstractElectronicScale {
 	// mockScale constructor 
 	 protected mockScale(Mass limit, Mass sensitivityLimit) {
 		super(limit, sensitivityLimit);
+		this.currentMass = currentMass; // just added this idk? 
 		// TODO Auto-generated constructor stub
 	}
 
