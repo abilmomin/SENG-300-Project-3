@@ -128,11 +128,11 @@ public class ALogic {
 
 	}
 
-	public void EnableStation(int selectedStation,CustomerStation[] customerStation, SelfCheckoutStationSoftware[] stationSoftwareInstances,AbstractSelfCheckoutStation checkoutStation )  {
+	public void EnableStation(int selectedStation,CustomerStation[] customerStation, SelfCheckoutStationSoftware[] stationSoftwareInstances,AbstractSelfCheckoutStation checkoutStation, StartSession[] startSessions )  {
 	     
-		if (customerStation[selectedStation] != null && stationSoftwareInstances[selectedStation].getStationBlock()== true) {
+		if (stationSoftwareInstances[selectedStation].getStationBlock()== true) {
 			stationSoftwareInstances[selectedStation].setStationUnblock();	
-	}	
+	}		startSessions[selectedStation].enableMouseListener();
 	}
 	
 	public boolean DisableStation(int selectedStation,CustomerStation[] customerStation, SelfCheckoutStationSoftware[] stationSoftwareInstances,AbstractSelfCheckoutStation checkoutStation, StartSession[] startSessions) {
@@ -140,7 +140,9 @@ public class ALogic {
         if (stationSoftwareInstances[selectedStation].getStationBlock() == false) {
         	if (stationSoftwareInstances[selectedStation].getStationActive() == false) {
         		stationSoftwareInstances[selectedStation].setStationBlock();
+        		startSessions[selectedStation].disableMouseListener();
         		startSessions[selectedStation].sessionPopUp("Out of order");
+        		
  	
         	}
        

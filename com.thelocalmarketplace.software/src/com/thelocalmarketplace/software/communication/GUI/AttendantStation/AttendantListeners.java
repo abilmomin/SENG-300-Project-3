@@ -228,7 +228,7 @@ public class AttendantListeners {
         	ALogic logic = new ALogic();
             if (selectedStation != -1) { // Check if a station is selected
             	
-                logic.EnableStation(selectedStation, customerStation, stationSoftwareInstances, checkoutStation); { // Check if GUI is created for the selected station    
+                logic.EnableStation(selectedStation, customerStation, stationSoftwareInstances, checkoutStation,startSessions); { // Check if GUI is created for the selected station    
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");
