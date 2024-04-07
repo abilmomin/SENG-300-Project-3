@@ -236,7 +236,7 @@ public class CustomerStation extends JFrame {
             // Extract the last item from the list
             Item lastItem = orderList.get(lastIndex);
             double massInGramsDouble = lastItem.getMass().inGrams().doubleValue();
-    		products.handleBulkyItem(massInGramsDouble);
+    		products.handleBulkyItem(massInGramsDouble,this.attendantGUI);
     	} else {
     	    // Handle the case when the list is empty
     		JOptionPane.showMessageDialog(this, "Scan Item First");

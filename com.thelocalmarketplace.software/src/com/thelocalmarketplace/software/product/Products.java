@@ -45,6 +45,7 @@ import com.jjjwelectronics.scanner.IBarcodeScanner;
 import com.thelocalmarketplace.hardware.*;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 
 public class Products {
 	// Things to listen to (hardware)
@@ -91,15 +92,18 @@ public class Products {
 	 * 
 	 * @param productWeight
 	 * 			The weight of the bulky item 
+	 * @param attendantGUI 
 	 */
-	public void handleBulkyItem(double productWeight) {
+	public void handleBulkyItem(double productWeight, AttendantPageGUI attendantGUI) {
 		software.setStationBlock();
-		System.out.println("No-bagging request is in progress.");
+		
+		 if (attendantGUI.bulkItemRequest("No-bagging request is in progress, approve below") == true) {
+				double currentWeight = software.getTotalOrderWeightInGrams();
+				double finalWeight = currentWeight-productWeight;
+				if (finalWeight >= 0) software.addTotalOrderWeightInGrams(-productWeight); 
+				software.setStationUnblock();
+		 }
 
-		System.out.println("Request has been approved");
-		double currentWeight = software.getTotalOrderWeightInGrams();
-		double finalWeight = currentWeight-productWeight;
-		if (finalWeight >= 0) software.addTotalOrderWeightInGrams(-productWeight); 
 	}
 	
 	/**

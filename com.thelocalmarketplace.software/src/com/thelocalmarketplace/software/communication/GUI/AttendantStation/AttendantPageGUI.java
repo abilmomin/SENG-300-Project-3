@@ -214,7 +214,12 @@ public class AttendantPageGUI extends JFrame {
     }
 
 
+    public boolean bulkItemRequest(String message) {
+        JOptionPane.showMessageDialog(this, message);
+        return true;
+    }
     
+
     
     public void weightDiscpreancydNotify(SelfCheckoutStationSoftware instance) {
     	// Attendant approves discrepancy 
@@ -222,6 +227,7 @@ public class AttendantPageGUI extends JFrame {
     	instance.setStationUnblock();
     }
 
+    
     // Method to highlight the selected station button
     void highlightSelectedStation(int selectedStation) {
         this.selectedStation = selectedStation;
