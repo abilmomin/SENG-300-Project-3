@@ -102,11 +102,6 @@ public class ProductTest {
 	               actualTotalWeightAfterHandling == expectedTotalWeightAfterHandling);
 	}
 	
-	@Test(expected = NullPointerException.class)
-	public void testAddNullItemByVisualCatalogue() {
-		testProducts.addItemByVisualCatalogue(null);
-	}
-	
 	@Test
 	public void testPriceChangeAfterAddItemByVisualCatalogue() {
 		testProducts.addItemByVisualCatalogue(pluCodedItem);
@@ -120,6 +115,19 @@ public class ProductTest {
 		double newWeight = station.getTotalOrderWeightInGrams();
 		assertTrue(prevWeight < newWeight);
 	}
+	
+	@Test
+    public void testAddItemByVisualCatalogueForInactiveStation() {
+		station.setStationActive(false);
+		testProducts.addItemByVisualCatalogue(pluCodedItem);
+		assertTrue(station.getOrder().size() == 0);
+	}
+	
+	@Test(expected = NullPointerException.class)
+	public void testAddNullItemByVisualCatalogue() {
+		testProducts.addItemByVisualCatalogue(null);
+	}
+	
 	@Test
 	public void testAddItemViaBarcodeScanWithValidBarcode() {
 	    Numeral[] barcodeDigits = {Numeral.one, Numeral.two, Numeral.three, Numeral.four, Numeral.five};
