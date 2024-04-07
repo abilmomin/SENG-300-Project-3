@@ -225,7 +225,7 @@ public class AttendantListeners {
     private class EnableStationButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-        	ALogic logic = new ALogic();
+        
             if (selectedStation != -1) { // Check if a station is selected
             	
                 logic.EnableStation(selectedStation, customerStation, stationSoftwareInstances, checkoutStation,startSessions); { // Check if GUI is created for the selected station    
@@ -241,7 +241,7 @@ public class AttendantListeners {
     private class DisableStationButtonListener implements ActionListener {
         @Override 
         public void actionPerformed(ActionEvent e) {
-        	ALogic logic = new ALogic();
+       
             if (selectedStation != -1) { // Check if a station is selected
             	
                 if (logic.DisableStation(selectedStation, customerStation, stationSoftwareInstances, checkoutStation,startSessions)==true) { // Check if GUI is created for the selected station       
