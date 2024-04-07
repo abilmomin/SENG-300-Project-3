@@ -290,24 +290,26 @@ public class CustomerStation extends JFrame {
     	
     	
     	enter.addActionListener(e -> {
-    		
-    		String userInput = screenTextField.getText();
-    		
-    		// Convert string > plu code using method in Products.java
-    		PLUCodedProduct product = stationSoftwareInstance.matchCodeAndPLUProduct(userInput);
-        	
-    		String description = product.getDescription();
-    		
-    		AddtoBagging popup  = new AddtoBagging(product, description, stationSoftwareInstance);
-    		
-        	addProductToCart(product.getDescription(), product.getPrice());
+    	    String userInput = screenTextField.getText();
 
-        	popup.setVisible(true);
-        	
-        	
-        	screenTextField.setText("");       	
-        	replaceCartPanelWithKeypadPanel();
-        });
+    	    PLUCodedProduct product = stationSoftwareInstance.matchCodeAndPLUProduct(userInput);
+
+    	    if (product != null) {
+    	        // If a product is found, display the AddtoBagging popup
+    	        AddtoBagging popup = new AddtoBagging(product, stationSoftwareInstance);
+    	        popup.setVisible(true);
+    	    } else {
+    	        // If no product is found, show an error message
+    	        JOptionPane.showMessageDialog(this, "Product not found. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+    	    }
+
+    	    // Clear the PLU input field
+    	    screenTextField.setText("");
+
+    	    // Switch back to the previous panel if needed
+    	    replaceCartPanelWithKeypadPanel();
+    	});
+
     	
     	 return keypadPanel;
     }
