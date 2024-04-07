@@ -2,8 +2,10 @@ package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftwa
 
 import javax.swing.*;
 
+import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.Item;
 import com.jjjwelectronics.Mass;
+import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.jjjwelectronics.scale.IElectronicScale;
 import com.jjjwelectronics.scanner.Barcode;
@@ -19,6 +21,7 @@ import com.thelocalmarketplace.software.ProductsDatabase;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.product.Products;
+import com.jjjwelectronics.bag.ReusableBag;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,7 +40,7 @@ public class CustomerStation extends JFrame {
     private JPanel PLUPanel;
     private JPanel payButtonPanel;
     private JTextField screenTextField;
-    private JPanel addItemPanel;
+    private JPanel addItemBtnPanel;
     private AddownBag addOwnBag;
     private SelfCheckoutStationSoftware stationSoftwareInstance;
     private AbstractElectronicScale scale;
@@ -71,65 +74,44 @@ public class CustomerStation extends JFrame {
         // Buttons
         // the following nulls inside the buttons should be replaced by the corresponding callback functions 
         //associated with the popups
-        JButton useOwnBagsBtn = createButton("Use Own Bags", null);
+        JButton useOwnBagsBtn = createButton("Use Own Bags", e -> {
+        	handleUseOwnBags();
+        });
         
         JButton scanBarcodeBtn = createButton("Scan Barcode", e -> {
-        	// Get a random barcode from the available barcoded products
-        	ArrayList<Barcode> barcodes = ProductsDatabase.getBarcodes();    	
-        	Random random = new Random();   	
-            int randomIndex = random.nextInt(barcodes.size());
-            Barcode barcode = barcodes.get(randomIndex);
-            
-            // Get the weight of that product
-            double productWeight = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode).getExpectedWeight();
-            Mass mass = new Mass(productWeight);
-            BarcodedItem barcodedItem = new BarcodedItem(barcode, mass); 
+        	handleScanBarcode();
+        });
+        
+        JButton enterPLUBtn = createButton("Enter PLU Code", e -> {
         	
-        	IBarcodeScanner scanner = stationSoftwareInstance.getStationHardware().getMainScanner();
-        	scanner.scan(barcodedItem);
-        	        	
-        	BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+        });
+        
+        JButton searchProductBtn = createButton("Search Product", e -> {
         	
-        	new AddtoBagging(product, stationSoftwareInstance, productWeight);
         });
         
-        JButton enterPLUBtn = createButton("Enter PLU Code", null);
-        JButton searchProductBtn = createButton("Search Product", null);
-        JButton removeItemBtn = createButton("Remove Item", null);
-        JButton doNotBagBtn = createButton("Do Not Bag Item", null);
-        
-        doNotBagBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Show a message dialog saying "Please wait"
-                dontBagItem();
-            }
+        JButton removeItemBtn = createButton("Remove Item", e -> {
+        	
         });
         
-        JButton viewBaggingAreaBtn = createButton("View Bagging Area", null);
-        //Signal for attendant button 
-        JButton helpButton = new JButton("Help");
-        helpButton.setFont(new Font("Arial", Font.PLAIN, 16));
-        helpButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                requestAssistance();
-            }
+        JButton purchaseBagsBtn = createButton("Purchase Bags", e -> {
+        	handlePurchaseBags();
         });
         
-        JButton addItem = createButton("Add Item", null);
-        JButton back = createButton("Back", null);
+        JButton viewBaggingAreaBtn = createButton("View Bagging Area", e -> {
+        	
+        });
         
+        JButton helpBtn = createButton("Help", e -> {
+        	handleRequestAssistance();
+        });   
         
-     
-
-        // Add ActionListener to the "Use Own Bags" button
-        useOwnBagsBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Call the method to handle using own bags
-                handleUseOwnBags();
-            }
+        JButton addItemBtn = createButton("Add Item", e -> {
+        	replaceGrids();
+        });
+        
+        JButton backBtn = createButton("Back", e -> {
+        	replaceGrids();
         });
         
         // Add buttons to menu panel
@@ -137,28 +119,21 @@ public class CustomerStation extends JFrame {
         //menuPanel.add(scanBarcodeBtn);
         //menuPanel.add(enterPLUBtn);
         //menuPanel.add(searchProductBtn);
-        menuPanel.add(addItem);
+        menuPanel.add(addItemBtn);
         menuPanel.add(removeItemBtn);
-        menuPanel.add(doNotBagBtn);
+        menuPanel.add(purchaseBagsBtn);
         menuPanel.add(viewBaggingAreaBtn);
-        menuPanel.add(helpButton);
+        menuPanel.add(helpBtn);
         
         
-         addItemPanel = new JPanel(new GridLayout(2, 2,10,10));
-         addItemPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+         addItemBtnPanel = new JPanel(new GridLayout(2, 2,10,10));
+         addItemBtnPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
          
-         addItemPanel.add(scanBarcodeBtn);
-         addItemPanel.add(enterPLUBtn);
-         addItemPanel.add(searchProductBtn);
-         addItemPanel.add(back);
+         addItemBtnPanel.add(scanBarcodeBtn);
+         addItemBtnPanel.add(enterPLUBtn);
+         addItemBtnPanel.add(searchProductBtn);
+         addItemBtnPanel.add(backBtn);
          
-         addItem.addActionListener(e -> {
-        	 replaceGrids();
-         });
-
-         back.addActionListener(e ->{
-        	 replaceGrids();
-         });
         // Cart panel
         cartPanel = new JPanel(new BorderLayout());
         cartPanel.setBorder(BorderFactory.createTitledBorder("Cart"));
@@ -246,6 +221,26 @@ public class CustomerStation extends JFrame {
     	
     
 	}
+    
+    private void handleScanBarcode() {
+    	// Get a random barcode from the available barcoded products
+    	ArrayList<Barcode> barcodes = ProductsDatabase.getBarcodes();    	
+    	Random random = new Random();   	
+        int randomIndex = random.nextInt(barcodes.size());
+        Barcode barcode = barcodes.get(randomIndex);
+        
+        // Get the weight of that product
+        double productWeight = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode).getExpectedWeight();
+        Mass mass = new Mass(productWeight);
+        BarcodedItem barcodedItem = new BarcodedItem(barcode, mass); 
+    	
+    	IBarcodeScanner scanner = stationSoftwareInstance.getStationHardware().getMainScanner();
+    	scanner.scan(barcodedItem);
+    	        	
+    	BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+    	
+    	new AddtoBagging(product, stationSoftwareInstance, productWeight, attendantGUI);
+    }
 
 	private void handleUseOwnBags() {
         // Display a message dialog to prompt the user
@@ -259,8 +254,28 @@ public class CustomerStation extends JFrame {
         	 JOptionPane.getRootFrame().dispose();
         }
     }
-
-
+	
+	private void handlePurchaseBags() {
+	    BagPurchaseInput dialog = new BagPurchaseInput(this);
+	    dialog.setVisible(true);
+	    
+	    int numOfBags = dialog.getNumOfBags();
+	    if (numOfBags > 0) {
+			ReusableBag[] bags = new ReusableBag[numOfBags];
+			
+			for (int i = 0; i < numOfBags; i++)
+				bags[i] = new ReusableBag();
+			
+			try {
+				stationSoftwareInstance.getProductHandler().PurchaseBags(bags);
+			} catch (OverloadedDevice | EmptyDevice e) {
+				e.printStackTrace(); // do we alert the attendant???????????????????????????????
+			}
+			
+	        JOptionPane.showMessageDialog(this, numOfBags + " bags have been added to your purchase.", "Bags Purchased", JOptionPane.INFORMATION_MESSAGE);
+	    }
+	}
+	
     public void setPaymentSuccesful(double change) {
         this.dispose();
         PaymentSuccess paymentSuccess = new PaymentSuccess(change, stationSoftwareInstance);
@@ -338,7 +353,7 @@ public class CustomerStation extends JFrame {
 
     	    if (product != null) {
     	        // If a product is found, display the AddtoBagging popup
-    	        AddtoBagging popup = new AddtoBagging(product, stationSoftwareInstance, 0.0);
+    	        AddtoBagging popup = new AddtoBagging(product, stationSoftwareInstance, 0.0, attendantGUI);
     	        popup.setVisible(true);
     	    } else {
     	        // If no product is found, show an error message
@@ -401,18 +416,18 @@ public class CustomerStation extends JFrame {
     private void replaceGrids() {
         // Remove current panels from mainPanel
         mainPanel.remove(menuPanel);
-        mainPanel.remove(addItemPanel);
+        mainPanel.remove(addItemBtnPanel);
 
         if (menuPanel.isVisible()) {
-            // Hide menuPanel and show addItemPanel
+            // Hide menuPanel and show addItemBtnPanel
             menuPanel.setVisible(false);
-            addItemPanel.setVisible(true);
+            addItemBtnPanel.setVisible(true);
             
             PLUPanel.setVisible(false);
 
         } else {
-            // Hide addItemPanel and show menuPanel
-            addItemPanel.setVisible(false);
+            // Hide addItemBtnPanel and show menuPanel
+            addItemBtnPanel.setVisible(false);
             menuPanel.setVisible(true);
             PLUPanel.setVisible(false);
             cartPanel.setVisible(true);
@@ -420,7 +435,7 @@ public class CustomerStation extends JFrame {
 
         // Add the panels back to mainPanel with the same constraints
         mainPanel.add(menuPanel, BorderLayout.CENTER);
-        mainPanel.add(addItemPanel, BorderLayout.CENTER);
+        mainPanel.add(addItemBtnPanel, BorderLayout.CENTER);
 
         // To refresh 
         revalidate();
@@ -437,10 +452,10 @@ public class CustomerStation extends JFrame {
     		BarcodedProduct barcodedProduct = (BarcodedProduct) product;
     		weight = barcodedProduct.getExpectedWeight();
     	}
-    	new AddtoBagging(product, stationSoftwareInstance, weight);
+    	new AddtoBagging(product, stationSoftwareInstance, weight, attendantGUI);
     }
 
-    private void requestAssistance() {
+    private void handleRequestAssistance() {
         needsAssistance = true;
         attendantGUI.setStationAssistanceRequested(selectedStation - 1, true);
 
