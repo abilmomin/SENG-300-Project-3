@@ -1,6 +1,7 @@
 package com.thelocalmarketplace.software.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -116,7 +117,13 @@ public class AddownBagTest {
 	
 	@Test 
 	public void testAddBagWeight_OverThreshold () throws OverloadedDevice {
-		
+		mockScale scaleOverLimit = new mockScale(new Mass(40000000), new Mass(40000000));
+		//adding a new item to exceed the mass limit 
+		scaleOverLimit.addAnItem(new MockItem(new Mass(45000000))); 
+		//adding bag (1 gram) to the over limit scale 
+		addownBag.addBagWeight(station, scaleOverLimit, 1000000, 1); 
+		//Assert.assertTrue(SelfCheckoutStationSoftware.getStationBlock()); 
+
 	}
 	
 	
@@ -129,7 +136,8 @@ public class AddownBagTest {
 	public void testPrint_mess() {
 		ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
 	    System.setOut(new PrintStream(outputStreamCaptor));
-        addownBag.printMessage();
+	    AddownBag addownBag = new AddownBag(station, scale, customerStation, attendantGUI);
+	    addownBag.printMessage();
         Assert.assertEquals("You may now continue", outputStreamCaptor.toString().trim()); 
 	}
 	
