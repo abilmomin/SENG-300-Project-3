@@ -219,8 +219,6 @@ public class AttendantPageGUI extends JFrame {
         return true;
     }
     
-
-    
     public void weightDiscpreancydNotify(SelfCheckoutStationSoftware instance) {
     	// Attendant approves discrepancy 
     	JOptionPane.showMessageDialog(this, "Weight Discrepancy Detected.");

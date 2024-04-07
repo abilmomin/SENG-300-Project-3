@@ -106,11 +106,10 @@ public class SelectPayment extends JFrame {
     }
     
     // Method to make the panel visible
-    public void showPanel() {
+    public void updatePanel() {
     	totalPrice = software.getTotalOrderPrice();
         billTotalValueLabel.setText("$" + String.format("%.2f", totalPrice)); // Update text of existing label
     	updatePanelsAndVariables();
-        setVisible(true);
     }
 
     // Method to close the panel

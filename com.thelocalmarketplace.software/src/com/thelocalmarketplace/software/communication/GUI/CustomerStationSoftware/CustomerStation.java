@@ -206,7 +206,7 @@ public class CustomerStation extends JFrame {
     public void updatePayDisplay(double addedFunds) {
     	System.out.println("HELP");
     	paymentWindow.updateTotalPaidValueLabel(addedFunds);
-    	paymentWindow.showPanel();
+    	paymentWindow.updatePanel();
     }
     
     private void dontBagItem() {
