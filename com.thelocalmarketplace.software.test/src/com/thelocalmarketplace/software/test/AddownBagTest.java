@@ -33,6 +33,7 @@ public class AddownBagTest {
 	private AbstractElectronicScale scale; 
     private CustomerStation customerStation; 
     private AttendantPageGUI attendantGUI; 
+    private Mass massLimit; 
 	
 	//private SelfCheckoutStationBronze checkoutSB; // 
 	//private ScaleListener listen;
@@ -56,6 +57,7 @@ public class AddownBagTest {
     	customerStation = new CustomerStation(0, station, scale, attendantGUI); 
     	attendantGUI = new AttendantPageGUI(); 
     	addownBag = new AddownBag(station, scale, customerStation, attendantGUI); 
+    	massLimit = scale.getMassLimit(); 
     	scale.plugIn(grid);
 		scale.turnOn();
     	
@@ -161,6 +163,23 @@ public class AddownBagTest {
 	    addownBag.printMessage();
         Assert.assertEquals("You may now continue", outputStreamCaptor.toString().trim()); 
 	}
+	
+	
+	//overload test 1
+	@Test 
+	public void testOverloadThrown_1() {
+		MockScale scale = new MockScale(massLimit, massLimit) {
+			@Override
+			
+			public Mass getCurrentMassOnTheScale() throws OverloadedDevice{
+				throw new OverloadedDevice(); 
+			}
+		};
+		AddownBag addownBag = new AddownBag(station,scale, customerStation, attendantGUI); 
+		double bagWeight = addownBag.getBagWeight(station, scale); 
+		Assert.assertEquals(0.0, bagWeight, 0.001);
+	}
+
 	
 	 class MockItem extends Item { // need power for addAnItem
 	        public MockItem(Mass mass) {
