@@ -38,6 +38,14 @@ public class MembershipCard {
 	private String memberName;
 	private Card membershipCard;
 	
+	/**
+	 * Allows a customer to become a member
+	 * Creates a new membership number for a customer
+	 * @param memberName
+	 * 			The name of the customer as a string
+	 * @return
+	 * 			The membership number for the customer as a string
+	 */
 	public String createNewMember(String memberName) {
 		Random random = new Random();
         long randomNumber = (long) (random.nextDouble() * 9_000_000_000L) + 1_000_000_000L;
@@ -47,24 +55,64 @@ public class MembershipCard {
 		return membershipNumber;
 	}
 	
+	/**
+	 * Get the membership number
+	 * @return
+	 * 			The membership number as a string
+	 */
 	public String getMembershipNumber() {
 		return membershipNumber;
 	}
 	
+	/**
+	 * Check if the number that has been input is valid
+	 * @param membershipNumber
+	 * 			The membership number that has been input
+	 * @return
+	 * 			A boolean value. True if it matches (valid), False otherwise
+	 */
 	public boolean isMembershipNumberValid(String membershipNumber) {
 		String num = "\\d{10}";
 		return membershipNumber.matches(num);
 	}
 	
+	/**
+	 * Get the name of the member
+	 * @return
+	 * 			The name of the member as a string
+	 */
 	public String getMemberName() {
 		return memberName;
 	}
 	
+	/**
+	 * Create a membership card for the customer
+	 * @param cardType
+	 * 			The type of card as a string
+	 * @param number
+	 * 			The number on the card as a string
+	 * @param cardholder
+	 * 			The name of the card holder as a string
+	 * @param cvv
+	 * 			The cvv of the card as a string
+	 * @param pin
+	 * 			The card pin as a string
+	 * @param isTapEnabled
+	 * 			If tap is enabled as a boolean value
+	 * @param hasChip
+	 * 			If the card has a chip as a boolean value
+	 */
 	public void createMembershipCard(String cardType, String number, String cardholder, String cvv, String pin, boolean isTapEnabled, boolean hasChip) {
 		this.membershipCard = new Card(cardType, number, cardholder, cvv, pin, isTapEnabled, hasChip);
 		this.membershipNumber = number;
 		this.memberName = cardholder;
 	}
+	
+	/**
+	 * Get the membership card
+	 * @return
+	 * 			The membership card as type Card
+	 */
 	public Card getMemberShipCard() {
 		return membershipCard;
 	}
