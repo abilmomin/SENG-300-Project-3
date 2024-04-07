@@ -209,10 +209,31 @@ public class ProductTest {
         ReusableBag bag3 = new ReusableBag();
         ReusableBag[] bags = {bag1, bag2, bag3}; 
         
+        dispenser.load(bags);
+        
         // Invoke the PurchaseBags method
         testProducts.PurchaseBags(bags);  
-        
-       
 	}
+	
+	//Testing when there are enough bags in the dispenser 
+		@Test 
+		public void testPurchaseBags_EnoughBags() throws OverloadedDevice, EmptyDevice {
+			mockReusableBagDispenser dispenser = new mockReusableBagDispenser(2, 100); 
+			ReusableBag bag1 = new ReusableBag(); 
+	        ReusableBag bag2 = new ReusableBag();
+	        ReusableBag[] bags = {bag1, bag2}; 
+	        dispenser.load(bags);
+	        testProducts.PurchaseBags(bags);
+	        
+		}
+		
+		
+		//Testing when the amount of bags in dispenser are being loaded (dispenser bags and purchased bags = same) 
+		// this one should notify that the bags are empty after its been dispensed
+		@Test 
+		public void testPurchaseBags_JustEnoughBags() throws OverloadedDevice, EmptyDevice{
+			
+		}
+		
 	
 }
