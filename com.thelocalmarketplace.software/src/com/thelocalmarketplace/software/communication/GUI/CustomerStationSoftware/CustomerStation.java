@@ -204,9 +204,11 @@ public class CustomerStation extends JFrame {
         setVisible(true);
     }
     
-    public void updatePayDisplay(double addedFunds) {
-    	System.out.println("HELP");
+    public void updatePaidDisplay(double addedFunds) {
     	paymentWindow.updateTotalPaidValueLabel(addedFunds);
+    }
+    
+    public void updateTotalOwedDisplay() {
     	paymentWindow.updatePanel();
     }
     
