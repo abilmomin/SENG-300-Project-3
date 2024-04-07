@@ -1,5 +1,6 @@
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
 
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.PayWithCoins;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.PayWithBanknotes;
 
@@ -8,7 +9,7 @@ import java.awt.*;
 
 public class SelectPayment extends JFrame {
 
-    public SelectPayment() {
+    public SelectPayment(SelfCheckoutStationSoftware software) {
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
@@ -60,8 +61,8 @@ public class SelectPayment extends JFrame {
         JButton addMembershipButton = createColoredButton("Add Membership", new Color(0, 128, 128));
         JButton returnToCheckoutButton = createColoredButton("Return to Checkout", new Color(255, 127, 80));
 
-        debitButton.addActionListener(e -> new CardPayment());
-        creditButton.addActionListener(e -> new CardPayment());
+        debitButton.addActionListener(e -> new CardPayment(software, "debit"));
+        creditButton.addActionListener(e -> new CardPayment(software, "debit"));
         cashButton.addActionListener(e -> new PayWithBanknotes());
         coinButton.addActionListener(e -> new PayWithCoins());
         
@@ -91,8 +92,8 @@ public class SelectPayment extends JFrame {
         button.setFont(new Font("Arial", Font.BOLD, 16));
         return button;
     }
-
-    public static void main(final String[] args) {
-        SwingUtilities.invokeLater(SelectPayment::new);
-    }
+//
+//    public static void main(final String[] args) {
+//        SwingUtilities.invokeLater(SelectPayment::new);
+//    }
 }
