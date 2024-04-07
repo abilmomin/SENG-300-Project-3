@@ -2,6 +2,7 @@ package com.thelocalmarketplace.software.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import org.junit.Before;
@@ -160,17 +161,18 @@ public class ProductTest {
 	public void testAddItemViaPluCodeWithValidPluCode() {
 		
 		station.setStationActive(true);
-	    boolean addItemResult = testProducts.addItemByPLUCode(pluCodedItem);
+	        boolean addItemResult = testProducts.addItemByPLUCode(pluCodedItem);
 		assertTrue("The PlUCodedItem should be added sucessfully", addItemResult);
 		
 	}
 	
-	@Test(expected = NullPointerSimulationException.class)
-	public void testAddItemViaPluCodeWithInvalidPluCode() {
-	    station.setStationActive(true);
-
-		
+	@Test
+	public void testAddItemViaPluCodeWhileStationIsInactive() {
+		station.setStationActive(false);
+		boolean result = testProducts.addItemByPLUCode(pluCodedItem);
+		assertFalse("The item should not be added to order since station is inactive", result);
 	}
+	
 	
 	@Test
 	public void testAddBarcodedProductByTextSearch() {
