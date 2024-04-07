@@ -16,11 +16,13 @@ public class Coordination implements FundsObserver, ProductsListener {
 	SelfCheckoutStationSoftware software;
     Funds funds;
     Products products;
+    CustomerStation gui;
 
     public Coordination(SelfCheckoutStationSoftware software, Funds funds, Products products) {
         this.software = software;
         this.funds = funds;
         this.products = products;
+        this.gui = software.getGUI();
     }
 
     @Override
@@ -48,8 +50,7 @@ public class Coordination implements FundsObserver, ProductsListener {
 
     @Override
     public void fundsPaidInFull(Funds fundsFacade, BigDecimal changeReturned) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'fundsPaidInFull'");
+        gui.setPaymentSuccesful(changeReturned.doubleValue());
     }
 
     @Override
@@ -69,7 +70,6 @@ public class Coordination implements FundsObserver, ProductsListener {
     		PLUCodedProduct pluCodedProduct = (PLUCodedProduct) product;
     		name = pluCodedProduct.getDescription();
     	}
-    	CustomerStation gui = software.getGUI();
     	gui.addProductToCart(name, product.getPrice());
     }
     

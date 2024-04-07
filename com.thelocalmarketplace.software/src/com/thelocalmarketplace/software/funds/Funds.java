@@ -73,6 +73,7 @@ public class Funds {
 	protected Map<BigDecimal, Number> banknotesAvailable;
 	protected final SelfCheckoutStationSoftware checkoutStationSoftware;
 	protected Set<FundsObserver> observers = new HashSet<>();
+	
 
 	/**
 	 * Funds constructor which initializes all individual fund facades.

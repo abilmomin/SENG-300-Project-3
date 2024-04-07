@@ -224,6 +224,12 @@ public class CustomerStation extends JFrame {
          addOwnBag = new AddownBag(stationSoftwareInstance, scale);
     }
 
+    public void setPaymentSuccesful(double change) {
+        this.dispose();
+        PaymentSuccess paymentSuccess = new PaymentSuccess(change, stationSoftwareInstance);
+
+    }
+
     
     // I MADE THIS PUBLIC IDK IF IM RIGHT BUT IM USING THIS IN COORDINATION!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // Currently PLU prices are in cents, 

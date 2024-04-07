@@ -47,7 +47,7 @@ public class CardPayment extends JFrame {
                 switch (paymentType) {
                     case 1 -> software.getStationHardware().getCardReader().swipe(software.getCard(typeOfCard));
                     case 2 -> software.getStationHardware().getCardReader().tap(software.getCard(typeOfCard));
-                    case 3 -> software.getStationHardware().getCardReader().insert(software.getCard(typeOfCard), );
+                    // case 3 -> software.getStationHardware().getCardReader().insert(software.getCard(typeOfCard), );
                     default -> JOptionPane.showMessageDialog(this, "Please select a payment method.", "Payment", JOptionPane.INFORMATION_MESSAGE);
                 }
 

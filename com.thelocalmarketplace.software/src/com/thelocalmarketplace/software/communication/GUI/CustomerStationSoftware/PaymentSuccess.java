@@ -10,9 +10,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+
 public class PaymentSuccess extends JFrame {
 
-	public PaymentSuccess() {
+	public PaymentSuccess(double change, SelfCheckoutStationSoftware stationSoftware) {
 	    setTitle("Thank you!");
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setSize(600, 500);
@@ -24,8 +26,12 @@ public class PaymentSuccess extends JFrame {
 	    JLabel bigTextLabel = new JLabel("Payment successful");
 	    bigTextLabel.setFont(new Font("Arial", Font.PLAIN, 16));
 	    bigTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JLabel mediumTextLabel = new JLabel("Amount Due: $" + stationSoftware.getTotalOrderPrice());
+	    mediumTextLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+	    mediumTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 	    
-	    JLabel smallTextLabel = new JLabel("**** change $$ ****");
+	    JLabel smallTextLabel = new JLabel("Change Returned: $" + change);
 	    smallTextLabel.setFont(new Font("Arial", Font.PLAIN, 14)); 
 	    smallTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT); 
 	    
@@ -36,6 +42,8 @@ public class PaymentSuccess extends JFrame {
 	    mainPanel.add(Box.createVerticalGlue());
 	    mainPanel.add(bigTextLabel);
 	    mainPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Small space between big text and small text
+		mainPanel.add(mediumTextLabel);
+	    mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 	    mainPanel.add(smallTextLabel);
 	    mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 	    mainPanel.add(bye);
@@ -45,7 +53,7 @@ public class PaymentSuccess extends JFrame {
 	    setVisible(true);
 	}
 	
-	public static void main(String[] args) {
-		PaymentSuccess success = new PaymentSuccess();
-	}
+	// public static void main(String[] args) {
+	// 	PaymentSuccess success = new PaymentSuccess(12);
+	// }
 }
