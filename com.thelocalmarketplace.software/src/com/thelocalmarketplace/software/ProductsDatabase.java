@@ -70,9 +70,9 @@ public class ProductsDatabase {
 		
 			//PLUCodedProduct(PriceLookUpCode pluCode, String description, long price)
 				// Assuming price in cents
-		PLUCodedProduct apple = new PLUCodedProduct(plu1, "Apple", 150);
-		PLUCodedProduct banana = new PLUCodedProduct(plu1, "Banana", 125);
-		PLUCodedProduct kiwi = new PLUCodedProduct(plu1, "Kiwi", 175);
+		PLUCodedProduct apple = new PLUCodedProduct(plu1, "Apple", 1);
+		PLUCodedProduct banana = new PLUCodedProduct(plu1, "Banana", 1);
+		PLUCodedProduct kiwi = new PLUCodedProduct(plu1, "Kiwi", 2);
 		PLUDatabase.put(plu1, apple);
 		PLUDatabase.put(plu2, banana);
 		PLUDatabase.put(plu3, kiwi);
