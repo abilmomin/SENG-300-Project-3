@@ -249,7 +249,13 @@ public class ProductTest {
 		// this one should notify that the bags are empty after its been dispensed
 		@Test 
 		public void testPurchaseBags_JustEnoughBags() throws OverloadedDevice, EmptyDevice{
-			
+			MockReusableBagDispenser dispenser = new MockReusableBagDispenser(3, 100); 
+			ReusableBag bag1 = new ReusableBag(); 
+	        ReusableBag bag2 = new ReusableBag();
+	        ReusableBag bag3 = new ReusableBag();
+	        ReusableBag[] bags = {bag1, bag2, bag3}; 
+	        dispenser.load(bags);
+	        testProducts.PurchaseBags(bags);
 		}
 		
 	
