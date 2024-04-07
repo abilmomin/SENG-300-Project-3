@@ -156,7 +156,21 @@ public class ProductTest {
 	               station.getTotalOrderWeightInGrams() == expectedProduct.getExpectedWeight());
 	}
 
-
+	@Test
+	public void testAddItemViaPluCodeWithValidPluCode() {
+		
+		station.setStationActive(true);
+	        boolean addItemResult = testProducts.addItemByPLUCode(pluCodedItem);
+		assertTrue("The PlUCodedItem should be added sucessfully", addItemResult);
+		
+	}
+	
+	@Test
+	public void testAddItemViaPluCodeWhileStationIsInactive() {
+		station.setStationActive(false);
+		boolean result = testProducts.addItemByPLUCode(pluCodedItem);
+		assertFalse("The item should not be added to order since station is inactive", result);
+	}
 	
 	
 	@Test
