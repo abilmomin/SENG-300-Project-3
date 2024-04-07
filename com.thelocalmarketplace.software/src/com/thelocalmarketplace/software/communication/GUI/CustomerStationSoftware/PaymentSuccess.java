@@ -78,8 +78,7 @@ public class PaymentSuccess extends JFrame {
 			}
 
 		});
-
-
+		
 //	    JLabel bye = new JLabel("Have a great day!");
 //	    bye.setAlignmentX(Component.CENTER_ALIGNMENT);
 //	    bye.setFont(new Font("Arial", Font.BOLD, 32));
