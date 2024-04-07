@@ -32,23 +32,31 @@ package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftwa
 import javax.swing.*;
 
 import com.jjjwelectronics.EmptyDevice;
+import com.jjjwelectronics.Mass;
+import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.printer.IReceiptPrinter;
+import com.jjjwelectronics.printer.ReceiptPrinterBronze;
+import com.jjjwelectronics.scanner.Barcode;
+import com.jjjwelectronics.scanner.BarcodedItem;
+import com.thelocalmarketplace.hardware.BarcodedProduct;
+import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
+import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.funds.Receipt;
 
+import powerutility.PowerGrid;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 
 public class PrintReceipt extends JFrame{
 
-    private IReceiptPrinter receiptPrinter;
-    private Funds funds;
-    protected SelfCheckoutStationSoftware checkoutStationSoftware;
 
-    public PrintReceipt() {
+    public PrintReceipt(IReceiptPrinter printer, Funds funds) {
         JFrame printerFrame = new JFrame("Receipt Printer Option");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(500, 600);
@@ -62,9 +70,10 @@ public class PrintReceipt extends JFrame{
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Receipt rec = new Receipt(receiptPrinter, funds);
+                Receipt rec = new Receipt(printer, funds);
                 try {
                     JOptionPane.showMessageDialog(PrintReceipt.this, rec.printReceipt());
+                    System.exit(EXIT_ON_CLOSE);
                 } catch (HeadlessException | EmptyDevice | OverloadedDevice e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
@@ -78,6 +87,7 @@ public class PrintReceipt extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(PrintReceipt.this, "Thank you for shopping with us! We hope to see you again!");
+                System.exit(EXIT_ON_CLOSE);
 
             }
 
@@ -90,10 +100,6 @@ public class PrintReceipt extends JFrame{
 
 
 
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(PrintReceipt::new);
     }
 
 
