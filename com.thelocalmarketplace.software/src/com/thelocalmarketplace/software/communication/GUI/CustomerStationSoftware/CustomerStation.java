@@ -1,6 +1,8 @@
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
 
 import javax.swing.*;
+
+import com.jjjwelectronics.Item;
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.jjjwelectronics.scale.IElectronicScale;
@@ -50,6 +52,7 @@ public class CustomerStation extends JFrame {
     	this.attendantGUI = attendantGUI;
         this.selectedStation = selectedStation;
     	stationSoftwareInstance.setGUI(this);
+    	products = new Products(stationSoftwareInstance);
     	
         setTitle("Self-Checkout Station " + selectedStation);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -93,7 +96,16 @@ public class CustomerStation extends JFrame {
         JButton enterPLUBtn = createButton("Enter PLU Code", null);
         JButton searchProductBtn = createButton("Search Product", null);
         JButton removeItemBtn = createButton("Remove Item", null);
-        JButton doNotBagBtn = createButton("Do Not Bag", null);
+        JButton doNotBagBtn = createButton("Do Not Bag Item", null);
+        
+        doNotBagBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Show a message dialog saying "Please wait"
+                dontBagItem();
+            }
+        });
+        
         JButton viewBaggingAreaBtn = createButton("View Bagging Area", null);
         //Signal for attendant button 
         JButton helpButton = new JButton("Help");
@@ -215,7 +227,27 @@ public class CustomerStation extends JFrame {
         setVisible(true);
     }
     
-    private void handleUseOwnBags() {
+    private void dontBagItem() {
+		// TODO Auto-generated method stub
+    	ArrayList<Item> orderList = stationSoftwareInstance.getOrder();
+    	if (!orderList.isEmpty()) {
+    		int lastIndex = orderList.size() - 1;
+
+            // Extract the last item from the list
+            Item lastItem = orderList.get(lastIndex);
+            double massInGramsDouble = lastItem.getMass().inGrams().doubleValue();
+    		products.handleBulkyItem(massInGramsDouble);
+    	} else {
+    	    // Handle the case when the list is empty
+    		JOptionPane.showMessageDialog(this, "Scan Item First");
+    	}
+    	
+    	
+    	
+    
+	}
+
+	private void handleUseOwnBags() {
         // Display a message dialog to prompt the user
         int option = JOptionPane.showConfirmDialog(this, "Please add your bags now, click OK when complete.", "Add Bags", JOptionPane.OK_CANCEL_OPTION);
         
@@ -424,4 +456,5 @@ public class CustomerStation extends JFrame {
 
 
 }
+
 
