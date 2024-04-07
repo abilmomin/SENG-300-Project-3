@@ -20,13 +20,14 @@ import javax.swing.JPanel;
 import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.printer.IReceiptPrinter;
+import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.funds.Receipt;
 
 public class PaymentSuccess extends JFrame {
 
-	public PaymentSuccess(double change, IReceiptPrinter printer, Funds funds, SelfCheckoutStationSoftware stationSoftware) {
+	public PaymentSuccess(double change, SelfCheckoutStationSoftware stationSoftware) {
 		setTitle("Thank you!");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(600, 500);
@@ -55,7 +56,7 @@ public class PaymentSuccess extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Receipt rec = new Receipt(stationSoftware.getStationHardware().getPrinter(), funds);
+				Receipt rec = new Receipt(stationSoftware.getStationHardware().getPrinter(), stationSoftware.getFunds());
 				try {
 					JOptionPane.showMessageDialog(PaymentSuccess.this, rec.printReceipt());
 					System.exit(EXIT_ON_CLOSE);
@@ -105,7 +106,7 @@ public class PaymentSuccess extends JFrame {
 		setVisible(true);
 	}
 
-//	 public static void main(String[] args) {
-//	 	PaymentSuccess success = new PaymentSuccess(12);
-//	 }
+	 public static void main(String[] args) {
+	 	PaymentSuccess success = new PaymentSuccess(12, new SelfCheckoutStationSoftware(new SelfCheckoutStationGold()));
+	 }
 }

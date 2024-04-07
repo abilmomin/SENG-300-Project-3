@@ -138,6 +138,10 @@ public class SelfCheckoutStationSoftware {
 	public CustomerStation getGUI() {
 		return gui;
 	}
+
+	public Funds getFunds() {
+		return funds;
+	}
 	
 	public ProductsDatabase getAllProducts() {
 		return allProducts;
