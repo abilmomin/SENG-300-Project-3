@@ -197,12 +197,37 @@ public class AttendantPageGUI extends JFrame {
         }
     }
     
-    public void bagdiscpreancydectected(SelfCheckoutStationSoftware instance) {
-    	// Attendant approves discrepancy 
-    	JOptionPane.showMessageDialog(this, "Bags Too Heavy, Inspect.");
-    	instance.setStationUnblock();
-    	JOptionPane.showMessageDialog(this, "Customer may now continue.");
+    public void bagdiscpreancydectected(SelfCheckoutStationSoftware instance, CustomerStation customerStation2) {
+        // Define custom option buttons
+        String[] options = {"Approve", "Cancel"};
+        
+        // Display a message dialog with custom options
+        int option = JOptionPane.showOptionDialog(
+            this,
+            "Bags Too Heavy, Inspect.",
+            "Bag Discrepancy Detected",
+            JOptionPane.DEFAULT_OPTION,
+            JOptionPane.INFORMATION_MESSAGE,
+            null,
+            options,
+            options[0]
+        );
+        
+        // Check if the user clicked the "Approve" button
+        if (option == 0) {
+            // User clicked "Approve", proceed with unblocking the station
+            
+            // Unblocking the station
+            instance.setStationUnblock();
+            customerStation2.customerPopUp("You may now continue");
+            
+        } else {
+            // User clicked "Cancel" or closed the dialog, simply close the dialog
+            JOptionPane.getRootFrame().dispose();
+        }
     }
+
+    
     
     public void weightDiscpreancydNotify(SelfCheckoutStationSoftware instance) {
     	// Attendant approves discrepancy 

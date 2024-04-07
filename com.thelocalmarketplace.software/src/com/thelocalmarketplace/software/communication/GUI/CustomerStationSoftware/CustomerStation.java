@@ -227,7 +227,9 @@ public class CustomerStation extends JFrame {
             
             // Initialize the AddownBag instance
             addOwnBag = new AddownBag(stationSoftwareInstance, scale, this, this.attendantGUI);
-        } 
+        } else {
+        	 JOptionPane.getRootFrame().dispose();
+        }
     }
 
 
