@@ -38,13 +38,13 @@ public class MembershipNumberInput extends JDialog {
 	private static final long serialVersionUID = 1997230330248440038L;
 	private JTextField membershipNumberField;
 	private JPanel membershipPanel;
-	private CustomerStation parent;
+	private SelectPayment parent;
 
 	
 	
 	public MembershipNumberInput(Frame parent) {
 		super(parent, "Membership Number", true);
-		this.parent = (CustomerStation) parent;
+		this.parent = (SelectPayment) parent;
 		setLocationRelativeTo(parent);
 		setVisible(true);
 	}
@@ -143,7 +143,7 @@ public class MembershipNumberInput extends JDialog {
     	switch (response) {
     		case 0:
     			membershipNumberField.setText("");
-    			parent.askForMembershipNumber();
+    			parent.showMembershipInputDialog();
                 break;
     		case 1:
     			createAccount();
