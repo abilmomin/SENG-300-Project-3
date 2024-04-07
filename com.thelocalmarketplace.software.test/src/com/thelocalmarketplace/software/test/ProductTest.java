@@ -1,12 +1,18 @@
 package com.thelocalmarketplace.software.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.Mass;
+import com.jjjwelectronics.OverloadedDevice;
+import com.jjjwelectronics.bag.AbstractReusableBagDispenser;
 import com.jjjwelectronics.bag.IReusableBagDispenser;
 import com.jjjwelectronics.bag.ReusableBag;
+import com.jjjwelectronics.bag.ReusableBagDispenserBronze;
 import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
@@ -26,7 +32,8 @@ public class ProductTest {
 	private PriceLookUpCode pluCode;
 	private Products testProducts;
 	private ReusableBag bags; 
-	private IReusableBagDispenser reusableBagDispenser; 
+	private ReusableBagDispenserBronze reusableBagDispenserBronze;
+	
 	
 	@Before
 	public void setup() {
@@ -40,11 +47,16 @@ public class ProductTest {
 		checkoutStationBronze.plugIn(grid);
 		checkoutStationBronze.turnOn();
 		
+		reusableBagDispenserBronze = new ReusableBagDispenserBronze(10);
+		reusableBagDispenserBronze.plugIn(grid);
+		reusableBagDispenserBronze.turnOn(); 
+		
 		station = new SelfCheckoutStationSoftware(checkoutStationBronze);
 		station.setStationActive(true);
 		pluCode = new PriceLookUpCode("1234");
 		itemMass = new Mass(1000000000);
 		pluCodedItem = new PLUCodedItem(pluCode, itemMass);
+		bags = new ReusableBag(); 
 		
 		// Create a PlUCodedProduct and add it to the database
 		String pluProductDescription = "Apple";
@@ -53,6 +65,7 @@ public class ProductTest {
 		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCode, pluCodedProduct);
 		
 		testProducts = new Products(station);
+		testProducts.reusableBagDispenser = checkoutStationBronze.getReusableBagDispenser(); 
 		
 	}
 	@Test
@@ -116,5 +129,19 @@ public class ProductTest {
 	               station.getTotalOrderWeightInGrams() == expectedProduct.getExpectedWeight());
 	}
 	
+	@Test 
+	public void testPurchaseBags_notEnoughBags() throws OverloadedDevice, EmptyDevice {
+		int quantityRemaining = reusableBagDispenserBronze.getQuantityRemaining(); 
+		int capacity = reusableBagDispenserBronze.getCapacity(); 
+		ReusableBag bag1 = new ReusableBag(); 
+		ReusableBag[] bags = {bag1}; 
+		testProducts.PurchaseBags(bags);
+		int newQuantityRemaining = reusableBagDispenserBronze.getQuantityRemaining(); ;
+		assertEquals("Quantity remaining should be decreased by 1", quantityRemaining - 1, checkoutStationBronze.getReusableBagDispenser().getQuantityRemaining());
+		
+		
+     
+  
+	}
 	
 }
