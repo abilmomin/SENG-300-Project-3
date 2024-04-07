@@ -87,18 +87,17 @@ public class AddownBag implements ElectronicScaleListener {
 			int compareToThreshold = scale.getCurrentMassOnTheScale().compareTo(new Mass(threshold));
 			
 			if (compareToThreshold>=0) {
-				System.out.println("Bags too heavy, not allowed");
+				this.customerStation.customerPopUp("Bags too heavy, please wait for attendant.");
 				weightOrder.setStationBlock(); // block station
 				double order = weightOrder.getTotalOrderWeightInGrams();
-				AttendantPageGUI attendantTest = new AttendantPageGUI();
-				attendantTest.bagdiscpreancydectected(weightOrder);
+				this.attendantGUI.bagdiscpreancydectected(weightOrder,this.customerStation);
 				
 			}
 			else {
 				//bag weight is fine, add weight of bag to order, system unblocks
 				weightOrder.setStationUnblock();  // change to unblock and continue
 				weightOrder.addTotalOrderWeightInGrams(weightOfBag);
-				System.out.println("You may now continue");
+				this.customerStation.customerPopUp("You may now continue");
 			}
 
 		} catch (OverloadedDevice e) {
