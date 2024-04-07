@@ -71,13 +71,13 @@ public class AttendantListeners {
     private class refillReceiptPaperServiceButtonListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-//            try {
-//	            System.out.println("Refilling Receipt Paper"); // temporary
-//	            logic.refillPrinterPaper(stationSoftwareInstances[selectedStation]);
-//            } catch (OverloadedDevice e1) {
-//                // TODO Auto-generated catch block
-//                e1.printStackTrace();
-//            }
+            try {
+	            System.out.println("Refilling Receipt Paper"); // temporary
+	            logic.refillPrinterPaper(stationSoftwareInstances[selectedStation]);
+            } catch (OverloadedDevice e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         }
     }
     private class emptyCoinServiceButtonListener implements ActionListener {
@@ -97,12 +97,13 @@ public class AttendantListeners {
     private class refillReceiptInkServiceButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-//                try {
-//                    logic.refillPrinterInk(stationSoftwareInstances[selectedStation]);
-//                } catch (OverloadedDevice e1) {
-//                    // TODO Auto-generated catch block
-//                    e1.printStackTrace();
-//                }
+                try {
+                    System.out.println("Refilling Receipt Ink"); // temporary
+                    logic.refillPrinterInk(stationSoftwareInstances[selectedStation]);
+                } catch (OverloadedDevice e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
         }
     }
 

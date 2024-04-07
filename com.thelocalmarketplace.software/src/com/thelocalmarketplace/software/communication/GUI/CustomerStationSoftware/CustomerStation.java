@@ -186,8 +186,26 @@ public class CustomerStation extends JFrame {
         // PLU code screen
         JPanel screenPanel = createScreenPanel();
         
+        JButton returnBtn = new JButton("Return to cart");
+        returnBtn.setFont(new Font("Arial", Font.PLAIN, 16));
+        returnBtn.setForeground(new Color(199, 100, 2));
+    	returnBtn.setBackground(new Color(245, 228, 211));
+    	returnBtn.setPreferredSize(new Dimension(100, 50));
+
+    	returnBtn.addActionListener(e -> {
+    		screenTextField.setText("");
+       		PLUPanel.setVisible(false);
+       		getContentPane().add(cartPanel, BorderLayout.EAST);
+       		cartPanel.setVisible(true);
+            // To refresh
+       		revalidate();
+       		repaint();
+    	});
+
+    	PLUPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         PLUPanel.add(keypadPanel);
         PLUPanel.add(screenPanel, BorderLayout.NORTH);
+        PLUPanel.add(returnBtn, BorderLayout.SOUTH);
         
         enterPLUBtn.addActionListener(e -> {
         	replaceCartPanelWithKeypadPanel();
