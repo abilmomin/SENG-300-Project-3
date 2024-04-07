@@ -28,6 +28,10 @@ import com.thelocalmarketplace.software.funds.Receipt;
 public class PaymentSuccess extends JFrame {
 
 	public PaymentSuccess(double change, SelfCheckoutStationSoftware stationSoftware) {
+
+		stationSoftware.getStationHardware().getPrinter().addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
+		stationSoftware.getStationHardware().getPrinter().addInk(ReceiptPrinterBronze.MAXIMUM_INK);
+
 		setTitle("Thank you!");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(600, 500);
@@ -100,7 +104,7 @@ public class PaymentSuccess extends JFrame {
 		setVisible(true);
 	}
 
-	 public static void main(String[] args) {
-	 	PaymentSuccess success = new PaymentSuccess(12, new SelfCheckoutStationSoftware(new SelfCheckoutStationGold()));
-	 }
+//	 public static void main(String[] args) {
+//	 	PaymentSuccess success = new PaymentSuccess(12, new SelfCheckoutStationSoftware(new SelfCheckoutStationGold()));
+//	 }
 }
