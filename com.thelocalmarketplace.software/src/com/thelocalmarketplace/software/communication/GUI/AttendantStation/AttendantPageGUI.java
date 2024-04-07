@@ -198,34 +198,21 @@ public class AttendantPageGUI extends JFrame {
     }
     
     public void bagdiscpreancydectected(SelfCheckoutStationSoftware instance, CustomerStation customerStation2) {
-        // Define custom option buttons
-        String[] options = {"Approve", "Cancel"};
+        // Display a message dialog to prompt the user
+        int option = JOptionPane.showConfirmDialog(this, "Bags Too Heavy, Inspect.", "Bag Discrepancy Detected", JOptionPane.OK_CANCEL_OPTION);
         
-        // Display a message dialog with custom options
-        int option = JOptionPane.showOptionDialog(
-            this,
-            "Bags Too Heavy, Inspect.",
-            "Bag Discrepancy Detected",
-            JOptionPane.DEFAULT_OPTION,
-            JOptionPane.INFORMATION_MESSAGE,
-            null,
-            options,
-            options[0]
-        );
-        
-        // Check if the user clicked the "Approve" button
-        if (option == 0) {
-            // User clicked "Approve", proceed with unblocking the station
+        // Check if the user clicked OK
+        if (option == JOptionPane.OK_OPTION) {
+            // User clicked OK, proceed with unblocking the station
             
             // Unblocking the station
             instance.setStationUnblock();
             customerStation2.customerPopUp("You may now continue");
-            
         } else {
-            // User clicked "Cancel" or closed the dialog, simply close the dialog
-            JOptionPane.getRootFrame().dispose();
+        	JOptionPane.getRootFrame().dispose();
         }
     }
+
 
     
     
