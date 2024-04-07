@@ -291,7 +291,6 @@ public class Products {
 				software.setStationBlock();
 			
 			try {
-				reusableBagDispenser.load(bags); //requires power
 				// making sure dispenser has enough bags 
 				if(reusableBagDispenser.getQuantityRemaining() < bags.length || reusableBagDispenser.getCapacity() <bags.length) {
 					throw new EmptyDevice("Dispenser does not have enough bags");

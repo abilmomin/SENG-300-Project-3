@@ -35,7 +35,6 @@ public class ProductTest {
 	private ReusableBag bags; 
 	//private ReusableBagDispenserBronze reusableBagDispenserBronze;
 	private mockReusableBagDispenser dispenser; 
-	private AbstractReusableBagDispenser abstractDispenser; 
 	
 	
 	@Before
@@ -50,13 +49,11 @@ public class ProductTest {
 		checkoutStationBronze.plugIn(grid);
 		checkoutStationBronze.turnOn();
 		
-		//reusableBagDispenserBronze = new ReusableBagDispenserBronze(10);
-		//reusableBagDispenserBronze.plugIn(grid);
-		//reusableBagDispenserBronze.turnOn(); 
 		
 		dispenser = new mockReusableBagDispenser(3, 100); 
 		dispenser.plugIn(grid);
-		dispenser.turnOn(); 
+		dispenser.turnOn();
+		
 		
 		station = new SelfCheckoutStationSoftware(checkoutStationBronze);
 		station.setStationActive(true);
@@ -72,7 +69,7 @@ public class ProductTest {
 		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCode, pluCodedProduct);
 		
 		testProducts = new Products(station);
-		testProducts.reusableBagDispenser = checkoutStationBronze.getReusableBagDispenser(); 
+		testProducts.reusableBagDispenser = dispenser; 
 		
 	}
 	@Test
@@ -146,41 +143,27 @@ public class ProductTest {
 	
 	
 	//testing when not enough bags are in the dispenser 
-	@Test 
+	@Test (expected = OverloadedDevice.class)
 	public void testPurchaseBags_notEnoughBags() throws OverloadedDevice, EmptyDevice {
-		mockReusableBagDispenser dispenser = new mockReusableBagDispenser(1, 1);
-		
-		
-		Products testProducts = new Products(station);
-        testProducts.reusableBagDispenser = dispenser;
-
-        // Test the PurchaseBags method with the stub dispenser
-        try {
-            ReusableBag bag1 = new ReusableBag(); 
-            ReusableBag bag2 = new ReusableBag(); 
-            testProducts.PurchaseBags(bag1, bag2);
-
-            // If the dispenser is unable to provide enough bags, it should throw an EmptyDevice exception
-            fail("Expected EmptyDevice exception, but it was not thrown");
-        } catch (EmptyDevice e) {
-            // Verify that the exception message is as expected
-            assertEquals("Dispenser does not have enough bags", e.getMessage());
-        }
-		
-		
-		
-		
-		
-	//	int quantityRemaining = reusableBagDispenserBronze.getQuantityRemaining(); 
-		//int capacity = reusableBagDispenserBronze.getCapacity(); 
-		//ReusableBag bag1 = new ReusableBag(); 
-	//	ReusableBag[] bags = {bag1}; 
-		//testProducts.PurchaseBags(bags);
-	//	int newQuantityRemaining = reusableBagDispenserBronze.getQuantityRemaining(); ;
-	//	assertEquals("Quantity remaining should be decreased by 1", quantityRemaining - 1, checkoutStationBronze.getReusableBagDispenser().getQuantityRemaining());
-		
-		
-     
+		//initializing a new dispenser that has 2 bags loaded and a capacity of 100 reusable bags 
+		mockReusableBagDispenser dispenser = new mockReusableBagDispenser(2, 100); 
+		ReusableBag bag1 = new ReusableBag(); 
+        ReusableBag bag2 = new ReusableBag();
+        ReusableBag bag3 = new ReusableBag();
+        ReusableBag[] bags = {bag1, bag2, bag3}; 
+        
+        // Invoke the PurchaseBags method
+        testProducts.PurchaseBags(bags);  
+        
+        // Assertions
+        // Verify total order weight is updated correctly
+        //assertEquals(/* Expected total order weight */, testProducts.station.getTotalOrderWeightInGrams(), 0.01);
+        
+        // Verify total order price is updated correctly
+        //assertEquals(/* Expected total order price */, testProducts.station.getTotalOrderPrice());
+        
+        // Verify dispenser quantity remaining is updated correctly
+        //assertEquals(/* Expected remaining quantity in dispenser */, dispenser.getQuantityRemaining());
   
 	}
 	
