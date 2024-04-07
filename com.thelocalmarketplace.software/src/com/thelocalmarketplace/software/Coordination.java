@@ -2,6 +2,7 @@ package com.thelocalmarketplace.software;
 
 import java.math.BigDecimal;
 
+import com.jjjwelectronics.OverloadedDevice;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.Product;
@@ -60,12 +61,7 @@ public class Coordination implements FundsObserver, ProductsListener {
     @Override
     public void fundsPaidInFull(Funds fundsFacade, BigDecimal changeReturned) {
         if(gui != null)
-            try {
-                gui.setPaymentSuccesful(changeReturned.doubleValue());
-            } catch (OverloadedDevice e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+			gui.setPaymentSuccesful(changeReturned.doubleValue());
     }
 
     @Override

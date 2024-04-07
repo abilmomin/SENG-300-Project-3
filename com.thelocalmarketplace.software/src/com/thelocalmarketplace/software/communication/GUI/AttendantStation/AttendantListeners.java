@@ -1,6 +1,8 @@
 package com.thelocalmarketplace.software.communication.GUI.AttendantStation;
 
 import ca.ucalgary.seng300.simulation.SimulationException;
+
+import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.jjjwelectronics.scale.ElectronicScaleBronze;
 import com.jjjwelectronics.scale.ElectronicScaleGold;
