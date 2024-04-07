@@ -89,9 +89,8 @@ public class AddownBagTest {
 	public void testGetBagWeight_BagAdded() throws OverloadedDevice {
 		//the order has a weight of the mock scale in before (40000000)
 		// weight of the scale with the order and the bag added is 10000000 (10 grams) more than the weight of the order
-		// MockItem item1 = new MockItem(new Mass(100));
 		mockScale orderAndBagScale = new mockScale(new Mass(5000000), new Mass(5000000)); 
-		MockItem item = new MockItem(new Mass(10000000)); 
+		MockItem item = new MockItem(new Mass(100)); 
         station.addItemToOrder(item);
         scale.addAnItem(item);
         AddownBag addownBag = new AddownBag(station, scale, customerStation, attendantGUI);
