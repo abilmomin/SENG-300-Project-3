@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import com.jjjwelectronics.Mass;
+import com.jjjwelectronics.bag.IReusableBagDispenser;
+import com.jjjwelectronics.bag.ReusableBag;
 import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
@@ -23,6 +25,8 @@ public class ProductTest {
 	private Mass itemMass;
 	private PriceLookUpCode pluCode;
 	private Products testProducts;
+	private ReusableBag bags; 
+	private IReusableBagDispenser reusableBagDispenser; 
 	
 	@Before
 	public void setup() {
@@ -49,6 +53,7 @@ public class ProductTest {
 		ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCode, pluCodedProduct);
 		
 		testProducts = new Products(station);
+		
 	}
 	@Test
 	public void testHandleBulkyItemReducesTotalOrderWeight() {
