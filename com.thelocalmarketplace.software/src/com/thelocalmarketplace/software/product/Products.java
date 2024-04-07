@@ -137,6 +137,36 @@ public class Products {
 	}
 	
 	/**
+	 * Adds item to order via a barcode input.
+	 * 
+	 * @param barcode
+	 * 		The barcode that got scanned.
+	 */
+	public void addItemViaBarcodeScan(Barcode barcode) {
+		if (software.getStationActive() && !software.getStationBlock()) {
+			software.setStationBlock();
+			
+			BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+			BarcodedItem barcodedItem;
+			
+			if (product != null) {
+				double productWeight = product.getExpectedWeight(); 
+				long productPrice = product.getPrice();
+
+				software.addTotalOrderWeightInGrams(productWeight); 
+				software.addTotalOrderPrice(productPrice); 
+
+				Mass mass = new Mass(productWeight);
+				barcodedItem = new BarcodedItem(barcode, mass);
+				
+				software.addItemToOrder(barcodedItem);
+				
+				notifyProductAdded(product);
+			}
+		}
+	}
+	
+	/**
      * Adds an item to the customer's order by text search.
      *
      * @param searchText The text to search for the product.
@@ -179,7 +209,7 @@ public class Products {
         }
     }
     
-    private Product findProductByTextSearch(String searchText) {
+    public Product findProductByTextSearch(String searchText) {
         // Split the search text into keywords
         String[] keywords = searchText.toLowerCase().split("\\s+");
         

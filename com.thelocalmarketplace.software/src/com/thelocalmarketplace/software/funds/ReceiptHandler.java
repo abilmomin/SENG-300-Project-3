@@ -39,7 +39,7 @@ import com.jjjwelectronics.printer.IReceiptPrinter;
 import com.jjjwelectronics.printer.ReceiptPrinterBronze;
 
 import com.jjjwelectronics.printer.ReceiptPrinterListener;
-import com.thelocalmarketplace.software.ALogic;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.ALogic;
 
 /**
  * This class is a listener which implements and overrides the receipt printer listener in the hardware.

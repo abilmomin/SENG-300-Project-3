@@ -10,7 +10,6 @@ import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
-import com.thelocalmarketplace.software.ALogic;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
@@ -28,6 +27,7 @@ public class AttendantListeners {
     private CustomerStation[] customerStation;
     private StartSession[] startSessions;
     private boolean[] stationEnabled;
+    private ALogic logic;
 
     private AbstractSelfCheckoutStation checkoutStation;
     private AbstractElectronicScale scale;
@@ -39,12 +39,12 @@ public class AttendantListeners {
         this.customerStation = customerStation;
         this.startSessions = startSessions;
         this.stationEnabled = stationEnabled;
+        this.logic = new ALogic();
     }
 
     private class refillCoinServiceButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            ALogic logic = new ALogic();
             try {
                 logic.refillCoinDispensers(stationSoftwareInstances[selectedStation]);
             } catch (SimulationException | CashOverloadException e1) {
@@ -57,7 +57,6 @@ public class AttendantListeners {
     private class refillBanknotesServiceButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            ALogic logic = new ALogic();
             try {
                 logic.refillBanknoteDispensers(stationSoftwareInstances[selectedStation]);
             } catch (SimulationException | CashOverloadException e1) {
@@ -70,10 +69,9 @@ public class AttendantListeners {
     private class refillReceiptPaperServiceButtonListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-            ALogic logic = new ALogic();
 //            try {
-            System.out.println("Refilling Receipt Paper"); // temporary
-            //logic.refillPrinterPaper(stationSoftwareInstances[selectedStation]);
+//	            System.out.println("Refilling Receipt Paper"); // temporary
+//	            logic.refillPrinterPaper(stationSoftwareInstances[selectedStation]);
 //            } catch (OverloadedDevice e1) {
 //                // TODO Auto-generated catch block
 //                e1.printStackTrace();
@@ -83,7 +81,6 @@ public class AttendantListeners {
     private class emptyCoinServiceButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            ALogic logic = new ALogic();
             logic.emptyCoinStorage(stationSoftwareInstances[selectedStation]);
         }
     }
@@ -91,7 +88,6 @@ public class AttendantListeners {
     private class emptyBanknotesServiceButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            ALogic logic = new ALogic();
             logic.emptyBanknoteStorage(stationSoftwareInstances[selectedStation]);
         }
     }
@@ -99,7 +95,6 @@ public class AttendantListeners {
     private class refillReceiptInkServiceButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            ALogic logic = new ALogic();
 //                try {
 //                    logic.refillPrinterInk(stationSoftwareInstances[selectedStation]);
 //                } catch (OverloadedDevice e1) {
@@ -119,6 +114,7 @@ public class AttendantListeners {
             if (searchText != null && !searchText.isEmpty()) {
                 Products product = stationSoftwareInstances[selectedStation].getProductHandler();
                 product.addItemByTextSearch(searchText);
+                
             }
         }
     }
@@ -229,11 +225,10 @@ public class AttendantListeners {
     private class EnableStationButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+        
             if (selectedStation != -1) { // Check if a station is selected
-
-                if (customerStation[selectedStation] != null && stationSoftwareInstances[selectedStation].getStationBlock()== true) { // Check if GUI is created for the selected station
-                    stationSoftwareInstances[selectedStation].setStationUnblock();
-                   
+            	
+                logic.EnableStation(selectedStation, customerStation, stationSoftwareInstances, checkoutStation,startSessions); { // Check if GUI is created for the selected station    
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");
@@ -241,27 +236,33 @@ public class AttendantListeners {
         }
     }
 
-    // Action listener for disable station button
+    
+ // Action listener for disable station button
     private class DisableStationButtonListener implements ActionListener {
-        @Override
+        @Override 
         public void actionPerformed(ActionEvent e) {
+       
             if (selectedStation != -1) { // Check if a station is selected
-                if (customerStation[selectedStation] != null && stationSoftwareInstances[selectedStation].getStationBlock() == false) { // Check if GUI is created for the selected station
-                    if (stationSoftwareInstances[selectedStation].getStationActive() == false) {
-                        // If station is not active, disable it immediately
-                        stationSoftwareInstances[selectedStation].setStationBlock();
-                        
-                    } else {
+            	
+                if (logic.DisableStation(selectedStation, customerStation, stationSoftwareInstances, checkoutStation,startSessions)==true) { // Check if GUI is created for the selected station       
+                	
+                        boolean notactive_notnull = true; }
+                
+                     else {
                         // If station is active, prompt user and disable after session completion
                         new Thread(() -> gui.waitForSessionCompletion(selectedStation)).start();
                     }
                 }
-            } else {
+             else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");
             }
         }
     }
 
+
+    
+  
+    
     // get action listeners
     public ActionListener getRefillCoinServiceButtonListener() {
         return new refillCoinServiceButtonListener();

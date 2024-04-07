@@ -6,9 +6,13 @@ import javax.swing.*;
 
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.scale.IElectronicScale;
+import com.jjjwelectronics.scanner.BarcodedItem;
+import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
+import com.thelocalmarketplace.hardware.Product;
+import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 
@@ -18,7 +22,7 @@ import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 public class AddtoBagging extends JFrame {
 	
-	public AddtoBagging(PLUCodedProduct product, String item, SelfCheckoutStationSoftware stationSoftwareInstance) {
+	public AddtoBagging(Product product, SelfCheckoutStationSoftware stationSoftwareInstance) {
 
 	    setTitle("Add to Bag");
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -28,6 +32,15 @@ public class AddtoBagging extends JFrame {
 	    // Main panel with BoxLayout for vertical alignment
 	    JPanel mainPanel = new JPanel();
 	    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+	    
+	    String item = "Item";
+	    if (product instanceof BarcodedProduct) {
+	    	BarcodedProduct bProduct = (BarcodedProduct) product;
+	    	item = bProduct.getDescription();
+	    } else {
+	    	PLUCodedProduct pProduct = (PLUCodedProduct) product;
+	    	item = pProduct.getDescription();
+	    }
 
 	    // Label for the large text display
 	    JLabel bigTextLabel = new JLabel("Item: " + item);
@@ -47,13 +60,28 @@ public class AddtoBagging extends JFrame {
 
 	    
 	    button.addActionListener(e -> {
-	    	PriceLookUpCode plu = product.getPLUCode();
-	    	PLUCodedItem newItem = new PLUCodedItem(plu, new Mass(50)); // arbitrary mass value
-	    	//stationSoftwareInstance.addItemToOrder(newItem);
-	    	
-	    	IElectronicScale baggingArea = stationSoftwareInstance.getStationHardware().getBaggingArea();
-        	baggingArea.addAnItem(newItem);
-        	
+	    	if (product instanceof BarcodedProduct) {
+	    		BarcodedProduct barcodedProduct = (BarcodedProduct) product;
+	    		
+	    		stationSoftwareInstance.getProductHandler().addItemViaBarcodeScan(barcodedProduct.getBarcode());
+	    		
+	            double productWeight = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcodedProduct.getBarcode()).getExpectedWeight();
+	            Mass mass = new Mass(productWeight);
+	            BarcodedItem barcodedItem = new BarcodedItem(barcodedProduct.getBarcode(), mass);
+	            
+	        	IElectronicScale baggingArea = stationSoftwareInstance.getStationHardware().getBaggingArea();
+	        	baggingArea.addAnItem(barcodedItem);
+	    		
+	    	} else {
+	    		PLUCodedProduct pluCodedProduct = (PLUCodedProduct) product;
+	    		
+	    		PLUCodedItem pluItem = new PLUCodedItem(pluCodedProduct.getPLUCode(), new Mass(1.0));
+	    		
+	    		stationSoftwareInstance.getProductHandler().addItemByPLUCode(pluItem);
+	    		
+	        	IElectronicScale baggingArea = stationSoftwareInstance.getStationHardware().getBaggingArea();
+	        	baggingArea.addAnItem(pluItem);
+	    	}
 	    	dispose();
 	    });
 	    

@@ -41,6 +41,7 @@ import java.util.List;
 public class SearchProductByText extends JFrame {
     private JTextField searchField;
     private JTextField filterField;
+    private JButton submitButton;
     private JList<Product> searchResults;
     private DefaultListModel<Product> listModel;
     private CustomKeyboard keyboard;
@@ -58,6 +59,8 @@ public class SearchProductByText extends JFrame {
 
         filterField = new JTextField();
         filterField.setPreferredSize(new Dimension(400, 30));
+        
+        submitButton = new JButton("Add Item");
 
         // Create custom keyboard
         keyboard = new CustomKeyboard(searchField);
@@ -69,11 +72,21 @@ public class SearchProductByText extends JFrame {
         JScrollPane scrollPane = new JScrollPane(searchResults);
 
         JPanel contentPane = new JPanel();
+        
         contentPane.setLayout(new BorderLayout());
         contentPane.add(searchField, BorderLayout.NORTH);
         contentPane.add(filterField, BorderLayout.CENTER);
         contentPane.add(scrollPane, BorderLayout.CENTER);
-        contentPane.add(keyboard, BorderLayout.SOUTH);
+        
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        JPanel submitPanel = new JPanel();
+        submitButton.setPreferredSize(new Dimension(120, 30));
+        submitPanel.add(submitButton);
+
+        bottomPanel.add(keyboard, BorderLayout.NORTH);
+        bottomPanel.add(submitPanel, BorderLayout.CENTER);
+
+        contentPane.add(bottomPanel, BorderLayout.SOUTH);
 
         setContentPane(contentPane);
 
@@ -187,7 +200,7 @@ public class SearchProductByText extends JFrame {
 
         public Product(String name, String imageName) {
             this.name = name;
-            this.image = resizeImage("./images/" + imageName, 50, 50); // Adjust size as needed
+            this.image = resizeImage("../../images/" + imageName, 50, 50); // Adjust size as needed
         }
 
         public String getName() {

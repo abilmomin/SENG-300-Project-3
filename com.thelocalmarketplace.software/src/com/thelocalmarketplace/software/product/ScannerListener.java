@@ -57,27 +57,7 @@ public class ScannerListener implements BarcodeScannerListener {
 	 */
 	@Override
 	public void aBarcodeHasBeenScanned(IBarcodeScanner barcodeScanner, Barcode barcode) {
-		if (software.getStationActive() && !software.getStationBlock()) {
-			software.setStationBlock();
-			
-			BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
-			BarcodedItem barcodedItem;
-			
-			if (product != null) {
-				double productWeight = product.getExpectedWeight(); 
-				long productPrice = product.getPrice();
-
-				software.addTotalOrderWeightInGrams(productWeight); 
-				software.addTotalOrderPrice(productPrice); 
-
-				Mass mass = new Mass(productWeight);
-				barcodedItem = new BarcodedItem(barcode, mass);
-				
-				software.addItemToOrder(barcodedItem);
-				
-				handler.notifyProductAdded(product);
-			}
-		}
+		handler.addItemViaBarcodeScan(barcode);
 	}
 
 	@Override

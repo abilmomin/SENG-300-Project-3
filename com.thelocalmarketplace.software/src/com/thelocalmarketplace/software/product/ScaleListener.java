@@ -82,6 +82,8 @@ public class ScaleListener implements ElectronicScaleListener {
 	        actual = allScales.getCurrentMassOnTheScale();
 	        expected = new Mass(software.getTotalOrderWeightInGrams());
 	        tolerance = allScales.getSensitivityLimit().inMicrograms().longValue() / 2;
+	        
+	        System.out.println("actual: "+ actual + " expected: " + expected);
 
 	        long actualInMicrograms = actual.inMicrograms().longValue();
 	        long expectedInMicrograms = expected.inMicrograms().longValue();

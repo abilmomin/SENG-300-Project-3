@@ -1,4 +1,4 @@
-package com.thelocalmarketplace.software;
+package com.thelocalmarketplace.software.communication.GUI.AttendantStation;
 
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -22,6 +22,10 @@ import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
 
 import ca.ucalgary.seng300.simulation.SimulationException;
+
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
 import com.thelocalmarketplace.software.funds.Receipt;
 import powerutility.PowerGrid;
 
@@ -124,6 +128,35 @@ public class ALogic {
 
 	}
 
+	public void EnableStation(int selectedStation,CustomerStation[] customerStation, SelfCheckoutStationSoftware[] stationSoftwareInstances,AbstractSelfCheckoutStation checkoutStation, StartSession[] startSessions )  {
+	     
+		if (stationSoftwareInstances[selectedStation].getStationBlock()== true) {
+			stationSoftwareInstances[selectedStation].setStationUnblock();	
+	}		startSessions[selectedStation].enableMouseListener();
+	}
+	
+	public boolean DisableStation(int selectedStation,CustomerStation[] customerStation, SelfCheckoutStationSoftware[] stationSoftwareInstances,AbstractSelfCheckoutStation checkoutStation, StartSession[] startSessions) {
+		
+        if (stationSoftwareInstances[selectedStation].getStationBlock() == false) {
+        	if (stationSoftwareInstances[selectedStation].getStationActive() == false) {
+        		stationSoftwareInstances[selectedStation].setStationBlock();
+        		startSessions[selectedStation].disableMouseListener();
+        		startSessions[selectedStation].sessionPopUp("Out of order");
+        		
+ 	
+        	}
+       
+        		return true;
+        }
+        	
+        else {
+        	return false;		
+        }
+        
+	}
+		
+
+		
 
 
 }
