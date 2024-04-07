@@ -45,8 +45,6 @@ public class MembershipNumberInput extends JDialog {
 	public MembershipNumberInput(Frame parent) {
 		super(parent, "Membership Number", true);
 		this.parent = (SelectPayment) parent;
-		setLocationRelativeTo(parent);
-		setVisible(true);
 	}
 	
 	public void frameInit() {
