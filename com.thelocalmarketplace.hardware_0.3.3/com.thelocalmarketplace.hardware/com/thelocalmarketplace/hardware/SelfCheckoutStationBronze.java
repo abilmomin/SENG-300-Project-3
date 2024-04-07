@@ -129,16 +129,16 @@ public class SelfCheckoutStationBronze extends AbstractSelfCheckoutStation {
 			new HashMap<>(), new CoinSlot(), new CoinValidator(currencyConfiguration, coinDenominationsConfiguration),
 			new CoinStorageUnit(coinStorageUnitCapacityConfiguration), coinDenominationsConfiguration, new HashMap<>(),
 			new CoinTray(coinTrayCapacityConfiguration));
-		 System.out.println("super has been called!");
+		 
 		for(int i = 0; i < banknoteDenominations.length; i++)
 			banknoteDispensers.put(banknoteDenominations[i], new BanknoteDispenserBronze());
-		 System.out.println("for loop 1 done !");
+		 
 		for(int i = 0; i < coinDenominations.size(); i++)
 			coinDispensers.put(coinDenominations.get(i), new CoinDispenserBronze(coinDispenserCapacityConfiguration));
-		 System.out.println("for loop 2 done!");
+		 
 		// Hook up everything.
 		interconnect(banknoteInput, banknoteValidator);
-		 System.out.println("interconnect 1 done!");
+		 
 		interconnect(banknoteValidator, banknoteStorage);
 
 		for(IBanknoteDispenser dispenser : banknoteDispensers.values())
