@@ -89,6 +89,7 @@ public class CardHandler implements CardReaderListener {
 
         if (purchaseStatus) {
             fundController.addToTotalPaid(BigDecimal.valueOf(totalOrderPrice));
+            fundController.checkoutStationSoftware.setOrderTotalPrice(0);
             fundController.notifyPaidFunds(BigDecimal.ZERO);
         } else {
             fundController.notifyInvalidFunds(cardType);
