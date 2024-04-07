@@ -54,9 +54,7 @@ public class CardPayment extends JFrame {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            // Placeholder action listen
-            JOptionPane.showMessageDialog(this, "Payment Method Selected. Processing Payment...", "Payment", JOptionPane.INFORMATION_MESSAGE);
-            dispose();
+//            dispose();
         });
 
         add(radioPanel);

@@ -23,6 +23,7 @@ import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.product.Products;
 import powerutility.PowerGrid;
 
@@ -36,6 +37,7 @@ public class ProductTest {
 	private PriceLookUpCode pluCode;
 	private Products testProducts;
 	private ReusableBag bags; 
+	private AttendantPageGUI attendantGUI;
 	//private ReusableBagDispenserBronze reusableBagDispenserBronze;
 	private mockReusableBagDispenser dispenser; 
 	
@@ -47,6 +49,8 @@ public class ProductTest {
 		// to avoid power outages when there is a power surge
 		PowerGrid.engageUninterruptiblePowerSource();
 		grid.forcePowerRestore();
+		
+		attendantGUI = new AttendantPageGUI();
 		
 		checkoutStationBronze = new SelfCheckoutStationBronze();
 		checkoutStationBronze.plugIn(grid);
@@ -76,9 +80,8 @@ public class ProductTest {
 		
 	}
 	@Test
-	public void testHandleBulkyItemReducesTotalOrderWeight() {
-	    
-	    double initialItemWeightInGrams = 2000.0; 
+	public void testHandleBulkyItemReducesTotalOrderWeightWithAttendantApproval() {
+	    double initialItemWeightInGrams = 2000.0;
 	    Numeral[] barcodeDigits = {Numeral.zero, Numeral.one, Numeral.two, Numeral.three, Numeral.four};
 	    Barcode barcode = new Barcode(barcodeDigits);
 	    BarcodedProduct initialProduct = new BarcodedProduct(barcode, "Initial Product", 20, initialItemWeightInGrams);
@@ -86,21 +89,30 @@ public class ProductTest {
 	    testProducts.addItemViaBarcodeScan(barcode); // Adds the initial item to the order
 
 	    // The weight of the bulky item to handle
-	    double bulkyItemWeightInGrams = 1000.0; 
+	    double bulkyItemWeightInGrams = 1000.0;
 
-	    // total order weight 
+	    // total order weight before handling the bulky item
 	    double initialTotalWeight = station.getTotalOrderWeightInGrams();
 
-	    // Handle the bulky item
-	    testProducts.handleBulkyItem(bulkyItemWeightInGrams);
+	    // Create a stub for AttendantPageGUI that simulates attendant approval
+	    AttendantPageGUI attendantGUIStub = new AttendantPageGUI() {
+	        @Override
+	        public boolean bulkItemRequest(String message) {
+	            return true; // Simulate attendant approval
+	        }
+	    };
 
-	    // total order weight is reduced by the weight of the bulky item
+	    // Handle the bulky item with simulated attendant approval
+	    testProducts.handleBulkyItem(bulkyItemWeightInGrams, attendantGUIStub);
+
+	    // total order weight is expected to be reduced by the weight of the bulky item after approval
 	    double expectedTotalWeightAfterHandling = initialTotalWeight - bulkyItemWeightInGrams;
 	    double actualTotalWeightAfterHandling = station.getTotalOrderWeightInGrams();
 
-	    assertTrue("The total order weight should be reduced by the weight of the bulky item",
-	               actualTotalWeightAfterHandling == expectedTotalWeightAfterHandling);
+	    assertEquals("The total order weight should be reduced by the weight of the bulky item upon attendant's approval",
+	                 expectedTotalWeightAfterHandling, actualTotalWeightAfterHandling, 0.001);
 	}
+	
 	
 	@Test
 	public void testPriceChangeAfterAddItemByVisualCatalogue() {
