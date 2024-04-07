@@ -58,6 +58,8 @@ import com.jjjwelectronics.printer.ReceiptPrinterBronze;
 import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
 import com.thelocalmarketplace.software.funds.*;
 
+import powerutility.PowerGrid;
+
 
 public class ReceiptTest {
 
@@ -78,8 +80,9 @@ public class ReceiptTest {
         this.funds = new Funds(this.station);
         this.printer = this.station.getStationHardware().getPrinter();
         this.receipt = new Receipt(printer, funds);
-
-
+        PowerGrid.engageUninterruptiblePowerSource();
+        this.station.station.plugIn(PowerGrid.instance());
+        this.station.station.turnOn();
     }
 
 
