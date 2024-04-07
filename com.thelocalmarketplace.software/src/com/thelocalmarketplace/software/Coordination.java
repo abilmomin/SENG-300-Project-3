@@ -84,4 +84,9 @@ public class Coordination implements FundsObserver, ProductsListener {
     	CustomerStation gui = software.getGUI();
     	gui.customerBaggingAreaPopUp(product);
     }
+
+    @Override
+    public void bagsPurchased(Products productFacade, long totalCost) {
+    	gui.addProductToCart("Reusable Bag", totalCost);
+    }
 }
