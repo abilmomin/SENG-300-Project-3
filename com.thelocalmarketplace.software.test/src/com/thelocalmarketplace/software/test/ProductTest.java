@@ -143,6 +143,48 @@ public class ProductTest {
 	    assertTrue("The total order weight should be updated to include the product weight.",
 	               station.getTotalOrderWeightInGrams() == expectedProduct.getExpectedWeight());
 	}
+	@Test
+	public void testAddBarcodedProductByTextSearch() {
+	    
+	    station.setStationActive(true);
+	    
+
+	    // Create and add a barcoded product to the database for the test
+	    Numeral[] barcodeDigits = {Numeral.one, Numeral.two, Numeral.three};
+	    Barcode barcode = new Barcode(barcodeDigits);
+	    BarcodedProduct testProduct = new BarcodedProduct(barcode, "Test", 100, 500.0);
+	    ProductDatabases.BARCODED_PRODUCT_DATABASE.put(barcode, testProduct);
+
+	    // Perform the action to add an item by text search
+	    testProducts.addItemByTextSearch("Test");
+
+	    // Assertions to verify the product was added successfully
+	    assertTrue("The total order weight should include the weight of the added product",
+	               station.getTotalOrderWeightInGrams() == 500.0);
+	    assertEquals("The total order weight should include the weight of the added product", 500.0, station.getTotalOrderWeightInGrams(), 0.001);
+	    assertEquals("The total order price should include the price of the added product", 100, station.getTotalOrderPrice(), 0.001);
+
+	}
+	@Test
+	public void testProductNotFoundByTextSearch() {
+	    
+	    station.setStationActive(true);
+	    
+
+	    // Record the initial total order weight and price
+	    double initialWeight = station.getTotalOrderWeightInGrams();
+	    double initialPrice = station.getTotalOrderPrice();
+
+	   
+	    testProducts.addItemByTextSearch("Non-existent Product");
+
+	    // Assertions to verify that nothing was added since the product was not found
+	    assertTrue("The total order weight should not change when the product is not found",
+	               station.getTotalOrderWeightInGrams() == initialWeight);
+	    assertTrue("The total order price should not change when the product is not found",
+	               station.getTotalOrderPrice() == initialPrice);
+	}
+	
 	
 	
 	//testing when not enough bags are in the dispenser 
