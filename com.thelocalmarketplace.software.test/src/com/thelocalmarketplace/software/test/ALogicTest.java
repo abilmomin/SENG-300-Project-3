@@ -62,18 +62,15 @@ public class ALogicTest {
 		SelfCheckoutStationGold.configureCoinDenominations(coinDenominations);
 		SelfCheckoutStationGold.configureCurrency(Currency.getInstance("CAD"));
 		SelfCheckoutStationGold checkoutStationG = new SelfCheckoutStationGold();
+		PowerGrid.engageUninterruptiblePowerSource();
 		checkoutStationG.plugIn(PowerGrid.instance());
 		checkoutStationG.turnOn();
 		this.station = new SelfCheckoutStationSoftware(checkoutStationG);
 		this.aLogic = new ALogic();
 		
-		
 		customerStations = new CustomerStation[4]; // Example size
         stationSoftwareInstances = new SelfCheckoutStationSoftware[4];
         teststation = new SelfCheckoutStationBronze();
-        teststation.resetConfigurationToDefaults();
-		teststation.plugIn(PowerGrid.instance());
-		teststation.turnOn();
 	}
 
 	@Test
@@ -110,8 +107,6 @@ public class ALogicTest {
 			dispenser.unload();
 			assertTrue(dispenser.size() == 0);
 		}
-		cS.plugIn(PowerGrid.instance());
-		cS.turnOn();
 		aLogic.refillBanknoteDispensers(station);
 		for (BigDecimal denomination : denominations) {
 			IBanknoteDispenser dispenser = dispensers.get(denomination);
@@ -141,16 +136,14 @@ public class ALogicTest {
 	public void testRefillInk() throws OverloadedDevice {
 		ISelfCheckoutStation cS = station.getStationHardware();
 		IReceiptPrinter printer = cS.getPrinter();
-		Receipt receipt = new Receipt(printer, new Funds(station));
-		aLogic.refillPrinterInk(station, receipt);
+		aLogic.refillPrinterInk(station);
 	}
 
 	@Test
 	public void testRefillPaper() throws OverloadedDevice {
 		ISelfCheckoutStation cS = station.getStationHardware();
 		IReceiptPrinter printer = cS.getPrinter();
-		Receipt receipt = new Receipt(printer, new Funds(station));
-		aLogic.refillPrinterPaper(station, receipt);
+		aLogic.refillPrinterPaper(station);
 	}
 
 

@@ -52,6 +52,7 @@ import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.funds.Funds;
+import com.thelocalmarketplace.software.funds.Receipt;
 import com.thelocalmarketplace.software.product.Products;
 import com.thelocalmarketplace.software.product.ScannerListener;
 import com.thelocalmarketplace.hardware.external.CardIssuer;
@@ -187,6 +188,9 @@ public class SelfCheckoutStationSoftware {
 		return activeSession;
 	}
 	
+	public Receipt getReceipt() {
+		return funds.receipt;
+	}
 	/**
 	 * Function to start a session for self-checkout machine
 	 * @param scanner The scanner used to obtain user input.
