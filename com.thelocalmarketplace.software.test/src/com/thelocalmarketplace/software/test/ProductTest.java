@@ -155,6 +155,23 @@ public class ProductTest {
 	    assertTrue("The total order weight should be updated to include the product weight.",
 	               station.getTotalOrderWeightInGrams() == expectedProduct.getExpectedWeight());
 	}
+
+	@Test
+	public void testAddItemViaPluCodeWithValidPluCode() {
+		
+		station.setStationActive(true);
+	    boolean addItemResult = testProducts.addItemByPLUCode(pluCodedItem);
+		assertTrue("The PlUCodedItem should be added sucessfully", addItemResult);
+		
+	}
+	
+	@Test(expected = NullPointerSimulationException.class)
+	public void testAddItemViaPluCodeWithInvalidPluCode() {
+	    station.setStationActive(true);
+
+		
+	}
+	
 	@Test
 	public void testAddBarcodedProductByTextSearch() {
 	    
