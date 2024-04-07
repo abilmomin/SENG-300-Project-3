@@ -360,10 +360,6 @@ public class CustomerStation extends JFrame {
         return button;
     }
 
-    public void askForMembershipNumber() {
-    	MembershipNumberInput dialog = new MembershipNumberInput(this);
-        dialog.frameInit();
-    }
     
     public JPanel createKeypadPanel() {
     	JPanel keypadPanel = new JPanel();
