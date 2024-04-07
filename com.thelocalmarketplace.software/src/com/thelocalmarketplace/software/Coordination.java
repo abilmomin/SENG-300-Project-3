@@ -62,8 +62,6 @@ public class Coordination implements FundsObserver, ProductsListener {
     
     @Override
     public void productAdded(Products productFacade, Product product) {
-        System.out.println(this.gui);
-    	
     	String name = "";
     	
     	if (product instanceof BarcodedProduct) {

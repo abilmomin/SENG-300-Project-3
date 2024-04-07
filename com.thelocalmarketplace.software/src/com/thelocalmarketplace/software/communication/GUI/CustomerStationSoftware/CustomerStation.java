@@ -80,19 +80,17 @@ public class CustomerStation extends JFrame {
             // Get the weight of that product
             double productWeight = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode).getExpectedWeight();
             Mass mass = new Mass(productWeight);
-            BarcodedItem barcodedItem = new BarcodedItem(barcode, mass);
+            BarcodedItem barcodedItem = new BarcodedItem(barcode, mass); 
         	
         	IBarcodeScanner scanner = stationSoftwareInstance.getStationHardware().getMainScanner();
         	scanner.scan(barcodedItem);
+        	        	
+        	BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
         	
-        	IElectronicScale baggingArea = stationSoftwareInstance.getStationHardware().getBaggingArea();
-        	baggingArea.addAnItem(barcodedItem);
+        	new AddtoBagging(product, stationSoftwareInstance, productWeight);
         });
         
-        JButton enterPLUBtn = createButton("Enter PLU Code", e -> {
-        	
-        });
-        
+        JButton enterPLUBtn = createButton("Enter PLU Code", null);
         JButton searchProductBtn = createButton("Search Product", null);
         JButton removeItemBtn = createButton("Remove Item", null);
         JButton doNotBagBtn = createButton("Do Not Bag", null);
@@ -223,9 +221,7 @@ public class CustomerStation extends JFrame {
         
         // Check if the user clicked OK
         if (option == JOptionPane.OK_OPTION) {
-            // User clicked OK, proceed with bagging
-            
-            // Initialize the AddownBag instance
+            AbstractElectronicScale scale = (AbstractElectronicScale) stationSoftwareInstance.getStationHardware().getBaggingArea();
             addOwnBag = new AddownBag(stationSoftwareInstance, scale, this, this.attendantGUI);
         } else {
         	 JOptionPane.getRootFrame().dispose();
@@ -310,7 +306,7 @@ public class CustomerStation extends JFrame {
 
     	    if (product != null) {
     	        // If a product is found, display the AddtoBagging popup
-    	        AddtoBagging popup = new AddtoBagging(product, stationSoftwareInstance);
+    	        AddtoBagging popup = new AddtoBagging(product, stationSoftwareInstance, 0.0);
     	        popup.setVisible(true);
     	    } else {
     	        // If no product is found, show an error message
@@ -404,30 +400,12 @@ public class CustomerStation extends JFrame {
     }
     
     public void customerBaggingAreaPopUp(Product product) {
-        JOptionPane.showMessageDialog(this, "Please add the item to the bagging area.");
-        
-        addItemToBaggingAreaAction(product);
-    }
-    
-    private void addItemToBaggingAreaAction(Product product) {
-    	
+    	double weight = 0.0;
     	if (product instanceof BarcodedProduct) {
     		BarcodedProduct barcodedProduct = (BarcodedProduct) product;
-    		
-            double productWeight = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcodedProduct.getBarcode()).getExpectedWeight();
-            Mass mass = new Mass(productWeight);
-            BarcodedItem barcodedItem = new BarcodedItem(barcodedProduct.getBarcode(), mass);
-            
-        	IElectronicScale baggingArea = stationSoftwareInstance.getStationHardware().getBaggingArea();
-        	baggingArea.addAnItem(barcodedItem);
-    		
-    	} else {
-    		PLUCodedProduct pluCodedProduct = (PLUCodedProduct) product;
-    		PLUCodedItem pluItem = new PLUCodedItem(pluCodedProduct.getPLUCode(), new Mass(1.0));
-    		
-        	IElectronicScale baggingArea = stationSoftwareInstance.getStationHardware().getBaggingArea();
-        	baggingArea.addAnItem(pluItem);
+    		weight = barcodedProduct.getExpectedWeight();
     	}
+    	new AddtoBagging(product, stationSoftwareInstance, weight);
     }
 
     private void requestAssistance() {

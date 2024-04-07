@@ -147,7 +147,6 @@ public class Products {
 			software.setStationBlock();
 			
 			BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
-			BarcodedItem barcodedItem;
 			
 			if (product != null) {
 				double productWeight = product.getExpectedWeight(); 
@@ -157,7 +156,7 @@ public class Products {
 				software.addTotalOrderPrice(productPrice); 
 
 				Mass mass = new Mass(productWeight);
-				barcodedItem = new BarcodedItem(barcode, mass);
+				BarcodedItem barcodedItem = new BarcodedItem(barcode, mass);
 				
 				software.addItemToOrder(barcodedItem);
 				

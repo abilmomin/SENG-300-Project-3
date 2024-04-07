@@ -22,7 +22,7 @@ import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 public class AddtoBagging extends JFrame {
 	
-	public AddtoBagging(Product product, SelfCheckoutStationSoftware stationSoftwareInstance) {
+	public AddtoBagging(Product product, SelfCheckoutStationSoftware stationSoftwareInstance, double weight) {
 
 	    setTitle("Add to Bag");
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -61,12 +61,10 @@ public class AddtoBagging extends JFrame {
 	    
 	    button.addActionListener(e -> {
 	    	if (product instanceof BarcodedProduct) {
-	    		BarcodedProduct barcodedProduct = (BarcodedProduct) product;
-	    		
-	    		stationSoftwareInstance.getProductHandler().addItemViaBarcodeScan(barcodedProduct.getBarcode());
+	    		BarcodedProduct barcodedProduct = (BarcodedProduct) product;	
 	    		
 	            double productWeight = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcodedProduct.getBarcode()).getExpectedWeight();
-	            Mass mass = new Mass(productWeight);
+	            Mass mass = new Mass(weight);
 	            BarcodedItem barcodedItem = new BarcodedItem(barcodedProduct.getBarcode(), mass);
 	            
 	        	IElectronicScale baggingArea = stationSoftwareInstance.getStationHardware().getBaggingArea();
