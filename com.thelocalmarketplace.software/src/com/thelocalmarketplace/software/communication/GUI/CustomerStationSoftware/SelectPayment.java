@@ -40,7 +40,7 @@ public class SelectPayment extends JFrame {
         billTotalLabel.setFont(new Font("Arial", Font.BOLD, 18));
         totalPaidLabel.setFont(new Font("Arial", Font.BOLD, 18));
         amountOwingLabel.setFont(new Font("Arial", Font.BOLD, 18));
-
+        
         labelsPanel.add(billTotalLabel);
         labelsPanel.add(totalPaidLabel);
         labelsPanel.add(amountOwingLabel);
@@ -94,7 +94,7 @@ public class SelectPayment extends JFrame {
         add(mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Select Payment Method");
-        pack();
+        setSize(400, 500);
         setLocationRelativeTo(null);
         setVisible(false);
     }

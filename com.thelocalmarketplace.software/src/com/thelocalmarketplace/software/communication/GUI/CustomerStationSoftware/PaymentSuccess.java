@@ -48,8 +48,6 @@ public class PaymentSuccess extends JFrame {
 		smallTextLabel.setFont(new Font("Arial", Font.PLAIN, 14));
 		smallTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-
-
 		JLabel receiptQuestion = new JLabel("Would you like a receipt?");
 		JCheckBox ck1 = new JCheckBox("Yes");
 		ck1.addActionListener(new ActionListener() {
@@ -65,7 +63,6 @@ public class PaymentSuccess extends JFrame {
 					e1.printStackTrace();
 				}
 			}
-
 		});
 		JCheckBox ck2 = new JCheckBox("No");
 		ck2.addActionListener(new ActionListener() {
@@ -74,9 +71,7 @@ public class PaymentSuccess extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(PaymentSuccess.this, "Thank you for shopping with us! We hope to see you again!");
 				System.exit(EXIT_ON_CLOSE);
-
 			}
-
 		});
 		
 //	    JLabel bye = new JLabel("Have a great day!");

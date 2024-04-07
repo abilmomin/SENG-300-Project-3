@@ -36,13 +36,13 @@ public class Coordination implements FundsObserver, ProductsListener {
     @Override
     public void fundsAdded(Funds fundsFacade, BigDecimal funds) {
     	if(gui != null)
-    		gui.updatePayDisplay(funds.doubleValue());
+    		gui.updatePaidDisplay(funds.doubleValue());
     }
 
     @Override
     public void fundsRemoved(Funds fundsFacade, BigDecimal funds) {
     	if(gui != null)
-    		gui.updatePayDisplay(-1*funds.doubleValue());
+    		gui.updatePaidDisplay(-1*funds.doubleValue());
     }
 
     @Override
@@ -72,7 +72,7 @@ public class Coordination implements FundsObserver, ProductsListener {
     @Override
     public void productAdded(Products productFacade, Product product) {
     	if(gui != null) {
-    		gui.updatePayDisplay(0);
+    		gui.updateTotalOwedDisplay();
     	
 	    	String name = "";
 	    	
@@ -90,9 +90,9 @@ public class Coordination implements FundsObserver, ProductsListener {
     @Override
     public void productRemoved(Products productFacade, Product product) {
     	if(gui != null)
-    		gui.updatePayDisplay(0);
+    		gui.updateTotalOwedDisplay();
     }
-    
+   
     @Override
     public void productToBaggingArea(Products productFacade, Product product) {
     	if(gui != null)

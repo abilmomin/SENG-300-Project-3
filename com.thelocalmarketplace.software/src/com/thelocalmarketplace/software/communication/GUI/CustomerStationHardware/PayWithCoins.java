@@ -117,12 +117,12 @@ public class PayWithCoins extends JFrame {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                totalCount = totalCount.add(denomination);
-                updateTotalLabel();
-                Coin coin = new Coin(Currency.getInstance("CAD"), denomination);
                 try {
-                	System.out.println(denomination.doubleValue());
+                	Coin coin = new Coin(Currency.getInstance("CAD"), denomination);
 					software.station.getCoinSlot().receive(coin);
+					
+					totalCount = totalCount.add(denomination);
+	                updateTotalLabel();
 				} catch (DisabledException | CashOverloadException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
