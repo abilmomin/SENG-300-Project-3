@@ -39,7 +39,7 @@ public class ProductTest {
 	private ReusableBag bags; 
 	private AttendantPageGUI attendantGUI;
 	//private ReusableBagDispenserBronze reusableBagDispenserBronze;
-	private mockReusableBagDispenser dispenser; 
+	private MockReusableBagDispenser dispenser; 
 	
 	
 	@Before
@@ -57,7 +57,7 @@ public class ProductTest {
 		checkoutStationBronze.turnOn();
 		
 		
-		dispenser = new mockReusableBagDispenser(3, 100); 
+		dispenser = new MockReusableBagDispenser(3, 100); 
 		dispenser.plugIn(grid);
 		dispenser.turnOn();
 		
@@ -203,7 +203,7 @@ public class ProductTest {
 	@Test (expected = OverloadedDevice.class)
 	public void testPurchaseBags_notEnoughBags() throws OverloadedDevice, EmptyDevice {
 		//initializing a new dispenser that has 2 bags loaded and a capacity of 100 reusable bags 
-		mockReusableBagDispenser dispenser = new mockReusableBagDispenser(2, 100); 
+		MockReusableBagDispenser dispenser = new MockReusableBagDispenser(2, 100); 
 		ReusableBag bag1 = new ReusableBag(); 
         ReusableBag bag2 = new ReusableBag();
         ReusableBag bag3 = new ReusableBag();
@@ -218,7 +218,7 @@ public class ProductTest {
 	//Testing when there are enough bags in the dispenser 
 		@Test 
 		public void testPurchaseBags_EnoughBags() throws OverloadedDevice, EmptyDevice {
-			mockReusableBagDispenser dispenser = new mockReusableBagDispenser(2, 100); 
+			MockReusableBagDispenser dispenser = new MockReusableBagDispenser(2, 100); 
 			ReusableBag bag1 = new ReusableBag(); 
 	        ReusableBag bag2 = new ReusableBag();
 	        ReusableBag[] bags = {bag1, bag2}; 
