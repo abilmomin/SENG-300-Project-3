@@ -29,23 +29,12 @@ Nami Marwah              30178528
 package com.thelocalmarketplace.software;
 
 import ca.ucalgary.seng300.simulation.InvalidStateSimulationException;
-import powerutility.PowerGrid;
-
 import static com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation.resetConfigurationToDefaults;
-
-import java.math.BigDecimal;
 import java.util.*;
-
 import com.jjjwelectronics.Item;
 import com.jjjwelectronics.Mass;
-import com.jjjwelectronics.bag.IReusableBagDispenser;
-import com.jjjwelectronics.card.ICardReader;
-import com.jjjwelectronics.printer.IReceiptPrinter;
-import com.jjjwelectronics.scale.IElectronicScale;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
-import com.jjjwelectronics.scanner.IBarcodeScanner;
-import com.tdc.coin.CoinSlot;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
@@ -68,13 +57,6 @@ import com.jjjwelectronics.card.Card;
 public class SelfCheckoutStationSoftware {
 	// Things to listen to (hardware)
 	public AbstractSelfCheckoutStation station;
-	private IElectronicScale baggingArea;
-	private IReusableBagDispenser reusableBagDispenser;
-	private IReceiptPrinter printer;
-	private ICardReader cardReader;
-	private IBarcodeScanner mainScanner;
-	private IBarcodeScanner handheldScanner;
-	private CoinSlot coinSlot;
 	private CustomerStation gui;
 	private ProductsDatabase allProducts; 
 
