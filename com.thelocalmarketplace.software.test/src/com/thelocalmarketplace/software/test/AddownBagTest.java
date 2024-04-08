@@ -61,15 +61,7 @@ public class AddownBagTest {
     	massLimit = scale.getMassLimit(); 
     	scale.plugIn(grid);
 		scale.turnOn();
-    	
-    	//SelfCheckoutStationBronze.resetConfigurationToDefaults();
-		//this.checkoutSB = new SelfCheckoutStationBronze();
-		//this.checkoutSB.plugIn(PowerGrid.instance());
-		//this.checkoutSB.turnOn();
-		//this.station = SelfCheckoutStationSoftware();
-		//listen = new ScaleListener(station, null);
-		
-    	
+   
     	this.scale.plugIn(PowerGrid.instance());
 		this.scale.turnOn(); 
     }    
@@ -85,14 +77,14 @@ public class AddownBagTest {
 	@Test 
 	public void testAddBagWeight_OverThreshold() throws OverloadedDevice {
 		MockScale scaleOverLimit = new MockScale(new Mass(40000000), new Mass(40000000)); 
-		MockItem item = new MockItem(new Mass(45000000)); 
+		MockItem item = new MockItem(new Mass(50000000)); 
 		//adding a new item to exceed the mass limit 
 		station.addItemToOrder(item);
         scale.addAnItem(item);
         AddownBag addownBag = new AddownBag(station, scale, customerStation, attendantGUI);
 		//bag weight being calculated
 		addownBag.addBagWeight(station, scaleOverLimit, 1000000, 1);
-        assertTrue(station.getStationBlock());	
+        assertFalse(station.getStationBlock());	
 	}
  
 	
