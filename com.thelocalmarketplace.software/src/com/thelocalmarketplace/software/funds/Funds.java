@@ -298,22 +298,74 @@ public class Funds {
 		
 		BigDecimal amountDispensed = new BigDecimal("0.0");
 		BigDecimal remainingAmount = changeValue;
-		List<BigDecimal> coinDenominations = station.getCoinDenominations().stream().sorted(Collections.reverseOrder()).collect(Collectors.toList());
-	    BigDecimal[] bankNoteDenominations = Arrays.stream(station.getBanknoteDenominations()).sorted(Collections.reverseOrder()).toArray(BigDecimal[]::new);
+		List<BigDecimal> coinDenominations = station.getCoinDenominations();
+		Collections.sort(coinDenominations);
+		Collections.reverse(coinDenominations);
+		List<BigDecimal> bankNoteDenominations = Arrays.stream(station.getBanknoteDenominations())
+				.collect(Collectors.toList());
+		Collections.sort(bankNoteDenominations);
+		Collections.reverse(bankNoteDenominations);
 
 		// This approach aims to find the optimal combination of denominations to minimize the
 		// number of banknotes and coins used while considering the limited availability of
 		// each denomination.
 		while (remainingAmount.compareTo(BigDecimal.ZERO) > 0) {
-			BigDecimal newRemainingAmount = dispenseBanknote(remainingAmount, bankNoteDenominations, station);
-			if (newRemainingAmount.compareTo(remainingAmount) == 0) { // If no banknotes were dispensed, try coins.
-	            newRemainingAmount = dispenseCoin(remainingAmount, coinDenominations, station);
-	        }
-	        if (newRemainingAmount.compareTo(remainingAmount) == 0) break; // If no change was dispensed, exit.
-	        remainingAmount = newRemainingAmount; // Update remaining amount for next iteration.
-	    }
+			// If neither banknotes nor coins can be used, break the loop
+			BigDecimal lowestCoin = coinDenominations.get(coinDenominations.size() - 1);
+			BigDecimal lowestBankNote = bankNoteDenominations.get(bankNoteDenominations.size() - 1);
+			BigDecimal lowestVal;
+			int sizeOfLowest;
+			
+			if(lowestCoin.compareTo(lowestBankNote) > 0) {
+				lowestVal = lowestBankNote;
+				sizeOfLowest = (int)banknotesAvailable.get(lowestVal);
+				if (remainingAmount.compareTo(lowestVal) < 0 && ( sizeOfLowest > 0) ) {
+					station.getBanknoteDispensers().get(lowestVal).emit();
+					amountDispensed = changeValue;
+					remainingAmount = BigDecimal.ZERO;
+					break;
+				}
+			}
+			else {
+				lowestVal = lowestCoin;
+				sizeOfLowest = (int)coinsAvailable.get(lowestVal);
+				if (remainingAmount.compareTo(lowestVal) < 0 && ( sizeOfLowest > 0) ) {
+					station.getCoinDispensers().get(lowestVal).emit();
+					amountDispensed = changeValue;
+					remainingAmount = BigDecimal.ZERO;
+					break;
+				}
+			}
+			
+			boolean dispensed = false;
+			// Try using banknotes first
+			for (BigDecimal bankNote : bankNoteDenominations) {
+				if (remainingAmount.compareTo(bankNote) >= 0 && (int)banknotesAvailable.get(bankNote) > 0) {
+					station.getBanknoteDispensers().get(bankNote).emit();
+					amountDispensed = amountDispensed.add(bankNote);
+					remainingAmount = remainingAmount.subtract(bankNote);
+					dispensed = true;
+					break;
+				}
+			}
 
-	    return remainingAmount.compareTo(BigDecimal.ZERO) == 0;
+			// If no banknotes are available or insufficient, try using coins
+			if (!dispensed) {
+				for (BigDecimal coin : coinDenominations) {
+					if (remainingAmount.compareTo(coin) >= 0 && (int)coinsAvailable.get(coin) > 0) {
+						station.getCoinDispensers().get(coin).emit();
+						amountDispensed = amountDispensed.add(coin);
+						remainingAmount = remainingAmount.subtract(coin);
+						dispensed = true;
+						break;
+					}
+				}
+			}
+			if(!dispensed)
+				break;
+		}
+
+		return remainingAmount.compareTo(BigDecimal.ZERO) == 0;
 	}
 	
 	
