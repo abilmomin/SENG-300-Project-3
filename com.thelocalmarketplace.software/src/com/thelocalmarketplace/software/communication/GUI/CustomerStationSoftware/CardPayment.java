@@ -241,6 +241,10 @@ public class CardPayment extends JDialog {
     	return keypadPanel;
     }
    
+    
+    /**
+     * ActionListener implementation for adding a digit to the pinTextField.
+     */
     ActionListener addNum = e -> {
         JButton button = (JButton) e.getSource();
         String digit = button.getText();
