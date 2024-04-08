@@ -665,4 +665,9 @@ public class CustomerStation extends JFrame {
     public boolean getSignal() {
         return needsAssistance;
     }
+    
+
+	public AttendantPageGUI getAttendantGUI() {
+		return this.attendantGUI;
+	}
 }
