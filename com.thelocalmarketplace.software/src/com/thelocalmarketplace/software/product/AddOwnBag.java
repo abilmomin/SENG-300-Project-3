@@ -15,7 +15,7 @@ import com.thelocalmarketplace.software.communication.GUI.AttendantStation.Atten
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 
 
-public class AddownBag implements ElectronicScaleListener {
+public class AddOwnBag implements ElectronicScaleListener {
 	
 	private SelfCheckoutStationSoftware weightOrder;
     private AbstractElectronicScale scale1;
@@ -24,9 +24,15 @@ public class AddownBag implements ElectronicScaleListener {
     private CustomerStation customerStation;
     private AttendantPageGUI attendantGUI;
     
-	
-	//constructor
-	public AddownBag(SelfCheckoutStationSoftware weightOrder, AbstractElectronicScale scale1, CustomerStation customerStation, AttendantPageGUI attendantGUI) {
+	/**
+	 * Constructor for AddOwnBag
+	 * 
+	 * @param weightOrder
+	 * @param scale1
+	 * @param customerStation
+	 * @param attendantGUI
+	 */
+	public AddOwnBag(SelfCheckoutStationSoftware weightOrder, AbstractElectronicScale scale1, CustomerStation customerStation, AttendantPageGUI attendantGUI) {
 		this.weightOrder = weightOrder;
 		this.scale1 = scale1;
 		this.customerStation = customerStation;

@@ -31,7 +31,7 @@
 
 package com.thelocalmarketplace.software.test;
 
-import com.thelocalmarketplace.software.product.AddownBag;
+import com.thelocalmarketplace.software.product.AddOwnBag;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -101,7 +101,7 @@ public class AddOwnBagTest {
 		//adding a new item to exceed the mass limit 
 		station.addItemToOrder(item);
         scale.addAnItem(item);
-        AddownBag addownBag = new AddownBag(station, scale, customerStation, attendantGUI);
+        AddOwnBag addownBag = new AddOwnBag(station, scale, customerStation, attendantGUI);
 		//bag weight being calculated
 		addownBag.addBagWeight(station, scaleOverLimit, 1000000, 1);
         assertFalse(station.getStationBlock());	
@@ -120,7 +120,7 @@ public class AddOwnBagTest {
 		station.addItemToOrder(item);
 		scale.addAnItem(item);
 		
-		AddownBag addownBag = new AddownBag(station, scale, customerStation, attendantGUI);
+		AddOwnBag addownBag = new AddOwnBag(station, scale, customerStation, attendantGUI);
 		addownBag.addBagWeight(station, scaleInLimit, 1000000, 1);
 		assertFalse(station.getStationBlock()); 
 	}
@@ -133,7 +133,7 @@ public class AddOwnBagTest {
 	@Test 
 	public void testGetBagWeight_noBagAdded() throws OverloadedDevice {
 		MockScale orderNoBagScale = new MockScale(new Mass(4000000), new Mass (4000000));
-		AddownBag addOwnBag = new AddownBag(station, orderNoBagScale, customerStation, attendantGUI);
+		AddOwnBag addOwnBag = new AddOwnBag(station, orderNoBagScale, customerStation, attendantGUI);
 		double bagWeight = addOwnBag.getBagWeight(station, orderNoBagScale);
 		assertEquals(0.0, bagWeight, 0.0); //120.0? 
 	}
@@ -148,7 +148,7 @@ public class AddOwnBagTest {
 	public void testGetBagWeight_BagAdded () throws OverloadedDevice {
 		MockScale orderAndBagScale = new MockScale(new Mass(50000000), new Mass(50000000)); 
 		//adding bag (1 gram) to the over limit scale 
-		AddownBag addownBag = new AddownBag(station, orderAndBagScale, customerStation, attendantGUI); 
+		AddOwnBag addownBag = new AddOwnBag(station, orderAndBagScale, customerStation, attendantGUI); 
 		double bagWeight = addownBag.getBagWeight(station, orderAndBagScale); 
 		assertEquals(10.0, bagWeight, 10.0); //there should be weight becasue the bag has been added
 	}
@@ -160,7 +160,7 @@ public class AddOwnBagTest {
 	public void testPrint_mess() {
 		ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
 	    System.setOut(new PrintStream(outputStreamCaptor));
-	    AddownBag addownBag = new AddownBag(station, scale, customerStation, attendantGUI);
+	    AddOwnBag addownBag = new AddOwnBag(station, scale, customerStation, attendantGUI);
 	    addownBag.printMessage();
         Assert.assertEquals("You may now continue", outputStreamCaptor.toString().trim()); 
 	}
@@ -174,7 +174,7 @@ public class AddOwnBagTest {
 				throw new OverloadedDevice(); 
 			}
 		};
-		AddownBag addownBag = new AddownBag(station,scale, customerStation, attendantGUI); 
+		AddOwnBag addownBag = new AddOwnBag(station,scale, customerStation, attendantGUI); 
 		double bagWeight = addownBag.getBagWeight(station, scale); 
 		Assert.assertEquals(0.0, bagWeight, 0.001);
 	}
@@ -195,7 +195,7 @@ public class AddOwnBagTest {
 			}
 		};
 		double weightOfBag = 50.0;
-		AddownBag addownBag = new AddownBag(station, scale, customerStation, attendantGUI);
+		AddOwnBag addownBag = new AddOwnBag(station, scale, customerStation, attendantGUI);
 		addownBag.addBagWeight(station, scale, weightOfBag, 1);
 			assertFalse(false); 
 	}
