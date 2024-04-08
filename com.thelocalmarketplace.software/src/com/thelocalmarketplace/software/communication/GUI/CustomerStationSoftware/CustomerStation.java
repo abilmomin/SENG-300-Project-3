@@ -105,17 +105,15 @@ public class CustomerStation extends JFrame {
         });
         
         JButton enterPLUBtn = createButton("Enter PLU Code", e -> {
-        	
+        	replaceCartPanelWithKeypadPanel();
         });
 
         JButton searchProductBtn = createButton("Search Product", e -> {
         	searchProductByText.setVisible(true);
         });
-        
 
         JButton removeItemBtn = createButton("Remove Item", e -> {
             handleRemoveItem();
-        	
         });
         
         JButton purchaseBagsBtn = createButton("Purchase Bags", e -> {
@@ -227,10 +225,6 @@ public class CustomerStation extends JFrame {
         PLUPanel.add(screenPanel, BorderLayout.NORTH);
         PLUPanel.add(returnBtn, BorderLayout.SOUTH);
         
-        enterPLUBtn.addActionListener(e -> {
-        	replaceCartPanelWithKeypadPanel();
-        });
-        
         // Add main panel to frame
         add(mainPanel);
 
@@ -253,22 +247,6 @@ public class CustomerStation extends JFrame {
     public void updateTotalOwedDisplay() {
     	paymentWindow.updatePanel();
     }
-    
-    private void dontBagItem() {
-		// TODO Auto-generated method stub
-    	ArrayList<Item> orderList = stationSoftwareInstance.getOrder();
-    	if (!orderList.isEmpty()) {
-    		int lastIndex = orderList.size() - 1;
-
-            // Extract the last item from the list
-            Item lastItem = orderList.get(lastIndex);
-            double massInGramsDouble = lastItem.getMass().inGrams().doubleValue();
-    		products.handleBulkyItem(massInGramsDouble,this.attendantGUI);
-    	} else {
-    	    // Handle the case when the list is empty
-    		JOptionPane.showMessageDialog(this, "Scan Item First");
-    	}
-	}
     
     private void handleScanBarcode() {
         // Get a random barcode from the available barcoded products
@@ -467,7 +445,6 @@ public class CustomerStation extends JFrame {
             button.setFont(new Font("Arial", Font.PLAIN, 16));
             keypadPanel.add(button);
             button.addActionListener(addNum);
-            
         }
     	
     	JButton enter = new JButton("Enter");
@@ -496,29 +473,21 @@ public class CustomerStation extends JFrame {
         	}
         });
     	
-    	
     	enter.addActionListener(e -> {
     	    String userInput = screenTextField.getText();
 
     	    PLUCodedProduct product = stationSoftwareInstance.matchCodeAndPLUProduct(userInput);
+            PLUCodedItem pluItem = new PLUCodedItem(product.getPLUCode(), new Mass(1.0));
 
-    	    if (product != null) {
-    	        // If a product is found, display the AddtoBagging popup
-    	        AddtoBagging popup = new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
-    	        popup.setVisible(true);
-    	    } else {
-    	        // If no product is found, show an error message
-    	        JOptionPane.showMessageDialog(this, "Product not found. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
-    	    }
+            stationSoftwareInstance.getProductHandler().addItemByPLUCode(pluItem);
 
-    	    // Clear the PLU input field
+    	    AddtoBagging popup = new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
+			popup.setVisible(true);
     	    screenTextField.setText("");
 
-    	    // Switch back to the previous panel if needed
     	    replaceCartPanelWithKeypadPanel();
     	});
 
-    	
     	 return keypadPanel;
     }
    
@@ -641,11 +610,9 @@ public class CustomerStation extends JFrame {
         return needsAssistance;
     }
 
-	public AttendantPageGUI getAttendantGUI() {
-		return this.attendantGUI;
-	}
-
-
+    public AttendantPageGUI getAttendantGUI() {
+    	return attendantGUI;
+    }
 }
 
 
