@@ -114,6 +114,9 @@ public class AddownBagTest {
 	@Test 
 	public void testAddBagWeight_OverThreshold () throws OverloadedDevice {
 		MockScale scaleOverLimit = new MockScale(new Mass(40000000), new Mass(40000000));
+		scaleOverLimit.plugIn(grid);
+		scaleOverLimit.turnOn();
+		scaleOverLimit.enable();
 		//adding a new item to exceed the mass limit 
 		scaleOverLimit.addAnItem(new MockItem(new Mass(45000000))); 
 		//adding bag (1 gram) to the over limit scale 
@@ -126,6 +129,10 @@ public class AddownBagTest {
 	@Test
 	public void testAddBagWeight_InThreshold() throws OverloadedDevice {
 		MockScale scaleInLimit = new MockScale(new Mass(40000000), new Mass(40000000));
+		scaleInLimit.plugIn(grid);
+		scaleInLimit.turnOn();
+		scaleInLimit.enable();
+
 		// adding an item to the scale that is within the mass limit 
 		//scaleInLimit.addAnItem(new MockItem(new Mass(29000000)));  
 		
