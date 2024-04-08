@@ -357,15 +357,17 @@ public class Products {
 			try {
 				reusableBagDispenser.load(bags); //requires power
 				// making sure dispenser has enough bags 
-				if(reusableBagDispenser.getQuantityRemaining() < bags.length || reusableBagDispenser.getCapacity() <bags.length) {
-					throw new EmptyDevice("Dispenser does not have enough bags");
+				//changed here 
+				if(bags.length + reusableBagDispenser.getQuantityRemaining() > reusableBagDispenser.getCapacity()) {
+					throw new OverloadedDevice();
 				}
 				else {
-					reusableBagDispenser.load(bags);
+					//reusableBagDispenser.load(bags);
 					//dispensing appropriate number of bags and notifies that bags are dispensed
 						reusableBagDispenser.dispense();
+					
 					if(reusableBagDispenser.getQuantityRemaining() == 0) {
-						reusableBagDispenser.notify(); 
+						//reusableBagDispenser.notify(); 
 						throw new EmptyDevice("Dispenser is now out of bags");
 					}	
 				}
