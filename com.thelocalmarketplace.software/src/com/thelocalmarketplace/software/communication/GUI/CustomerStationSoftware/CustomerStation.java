@@ -475,17 +475,26 @@ public class CustomerStation extends JFrame {
     	
     	enter.addActionListener(e -> {
     	    String userInput = screenTextField.getText();
+    	    
+    	    if (userInput.length() == 4) {
+        	    PLUCodedProduct product = stationSoftwareInstance.matchCodeAndPLUProduct(userInput);
+        	    
+        	    if (product != null) {
+                    PLUCodedItem pluItem = new PLUCodedItem(product.getPLUCode(), new Mass(1.0));
 
-    	    PLUCodedProduct product = stationSoftwareInstance.matchCodeAndPLUProduct(userInput);
-            PLUCodedItem pluItem = new PLUCodedItem(product.getPLUCode(), new Mass(1.0));
+                    stationSoftwareInstance.getProductHandler().addItemByPLUCode(pluItem);
 
-            stationSoftwareInstance.getProductHandler().addItemByPLUCode(pluItem);
+            	    AddtoBagging popup = new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
+        			popup.setVisible(true);
+            	    screenTextField.setText("");
 
-    	    AddtoBagging popup = new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
-			popup.setVisible(true);
-    	    screenTextField.setText("");
-
-    	    replaceCartPanelWithKeypadPanel();
+            	    replaceCartPanelWithKeypadPanel();
+        	    } else {
+                    JOptionPane.showMessageDialog(this, "No product found for corresponding PLU code.");
+        	    }
+    	    } else {
+                JOptionPane.showMessageDialog(this, "PLU code must be 4 digits.");
+    	    }
     	});
 
     	 return keypadPanel;
