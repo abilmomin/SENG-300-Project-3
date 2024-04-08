@@ -55,7 +55,19 @@ import com.thelocalmarketplace.software.funds.Receipt;
 
 @SuppressWarnings("serial")
 public class PaymentSuccess extends JFrame {
+	
+	
+	@SuppressWarnings("unused")
 	private SelectPayment paymentWindow;
+	
+	
+	/**
+	 * Constructs a new PaymentSuccess dialog window.
+	 * 
+	 * @param change The amount of change returned.
+	 * @param stationSoftware The SelfCheckoutStationSoftware instance managing the transaction.
+	 * @param attendantGUI The AttendantPageGUI instance.
+	 */
 	public PaymentSuccess(double change, SelfCheckoutStationSoftware stationSoftware, AttendantPageGUI attendantGUI) {
 		paymentWindow = new SelectPayment(stationSoftware);
 		setTitle("Thank you!");
@@ -89,7 +101,14 @@ public class PaymentSuccess extends JFrame {
 		JCheckBox ck1 = new JCheckBox("Yes");
 		ck1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		ck1.addActionListener(new ActionListener() {
-
+			
+			
+			 /**
+	         * Invoked when the "Yes" checkbox is selected.
+	         * Prints the receipt and continues the transaction.
+	         * 
+	         * @param e The action event.
+	         */
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Receipt rec = new Receipt(stationSoftware.getStationHardware().getPrinter(), stationSoftware.getFunds()); 
@@ -106,7 +125,14 @@ public class PaymentSuccess extends JFrame {
 		JCheckBox ck2 = new JCheckBox("No");
 		ck2.setAlignmentX(Component.CENTER_ALIGNMENT);
 		ck2.addActionListener(new ActionListener() {
-
+			
+		
+			/**
+	         * Invoked when the "No" checkbox is selected.
+	         * Closes the dialog and starts a new session.
+	         * 
+	         * @param e The action event.
+	         */
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(PaymentSuccess.this, "Thank you for shopping with us! We hope to see you again!");
@@ -117,14 +143,14 @@ public class PaymentSuccess extends JFrame {
 
 		mainPanel.add(Box.createVerticalGlue());
 		mainPanel.add(bigTextLabel);
-		mainPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Small space between big text and small text
+		mainPanel.add(Box.createRigidArea(new Dimension(0, 5))); // text decoration
 		mainPanel.add(mediumTextLabel);
 		mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 		mainPanel.add(smallTextLabel);
 		mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		mainPanel.add(receiptQuestion);
-		mainPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Small space between big text and small text
+		mainPanel.add(Box.createRigidArea(new Dimension(0, 5))); // text decoration
 		mainPanel.add(ck1);
 		mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 		mainPanel.add(ck2);
