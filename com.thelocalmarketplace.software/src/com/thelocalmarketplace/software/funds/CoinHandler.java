@@ -114,7 +114,6 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
      */
     @Override
     public void invalidCoinDetected(CoinValidator validator) {
-    	System.out.println("SHIT");
         this.fundController.notifyInvalidFunds(PaymentKind.Kind.CASH);
     }
     
