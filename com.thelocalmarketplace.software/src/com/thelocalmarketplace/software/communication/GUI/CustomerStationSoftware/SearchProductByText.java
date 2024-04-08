@@ -53,12 +53,14 @@ public class SearchProductByText extends JFrame {
     private JList<Product> searchResults;
     private DefaultListModel<Product> listModel;
     private CustomKeyboard keyboard;
+    BaggingArea baggingArea;
 
-    public SearchProductByText(SelfCheckoutStationSoftware software, AttendantPageGUI attendantGUI) {
+    public SearchProductByText(SelfCheckoutStationSoftware software, AttendantPageGUI attendantGUI, BaggingArea baggingArea) {
         setTitle("Product Search");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        this.baggingArea = baggingArea;
 
         // Components
         searchField = new JTextField();
@@ -109,6 +111,7 @@ public class SearchProductByText extends JFrame {
                 software.getProductHandler().addItemByPLUCode(pluItem);
                 
                 new AddtoBagging(product, software, attendantGUI, new BaggingArea());
+                baggingArea.addProduct(productName);
 
             } else {
                 JOptionPane.showMessageDialog(SearchProductByText.this, "Please select a product first.");

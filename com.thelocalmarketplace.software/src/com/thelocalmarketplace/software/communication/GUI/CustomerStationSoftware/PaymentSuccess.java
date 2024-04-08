@@ -50,12 +50,13 @@ import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.OverloadedDevice;
 
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.funds.Receipt;
 
 @SuppressWarnings("serial")
 public class PaymentSuccess extends JFrame {
 	private SelectPayment paymentWindow;
-	public PaymentSuccess(double change, SelfCheckoutStationSoftware stationSoftware) {
+	public PaymentSuccess(double change, SelfCheckoutStationSoftware stationSoftware, AttendantPageGUI attendantGUI) {
 		paymentWindow = new SelectPayment(stationSoftware);
 		setTitle("Thank you!");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
