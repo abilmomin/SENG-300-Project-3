@@ -364,7 +364,7 @@ public class Products {
 				reusableBagDispenser.load(bags); //requires power
 				//making sure the capacity of the dispenser is not surpassed by the loaded bags added 
 				//changed here 
-				if(bags.length + reusableBagDispenser.getQuantityRemaining() > reusableBagDispenser.getCapacity()) {
+				if(reusableBagDispenser.getQuantityRemaining() > reusableBagDispenser.getCapacity()) {
 					throw new OverloadedDevice();
 				}
 				else {

@@ -329,7 +329,7 @@ public class ProductTest {
 		
 	//Testing when the amount of bags in dispenser are being loaded (dispenser bags and purchased bags = same) 
 	// this one should notify that the dispenser is empty after its been dispensed
-	@Test
+	@Test(expected= OverloadedDevice.class)
 	public void testPurchaseBags_JustEnoughBags() throws OverloadedDevice, EmptyDevice{
 		MockReusableBagDispenser dispenser = new MockReusableBagDispenser(0, 100); 
 		ReusableBag bag1 = new ReusableBag(); 
@@ -342,6 +342,16 @@ public class ProductTest {
 	    testProducts.PurchaseBags(bags);
 	    //purchasing all bags in the dispenser and emptying it 
 	    assertEquals(0, dispenser.getQuantityRemaining()); 
+	}
+	
+	@Test
+	public void testPurchaseBags_DispenserOverload() throws OverloadedDevice, EmptyDevice{
+		MockReusableBagDispenser dispenser = new MockReusableBagDispenser(50, 50);
+		ReusableBag bag1 = new ReusableBag(); 
+        ReusableBag bag2 = new ReusableBag();
+        ReusableBag[] bags = {bag1, bag2};
+	    dispenser.load(bags); 
+	    testProducts.PurchaseBags(bags);
 	}
 
 	@Test
