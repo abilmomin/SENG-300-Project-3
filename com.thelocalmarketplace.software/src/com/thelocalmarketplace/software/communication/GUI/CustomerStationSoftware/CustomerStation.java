@@ -311,8 +311,7 @@ public class CustomerStation extends JFrame {
 	
     public void setPaymentSuccesful(double change) {
         this.dispose();
-        PaymentSuccess paymentSuccess = new PaymentSuccess(change, stationSoftwareInstance);
-
+        new PaymentSuccess(change, stationSoftwareInstance, attendantGUI);
     }
 
     // Method to extract the product name from the button's text
