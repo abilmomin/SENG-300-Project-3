@@ -85,20 +85,19 @@ public class SelfCheckoutStationSoftware {
 	/**
 	 * Creates an instance of the software for a self-checkout station.
 	 * 
-	 * @param station The self-checkout station that requires the software.
+	 * @param station 
+	 * 			The self-checkout station that requires the software.
 	 */
 	public SelfCheckoutStationSoftware(AbstractSelfCheckoutStation station) {
 		if (station == null) {
-			throw new IllegalArgumentException("The station cannot be null");		// IS THIS IS THE RIGHT ERROR TO THROW HERE
-		}
+			throw new IllegalArgumentException("The station cannot be null");	
+		}	
 		this.station = station;
 
-		// Initialize a new order and all its info
 		this.order = new ArrayList<Item>();
 		this.totalOrderWeight = 0;
 		this.totalOrderPrice = 0;
 		
-		// Make facades
 		this.funds = new Funds(this);
 		this.products = new Products(this);
 		this.coordination = new Coordination(this, funds, products);
@@ -111,7 +110,9 @@ public class SelfCheckoutStationSoftware {
 	}
 	
 	/**
-	 * 
+	 * Set the gui for the station and for coordination
+	 * @param gui
+	 * 			The CustomerStation gui
 	 */
 	public void setGUI(CustomerStation gui) {
 		this.gui = gui;
@@ -119,22 +120,35 @@ public class SelfCheckoutStationSoftware {
 	}
 	
 	/**
-	 * 
+	 * Get the gui for the station
+	 * @return
+	 * 			The gui of type CustomerStation
 	 */
 	public CustomerStation getGUI() {
 		return gui;
 	}
 
+	/**
+	 * Get the funds facade for the station
+	 * @return
+	 * 			The funds Facade of type Funds
+	 */
 	public Funds getFunds() {
 		return funds;
 	}
 	
+	/**
+	 * Get the database of products
+	 * @return
+	 * 			The database of all products of type ProductsDatabase
+	 */
 	public ProductsDatabase getAllProducts() {
 		return allProducts;
 	}
 
 	/**
-	 * Set function to change the blocked variable value.
+	 * Set function to block the station
+	 * Disables parts of the station to block further customer interaction
 	 */
 	public void setStationBlock() {
 		blocked = true;
@@ -146,7 +160,8 @@ public class SelfCheckoutStationSoftware {
 	}
 	
 	/**
-	 * Set function to unblock the system enables functions again
+	 * Set function to unblock the station
+	 * Enables parts of the station to allow further customer interaction 
 	 */
 	public void setStationUnblock() {
 		blocked = false;
@@ -178,12 +193,19 @@ public class SelfCheckoutStationSoftware {
 		return activeSession;
 	}
 	
+	/**
+	 * Get the receipt
+	 * @return
+	 * 			The receipt as type Receipt
+	 */
 	public Receipt getReceipt() {
 		return funds.receipt;
 	}
+	
 	/**
 	 * Function to start a session for self-checkout machine
-	 * @param scanner The scanner used to obtain user input.
+	 * @param scanner 
+	 * 			The scanner used to obtain user input.
 	 * @throws InvalidStateSimulationException If a session is already active.
 	 */
 	public void startSession(Scanner scanner) {

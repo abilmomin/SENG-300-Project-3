@@ -308,8 +308,7 @@ public class Products {
 			
 			for(ReusableBag bag: bags) {
 				reusableBagWeight = bag.getMass().inGrams().doubleValue(); 
-				long bagPrice = reusableBagPrice * bags.length; 
-				software.addTotalOrderPrice(bagPrice); 
+				software.addTotalOrderPrice(reusableBagPrice); 
 				software.addTotalOrderWeightInGrams(reusableBagWeight);
 				
 				notifyBagsPurchased(reusableBagPrice);
