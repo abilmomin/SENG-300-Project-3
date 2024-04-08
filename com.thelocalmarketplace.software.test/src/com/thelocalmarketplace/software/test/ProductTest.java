@@ -172,6 +172,35 @@ public class ProductTest {
 	    
 	    
 	}
+	@Test
+	public void testRemovePLUCodedItemFromOrder() {
+	    // Setup: Add a PLUCodedItem to the order
+	    PriceLookUpCode pluCode = new PriceLookUpCode("1234");
+	    double initialItemWeightInGrams = 300.0;
+	    long initialItemPrice = 5;
+	    PLUCodedProduct pluCodedProduct = new PLUCodedProduct(pluCode, "PLU Coded Product", initialItemPrice);
+	    ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCode, pluCodedProduct);
+        double productWeight = itemMass.inGrams().doubleValue();
+	    Mass mass = new Mass(productWeight);
+	    PLUCodedItem pluCodedItem = new PLUCodedItem(pluCode, mass);
+	    station.addItemToOrder(pluCodedItem);  // Assuming there's a method to add items directly to the order for setup
+
+	    // Initial assertions
+	    assertTrue(station.getOrder().contains(pluCodedItem));
+	    double initialTotalWeight = station.getTotalOrderWeightInGrams();
+	    double initialTotalPrice = station.getTotalOrderPrice();
+
+	    // Action: Remove the PLUCodedItem from the order
+	    boolean result = testProducts.removeItemFromOrder(pluCodedItem);
+
+	    // Assertions
+	    assertTrue("The item should be successfully removed from the order", result);
+	    assertFalse("The order should no longer contain the removed item", station.getOrder().contains(pluCodedItem));
+	    assertEquals("The total order weight should be reduced by the weight of the removed item",
+	                 initialTotalWeight - initialItemWeightInGrams, station.getTotalOrderWeightInGrams(), 0.001);
+	    assertEquals("The total order price should be reduced by the price of the removed item",
+	                 initialTotalPrice - initialItemPrice, station.getTotalOrderPrice());
+	}
 	
 	@Test
 	public void testPriceChangeAfterAddItemByVisualCatalogue() {
