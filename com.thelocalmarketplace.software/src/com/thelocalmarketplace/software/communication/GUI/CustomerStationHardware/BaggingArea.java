@@ -46,8 +46,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 
+
+/**
+ * BaggingArea class represents the graphical user interface (GUI) for the bagging area simulation.
+ * This class extends JFrame to create a window for the bagging area.
+ */
 @SuppressWarnings("serial")
 public class BaggingArea extends JFrame {
+	
     public JFrame baggingAreaFrame;
     JPanel baggingAreaPanel;
     JButton returnToCheckoutButton;
@@ -71,14 +77,16 @@ public class BaggingArea extends JFrame {
 
     /**
      * Add a product onto the listModel.
+     * @param name The name of the product to be added.
      */
     public void addProduct(String name) {
         listModel.addElement(new Product(name));
     }
 
+    
     /**
      * Remove a product from the listModel.
-     * @param name of the product to be removed.
+     * @param name The name of the product to be removed.
      */
     public void removeProduct(String name) {
         for (int i = 0; i < listModel.size(); i++) {
@@ -91,7 +99,7 @@ public class BaggingArea extends JFrame {
 
     /**
      * Checks if a product exists in the listModel.
-     * @param name of the product to be checked.
+     * @param name The name of the product to be checked.
      * @return true if the product exists, false otherwise.
      */
     public boolean itemToRemove(String name) {
@@ -102,7 +110,13 @@ public class BaggingArea extends JFrame {
         }
         return false;
     }
-
+    
+    
+    /**
+     * Adds all the necessary GUI components to the bagging area panel.
+     * It creates a JList to display products, adds a scroll pane for the list,
+     * creates a styled return button, and sets up the bagging area frame.
+     */
     private void addWidgets() {
         productList = new JList<>(listModel);
         productList.setCellRenderer(new ProductRenderer());
@@ -119,7 +133,13 @@ public class BaggingArea extends JFrame {
         baggingAreaFrame.setLocationRelativeTo(null);
         baggingAreaFrame.setVisible(false);
     }
-
+    
+    
+    /**
+     * Creates a styled JButton with the specified text.
+     * @param text The text to be displayed on the button.
+     * @return A styled JButton with the specified text.
+     */
     private JButton createStyledButton(String text) {
         JButton button = new JButton(text);
         button.setPreferredSize(new Dimension(150, 50));
@@ -127,20 +147,37 @@ public class BaggingArea extends JFrame {
         button.setBackground(Color.LIGHT_GRAY);
         return button;
     }
-
-    static class Product {
+    
+    
+    /**
+     * Represents a product in the bagging area.
+     */
+    private static class Product {
         String name;
-
+        
+        /**
+         * Constructor to initialize the product with a name.
+         * @param name The name of the product.
+         */
         public Product(String name) {
             this.name = name;
         }
-
+        
+        
+        /**
+         * Retrieves the name of the product.
+         * @return The name of the product.
+         */
         public String getName() {
             return name;
         }
     }
-
-    static class ProductRenderer extends JLabel implements ListCellRenderer<Product> {
+    
+    
+    /**
+     * Custom renderer for displaying product names in the JList.
+     */
+    private static class ProductRenderer extends JLabel implements ListCellRenderer<Product> {
         @Override
         public Component getListCellRendererComponent(JList<? extends Product> list, Product product, int index,
                                                       boolean isSelected, boolean cellHasFocus) {
