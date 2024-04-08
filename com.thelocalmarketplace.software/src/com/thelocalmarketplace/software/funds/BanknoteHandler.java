@@ -83,7 +83,8 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	@Override
 	public void goodBanknote(BanknoteValidator validator, Currency currency, BigDecimal denomination) {
 		this.fundController.addToTotalPaid(denomination);
-//		this.fundController.totalPaid = this.fundController.totalPaid.add(denomination);
+		this.fundController.notifyFundsAdded(denomination);
+		
 		BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(denomination);
         amountDue = amountDue.setScale(1, RoundingMode.CEILING);
 
@@ -100,12 +101,16 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 				e.printStackTrace();
 			}
 			
-			if (missed) {				
-				this.fundController.notifyPaidFunds(amountDue);
-			}
-			else {
+			while (!missed) {  
 				this.fundController.notifyNoValidChange(amountDue);
-			}
+                try {
+					missed = this.fundController.dispenseAccurateChange(amountDue);
+				} catch (CashOverloadException | NoCashAvailableException | DisabledException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+            this.fundController.notifyPaidFunds(amountDue);
 		}
 		else {
         	this.fundController.checkoutStationSoftware.removeTotalOrderPrice(denomination.doubleValue());
@@ -132,7 +137,7 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	@Override
 	public void banknoteAdded(IBanknoteDispenser dispenser, Banknote banknote) {
         this.fundController.banknotesAvailable.put(banknote.getDenomination(), (int)this.fundController.banknotesAvailable.get(banknote.getDenomination()) + 1);
-		this.fundController.notifyFundsAdded(banknote.getDenomination());
+		this.fundController.notifyFundsStored(banknote.getDenomination());
 	}
 
 	/**

@@ -75,9 +75,11 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
      * @param validator The CoinValidator detecting the coin.
      * @param value The value of the detected coin.
      */
-    @Override
+    @Override 
     public void validCoinDetected(CoinValidator validator, BigDecimal value)  {
         this.fundController.addToTotalPaid(value);
+        this.fundController.notifyFundsAdded(value);
+
         BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(value);
         amountDue = amountDue.setScale(2, RoundingMode.CEILING);
         
@@ -93,12 +95,16 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
                 e.printStackTrace();
             }
             
-            if (missed) {                
-                this.fundController.notifyPaidFunds(amountDue);
+            while (!missed) {   
+                this.fundController.notifyNoValidChange(amountDue);
+                try {
+					missed = this.fundController.dispenseAccurateChange(amountDue);
+				} catch (CashOverloadException | NoCashAvailableException | DisabledException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
-            else {
-				this.fundController.notifyNoValidChange();
-			}
+            this.fundController.notifyPaidFunds(amountDue);
         }
         else {
         	this.fundController.checkoutStationSoftware.removeTotalOrderPrice(value.doubleValue());
@@ -125,7 +131,7 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
     @Override
 	public void coinAdded(ICoinDispenser dispenser, Coin coin) {
         this.fundController.coinsAvailable.put(coin.getValue(), (int)this.fundController.coinsAvailable.get(coin.getValue()) + 1);
-        this.fundController.notifyFundsAdded(coin.getValue());
+        this.fundController.notifyFundsStored(coin.getValue());
     }
 
     /**

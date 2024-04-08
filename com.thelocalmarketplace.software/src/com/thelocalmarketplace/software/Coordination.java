@@ -43,7 +43,8 @@ public class Coordination implements FundsObserver, ProductsListener {
     	this.gui = gui;
     }
     
-    public void noValidChange(BigDecimal changeDue) {
+    public void noValidChange(Funds fundsFacade, BigDecimal changeDue) {
+    	
     	if(gui != null) {
     		gui.handleRequestAssistance();
     		gui.displayAmountDuePopup(changeDue);
