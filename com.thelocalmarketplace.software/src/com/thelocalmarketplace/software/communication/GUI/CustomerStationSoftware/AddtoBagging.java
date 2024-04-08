@@ -31,7 +31,7 @@ public class AddtoBagging extends JFrame {
 	AttendantPageGUI attendantGUI;
 	BaggingArea baggingArea;
 	
-	public AddtoBagging(Product product, SelfCheckoutStationSoftware stationSoftwareInstance, double weight, AttendantPageGUI attendantGUI, BaggingArea baggingArea) {
+	public AddtoBagging(Product product, SelfCheckoutStationSoftware stationSoftwareInstance, AttendantPageGUI attendantGUI, BaggingArea baggingArea) {
 		this.stationSoftwareInstance = stationSoftwareInstance;
 		this.attendantGUI = attendantGUI;
 		this.baggingArea = baggingArea;

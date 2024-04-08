@@ -85,14 +85,17 @@ public class ProductsDatabase {
 		PriceLookUpCode plu1 = new PriceLookUpCode("1234");
 		PriceLookUpCode plu2 = new PriceLookUpCode("2345");
 		PriceLookUpCode plu3 = new PriceLookUpCode("6789");
+		PriceLookUpCode plu4 = new PriceLookUpCode("1111");
 		
 		PLUCodedProduct apple = new PLUCodedProduct(plu1, "Apple", 1);
 		PLUCodedProduct banana = new PLUCodedProduct(plu2, "Banana", 1);
-		PLUCodedProduct kiwi = new PLUCodedProduct(plu3, "Kiwi", 2);
+		PLUCodedProduct carrot = new PLUCodedProduct(plu3, "Carrot", 2);
+		PLUCodedProduct asparagus = new PLUCodedProduct(plu4, "Asparagus", 2);
 		
 		PLUDatabase.put(plu1, apple);
 		PLUDatabase.put(plu2, banana);
-		PLUDatabase.put(plu3, kiwi);
+		PLUDatabase.put(plu3, carrot);
+		PLUDatabase.put(plu4, asparagus);
 	}
 	
 	/**

@@ -31,6 +31,9 @@ package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftwa
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,7 +49,7 @@ public class SearchProductByText extends JFrame {
     private DefaultListModel<Product> listModel;
     private CustomKeyboard keyboard;
 
-    public SearchProductByText() {
+    public SearchProductByText(SelfCheckoutStationSoftware software) {
         setTitle("Product Search");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -89,6 +92,22 @@ public class SearchProductByText extends JFrame {
         contentPane.add(bottomPanel, BorderLayout.SOUTH);
 
         setContentPane(contentPane);
+        
+        submitButton.addActionListener(e -> {
+            Product selectedProduct = searchResults.getSelectedValue();
+            if (selectedProduct != null) {
+                String productName = selectedProduct.getName();
+                
+                software.getProductHandler().addItemByTextSearch(productName);
+                
+                new AddtoBagging()
+
+            } else {
+                JOptionPane.showMessageDialog(SearchProductByText.this, "Please select a product first.");
+            }
+        });
+
+
 
         // Sample products
         List<Product> products = new ArrayList<>();
