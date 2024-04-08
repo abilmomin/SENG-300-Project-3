@@ -50,6 +50,7 @@ public class SearchProductByText extends JFrame {
     private JTextField searchField;
     private JTextField filterField;
     private JButton submitButton;
+    private JButton returnButton;
     private JList<Product> searchResults;
     private DefaultListModel<Product> listModel;
     private CustomKeyboard keyboard;
@@ -71,7 +72,8 @@ public class SearchProductByText extends JFrame {
         filterField.setPreferredSize(new Dimension(400, 30));
         
         submitButton = new JButton("Add Item");
-
+        returnButton = new JButton("Return to checkout");
+        
         // Create custom keyboard
         keyboard = new CustomKeyboard(searchField);
 
@@ -89,9 +91,11 @@ public class SearchProductByText extends JFrame {
         contentPane.add(scrollPane, BorderLayout.CENTER);
         
         JPanel bottomPanel = new JPanel(new BorderLayout());
-        JPanel submitPanel = new JPanel();
+        JPanel submitPanel = new JPanel(new FlowLayout());
         submitButton.setPreferredSize(new Dimension(120, 30));
+        returnButton.setPreferredSize(new Dimension(180, 30));
         submitPanel.add(submitButton);
+        submitPanel.add(returnButton);
 
         bottomPanel.add(keyboard, BorderLayout.NORTH);
         bottomPanel.add(submitPanel, BorderLayout.CENTER);
@@ -120,7 +124,9 @@ public class SearchProductByText extends JFrame {
             this.setVisible(false);
         });
 
-
+        returnButton.addActionListener(e -> {
+        	dispose();
+        });
 
         // Sample products
         List<Product> products = new ArrayList<>();
