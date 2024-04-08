@@ -152,18 +152,6 @@ public class AddOwnBagTest {
 		double bagWeight = addownBag.getBagWeight(station, orderAndBagScale); 
 		assertEquals(10.0, bagWeight, 10.0); //there should be weight becasue the bag has been added
 	}
-
-	/**
-	 * Testing printMessage. Making sure the message printed is the same as the expected message 
-	 */
-	@Test 
-	public void testPrint_mess() {
-		ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
-	    System.setOut(new PrintStream(outputStreamCaptor));
-	    AddOwnBag addownBag = new AddOwnBag(station, scale, customerStation, attendantGUI);
-	    addownBag.printMessage();
-        Assert.assertEquals("You may now continue", outputStreamCaptor.toString().trim()); 
-	}
 	
 	//Overload Test 1
 	@Test 

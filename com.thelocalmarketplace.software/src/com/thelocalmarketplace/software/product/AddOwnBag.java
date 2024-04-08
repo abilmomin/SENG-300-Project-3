@@ -1,3 +1,33 @@
+/**
+
+ SENG 300 - ITERATION 3
+ GROUP GOLD {8}
+
+ Name                      UCID
+
+ Yotam Rojnov             30173949
+ Duncan McKay             30177857
+ Mahfuz Alam              30142265
+ Luis Trigueros Granillo  30167989
+ Lilia Skumatova          30187339
+ Abdelrahman Abbas        30110374
+ Talaal Irtija            30169780
+ Alejandro Cardona        30178941
+ Alexandre Duteau         30192082
+ Grace Johnson            30149693
+ Abil Momin               30154771
+ Tara Ghasemi M. Rad      30171212
+ Izabella Mawani          30179738
+ Binish Khalid            30061367
+ Fatima Khalid            30140757
+ Lucas Kasdorf            30173922
+ Emily Garcia-Volk        30140791
+ Yuinikoru Futamata       30173228
+ Joseph Tandyo            30182561
+ Syed Haider              30143096
+ Nami Marwah              30178528
+
+ */
 package com.thelocalmarketplace.software.product;
 
 
@@ -17,7 +47,12 @@ import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftwar
 
 public class AddOwnBag implements ElectronicScaleListener {
 	
-	private SelfCheckoutStationSoftware weightOrder;
+	/**
+	 * The AddOwnBag class allows for the customer to add their own bags 
+	 * Ensures they are of an acceptable weight, and calls for attendant if not
+	 */
+	
+	private SelfCheckoutStationSoftware stationHardware;
     private AbstractElectronicScale scale1;
     private Mass massTest;
     private int stationNumber;
@@ -27,25 +62,31 @@ public class AddOwnBag implements ElectronicScaleListener {
 	/**
 	 * Constructor for AddOwnBag
 	 * 
-	 * @param weightOrder
+	 * @param stationHardware
+	 * 			The self checkout station hardware
 	 * @param scale1
+	 * 			The associated scale
 	 * @param customerStation
+	 * 			The customer self checkout station
 	 * @param attendantGUI
+	 * 			The attendant station gui
 	 */
-	public AddOwnBag(SelfCheckoutStationSoftware weightOrder, AbstractElectronicScale scale1, CustomerStation customerStation, AttendantPageGUI attendantGUI) {
-		this.weightOrder = weightOrder;
+	public AddOwnBag(SelfCheckoutStationSoftware stationHardware, AbstractElectronicScale scale1, CustomerStation customerStation, AttendantPageGUI attendantGUI) {
+		this.stationHardware = stationHardware;
 		this.scale1 = scale1;
 		this.customerStation = customerStation;
 		this.attendantGUI = attendantGUI;
         theMassOnTheScaleHasChanged(scale1, massTest);
 	}
 			
-	
+	/**
+	 * Override of theMassOnTheScaleHasChanged from ElectronicScaleListener
+	 * Notifies that a bag has been added to the scale
+	 */
 	@Override
 	public void theMassOnTheScaleHasChanged(IElectronicScale scale, Mass mass) {
-		// TODO Auto-generated method stub
-		double bag_grams = getBagWeight(weightOrder, scale1); 
-		addBagWeight(weightOrder, scale1, bag_grams,stationNumber); 
+		double bag_grams = getBagWeight(stationHardware, scale1); 
+		addBagWeight(stationHardware, scale1, bag_grams,stationNumber); 
 		}
 		
 	
@@ -55,19 +96,16 @@ public class AddOwnBag implements ElectronicScaleListener {
 	 * @return
 	 */
 	public double getBagWeight(SelfCheckoutStationSoftware p1, AbstractElectronicScale p2 ) {  
-		double orderWeight = weightOrder.getTotalOrderWeightInGrams(); 
+		double orderWeight = stationHardware.getTotalOrderWeightInGrams(); 
 		double bagWeight = 0;
-		//get order weight
 		BigDecimal orderWeightDouble = new BigDecimal(Double.toString(orderWeight));
 		BigDecimal scaleWeight;
 		try {
-			//scale - order = bag weight
 			Mass getMass = p2.getCurrentMassOnTheScale();
 			scaleWeight = getMass.inGrams();
 			BigDecimal bagWeightGrams = scaleWeight.subtract(orderWeightDouble);
-			bagWeight = bagWeightGrams.doubleValue(); //convert to double 
+			bagWeight = bagWeightGrams.doubleValue();  
 		} catch (OverloadedDevice e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -83,42 +121,28 @@ public class AddOwnBag implements ElectronicScaleListener {
 	 * @param scale
 	 * @param weightOfBag
 	 */
-	// now that customer has signaled they want to add their own bags, pass in the weight of their own bags
-	public void addBagWeight(SelfCheckoutStationSoftware p1, AbstractElectronicScale scale, double weightOfBag, int stationNum) {
-		
-		//threshold = scale limit in mcg 
+	public void addBagWeight(SelfCheckoutStationSoftware p1, AbstractElectronicScale scale, double weightOfBag, int stationNum) {		
 		BigInteger threshold = scale.getMassLimit().inMicrograms();
 		
 		try {
-			//compare scale mass which bag mass to mass limit 
 			int compareToThreshold = scale.getCurrentMassOnTheScale().compareTo(new Mass(threshold));
 			
 			if (compareToThreshold>=0) {
 				this.customerStation.customerPopUp("Bags too heavy, please wait for attendant.");
-				weightOrder.setStationBlock(); // block station
-				double order = weightOrder.getTotalOrderWeightInGrams();
-				this.attendantGUI.bagdiscpreancydectected(weightOrder,this.customerStation);
+				stationHardware.setStationBlock();
+				this.attendantGUI.bagdiscpreancydectected(stationHardware,this.customerStation);
 				
 			}
 			else {
-				//bag weight is fine, add weight of bag to order, system unblocks
-				weightOrder.setStationUnblock();  // change to unblock and continue
-				weightOrder.addTotalOrderWeightInGrams(weightOfBag);
+				stationHardware.setStationUnblock();  
+				stationHardware.addTotalOrderWeightInGrams(weightOfBag);
 				this.customerStation.customerPopUp("You may now continue");
 			}
 
 		} catch (OverloadedDevice e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-
-		
+		}	
 	}  
-	
-	public void printMessage() {
-		System.out.print("You may now continue");
-	}
-
 
 	@Override
 	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {
