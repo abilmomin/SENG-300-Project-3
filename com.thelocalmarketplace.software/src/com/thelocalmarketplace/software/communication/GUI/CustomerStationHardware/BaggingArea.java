@@ -77,7 +77,9 @@ public class BaggingArea extends JFrame {
 
     /**
      * Add a product onto the listModel.
-     * @param name The name of the product to be added.
+     * 
+     * @param name 
+     * 			The name of the product to be added.
      */
     public void addProduct(String name) {
         listModel.addElement(new Product(name));
@@ -86,7 +88,9 @@ public class BaggingArea extends JFrame {
     
     /**
      * Remove a product from the listModel.
-     * @param name The name of the product to be removed.
+     * 
+     * @param name 
+     * 			The name of the product to be removed.
      */
     public void removeProduct(String name) {
         for (int i = 0; i < listModel.size(); i++) {
@@ -99,7 +103,9 @@ public class BaggingArea extends JFrame {
 
     /**
      * Checks if a product exists in the listModel.
-     * @param name The name of the product to be checked.
+     * 
+     * @param name 
+     * 			The name of the product to be checked.
      * @return true if the product exists, false otherwise.
      */
     public boolean itemToRemove(String name) {
@@ -137,7 +143,9 @@ public class BaggingArea extends JFrame {
     
     /**
      * Creates a styled JButton with the specified text.
-     * @param text The text to be displayed on the button.
+     * 
+     * @param text 
+     * 			The text to be displayed on the button.
      * @return A styled JButton with the specified text.
      */
     private JButton createStyledButton(String text) {
@@ -157,7 +165,9 @@ public class BaggingArea extends JFrame {
         
         /**
          * Constructor to initialize the product with a name.
-         * @param name The name of the product.
+         * 
+         * @param name 
+         * 			The name of the product.
          */
         public Product(String name) {
             this.name = name;
@@ -166,6 +176,7 @@ public class BaggingArea extends JFrame {
         
         /**
          * Retrieves the name of the product.
+         * 
          * @return The name of the product.
          */
         public String getName() {
