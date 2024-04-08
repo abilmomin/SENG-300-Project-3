@@ -583,6 +583,10 @@ public class CustomerStation extends JFrame {
     }
     
     public void customerBaggingAreaPopUp(Product product) {
+    	double weight = 0.0;
+    	if (product instanceof BarcodedProduct) {
+    		BarcodedProduct barcodedProduct = (BarcodedProduct) product;
+    	}
     	new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
     }
 
@@ -590,10 +594,6 @@ public class CustomerStation extends JFrame {
         needsAssistance = true;
         attendantGUI.setStationAssistanceRequested(selectedStation - 1, true);
 
-    }
-    
-    public void customerRemoveItemPopUp(Item item) {
-    	new RemoveItemRequest(item, stationSoftwareInstance, attendantGUI);
     }
     
     // Method to display a pop-up dialog with the amount of money due

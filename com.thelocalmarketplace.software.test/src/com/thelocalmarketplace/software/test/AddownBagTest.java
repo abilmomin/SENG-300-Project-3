@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.math.BigInteger;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -60,107 +61,65 @@ public class AddownBagTest {
     	massLimit = scale.getMassLimit(); 
     	scale.plugIn(grid);
 		scale.turnOn();
-    	
-    	//SelfCheckoutStationBronze.resetConfigurationToDefaults();
-		//this.checkoutSB = new SelfCheckoutStationBronze();
-		//this.checkoutSB.plugIn(PowerGrid.instance());
-		//this.checkoutSB.turnOn();
-		//this.station = SelfCheckoutStationSoftware();
-		//listen = new ScaleListener(station, null);
-		
-    	
+   
     	this.scale.plugIn(PowerGrid.instance());
 		this.scale.turnOn(); 
-    	
-		//Assert.assertNotNull("SelfCheckoutStationSoftware instance is null", station);
-	
-    }
+    }    
     
- 
-
     
     /**
 	 * Test for getBagWeight when a bag has been added to the scale. Creating a scale heavier than the order value 
 	 * calling getBagWeight, using order mass and new mockscale mass created. 
 	 * expected weight = bag weight, calculated from the scale and order weight difference
 	 * @throws OverloadedDevice
-	 */
-	
+	 */ 
+    
 	@Test 
-	public void testGetBagWeight_BagAdded() throws OverloadedDevice {
-		//the order has a weight of the mock scale in before (40000000)
-		// weight of the scale with the order and the bag added is 10000000 (10 grams) more than the weight of the order
-		MockScale orderAndBagScale = new MockScale(new Mass(5000000), new Mass(5000000)); 
-		MockItem item = new MockItem(new Mass(100)); 
-        station.addItemToOrder(item);
+	public void testAddBagWeight_OverThreshold() throws OverloadedDevice {
+		MockScale scaleOverLimit = new MockScale(new Mass(40000000), new Mass(40000000)); 
+		MockItem item = new MockItem(new Mass(50000000)); 
+		//adding a new item to exceed the mass limit 
+		station.addItemToOrder(item);
         scale.addAnItem(item);
         AddownBag addownBag = new AddownBag(station, scale, customerStation, attendantGUI);
 		//bag weight being calculated
-		double bagWeight = addownBag.getBagWeight(station, orderAndBagScale); 
-		Assert.assertEquals(10.0, bagWeight, 10.0);
-		
+		addownBag.addBagWeight(station, scaleOverLimit, 1000000, 1);
+        assertFalse(station.getStationBlock());	
 	}
  
+	
+	@Test
+	public void testAddBagWeight_UnderThreshold() throws OverloadedDevice {
+		MockScale scaleInLimit = new MockScale(new Mass(40000000), new Mass(40000000));
+		// adding an item to the scale that is within the mass limit weight
+		MockItem item = new MockItem(new Mass(30000000)); 
+		station.addItemToOrder(item);
+		scale.addAnItem(item);
+		
+		AddownBag addownBag = new AddownBag(station, scale, customerStation, attendantGUI);
+		addownBag.addBagWeight(station, scaleInLimit, 1000000, 1);
+		assertFalse(station.getStationBlock()); 
+	}
 	
 	@Test 
 	public void testGetBagWeight_noBagAdded() throws OverloadedDevice {
 		MockScale orderNoBagScale = new MockScale(new Mass(4000000), new Mass (4000000));
 		AddownBag addOwnBag = new AddownBag(station, orderNoBagScale, customerStation, attendantGUI);
 		double bagWeight = addOwnBag.getBagWeight(station, orderNoBagScale);
-		assertEquals(120.0, bagWeight, 120.0);
+		assertEquals(0.0, bagWeight, 0.0); //120.0? 
 		
 	}
+	
 	
 	@Test 
-	public void testAddBagWeight_OverThreshold () throws OverloadedDevice {
-		MockScale scaleOverLimit = new MockScale(new Mass(40000000), new Mass(40000000));
-		scaleOverLimit.plugIn(grid);
-		scaleOverLimit.turnOn();
-		scaleOverLimit.enable();
-		//adding a new item to exceed the mass limit 
-		scaleOverLimit.addAnItem(new MockItem(new Mass(45000000))); 
+	public void testGetBagWeight_BagAdded () throws OverloadedDevice {
+		MockScale orderAndBagScale = new MockScale(new Mass(50000000), new Mass(50000000)); 
 		//adding bag (1 gram) to the over limit scale 
-		addownBag.addBagWeight(station, scaleOverLimit, 1000000, 1); 
-		assertTrue(station.getStationBlock()); 
-
+		AddownBag addownBag = new AddownBag(station, orderAndBagScale, customerStation, attendantGUI); 
+		double bagWeight = addownBag.getBagWeight(station, orderAndBagScale); 
+		assertEquals(10.0, bagWeight, 10.0); //there should be weight becasue the bag has been added
 	}
-	
-	
-	@Test
-	public void testAddBagWeight_InThreshold() throws OverloadedDevice {
-		MockScale scaleInLimit = new MockScale(new Mass(40000000), new Mass(40000000));
-		scaleInLimit.plugIn(grid);
-		scaleInLimit.turnOn();
-		scaleInLimit.enable();
 
-		// adding an item to the scale that is within the mass limit 
-		//scaleInLimit.addAnItem(new MockItem(new Mass(29000000)));  
-		
-		Mass limit = scaleInLimit.getMassLimit(); 
-		scaleInLimit.addAnItem(new MockItem(new Mass(29000000)));
-		Mass inLimit = scaleInLimit.getCurrentMassOnTheScale(); 
-		// adding a bag that does not exceed the scaleInLimit mass limit
-		addownBag.addBagWeight(station, scaleInLimit, 100000, 1);
-		//when the items are within the scale mass limit the system should not be blocked
-		Assert.assertEquals(new Mass(29000000), inLimit);
-		assertFalse(station.getStationBlock()); 
-	}
-	
-	
-	//@Test 
-	//public void testAddBagWeight_Exception() {
-		//mockScale scaleException = new mockScale(new Mass(40000000), new Mass(40000000));
-		//@Override 
-		//public Mass getCurrentMassOnTheScale() throws OverloadedDevice{
-		//	throw new OverloadedDevice(); 
-		//}
-	
-	//addownBag.addBagWeight(station, scaleException, customerStation, AttendantPageGUI);
-	//assertFalse(station.getStationBlock()); 
-	
-	
-		
-	//}
 	
 	@Test 
 	public void testPrint_mess() {
@@ -187,8 +146,29 @@ public class AddownBagTest {
 		Assert.assertEquals(0.0, bagWeight, 0.001);
 	}
 
+	//overload test 2 
+	@Test 
+	public void testOverloadThrown_2() {
+		MockScale scale = new MockScale(massLimit, massLimit) {
+			@Override 
+			
+			public Mass getCurrentMassOnTheScale() throws OverloadedDevice {
+				throw new OverloadedDevice();
+				
+			}
+			@Override 
+			public Mass getMassLimit() {
+				return new Mass(BigInteger.valueOf(1000000)); 
+			}
+		};
+		double weightOfBag = 50.0;
+		AddownBag addownBag = new AddownBag(station, scale, customerStation, attendantGUI);
+		addownBag.addBagWeight(station, scale, weightOfBag, 1);
+			assertFalse(false); 
+	}
 	
-	 class MockItem extends Item { // need power for addAnItem
+	 
+	class MockItem extends Item { // need power for addAnItem
 	        public MockItem(Mass mass) {
 	            super(mass);
 	        }

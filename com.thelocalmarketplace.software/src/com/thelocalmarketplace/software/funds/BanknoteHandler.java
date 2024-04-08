@@ -86,30 +86,29 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 		this.fundController.notifyFundsAdded(denomination);
 		
 		BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(this.fundController.getTotalPaid());
-        amountDue = amountDue.setScale(1, RoundingMode.CEILING);
-
+		amountDue = amountDue.setScale(1, RoundingMode.CEILING);
+		
 		if (amountDue.compareTo(BigDecimal.ZERO) <= 0) {
-
-			amountDue = amountDue.abs();
-			
-			boolean missed = false;
-			try {
-				missed = this.fundController.dispenseAccurateChange(amountDue);
-			} catch (DisabledException | CashOverloadException | NoCashAvailableException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			while (!missed) {  
-				this.fundController.notifyNoValidChange(amountDue);
-                try {
+		    amountDue = amountDue.abs();
+		    
+		    boolean missed = false;
+		    try {
+		        missed = this.fundController.dispenseAccurateChange(amountDue);
+		    } catch (DisabledException | CashOverloadException  | NoCashAvailableException e) {
+		        // TODO Auto-generated catch block
+		        e.printStackTrace();
+		    }
+		    
+		    while (!missed) {   
+		        this.fundController.notifyNoValidChange(amountDue);
+		        try {
 					missed = this.fundController.dispenseAccurateChange(amountDue);
 				} catch (CashOverloadException | NoCashAvailableException | DisabledException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-            }
-            this.fundController.notifyPaidFunds(amountDue);
+		    }
+		    this.fundController.notifyPaidFunds(amountDue);
 		}
 
 	}
@@ -134,7 +133,7 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	@Override
 	public void banknoteAdded(IBanknoteDispenser dispenser, Banknote banknote) {
         this.fundController.banknotesAvailable.put(banknote.getDenomination(), (int)this.fundController.banknotesAvailable.get(banknote.getDenomination()) + 1);
-		this.fundController.notifyFundsStored(banknote.getDenomination());
+		this.fundController.notifyFundsAdded(banknote.getDenomination());
 	}
 
 	/**
