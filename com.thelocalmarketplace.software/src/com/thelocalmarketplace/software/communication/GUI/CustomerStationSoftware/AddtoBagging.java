@@ -18,6 +18,7 @@ import com.thelocalmarketplace.hardware.Product;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.BaggingArea;
 
 
 // GENERAL LAYOUT
@@ -27,11 +28,13 @@ import com.thelocalmarketplace.software.communication.GUI.AttendantStation.Atten
 public class AddtoBagging extends JFrame {
 	SelfCheckoutStationSoftware stationSoftwareInstance;
 	AttendantPageGUI attendantGUI;
+	BaggingArea baggingArea;
 	
-	public AddtoBagging(Product product, SelfCheckoutStationSoftware stationSoftwareInstance, double weight, AttendantPageGUI attendantGUI) {
+	public AddtoBagging(Product product, SelfCheckoutStationSoftware stationSoftwareInstance, double weight, AttendantPageGUI attendantGUI, BaggingArea baggingArea) {
 		this.stationSoftwareInstance = stationSoftwareInstance;
 		this.attendantGUI = attendantGUI;
-		
+		this.baggingArea = baggingArea;
+
 	    setTitle("Add to Bag");
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setSize(600, 500);
@@ -79,8 +82,9 @@ public class AddtoBagging extends JFrame {
 	            Mass mass = new Mass(weight);
 	            BarcodedItem barcodedItem = new BarcodedItem(barcodedProduct.getBarcode(), mass);
 	            
-	        	IElectronicScale baggingArea = stationSoftwareInstance.getStationHardware().getBaggingArea();
-	        	baggingArea.addAnItem(barcodedItem);
+	        	IElectronicScale baggingAreaScale = stationSoftwareInstance.getStationHardware().getBaggingArea();
+				baggingAreaScale.addAnItem(barcodedItem);
+				baggingArea.addProduct(barcodedProduct.getDescription());
 	    		
 	    	} else {
 	    		PLUCodedProduct pluCodedProduct = (PLUCodedProduct) product;
@@ -89,8 +93,9 @@ public class AddtoBagging extends JFrame {
 	    		
 	    		stationSoftwareInstance.getProductHandler().addItemByPLUCode(pluItem);
 	    		
-	        	IElectronicScale baggingArea = stationSoftwareInstance.getStationHardware().getBaggingArea();
-	        	baggingArea.addAnItem(pluItem);
+	        	IElectronicScale baggingAreaScale = stationSoftwareInstance.getStationHardware().getBaggingArea();
+				baggingAreaScale.addAnItem(pluItem);
+				baggingArea.addProduct(pluCodedProduct.getDescription());
 	    	}
 	    	dispose();
 	    });
