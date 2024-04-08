@@ -80,12 +80,14 @@ public class AddtoBagging extends JFrame {
                 ArrayList<Item> order = stationSoftwareInstance.getOrder();
 
                 if (order.size() > 0) {
-                    Item itemToAdd = order.get(order.size() - 1);
+                    BarcodedItem itemToAdd = (BarcodedItem) order.get(order.size() - 1);
 
                     IElectronicScale baggingAreaScale = stationSoftwareInstance.getStationHardware().getBaggingArea();
                     baggingAreaScale.addAnItem(itemToAdd);
 
-				    baggingArea.addProduct(itemToAdd.getDescription());
+					Barcode barcode = itemToAdd.getBarcode();
+					BarcodedProduct barcodedProduct = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+				    baggingArea.addProduct(barcodedProduct.getDescription());
                 }
 
             } else {
