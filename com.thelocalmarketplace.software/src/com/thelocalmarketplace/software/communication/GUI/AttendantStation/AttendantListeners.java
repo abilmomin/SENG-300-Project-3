@@ -32,7 +32,6 @@
 package com.thelocalmarketplace.software.communication.GUI.AttendantStation;
 
 import ca.ucalgary.seng300.simulation.SimulationException;
-
 import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.card.Card;
 import com.jjjwelectronics.printer.ReceiptPrinterBronze;
@@ -40,34 +39,25 @@ import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.jjjwelectronics.scale.ElectronicScaleBronze;
 import com.jjjwelectronics.scale.ElectronicScaleGold;
 import com.jjjwelectronics.scale.ElectronicScaleSilver;
-
 import com.tdc.CashOverloadException;
-
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.Product;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
 import com.thelocalmarketplace.hardware.external.CardIssuer;
-
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
 import com.thelocalmarketplace.software.product.Products;
-
 import powerutility.PowerGrid;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.math.BigDecimal;
-
 import java.util.Calendar;
 import java.util.Currency;
-
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-
 
 /**
  * AttendantListeners class handles the action listeners for attendant operations.
@@ -89,12 +79,18 @@ public class AttendantListeners {
     /**
      * Constructor for AttendantListeners.
      * 
-     * @param gui                  AttendantPageGUI instance
-     * @param selectedStation      Index of the selected station
-     * @param stationSoftwareInstances Array of SelfCheckoutStationSoftware instances
-     * @param customerStation      Array of CustomerStation instances
-     * @param startSessions        Array of StartSession instances
-     * @param stationEnabled       Array indicating whether stations are enabled
+     * @param gui                  
+     * 			AttendantPageGUI instance
+     * @param selectedStation      
+     * 			Index of the selected station
+     * @param stationSoftwareInstances 
+     * 			Array of SelfCheckoutStationSoftware instances
+     * @param customerStation      
+     * 			Array of CustomerStation instances
+     * @param startSessions        
+     * 			Array of StartSession instances
+     * @param stationEnabled       
+     * 			Array indicating whether stations are enabled
      */
     public AttendantListeners(AttendantPageGUI gui, int selectedStation, SelfCheckoutStationSoftware[] stationSoftwareInstances, 
     		CustomerStation[] customerStation, StartSession[] startSessions, boolean[] stationEnabled) {
@@ -479,6 +475,7 @@ public class AttendantListeners {
     
     /**
      * Returns an ActionListener for the refill coin service button.
+     * 
      * @return ActionListener for the refill coin service button
      */
     public ActionListener getRefillCoinServiceButtonListener() {
@@ -487,6 +484,7 @@ public class AttendantListeners {
 
     /**
      * Returns an ActionListener for the refill banknotes service button.
+     * 
      * @return ActionListener for the refill banknotes service button
      */
     public ActionListener getRefillBanknotesServiceButtonListener() {
@@ -495,6 +493,7 @@ public class AttendantListeners {
 
     /**
      * Returns an ActionListener for the refill receipt paper service button.
+     * 
      * @return ActionListener for the refill receipt paper service button
      */
     public ActionListener getRefillReceiptPaperServiceButtonListener() {
@@ -503,6 +502,7 @@ public class AttendantListeners {
 
     /**
      * Returns an ActionListener for the empty coin service button.
+     * 
      * @return ActionListener for the empty coin service button
      */
     public ActionListener getEmptyCoinServiceButtonListener() {
@@ -511,6 +511,7 @@ public class AttendantListeners {
 
     /**
      * Returns an ActionListener for the empty banknotes service button.
+     * 
      * @return ActionListener for the empty banknotes service button
      */
     public ActionListener getEmptyBanknotesServiceButtonListener() {
@@ -519,6 +520,7 @@ public class AttendantListeners {
 
     /**
      * Returns an ActionListener for the customer service button.
+     * 
      * @return ActionListener for the customer service button
      */
     public ActionListener getCustomerServiceButtonListener() {
@@ -527,7 +529,9 @@ public class AttendantListeners {
 
     /**
      * Returns an ActionListener for the station buttons.
-     * @param stationNumber The number of the station
+     * 
+     * @param stationNumber 
+     * 			The number of the station
      * @return ActionListener for the station buttons
      */
     public ActionListener getStationButtonListener(int stationNumber) {
@@ -536,6 +540,7 @@ public class AttendantListeners {
 
     /**
      * Returns an ActionListener for the refill receipt ink service button.
+     * 
      * @return ActionListener for the refill receipt ink service button
      */
     public ActionListener getRefillReceiptInkServiceButtonListener() {
@@ -544,6 +549,7 @@ public class AttendantListeners {
 
     /**
      * Returns an ActionListener for the start station button.
+     * 
      * @return ActionListener for the start station button
      */
     public ActionListener getStartStationButtonListener() {
@@ -552,6 +558,7 @@ public class AttendantListeners {
 
     /**
      * Returns an ActionListener for the close station button.
+     * 
      * @return ActionListener for the close station button
      */
     public ActionListener getCloseStationButtonListener() {
@@ -560,6 +567,7 @@ public class AttendantListeners {
 
     /**
      * Returns an ActionListener for the clear station signal button.
+     * 
      * @return ActionListener for the clear station signal button
      */
     public ActionListener getClearStationSignalButtonListener() {
@@ -568,6 +576,7 @@ public class AttendantListeners {
 
     /**
      * Returns an ActionListener for the disable station button.
+     * 
      * @return ActionListener for the disable station button
      */
     public ActionListener getDisableStationButtonListener() {
@@ -576,6 +585,7 @@ public class AttendantListeners {
 
     /**
      * Returns an ActionListener for the enable station button.
+     * 
      * @return ActionListener for the enable station button
      */
     public ActionListener getEnableStationButtonListener() {

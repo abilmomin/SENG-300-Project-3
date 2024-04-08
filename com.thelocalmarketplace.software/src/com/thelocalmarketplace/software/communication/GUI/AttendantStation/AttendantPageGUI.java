@@ -34,14 +34,11 @@ package com.thelocalmarketplace.software.communication.GUI.AttendantStation;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
-
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-
 import java.math.BigDecimal;
-
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -52,14 +49,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-
 /**
  * AttendantPageGUI class represents the graphical user interface (GUI) for the attendant page.
  * This class extends JFrame to create a window for the attendant interface.
  */
 @SuppressWarnings("serial")
 public class AttendantPageGUI extends JFrame {
-	
     
     private static final int NUM_STATIONS = 4;
     private static final int WINDOW_WIDTH = 900;
@@ -95,10 +90,8 @@ public class AttendantPageGUI extends JFrame {
     private final CustomerStation[] customerStation = new CustomerStation[NUM_STATIONS];
     private final SelfCheckoutStationSoftware[] stationSoftwareInstances = new SelfCheckoutStationSoftware[NUM_STATIONS];
 
-   
     public final boolean[] stationAssistanceRequested = new boolean[NUM_STATIONS]; 
     private AttendantListeners attendantListeners;
-    
     
     /**
      * Constructs an instance of the AttendantPageGUI.
@@ -139,7 +132,6 @@ public class AttendantPageGUI extends JFrame {
         setVisible(true);
     }
     
-    
     /**
      * Sets up the graphical user interface properties such as title, size, and default close operation.
      */
@@ -147,7 +139,7 @@ public class AttendantPageGUI extends JFrame {
         setTitle("Attendant Page");
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); 									// Center the window
+        setLocationRelativeTo(null);
     }
     
     /**
@@ -181,7 +173,6 @@ public class AttendantPageGUI extends JFrame {
         stationControlPanel.add(clearStationSignal);
     }
     
-    
     /**
      * Creates buttons and adds them to the panel for hardware services.
      * These buttons include options to start/close stations, refill coins/banknotes/paper/ink,
@@ -207,9 +198,7 @@ public class AttendantPageGUI extends JFrame {
         stationServicesPanel.add(refillReceiptInk);
         stationServicesPanel.add(emptyCoins);
         stationServicesPanel.add(emptyBanknotes);
-
-    }
-    
+    }  
     
     /**
      * Creates buttons and adds them to the panel for customer services.
@@ -220,13 +209,13 @@ public class AttendantPageGUI extends JFrame {
         customerServicesPanel.add(addItemByText);
     }
 
-
-
     /**
      * Generates the text for the checkout station buttons based on the station number.
      * 
-     * @param i The station number.
-     * @return The text for the checkout station button.
+     * @param i 
+     * 			The station number.
+     * @return 
+     * 			The text for the checkout station button.
      */
     private static String getjButtonText(int i) {
         String checkoutButtonText = "Checkout Station " + (i + 1);
@@ -242,8 +231,10 @@ public class AttendantPageGUI extends JFrame {
     /**
      * Updates the information of a specific customer station.
      * 
-     * @param stationNumber   The number of the station to update.
-     * @param customerStation The updated customer station object.
+     * @param stationNumber   
+     * 			The number of the station to update.
+     * @param customerStation 
+     * 			The updated customer station object.
      */
     public void updateCustomerStation(int stationNumber, CustomerStation customerStation) {
         this.customerStation[stationNumber - 1] = customerStation;
@@ -252,7 +243,8 @@ public class AttendantPageGUI extends JFrame {
     /**
      * Waits for the session completion at a specified station and then disables the station.
      * 
-     * @param stationNumber The number of the station to monitor.
+     * @param stationNumber 
+     * 			The number of the station to monitor.
      */
     public void waitForSessionCompletion(int stationNumber) {
         try {
@@ -262,8 +254,7 @@ public class AttendantPageGUI extends JFrame {
             }
             // Once the session is complete, disable the station
             SwingUtilities.invokeLater(() -> {
-                stationSoftwareInstances[selectedStation].setStationBlock();
-                
+                stationSoftwareInstances[selectedStation].setStationBlock();   
             }); 
         } catch (InterruptedException ex) {
             ex.printStackTrace();
@@ -279,30 +270,30 @@ public class AttendantPageGUI extends JFrame {
     	return this.selectedStation + 1;
     }
     
-    
     /**
      * Displays a message dialog to notify about bag weight discrepancy and handles attendant's action.
      * 
-     * @param instance        The instance of the self-checkout station software.
-     * @param customerStation2 The customer station object associated with the discrepancy.
+     * @param instance       
+     *  			The instance of the self-checkout station software.
+     * @param customerStation2 
+     * 				The customer station object associated with the discrepancy.
      */
     public void bagdiscpreancydectected(SelfCheckoutStationSoftware instance, CustomerStation customerStation2) {
         int option = JOptionPane.showConfirmDialog(this, "Bags Too Heavy, Inspect.", "Bag Discrepancy Detected", JOptionPane.OK_CANCEL_OPTION);
 
         if (option == JOptionPane.OK_OPTION) {
             instance.setStationUnblock();
-            customerStation2.customerPopUp("You may now continue");
-            
+            customerStation2.customerPopUp("You may now continue");  
         } else {
         	JOptionPane.getRootFrame().dispose();
         }
     }
-
     
     /**
      * Displays a message dialog to notify about a bulk item request.
      * 
-     * @param message The message to display in the dialog.
+     * @param message 
+     * 			The message to display in the dialog.
      * @return True if the request is acknowledged.
      */
     public boolean bulkItemRequest(String message) {
@@ -310,11 +301,11 @@ public class AttendantPageGUI extends JFrame {
         return true;
     }
     
-    
     /**
      * Displays a message dialog to notify about weight discrepancy and handles attendant's action.
      * 
-     * @param instance The instance of the self-checkout station software.
+     * @param instance 
+     * 			The instance of the self-checkout station software.
      */
     public void weightDiscpreancydNotify(SelfCheckoutStationSoftware instance) {
     	// Attendant approves discrepancy 
@@ -322,11 +313,11 @@ public class AttendantPageGUI extends JFrame {
     	instance.setStationUnblock();
     }
     
-    
     /**
      * Highlights the selected station button and marks it as needing assistance if requested.
      * 
-     * @param selectedStation The index of the selected station.
+     * @param selectedStation 
+     * 			The index of the selected station.
      */
     public void highlightSelectedStation(int selectedStation) {
         this.selectedStation = selectedStation;
@@ -338,7 +329,6 @@ public class AttendantPageGUI extends JFrame {
             } else {
                 stationStartButtons[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
             }
-
             // If stationAssistanceRequested[i] is true, additional handling may be needed to reflect assistance requested state
             if (stationAssistanceRequested[i]) {
                 stationStartButtons[i].setText("(Assistance Requested) " + buttonText);
@@ -348,7 +338,6 @@ public class AttendantPageGUI extends JFrame {
             }
         }
     }
-    
     
     /**
      * Reverts the highlighting of all station buttons to their default state.
@@ -372,8 +361,10 @@ public class AttendantPageGUI extends JFrame {
     /**
      * Sets the assistance requested status for a specific station button.
      * 
-     * @param stationNumber The index of the station button.
-     * @param requested      The requested assistance status.
+     * @param stationNumber 
+     * 			The index of the station button.
+     * @param requested      
+     * 			The requested assistance status.
      */
     public void setStationAssistanceRequested(int stationNumber, boolean requested) {
         if (stationNumber >= 0 && stationNumber < stationStartButtons.length) {
@@ -386,10 +377,10 @@ public class AttendantPageGUI extends JFrame {
     /**
      * Displays a warning dialog for change due at a specific station.
      * 
-     * @param change The amount of change due.
+     * @param change 
+     * 			The amount of change due.
      */
     public void warnForChange(BigDecimal change) {
-    	
         JDialog dialog = new JDialog(this, "Amount Due", Dialog.ModalityType.APPLICATION_MODAL);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -427,15 +418,14 @@ public class AttendantPageGUI extends JFrame {
         dialog.setVisible(true);
     }
     
-    
     /**
      * Entry point to launch the AttendantPageGUI.
      * 
-     * @param args The command line arguments (not used).
+     * @param args 
+     * 			The command line arguments (not used).
      */
     public static void main(final String[] args) {
     	
         SwingUtilities.invokeLater(AttendantPageGUI::new);
-   }
-     
+   } 
 }
