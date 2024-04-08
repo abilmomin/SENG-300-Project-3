@@ -115,10 +115,22 @@ public class CardPayment extends JFrame {
         finishPaymentButton.addActionListener(e -> {
             try {
                 switch (paymentType) {
-                    case 1 -> software.getStationHardware().getCardReader().swipe(software.getCard(typeOfCard));
-                    case 2 -> software.getStationHardware().getCardReader().tap(software.getCard(typeOfCard));
-                    case 3 -> software.getStationHardware().getCardReader().insert(software.getCard(typeOfCard), pinInput);
-                    default -> JOptionPane.showMessageDialog(this, "Please select a payment method.", "Payment", JOptionPane.INFORMATION_MESSAGE);
+                    case 1 :
+                    	software.getStationHardware().getCardReader().swipe(software.getCard(typeOfCard));
+                    	dispose(); 
+                    	break;
+                    case 2 :
+                    	software.getStationHardware().getCardReader().tap(software.getCard(typeOfCard));
+                    	dispose();
+                    	break;
+                    case 3: 
+                    	software.getStationHardware().getCardReader().insert(software.getCard(typeOfCard), pinInput);
+                    	dispose();
+                    	break;
+                    default :
+                    	JOptionPane.showMessageDialog(this, "Please select a payment method.", "Payment", JOptionPane.INFORMATION_MESSAGE);
+                    	dispose();
+                    	break;
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();

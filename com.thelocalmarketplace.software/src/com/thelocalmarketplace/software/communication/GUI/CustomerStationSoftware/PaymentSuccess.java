@@ -54,7 +54,9 @@ import com.thelocalmarketplace.software.funds.Receipt;
 
 @SuppressWarnings("serial")
 public class PaymentSuccess extends JFrame {
+	private SelectPayment paymentWindow;
 	public PaymentSuccess(double change, SelfCheckoutStationSoftware stationSoftware) {
+		paymentWindow = new SelectPayment(stationSoftware);
 		setTitle("Thank you!");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(900, 700);
@@ -87,9 +89,12 @@ public class PaymentSuccess extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Receipt rec = new Receipt(stationSoftware.getStationHardware().getPrinter(), stationSoftware.getFunds());
+				Receipt rec = new Receipt(stationSoftware.getStationHardware().getPrinter(), stationSoftware.getFunds()); 
 				try {
 					JOptionPane.showMessageDialog(PaymentSuccess.this, rec.printReceipt());
+					dispose();
+					JOptionPane.showMessageDialog(PaymentSuccess.this, "Thank you for shopping with us! We hope to see you again!");
+					dispose();
 				} catch (HeadlessException | EmptyDevice | OverloadedDevice e1) {
 					e1.printStackTrace();
 				}
@@ -101,8 +106,8 @@ public class PaymentSuccess extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("No is selected"); // Debugging output
 				JOptionPane.showMessageDialog(PaymentSuccess.this, "Thank you for shopping with us! We hope to see you again!");
+				dispose();
 			}
 		});
 

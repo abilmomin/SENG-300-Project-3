@@ -133,7 +133,7 @@ public class SelectPayment extends JFrame {
         setVisible(false);
     }
     
-	private void returnToCheckout() {
+	void returnToCheckout() {
 		this.setVisible(false);
 	}
 
