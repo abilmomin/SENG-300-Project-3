@@ -3,6 +3,7 @@ package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftwa
 import com.jjjwelectronics.card.BlockedCardException;
 import com.jjjwelectronics.card.InvalidPINException;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import ca.ucalgary.seng300.simulation.NullPointerSimulationException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -82,7 +83,11 @@ public class CardPayment extends JFrame {
                 software.getStationHardware().getCardReader().remove();
             } catch (BlockedCardException bce) {
                 software.getGUI().customerPopUp("The Card is Blocked");
-                software.getStationHardware().getCardReader().remove();
+                try {
+                    software.getStationHardware().getCardReader().remove();
+                } catch (NullPointerSimulationException npse) { // Unable to remove card
+
+                }
             }
         });
 
