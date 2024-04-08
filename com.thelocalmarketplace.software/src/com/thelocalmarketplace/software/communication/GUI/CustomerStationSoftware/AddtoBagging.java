@@ -45,7 +45,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import com.jjjwelectronics.Item;
-import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.scale.IElectronicScale;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
@@ -62,113 +61,157 @@ import com.thelocalmarketplace.software.communication.GUI.AttendantStation.Atten
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.BaggingArea;
 
 
-// GENERAL LAYOUT
-// Box layout is used to arrange items vertically or horizontally
-// Glue is like a spring << add on before and after box components to squish them to the middle
+/* GENERAL LAYOUT
+ * Box layout is used to arrange items vertically or horizontally
+ * Glue is like a spring << add on before and after box components to squish them to the middle
+ */
 
+
+
+
+/**
+ * Represents a user interface for adding items to the bagging area in a self-checkout system.
+ * This class provides functionality for displaying item information and options for adding items to the bagging area.
+ */
 @SuppressWarnings("serial")
 public class AddtoBagging extends JFrame {
-	SelfCheckoutStationSoftware stationSoftwareInstance;
-	AttendantPageGUI attendantGUI;
-	BaggingArea baggingArea;
-	
-	public AddtoBagging(Product product, SelfCheckoutStationSoftware stationSoftwareInstance, AttendantPageGUI attendantGUI, BaggingArea baggingArea) {
-		this.stationSoftwareInstance = stationSoftwareInstance;
-		this.attendantGUI = attendantGUI;
-		this.baggingArea = baggingArea;
+    SelfCheckoutStationSoftware stationSoftwareInstance;
+    AttendantPageGUI attendantGUI;
+    BaggingArea baggingArea;
+    
+    /**
+     * Constructor that creates a panel for adding items to the bagging area.
+     * @param product The product to be added to the bagging area.
+     * @param stationSoftwareInstance The SelfCheckoutStationSoftware instance associated with the hardware.
+     * @param attendantGUI The AttendantPageGUI instance for the attendant user interface.
+     * @param baggingArea The BaggingArea instance for displaying the bagging area interface.
+     */
+    public AddtoBagging(Product product, SelfCheckoutStationSoftware stationSoftwareInstance, AttendantPageGUI attendantGUI, BaggingArea baggingArea) {
+        this.stationSoftwareInstance = stationSoftwareInstance;
+        this.attendantGUI = attendantGUI;
+        this.baggingArea = baggingArea;
 
-	    setTitle("Add to Bag");
-	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    setSize(600, 500);
-	    setLocationRelativeTo(null);
+        initializeUI(product);
+        setVisible(true);
+    }
 
-	    // Main panel with BoxLayout for vertical alignment
-	    JPanel mainPanel = new JPanel();
-	    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-	    
-	    String item = "Item";
-	    if (product instanceof BarcodedProduct) {
-	    	BarcodedProduct bProduct = (BarcodedProduct) product;
-	    	item = bProduct.getDescription();
-	    } else {
-	    	PLUCodedProduct pProduct = (PLUCodedProduct) product;
-	    	item = pProduct.getDescription();
-	    }
+    /**
+     * Initializes the user interface components for adding items to the bagging area.
+     * @param product The product to be added to the bagging area.
+     */
+    private void initializeUI(Product product) {
+        setTitle("Add to Bag");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(600, 500);
+        setLocationRelativeTo(null);
 
-	    // Label for the large text display
-	    JLabel bigTextLabel = new JLabel("Item: " + item);
-	    bigTextLabel.setFont(new Font("Arial", Font.BOLD, 32));
-	    bigTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // Main panel with BoxLayout for vertical alignment
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        
+        String item = "Item";
+        if (product instanceof BarcodedProduct) {
+            BarcodedProduct bProduct = (BarcodedProduct) product;
+            item = bProduct.getDescription();
+        } else {
+            PLUCodedProduct pProduct = (PLUCodedProduct) product;
+            item = pProduct.getDescription();
+        }
 
-	    // Label for the small text display
-	    JLabel smallTextLabel = new JLabel("Please add item to bagging area.");
-	    smallTextLabel.setFont(new Font("Arial", Font.PLAIN, 12)); 
-	    smallTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT); 
+        // Label for the large text display
+        JLabel bigTextLabel = new JLabel("Item: " + item);
+        bigTextLabel.setFont(new Font("Arial", Font.BOLD, 32));
+        bigTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-	    // Button
-	    JButton button = new JButton("Place Item in Bagging Area");
-	    button.setAlignmentX(Component.CENTER_ALIGNMENT);
-	    button.setFont(new Font("Arial", Font.PLAIN, 16));
-	    button.setPreferredSize(new Dimension(100, 30));
-	    
-	    JButton doNotBagBtn = new JButton("Don't Bag Item");
-	    doNotBagBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-	    doNotBagBtn.setFont(new Font("Arial", Font.PLAIN, 16));
-	    doNotBagBtn.setPreferredSize(new Dimension(100, 30));
+        // Label for the small text display
+        JLabel smallTextLabel = new JLabel("Please add item to bagging area.");
+        smallTextLabel.setFont(new Font("Arial", Font.PLAIN, 12)); 
+        smallTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT); 
 
-        button.addActionListener(e -> {
-            if (product instanceof BarcodedProduct) {
-                ArrayList<Item> order = stationSoftwareInstance.getOrder();
+        // Button panel
+        JPanel buttonPanel = createButtonPanel(product);
 
-                if (order.size() > 0) {
-                    BarcodedItem itemToAdd = (BarcodedItem) order.get(order.size() - 1);
+        mainPanel.add(Box.createVerticalGlue());
+        mainPanel.add(bigTextLabel);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        mainPanel.add(smallTextLabel);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        mainPanel.add(buttonPanel);
+        mainPanel.add(Box.createVerticalGlue());
 
-                    IElectronicScale baggingAreaScale = stationSoftwareInstance.getStationHardware().getBaggingArea();
-                    baggingAreaScale.addAnItem(itemToAdd);
+        add(mainPanel);
+    }
 
-					Barcode barcode = itemToAdd.getBarcode();
-					BarcodedProduct barcodedProduct = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
-				    baggingArea.addProduct(barcodedProduct.getDescription());
+    /**
+     * Creates and configures the button panel for adding items to the bagging area.
+     * @param product The product to be added to the bagging area.
+     * @return The configured button panel.
+     */
+    private JPanel createButtonPanel(Product product) {
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 
-                }
-
-            } else {
-                ArrayList<Item> order = stationSoftwareInstance.getOrder();
-                if (order.size() > 0) {
-                    PLUCodedItem itemToAdd = (PLUCodedItem) order.get(order.size() - 1);
-                    
-                    IElectronicScale baggingAreaScale = stationSoftwareInstance.getStationHardware().getBaggingArea();
-                    baggingAreaScale.addAnItem(itemToAdd);
-
-					PriceLookUpCode pluCode = itemToAdd.getPLUCode();
-					PLUCodedProduct pluCodedProduct = ProductDatabases.PLU_PRODUCT_DATABASE.get(pluCode);
-    				baggingArea.addProduct(pluCodedProduct.getDescription());
-                }
-            }
+        JButton placeItemButton = new JButton("Place Item in Bagging Area");
+        placeItemButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        placeItemButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        placeItemButton.setPreferredSize(new Dimension(100, 30));
+        placeItemButton.addActionListener(e -> {
+            placeItemInBaggingArea(product);
             dispose();
         });
-	    
-	    doNotBagBtn.addActionListener(e -> {
-	    	dontBagItem();
-	    	dispose();
-	    });
-	    
-	    mainPanel.add(Box.createVerticalGlue());
-	    mainPanel.add(bigTextLabel);
-	    mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-	    mainPanel.add(smallTextLabel);
-	    mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-	    mainPanel.add(button);
-	    mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-	    mainPanel.add(doNotBagBtn);
-	    mainPanel.add(Box.createVerticalGlue());
 
-	    add(mainPanel);
-	    setVisible(true);
-	}
-	
+        JButton dontBagItemButton = new JButton("Don't Bag Item");
+        dontBagItemButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        dontBagItemButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        dontBagItemButton.setPreferredSize(new Dimension(100, 30));
+        dontBagItemButton.addActionListener(e -> {
+            dontBagItem();
+            dispose();
+        });
+
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        buttonPanel.add(placeItemButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        buttonPanel.add(dontBagItemButton);
+        buttonPanel.add(Box.createVerticalGlue());
+
+        return buttonPanel;
+    }
+
+    /**
+     * Handles the scenario when the item is placed in the bagging area.
+     * @param product The product to be placed in the bagging area.
+     */
+    private void placeItemInBaggingArea(Product product) {
+        if (product instanceof BarcodedProduct) {
+            ArrayList<Item> order = stationSoftwareInstance.getOrder();
+            if (order.size() > 0) {
+                BarcodedItem itemToAdd = (BarcodedItem) order.get(order.size() - 1);
+                IElectronicScale baggingAreaScale = stationSoftwareInstance.getStationHardware().getBaggingArea();
+                baggingAreaScale.addAnItem(itemToAdd);
+                Barcode barcode = itemToAdd.getBarcode();
+                BarcodedProduct barcodedProduct = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+                baggingArea.addProduct(barcodedProduct.getDescription());
+            }
+        } else {
+            ArrayList<Item> order = stationSoftwareInstance.getOrder();
+            if (order.size() > 0) {
+                PLUCodedItem itemToAdd = (PLUCodedItem) order.get(order.size() - 1);
+                IElectronicScale baggingAreaScale = stationSoftwareInstance.getStationHardware().getBaggingArea();
+                baggingAreaScale.addAnItem(itemToAdd);
+                PriceLookUpCode pluCode = itemToAdd.getPLUCode();
+                PLUCodedProduct pluCodedProduct = ProductDatabases.PLU_PRODUCT_DATABASE.get(pluCode);
+                baggingArea.addProduct(pluCodedProduct.getDescription());
+            }
+        }
+    }
+
+
+	 /**
+     * Handles the scenario when the item is not added to the bagging area.
+     */
     private void dontBagItem() {
-		// TODO Auto-generated method stub
+		
     	ArrayList<Item> orderList = stationSoftwareInstance.getOrder();
     	if (!orderList.isEmpty()) {
     		int lastIndex = orderList.size() - 1;
@@ -179,7 +222,7 @@ public class AddtoBagging extends JFrame {
             
             stationSoftwareInstance.getProductHandler().handleBulkyItem(massInGramsDouble,this.attendantGUI);
     	} else {
-    	    // Handle the case when the list is empty
+    	  
     		JOptionPane.showMessageDialog(this, "Scan Item First");
     	}
 	}
