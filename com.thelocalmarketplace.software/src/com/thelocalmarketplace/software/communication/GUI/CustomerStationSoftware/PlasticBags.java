@@ -1,16 +1,56 @@
+/**
+
+ SENG 300 - ITERATION 3
+ GROUP GOLD {8}
+
+ Name                      UCID
+
+ Yotam Rojnov             30173949
+ Duncan McKay             30177857
+ Mahfuz Alam              30142265
+ Luis Trigueros Granillo  30167989
+ Lilia Skumatova          30187339
+ Abdelrahman Abbas        30110374
+ Talaal Irtija            30169780
+ Alejandro Cardona        30178941
+ Alexandre Duteau         30192082
+ Grace Johnson            30149693
+ Abil Momin               30154771
+ Tara Ghasemi M. Rad      30171212
+ Izabella Mawani          30179738
+ Binish Khalid            30061367
+ Fatima Khalid            30140757
+ Lucas Kasdorf            30173922
+ Emily Garcia-Volk        30140791
+ Yuinikoru Futamata       30173228
+ Joseph Tandyo            30182561
+ Syed Haider              30143096
+ Nami Marwah              30178528
+
+ */
+
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+@SuppressWarnings("serial")
 public class PlasticBags extends JFrame {
-	private JPanel mainPanel;
-	private JPanel centerPanel;
 	private JPanel keypadPanel;
 	private JPanel screenPanel;
-	private JPanel headerPanel;
-	private JPanel footerPanel;
     private JTextField screenTextField;
     
     public PlasticBags() {
@@ -46,11 +86,10 @@ public class PlasticBags extends JFrame {
 	    add(mainPanel);
 	    setVisible(true);
     }
-    
 
     public JPanel createKeypadPanel() {
     	JPanel keypadPanel = new JPanel();
-    	keypadPanel.setLayout(new GridLayout(4,4,10,10));
+    	keypadPanel.setLayout(new GridLayout(4, 4, 10, 10));
     	keypadPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
     	
     	for (int i = 1; i <= 9; i++) {
@@ -58,7 +97,6 @@ public class PlasticBags extends JFrame {
             button.setFont(new Font("Arial", Font.PLAIN, 16));
             keypadPanel.add(button);
             button.addActionListener(addNum);
-            
         }
     	
     	JButton enter = new JButton("Enter");
@@ -87,15 +125,8 @@ public class PlasticBags extends JFrame {
         	}
         });
     	
-    	/*
-    	enter.addActionListener(e -> {
-        	AddtoBagging popup  = new AddtoBagging(this);
-        	popup.setVisible(true);
-        });
-    	*/
     	return keypadPanel;
     }
-    
     
     ActionListener addNum = e -> {
         JButton button = (JButton) e.getSource();
@@ -122,8 +153,4 @@ public class PlasticBags extends JFrame {
         
         return screenPanel;
     }
-    
-    public static void main(String[] args ) {
-		PlasticBags popup = new PlasticBags();	// USING ARBITRARY TEST VALUE ATM
-	}
 }

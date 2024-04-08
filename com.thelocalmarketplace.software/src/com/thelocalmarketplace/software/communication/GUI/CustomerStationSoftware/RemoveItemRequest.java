@@ -1,24 +1,53 @@
+/**
+
+ SENG 300 - ITERATION 3
+ GROUP GOLD {8}
+
+ Name                      UCID
+
+ Yotam Rojnov             30173949
+ Duncan McKay             30177857
+ Mahfuz Alam              30142265
+ Luis Trigueros Granillo  30167989
+ Lilia Skumatova          30187339
+ Abdelrahman Abbas        30110374
+ Talaal Irtija            30169780
+ Alejandro Cardona        30178941
+ Alexandre Duteau         30192082
+ Grace Johnson            30149693
+ Abil Momin               30154771
+ Tara Ghasemi M. Rad      30171212
+ Izabella Mawani          30179738
+ Binish Khalid            30061367
+ Fatima Khalid            30140757
+ Lucas Kasdorf            30173922
+ Emily Garcia-Volk        30140791
+ Yuinikoru Futamata       30173228
+ Joseph Tandyo            30182561
+ Syed Haider              30143096
+ Nami Marwah              30178528
+
+ */
+
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
 
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
 
-import com.jjjwelectronics.Item;
-import com.jjjwelectronics.scanner.Barcode;
-import com.jjjwelectronics.scanner.BarcodedItem;
-import com.thelocalmarketplace.hardware.BarcodedProduct;
-import com.thelocalmarketplace.hardware.PLUCodedItem;
-import com.thelocalmarketplace.hardware.PLUCodedProduct;
-import com.thelocalmarketplace.hardware.PriceLookUpCode;
-import com.thelocalmarketplace.hardware.external.ProductDatabases;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 
 import ca.ucalgary.seng300.simulation.InvalidArgumentSimulationException;
 
-import java.awt.*;
-
+@SuppressWarnings("serial")
 public class RemoveItemRequest extends JFrame {
-
     public RemoveItemRequest(String itemName, SelfCheckoutStationSoftware stationSoftwareInstance, AttendantPageGUI attendantGUI) {
         setTitle("Item Removed");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -68,8 +97,4 @@ public class RemoveItemRequest extends JFrame {
         setLocationRelativeTo(null); 
         setVisible(true);
     }
-
-//    public static void main(final String[] args) {
-//        SwingUtilities.invokeLater(RemoveItemRequest::new);
-//    }
 }
