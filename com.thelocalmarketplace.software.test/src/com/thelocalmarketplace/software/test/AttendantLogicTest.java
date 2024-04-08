@@ -71,7 +71,7 @@ import ca.ucalgary.seng300.simulation.SimulationException;
 
 import powerutility.PowerGrid;
 
-public class ALogicTest {
+public class AttendantLogicTest {
 	private AttendantLogic aLogic;
 	public ReceiptObserver rO;
 
