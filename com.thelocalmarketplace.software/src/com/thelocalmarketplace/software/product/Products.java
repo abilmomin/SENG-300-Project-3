@@ -62,6 +62,8 @@ public class Products {
 	public ScaleListener scaleListener;
 	public ScannerListener scannerListener;
 	public Set<ProductsListener> listeners = new HashSet<>();
+	
+	private ArrayList<Item> bulkyItems;
 
 	/**
 	 * Basic constructor
@@ -87,6 +89,8 @@ public class Products {
 		mainScanner.register(scannerListener);
 		handheldScanner.register(scannerListener);
 		baggingArea.register(scaleListener);
+		
+		bulkyItems = new ArrayList<Item>();
 	}
 	
 	/**
@@ -96,67 +100,72 @@ public class Products {
 	 * 			The weight of the bulky item 
 	 * @param attendantGUI 
 	 */
-	public void handleBulkyItem(double productWeight, AttendantPageGUI attendantGUI) {
-		software.setStationBlock();
-		
-		 if (attendantGUI.bulkItemRequest("No-bagging request is in progress, approve below") == true) {
-				double currentWeight = software.getTotalOrderWeightInGrams();
-				double finalWeight = currentWeight-productWeight;
-				if (finalWeight >= 0) software.addTotalOrderWeightInGrams(-productWeight); 
-				
-				ArrayList<Item> order = software.getOrder();
-				Item itemToRemove = order.get(order.size() - 1);
-				software.removeFromOrder(itemToRemove);
-				
-				software.setStationUnblock();
-		 }
-	}
+    public void handleBulkyItem(double productWeight, AttendantPageGUI attendantGUI) {
+        software.setStationBlock();
+        
+         if (attendantGUI.bulkItemRequest("No-bagging request is in progress, approve below") == true) {
+                double currentWeight = software.getTotalOrderWeightInGrams();
+                double finalWeight = currentWeight-productWeight;
+                if (finalWeight >= 0) software.addTotalOrderWeightInGrams(-productWeight); 
+                
+                ArrayList<Item> order = software.getOrder();
+                Item item = order.get(order.size() - 1);
+                bulkyItems.add(item);
+                
+                software.setStationUnblock();
+         }
+
+    }
 	
 	/**
 	 * Removes item and updates all order info.
 	 */
-	public boolean removeItemFromOrder(Item item) {
-		if (software.getOrder().contains(item)) {
-			software.getOrder().remove(item);
-			
-			software.setStationBlock();
-			
-			if (item instanceof BarcodedItem) {
-				Barcode barcode = ((BarcodedItem) item).getBarcode();
-				BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
-				if (product != null) {
-					double productWeight = product.getExpectedWeight();
-					long productPrice = product.getPrice();
-					
-					software.addTotalOrderWeightInGrams(-productWeight);
-					software.addTotalOrderPrice(-productPrice);
+    public boolean removeItemFromOrder(Item item) {
+        if (software.getOrder().contains(item)) {
+            software.getOrder().remove(item);
+            
+            software.setStationBlock();
+            
+            if (item instanceof BarcodedItem) {
+                Barcode barcode = ((BarcodedItem) item).getBarcode();
+                BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+                if (product != null) {
+                    double productWeight = product.getExpectedWeight();
+                    long productPrice = product.getPrice();
+                    
+                    if (!bulkyItems.contains(item))
+                        software.addTotalOrderWeightInGrams(-productWeight);
+                    
+                    software.addTotalOrderPrice(-productPrice);
 
-					notifyProductRemoved(product);
-				}
-				return true;
-			} 
-			
-			if (item instanceof PLUCodedItem) {
-				PriceLookUpCode PLUCode = ((PLUCodedItem) item).getPLUCode();
-				PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
-				if (product != null) {
-					Mass itemMass = item.getMass();
-					double productWeight = itemMass.inGrams().doubleValue();
-					long productPrice = product.getPrice();
-					
-					software.addTotalOrderWeightInGrams(-productWeight);
-					software.addTotalOrderPrice(-productPrice);
-					
-					notifyProductRemoved(product);
-				}
-				return true;
-			}
-			
-		} else {
-			return false;
-		}
-		return false;
-	}
+                    notifyProductRemoved(product);
+                }
+                return true;
+            } 
+            
+            if (item instanceof PLUCodedItem) {
+                PriceLookUpCode PLUCode = ((PLUCodedItem) item).getPLUCode();
+                PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
+                if (product != null) {
+                    Mass itemMass = item.getMass();
+                    double productWeight = itemMass.inGrams().doubleValue();
+                    long productPrice = product.getPrice();
+                    
+                    if (!bulkyItems.contains(item))
+                        software.addTotalOrderWeightInGrams(-productWeight);
+                    
+                    software.addTotalOrderPrice(-productPrice);
+                    
+                    notifyProductRemoved(product);
+                }
+                return true;
+            }
+            
+        } else {
+            return false;
+        }
+        return false;
+    }
 	
 	/**
 	 * 
