@@ -1,9 +1,41 @@
+/**
+
+ SENG 300 - ITERATION 3
+ GROUP GOLD {8}
+
+ Name                      UCID
+
+ Yotam Rojnov             30173949
+ Duncan McKay             30177857
+ Mahfuz Alam              30142265
+ Luis Trigueros Granillo  30167989
+ Lilia Skumatova          30187339
+ Abdelrahman Abbas        30110374
+ Talaal Irtija            30169780
+ Alejandro Cardona        30178941
+ Alexandre Duteau         30192082
+ Grace Johnson            30149693
+ Abil Momin               30154771
+ Tara Ghasemi M. Rad      30171212
+ Izabella Mawani          30179738
+ Binish Khalid            30061367
+ Fatima Khalid            30140757
+ Lucas Kasdorf            30173922
+ Emily Garcia-Volk        30140791
+ Yuinikoru Futamata       30173228
+ Joseph Tandyo            30182561
+ Syed Haider              30143096
+ Nami Marwah              30178528
+
+ */
+
 package com.thelocalmarketplace.software.test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
+
 import java.util.Currency;
 import java.util.List;
 import java.util.Map;
@@ -13,49 +45,47 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jjjwelectronics.OverloadedDevice;
-import com.jjjwelectronics.printer.IReceiptPrinter;
-import com.jjjwelectronics.scale.AbstractElectronicScale;
+
 import com.tdc.CashOverloadException;
+
 import com.tdc.banknote.Banknote;
 import com.tdc.banknote.BanknoteStorageUnit;
 import com.tdc.banknote.IBanknoteDispenser;
+
 import com.tdc.coin.Coin;
 import com.tdc.coin.CoinStorageUnit;
 import com.tdc.coin.ICoinDispenser;
-import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
+
 import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
+
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantLogic;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
-import com.thelocalmarketplace.software.funds.Funds;
-import com.thelocalmarketplace.software.funds.Receipt;
 import com.thelocalmarketplace.software.funds.ReceiptObserver;
 
 import ca.ucalgary.seng300.simulation.SimulationException;
+
 import powerutility.PowerGrid;
 
 public class ALogicTest {
-
 	private AttendantLogic aLogic;
 	public ReceiptObserver rO;
 
 	private SelfCheckoutStationSoftware station;
 	
-	 private CustomerStation[] customerStations;
-	 private SelfCheckoutStationSoftware[] stationSoftwareInstances;
-	 private AbstractSelfCheckoutStation checkoutStation;
-	 private SelfCheckoutStationBronze teststation;
-	 private StartSession[] startSessions;
+	private CustomerStation[] customerStations;
+	private SelfCheckoutStationSoftware[] stationSoftwareInstances;
+	private StartSession[] startSessions;
 
 	@Before
 	public void setUp() {
-		BigDecimal[] coinDenominations = { new BigDecimal("0.25"), new BigDecimal("0.10"), new BigDecimal("0.50"),
+		BigDecimal[] coinDenominations = {new BigDecimal("0.25"), new BigDecimal("0.10"), new BigDecimal("0.50"),
 				new BigDecimal("1.0") };
-		BigDecimal[] banknoteDenominations = { new BigDecimal("5.0"), new BigDecimal("10.0"), new BigDecimal("20.0"),
+		BigDecimal[] banknoteDenominations = {new BigDecimal("5.0"), new BigDecimal("10.0"), new BigDecimal("20.0"),
 				new BigDecimal("50.0"), new BigDecimal("100.0")};
 
 		// Set up Gold selfCheckoutStation
@@ -72,9 +102,14 @@ public class ALogicTest {
 		
 		customerStations = new CustomerStation[4]; // Example size
         stationSoftwareInstances = new SelfCheckoutStationSoftware[4];
-        teststation = new SelfCheckoutStationBronze();
 	}
-
+	
+	@After
+	public void tearDown() {
+		station = null;
+		aLogic = null;
+	}
+	
 	@Test
 	public void testEmptyCoins() throws SimulationException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
@@ -136,35 +171,26 @@ public class ALogicTest {
 
 	@Test
 	public void testRefillInk() throws OverloadedDevice {
-		ISelfCheckoutStation cS = station.getStationHardware();
-		IReceiptPrinter printer = cS.getPrinter();
 		aLogic.refillPrinterInk(station);
 	}
 
 	@Test
 	public void testRefillPaper() throws OverloadedDevice {
-		ISelfCheckoutStation cS = station.getStationHardware();
-		IReceiptPrinter printer = cS.getPrinter();
 		aLogic.refillPrinterPaper(station);
 	}
 
 	@Test
 	public void testRefillPrinterPaperWhenLow() throws OverloadedDevice {
-		ISelfCheckoutStation cS = station.getStationHardware();
-		IReceiptPrinter printer = cS.getPrinter();
 		aLogic.refillPrinterPaperWhenLow(station);
 	}
 
 	@Test
 	public void testRefillInkWhenLow() throws OverloadedDevice {
-		ISelfCheckoutStation cS = station.getStationHardware();
-		IReceiptPrinter printer = cS.getPrinter();
 		aLogic.refillPrinterInkWhenLow(station);
 	}
 
-
 	@Test
-	  public void testEnableStation_StationNotSelected() {
+	public void testEnableStation_StationNotSelected() {
 		AttendantLogic logic = new AttendantLogic();
 		int selectedStation = 1;
 		SelfCheckoutStationBronze bronzeS = new SelfCheckoutStationBronze();
@@ -179,50 +205,34 @@ public class ALogicTest {
 		assertTrue(stationSoftwareInstances[1].getStationBlock());
 		logic.EnableStation(selectedStation, customerStations, stationSoftwareInstances, bronzeS, startSessions);
 		assertFalse(stationSoftwareInstances[1].getStationBlock());
-		
-	  }
-
-	  
-	
-	  @Test
-	  public void testDisableStation_StationNotSelected() {
-		  	AttendantLogic logic = new AttendantLogic();
-			int selectedStation = 1; 
-			SelfCheckoutStationBronze bronzeS = new SelfCheckoutStationBronze(); 
-			startSessions = new StartSession[5];	
-			startSessions[1] = new StartSession(selectedStation, station, null);	
-			PowerGrid.engageUninterruptiblePowerSource();
-	        bronzeS.plugIn(PowerGrid.instance());
-	        bronzeS.turnOn();
-	        stationSoftwareInstances = new SelfCheckoutStationSoftware[5];   
-			stationSoftwareInstances[selectedStation] = new SelfCheckoutStationSoftware(bronzeS);	
-			stationSoftwareInstances[selectedStation].setStationUnblock();	
-			assertFalse(stationSoftwareInstances[1].getStationBlock());	
-			logic.DisableStation(selectedStation, customerStations, stationSoftwareInstances, bronzeS, startSessions);
-			assertTrue(stationSoftwareInstances[1].getStationBlock());	
-			boolean result = logic.DisableStation(selectedStation, customerStations, stationSoftwareInstances, bronzeS, startSessions);  
-		    assertFalse(result);
-		  
-	  }
-	  
-	  @Test
-	  public void notifyAttedant_test() {
-		  AttendantPageGUI test = new AttendantPageGUI();
-		  test.setStationAssistanceRequested(0, false);
-		  boolean request = true;
-		  test.setStationAssistanceRequested(0, request);
-	      assertTrue(test.stationAssistanceRequested[0]);
-
-	  }
-	  
-
-	@After
-	public void tearDown() {
-		station = null;
-		aLogic = null;
 	}
-
 	
-	
-	
+	@Test
+	public void testDisableStation_StationNotSelected() {
+		AttendantLogic logic = new AttendantLogic();
+		int selectedStation = 1; 
+		SelfCheckoutStationBronze bronzeS = new SelfCheckoutStationBronze(); 
+		startSessions = new StartSession[5];	
+		startSessions[1] = new StartSession(selectedStation, station, null);	
+		PowerGrid.engageUninterruptiblePowerSource();
+		bronzeS.plugIn(PowerGrid.instance());
+		bronzeS.turnOn();
+		stationSoftwareInstances = new SelfCheckoutStationSoftware[5];   
+		stationSoftwareInstances[selectedStation] = new SelfCheckoutStationSoftware(bronzeS);	
+		stationSoftwareInstances[selectedStation].setStationUnblock();	
+		assertFalse(stationSoftwareInstances[1].getStationBlock());	
+		logic.DisableStation(selectedStation, customerStations, stationSoftwareInstances, bronzeS, startSessions);
+		assertTrue(stationSoftwareInstances[1].getStationBlock());	
+		boolean result = logic.DisableStation(selectedStation, customerStations, stationSoftwareInstances, bronzeS, startSessions);  
+		assertFalse(result);
 	}
+	  
+	@Test
+	public void notifyAttedant_test() {
+		AttendantPageGUI test = new AttendantPageGUI();
+		test.setStationAssistanceRequested(0, false);
+		boolean request = true;
+		test.setStationAssistanceRequested(0, request);
+		assertTrue(test.stationAssistanceRequested[0]);
+	}
+}

@@ -29,7 +29,6 @@
 
  */
 
-
 package com.thelocalmarketplace.software.test;
 
 import static org.junit.Assert.assertFalse;
@@ -38,7 +37,8 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.Mass;
@@ -47,22 +47,23 @@ import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.printer.IReceiptPrinter;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
+
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
+
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+
 import com.jjjwelectronics.printer.ReceiptPrinterBronze;
-import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
+
 import com.thelocalmarketplace.software.funds.*;
 
 import powerutility.PowerGrid;
 
-
 public class ReceiptTest {
-
     private Receipt receipt;
     public ReceiptObserver rO;
 
@@ -85,10 +86,8 @@ public class ReceiptTest {
         this.station.station.turnOn();
     }
 
-
     @Test
     public void testReceiptPrinterWithBarcodedProduct() throws EmptyDevice, OverloadedDevice {
-
         Numeral[] barcodeDigits = {Numeral.one, Numeral.two, Numeral.three, Numeral.four, Numeral.five};
         Barcode barcode = new Barcode(barcodeDigits);
         Mass itemMass = new Mass(1000000000); // 1kg in micrograms
@@ -111,12 +110,10 @@ public class ReceiptTest {
         this.receipt.receiptPrinter.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
 
         this.receipt.printReceipt();
-
     }
 
     @Test
     public void testReceiptPrinterWithPLUProduct() throws EmptyDevice, OverloadedDevice {
-
         String pluDigits = "0001";
         PriceLookUpCode pluCode = new PriceLookUpCode(pluDigits);
         Mass mass = new Mass(1000000000); // Converts the weight of the product to a mass
@@ -138,8 +135,6 @@ public class ReceiptTest {
         this.receipt.receiptPrinter.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
 
         this.receipt.printReceipt();
-
-
     }
 
     @Test (expected = NullPointerException.class)
@@ -152,41 +147,31 @@ public class ReceiptTest {
         this.receipt.printReceipt();
     }
 
-
     @Test
     public void testRegisterAndNotifyReceiptPrinted() {
-
-
         mockReceiptObserver observer = new mockReceiptObserver();
 
         this.receipt.register(observer);
         this.receipt.notifyReceiptPrinted(new ArrayList<>());
-
 
         assertTrue(observer.receiptPrintedCalled);
     }
 
     @Test
     public void testDeregister() {
-
-
         mockReceiptObserver observer = new mockReceiptObserver();
-
 
         this.receipt.register(observer);
         this.receipt.deregister(observer);
         this.receipt.notifyReceiptPrinted(new ArrayList<>());
-
 
         assertFalse(observer.receiptPrintedCalled);
     }
 
     @Test
     public void testNotifyInkEmpty() {
-
         mockReceiptObserver observer = new mockReceiptObserver();
 
-        // Act
         this.receipt.register(observer);
         this.receipt.notifyInkEmpty(printer);
 
@@ -195,9 +180,7 @@ public class ReceiptTest {
 
     @Test
     public void testNotifyPaperEmpty() {
-
         mockReceiptObserver observer = new mockReceiptObserver();
-
 
         this.receipt.register(observer);
         this.receipt.notifyPaperEmpty(printer);
@@ -207,9 +190,7 @@ public class ReceiptTest {
 
     @Test
     public void testNotifyPaperLow() {
-
         mockReceiptObserver observer = new mockReceiptObserver();
-
 
         this.receipt.register(observer);
         this.receipt.notifyPaperLow(printer);
@@ -219,9 +200,7 @@ public class ReceiptTest {
 
     @Test
     public void testNotifyInkLow() {
-
         mockReceiptObserver observer = new mockReceiptObserver();
-
 
         this.receipt.register(observer);
         this.receipt.notifyInkLow(printer);
@@ -231,8 +210,6 @@ public class ReceiptTest {
 
     @Test
     public void testNotifyInkAdded() {
-
-
         mockReceiptObserver observer = new mockReceiptObserver();
 
         this.receipt.register(observer);
@@ -243,16 +220,11 @@ public class ReceiptTest {
 
     @Test
     public void testNotifyPaperAdded() {
-
         mockReceiptObserver observer = new mockReceiptObserver();
 
         this.receipt.register(observer);
         this.receipt.notifyPaperAdded(printer);
 
-
         assertTrue(observer.paperAddedCalled);
     }
-
-
-
 }

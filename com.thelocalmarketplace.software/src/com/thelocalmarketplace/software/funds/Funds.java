@@ -1,5 +1,8 @@
 /**
 
+ SENG 300 - ITERATION 3
+ GROUP GOLD {8}
+
  Name                      UCID
 
  Yotam Rojnov             30173949
@@ -31,17 +34,12 @@ package com.thelocalmarketplace.software.funds;
 import java.math.BigDecimal;
 
 import java.util.Arrays;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-
 import java.util.List;
-
 import java.util.Map;
-
 import java.util.Set;
-
 import java.util.stream.Collectors;
 
 import com.jjjwelectronics.EmptyDevice;
@@ -251,8 +249,9 @@ public class Funds {
 	public boolean dispenseAccurateChange(BigDecimal changeValue) throws CashOverloadException, NoCashAvailableException, DisabledException{
 		AbstractSelfCheckoutStation station = (AbstractSelfCheckoutStation) checkoutStationSoftware.getStationHardware();
 		
-		BigDecimal amountDispensed = new BigDecimal("0.0");
 		BigDecimal remainingAmount = changeValue;
+		BigDecimal amountDispensed = BigDecimal.ZERO;
+
 		List<BigDecimal> coinDenominations = station.getCoinDenominations();
 		Collections.sort(coinDenominations);
 		Collections.reverse(coinDenominations);
@@ -322,6 +321,4 @@ public class Funds {
 
 		return remainingAmount.compareTo(BigDecimal.ZERO) == 0;
 	}
-	
-	
 }
