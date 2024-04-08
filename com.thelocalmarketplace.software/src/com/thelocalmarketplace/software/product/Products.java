@@ -127,37 +127,12 @@ public class Products {
             software.setStationBlock();
             
             if (item instanceof BarcodedItem) {
-                Barcode barcode = ((BarcodedItem) item).getBarcode();
-                BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
-                if (product != null) {
-                    double productWeight = product.getExpectedWeight();
-                    long productPrice = product.getPrice();
-                    
-                    if (!bulkyItems.contains(item))
-                        software.addTotalOrderWeightInGrams(-productWeight);
-                    
-                    software.addTotalOrderPrice(-productPrice);
-
-                    notifyProductRemoved(product);
-                }
+            	removeBarcodedItemFromOrder(item);
                 return true;
             } 
             
             if (item instanceof PLUCodedItem) {
-                PriceLookUpCode PLUCode = ((PLUCodedItem) item).getPLUCode();
-                PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
-                if (product != null) {
-                    Mass itemMass = item.getMass();
-                    double productWeight = itemMass.inGrams().doubleValue();
-                    long productPrice = product.getPrice();
-                    
-                    if (!bulkyItems.contains(item))
-                        software.addTotalOrderWeightInGrams(-productWeight);
-                    
-                    software.addTotalOrderPrice(-productPrice);
-                    
-                    notifyProductRemoved(product);
-                }
+                removePLUCodedItemFromOrder(item);
                 return true;
             }
             
@@ -165,6 +140,51 @@ public class Products {
             return false;
         }
         return false;
+    }
+    
+    /**
+     * Remove a barcoded item from the order
+     * 
+     * @param item
+     * 			The barcoded item
+     */
+    public void removeBarcodedItemFromOrder(Item item) {
+    	Barcode barcode = ((BarcodedItem) item).getBarcode();
+        BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+        if (product != null) {
+            double productWeight = product.getExpectedWeight();
+            long productPrice = product.getPrice();
+            
+            if (!bulkyItems.contains(item))
+                software.addTotalOrderWeightInGrams(-productWeight);
+            
+            software.addTotalOrderPrice(-productPrice);
+
+            notifyProductRemoved(product);
+        }
+    }
+    
+    /**
+     * Remove a PLU coded item from the order
+     * 
+     * @param item
+     * 			The PLU coded item from the order
+     */
+    public void removePLUCodedItemFromOrder(Item item) {
+    	PriceLookUpCode PLUCode = ((PLUCodedItem) item).getPLUCode();
+        PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
+        if (product != null) {
+            Mass itemMass = item.getMass();
+            double productWeight = itemMass.inGrams().doubleValue();
+            long productPrice = product.getPrice();
+            
+            if (!bulkyItems.contains(item))
+                software.addTotalOrderWeightInGrams(-productWeight);
+            
+            software.addTotalOrderPrice(-productPrice);
+            
+            notifyProductRemoved(product);
+        }
     }
 	
 	/**
@@ -225,7 +245,7 @@ public class Products {
 				notifyProductAdded(product);
 			}
 		}
-	}
+	} 
 	
 	/**
      * Adds an item to the customer's order by text search.
