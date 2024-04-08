@@ -43,7 +43,7 @@ import com.thelocalmarketplace.software.product.Products;
 import com.thelocalmarketplace.software.product.ProductsListener;
 
 /**
- * The Coordination class acts as a middle man in the self-checkout system, coordinating between the GUI, 
+ * The SelfCheckoutCoordinator class acts as a middle man in the self-checkout system, coordinating between the GUI, 
  * payment processing, and product management.
  */
 public class SelfCheckoutCoordinator implements FundsObserver, ProductsListener {
@@ -53,7 +53,7 @@ public class SelfCheckoutCoordinator implements FundsObserver, ProductsListener 
     CustomerStation gui;
 
     /**
-     * Constructor for Coordination class
+     * Constructor for SelfCheckoutCoordinator class
      * 
      * @param software 
      * 			the SelfCheckoutStation device 
