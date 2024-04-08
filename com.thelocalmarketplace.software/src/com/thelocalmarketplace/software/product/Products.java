@@ -351,8 +351,8 @@ public class Products {
 		}
 	}
 	/**
-	 * The selected amount of purchased bags are dispensed and added to the bagging area. 
-	 * The bag weight is added to the order weight 
+	 * The selected amount of purchased bags are loaded and dispensed to the bagging area for purchase. 
+	 * The bag weight and price is added to the order weight and total cost 
 	 */
 	public void PurchaseBags(ReusableBag...bags)throws OverloadedDevice, EmptyDevice {
 		if (software.getStationActive()) {
@@ -360,19 +360,20 @@ public class Products {
 				software.setStationBlock();
 			
 			try {
+				//loading the bags to the dispenser 
 				reusableBagDispenser.load(bags); //requires power
-				// making sure dispenser has enough bags 
+				//making sure the capacity of the dispenser is not surpassed by the loaded bags added 
 				//changed here 
 				if(bags.length + reusableBagDispenser.getQuantityRemaining() > reusableBagDispenser.getCapacity()) {
 					throw new OverloadedDevice();
 				}
 				else {
-					//reusableBagDispenser.load(bags);
-					//dispensing appropriate number of bags and notifies that bags are dispensed
+					reusableBagDispenser.load(bags);
+					//dispensing appropriate number of bags
 						reusableBagDispenser.dispense();
-					
+					//When the customer required the exact amount of bags that are in the dispenser and empty it when their bags are dispensed 
 					if(reusableBagDispenser.getQuantityRemaining() == 0) {
-						//reusableBagDispenser.notify(); 
+						reusableBagDispenser.notify(); 
 						throw new EmptyDevice("Dispenser is now out of bags");
 					}	
 				}
