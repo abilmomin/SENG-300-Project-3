@@ -1,5 +1,6 @@
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
 
+import com.jjjwelectronics.card.InvalidPINException;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 import javax.swing.*;
@@ -75,6 +76,9 @@ public class CardPayment extends JFrame {
 
             } catch (IOException ex) {
                 ex.printStackTrace();
+            } catch (InvalidPINException ipe) {
+                software.getGUI().customerPopUp("Invalid PIN Entered");
+                software.getStationHardware().getCardReader().remove();
             }
         });
 
