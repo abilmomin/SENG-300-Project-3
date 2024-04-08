@@ -119,7 +119,6 @@ public class CustomerStation extends JFrame {
         JButton viewBaggingAreaBtn = createButton("View Bagging Area", e -> {
             baggingArea.baggingAreaFrame.setVisible(true);
             baggingArea.baggingAreaFrame.revalidate();
-            baggingArea.baggingAreaFrame.pack();
         });
         
         JButton helpBtn = createButton("Help", e -> {
@@ -294,7 +293,7 @@ public class CustomerStation extends JFrame {
             AbstractElectronicScale scale = (AbstractElectronicScale) stationSoftwareInstance.getStationHardware().getBaggingArea();
             addOwnBag = new AddownBag(stationSoftwareInstance, scale, this, this.attendantGUI);
         } else {
-        	 JOptionPane.getRootFrame().dispose();
+        	 this.dispose();
         }
     }
 	
@@ -380,9 +379,10 @@ public class CustomerStation extends JFrame {
 
                     if (product.getDescription().equals(productGettingRemoved)) {
                         stationSoftwareInstance.removeItemFromOrder(pluItem);
-                        AbstractElectronicScale scale = (AbstractElectronicScale) stationSoftwareInstance.getStationHardware().getBaggingArea();
+                        boolean itemRemovedFromBaggingArea = baggingArea.itemToRemove(productGettingRemoved);
 
-                        scale.removeAnItem(pluItem);
+                        if(itemRemovedFromBaggingArea)
+                            new RemoveFromBagging(pluItem, stationSoftwareInstance, attendantGUI, baggingArea);
                         itemRemoved = true;
                         break;
                     }
@@ -391,17 +391,19 @@ public class CustomerStation extends JFrame {
 
                     Barcode barcode = barcodeItem.getBarcode();
                     BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+                    long productWeight = barcodeItem.getMass().inGrams().longValue();
 
                     // create regex to match the product description
                     String productGettingRemoved = extractProductName(selectedCartItemButton.getText());
 
                     if (product.getDescription().equals(productGettingRemoved)) {
-                        System.out.println("Removing item: " + product.getDescription());
                         stationSoftwareInstance.removeItemFromOrder(barcodeItem);
-                        AbstractElectronicScale scale = (AbstractElectronicScale) stationSoftwareInstance.getStationHardware().getBaggingArea();
-
-                        scale.removeAnItem(barcodeItem);
                         itemRemoved = true;
+
+                        boolean itemRemovedFromBaggingArea = baggingArea.itemToRemove(productGettingRemoved);
+                        if(itemRemovedFromBaggingArea)
+                            new RemoveFromBagging(barcodeItem, stationSoftwareInstance, attendantGUI, baggingArea);
+
                         break;
                     }
                 }

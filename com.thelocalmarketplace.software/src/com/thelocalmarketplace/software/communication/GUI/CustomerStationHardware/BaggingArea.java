@@ -46,6 +46,7 @@ public class BaggingArea extends JFrame {
         baggingAreaFrame = new JFrame("Bagging Area Simulation");
         baggingAreaPanel = new JPanel();
         baggingAreaPanel.setLayout(new BoxLayout(baggingAreaPanel, BoxLayout.Y_AXIS));
+        setSize(600, 400);  // Set the size of the window
 
         listModel = new DefaultListModel<>();
 
@@ -55,6 +56,29 @@ public class BaggingArea extends JFrame {
     public void addProduct(String name) {
         System.out.println("Adding product: " + name);
         listModel.addElement(new Product(name));
+    }
+
+    public void removeProduct(String name) {
+        System.out.println("Removing product: " + name);
+        for (int i = 0; i < listModel.size(); i++) {
+
+            System.out.println("THIS IS THE NAME 1: " + listModel.get(i).getName());
+            System.out.println("THIS IS THE NAME 2: " + name);
+            if (listModel.get(i).getName().equals(name)) {
+                System.out.println("ACTUALLY REMOVING");
+                listModel.remove(i);
+                break;
+            }
+        }
+    }
+
+    public boolean itemToRemove(String name) {
+        for (int i = 0; i < listModel.size(); i++) {
+            if (listModel.get(i).getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Add widgets to the frame

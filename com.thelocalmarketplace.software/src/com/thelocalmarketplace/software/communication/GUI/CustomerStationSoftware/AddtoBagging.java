@@ -87,7 +87,10 @@ public class AddtoBagging extends JFrame {
 
 					Barcode barcode = itemToAdd.getBarcode();
 					BarcodedProduct barcodedProduct = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+					System.out.println("Adding item: NEWWWW " + itemToAdd);
+					System.out.println("SCALE IS: " + baggingAreaScale);
 				    baggingArea.addProduct(barcodedProduct.getDescription());
+
                 }
 
             } else {
