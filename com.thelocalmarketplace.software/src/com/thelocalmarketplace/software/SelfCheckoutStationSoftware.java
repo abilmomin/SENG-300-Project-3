@@ -223,52 +223,9 @@ public class SelfCheckoutStationSoftware {
 	 * Removes an item from the order.
 	 *
 	 * @param item The item to remove from order.
-	 * @return true if the item was successfully removed, false otherwise.
 	 */
-	public boolean removeItemFromOrder(Item item) {
-		System.out.println("Removing item from order");
-		if (this.order.contains(item)) {
-			this.order.remove(item);
-			
-			setStationBlock();
-			
-			if (item instanceof BarcodedItem) {
-				Barcode barcode = ((BarcodedItem) item).getBarcode();
-				BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
-				if (product != null) {
-					double productWeight = product.getExpectedWeight();
-					long productPrice = product.getPrice();
-					
-					addTotalOrderWeightInGrams(-productWeight);
-					addTotalOrderPrice(-productPrice);
-					
-					System.out.println("Please remove item from the bagging area");
-					
-					products.notifyProductRemoved(product);
-				}
-				return true;
-			}
-			else if (item instanceof PLUCodedItem) {
-				PriceLookUpCode PLUCode = ((PLUCodedItem) item).getPLUCode();
-				PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
-				if (product != null) {
-					Mass itemMass = item.getMass();
-					double productWeight = itemMass.inGrams().doubleValue();
-					long productPrice = product.getPrice();
-					
-					addTotalOrderWeightInGrams(-productWeight);
-					addTotalOrderPrice(-productPrice);
-					
-					System.out.println("Please remove item from the bagging area");
-					
-					products.notifyProductRemoved(product);
-				}
-				return true;
-			}
-			
-		}
-		System.out.println("Item not found in the order.");
-		return false;
+	public void removeFromOrder(Item item) {
+		this.order.remove(item);
 	}
 	
 	/**

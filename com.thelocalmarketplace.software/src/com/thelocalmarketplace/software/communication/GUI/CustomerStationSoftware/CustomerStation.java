@@ -276,13 +276,20 @@ public class CustomerStation extends JFrame {
         double productWeight = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode).getExpectedWeight();
         Mass mass = new Mass(productWeight);
         BarcodedItem barcodedItem = new BarcodedItem(barcode, mass); 
+        
+        int initialOrderSize = stationSoftwareInstance.getOrder().size();
     	
     	IBarcodeScanner scanner = stationSoftwareInstance.getStationHardware().getMainScanner();
     	scanner.scan(barcodedItem);
-    	        	
-    	BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
     	
-    	new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
+    	int newOrderSize = stationSoftwareInstance.getOrder().size();
+    	
+    	// Check if the scan didn't fail
+    	if (newOrderSize > initialOrderSize) {
+        	BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+        	
+        	new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
+    	}
     }
 
 	private void handleUseOwnBags() {
@@ -379,11 +386,12 @@ public class CustomerStation extends JFrame {
 
 
                     if (product.getDescription().equals(productGettingRemoved)) {
-                        stationSoftwareInstance.removeItemFromOrder(pluItem);
+                        stationSoftwareInstance.getProductHandler().removeItemFromOrder(pluItem);
                         boolean itemRemovedFromBaggingArea = baggingArea.itemToRemove(productGettingRemoved);
 
                         if(itemRemovedFromBaggingArea)
                             new RemoveFromBagging(pluItem, stationSoftwareInstance, attendantGUI, baggingArea);
+                        else stationSoftwareInstance.setStationUnblock();
                         itemRemoved = true;
                         break;
                     }
@@ -398,13 +406,13 @@ public class CustomerStation extends JFrame {
                     String productGettingRemoved = extractProductName(selectedCartItemButton.getText());
 
                     if (product.getDescription().equals(productGettingRemoved)) {
-                        stationSoftwareInstance.removeItemFromOrder(barcodeItem);
+                        stationSoftwareInstance.getProductHandler().removeItemFromOrder(barcodeItem);
                         itemRemoved = true;
 
                         boolean itemRemovedFromBaggingArea = baggingArea.itemToRemove(productGettingRemoved);
                         if(itemRemovedFromBaggingArea)
                             new RemoveFromBagging(barcodeItem, stationSoftwareInstance, attendantGUI, baggingArea);
-
+                        else stationSoftwareInstance.setStationUnblock();
                         break;
                     }
                 }

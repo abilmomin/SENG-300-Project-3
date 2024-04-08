@@ -29,11 +29,13 @@ Nami Marwah              30178528
 package com.thelocalmarketplace.software.product;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import com.jjjwelectronics.EmptyDevice;
+import com.jjjwelectronics.Item;
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.bag.IReusableBagDispenser;
@@ -101,9 +103,60 @@ public class Products {
 				double currentWeight = software.getTotalOrderWeightInGrams();
 				double finalWeight = currentWeight-productWeight;
 				if (finalWeight >= 0) software.addTotalOrderWeightInGrams(-productWeight); 
+				
+				ArrayList<Item> order = software.getOrder();
+				Item itemToRemove = order.get(order.size() - 1);
+				software.removeFromOrder(itemToRemove);
+				
 				software.setStationUnblock();
 		 }
 
+	}
+	
+	/**
+	 * Removes item and updates all order info.
+	 */
+	public boolean removeItemFromOrder(Item item) {
+		if (software.getOrder().contains(item)) {
+			software.getOrder().remove(item);
+			
+			software.setStationBlock();
+			
+			if (item instanceof BarcodedItem) {
+				Barcode barcode = ((BarcodedItem) item).getBarcode();
+				BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+				if (product != null) {
+					double productWeight = product.getExpectedWeight();
+					long productPrice = product.getPrice();
+					
+					software.addTotalOrderWeightInGrams(-productWeight);
+					software.addTotalOrderPrice(-productPrice);
+
+					notifyProductRemoved(product);
+				}
+				return true;
+			} 
+			
+			if (item instanceof PLUCodedItem) {
+				PriceLookUpCode PLUCode = ((PLUCodedItem) item).getPLUCode();
+				PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
+				if (product != null) {
+					Mass itemMass = item.getMass();
+					double productWeight = itemMass.inGrams().doubleValue();
+					long productPrice = product.getPrice();
+					
+					software.addTotalOrderWeightInGrams(-productWeight);
+					software.addTotalOrderPrice(-productPrice);
+					
+					notifyProductRemoved(product);
+				}
+				return true;
+			}
+			
+		} else {
+			return false;
+		}
+		return false;
 	}
 	
 	/**
