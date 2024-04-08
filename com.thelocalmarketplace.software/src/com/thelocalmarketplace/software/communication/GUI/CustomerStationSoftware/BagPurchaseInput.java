@@ -44,15 +44,27 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+
+/**
+ * A dialog window for purchasing bags.
+ */
 @SuppressWarnings("serial")
 public class BagPurchaseInput extends JDialog {
     private int numOfBags = 0;
-
+    
+    
+    /**
+     * Constructs a dialog window for purchasing bags.
+     * @param owner The Frame from which the dialog is displayed.
+     */
     public BagPurchaseInput(Frame owner) {
         super(owner, "Purchase Bags", true);
         initializeUI();
     }
-
+    
+    /**
+     * Initializes the user interface components.
+     */
     private void initializeUI() {
         setSize(300, 300);
         setLocationRelativeTo(getOwner());
@@ -87,7 +99,7 @@ public class BagPurchaseInput extends JDialog {
             if (!input.isEmpty()) {
                 try {
                     numOfBags = Integer.parseInt(input);
-                    dispose(); // Close the dialog
+                    dispose(); 
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(this, "Invalid number. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -102,7 +114,12 @@ public class BagPurchaseInput extends JDialog {
 
         add(confirmPanel, BorderLayout.SOUTH);
     }
-
+    
+    
+    /**
+     * Retrieves the number of bags entered by the user.
+     * @return The number of bags.
+     */
     public int getNumOfBags() {
         return numOfBags;
     }
