@@ -29,7 +29,6 @@
 
  */
 
-
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
 
 import com.jjjwelectronics.EmptyDevice;
@@ -85,7 +84,6 @@ import javax.swing.JTextField;
 @SuppressWarnings("serial")
 public class CustomerStation extends JFrame {
 
-    //private JTextArea cartTextArea;
     private JPanel cartItemsPanel;
     private JLabel totalPriceLabel;
     private JPanel menuPanel;
