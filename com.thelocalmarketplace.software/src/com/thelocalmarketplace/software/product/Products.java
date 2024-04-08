@@ -259,7 +259,12 @@ public class Products {
         		PLUCodedProduct pluProduct = (PLUCodedProduct) product;
         		PLUCodedItem pluItem = new PLUCodedItem(pluProduct.getPLUCode(), new Mass(1.0));
         		
+        		addItemByPLUCode(pluItem);
+        		
                 software.addItemToOrder(pluItem);
+                
+				software.addTotalOrderWeightInGrams(1); 
+				software.addTotalOrderPrice(pluProduct.getPrice()); 
                 
                 notifyProductAdded(product);
                 notifyAddProductToBaggingArea(product);

@@ -44,6 +44,7 @@ import com.jjjwelectronics.scale.ElectronicScaleSilver;
 import com.tdc.CashOverloadException;
 
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
+import com.thelocalmarketplace.hardware.Product;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
@@ -163,11 +164,16 @@ public class AttendantListeners {
             // Call the method in Products class to add item by text search
             if (searchText != null && !searchText.isEmpty()) {
                 Products product = stationSoftwareInstances[selectedStation].getProductHandler();
-                product.addItemByTextSearch(searchText);
                 
+                Product foundProduct = product.findProductByTextSearch(searchText);
+                if (foundProduct != null)
+                	product.addItemByTextSearch(searchText);
+                else 
+                	JOptionPane.showMessageDialog(gui, "No product found.", "Search Result", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }
+
     // Action listener for station buttons
     private class StationButtonListener implements ActionListener {
         private int stationNumber;
