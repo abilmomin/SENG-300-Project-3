@@ -48,7 +48,7 @@ import javax.swing.JPanel;
 
 import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.OverloadedDevice;
-
+import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.funds.Receipt;
@@ -84,6 +84,8 @@ public class PaymentSuccess extends JFrame {
 		receiptQuestion.setFont(new Font("Arial", Font.BOLD, 18));
 		receiptQuestion.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+		AbstractElectronicScale scale = (AbstractElectronicScale) stationSoftware.getStationHardware().getBaggingArea();
+		
 		JCheckBox ck1 = new JCheckBox("Yes");
 		ck1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		ck1.addActionListener(new ActionListener() {
@@ -95,7 +97,7 @@ public class PaymentSuccess extends JFrame {
 					JOptionPane.showMessageDialog(PaymentSuccess.this, rec.printReceipt());
 					dispose();
 					JOptionPane.showMessageDialog(PaymentSuccess.this, "Thank you for shopping with us! We hope to see you again!");
-					dispose();
+					new StartSession(attendantGUI.getCurrentStationNumber(), stationSoftware, scale);
 				} catch (HeadlessException | EmptyDevice | OverloadedDevice e1) {
 					e1.printStackTrace();
 				}
@@ -109,6 +111,7 @@ public class PaymentSuccess extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(PaymentSuccess.this, "Thank you for shopping with us! We hope to see you again!");
 				dispose();
+				new StartSession(attendantGUI.getCurrentStationNumber(), stationSoftware, scale);
 			}
 		});
 
