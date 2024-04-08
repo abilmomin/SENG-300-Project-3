@@ -376,7 +376,7 @@ public class SelfCheckoutStationSoftware {
 	}
 	
 	public void notifyUserOfOverload() {
-		System.out.println("Scale Overload. Please remove some items.");
+		gui.customerRemoveItemPopUp(order.get(order.size() - 1));
 	}
 
 	public ISelfCheckoutStation getStationHardware() {
