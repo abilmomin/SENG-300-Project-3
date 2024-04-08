@@ -53,6 +53,11 @@ import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.funds.Receipt;
 
+
+/**
+ * The PaymentSuccess class represents a JFrame for displaying a payment success message.
+ * It suppresses the serial warning as it does not use serialization.
+ */
 @SuppressWarnings("serial")
 public class PaymentSuccess extends JFrame {
 	

@@ -57,9 +57,13 @@ import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.BaggingArea;
 
-// GENERAL LAYOUT
-// Box layout is used to arrange items vertically or horizontally
-// Glue is like a spring << add on before and after box components to squish them to the middle
+
+/* GENERAL LAYOUT
+ * Box layout is used to arrange items vertically or horizontally
+ * Glue is like a spring << add on before and after box components to squish them to the middle
+ */
+
+
 
 @SuppressWarnings("serial")
 public class RemoveFromBagging extends JFrame {
@@ -68,7 +72,16 @@ public class RemoveFromBagging extends JFrame {
     BaggingArea baggingArea;
     Item item;
 
-    public RemoveFromBagging(Item item, SelfCheckoutStationSoftware stationSoftwareInstance, AttendantPageGUI attendantGUI, BaggingArea baggingArea) {
+    /**
+     * Initializes a new instance of the RemoveFromBagging class.
+     * 
+     * @param item                 The item to be removed from the bagging area.
+     * @param stationSoftwareInstance The instance of the self-checkout station software.
+     * @param attendantGUI         The GUI instance for the attendant page.
+     * @param baggingArea          The bagging area from which the item needs to be removed.
+     */
+    public RemoveFromBagging(Item item, SelfCheckoutStationSoftware stationSoftwareInstance, AttendantPageGUI attendantGUI, 
+    						BaggingArea baggingArea) {
         this.stationSoftwareInstance = stationSoftwareInstance;
         this.attendantGUI = attendantGUI;
         this.baggingArea = baggingArea;
@@ -78,7 +91,12 @@ public class RemoveFromBagging extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 500);
         setLocationRelativeTo(null);
+    }
 
+    /**
+     * Builds and displays the graphical user interface for removing an item from the bagging area.
+     */
+    public void buildUI() {
         // Main panel with BoxLayout for vertical alignment
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
