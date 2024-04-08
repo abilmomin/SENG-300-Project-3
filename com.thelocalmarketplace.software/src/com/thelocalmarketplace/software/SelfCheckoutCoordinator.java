@@ -46,7 +46,7 @@ import com.thelocalmarketplace.software.product.ProductsListener;
  * The Coordination class acts as a middle man in the self-checkout system, coordinating between the GUI, 
  * payment processing, and product management.
  */
-public class Coordination implements FundsObserver, ProductsListener {
+public class SelfCheckoutCoordinator implements FundsObserver, ProductsListener {
 	SelfCheckoutStationSoftware software;
     Funds funds;
     Products products;
@@ -62,7 +62,7 @@ public class Coordination implements FundsObserver, ProductsListener {
      * @param products 
 	 *          the Products facade for product handling 
      */
-    public Coordination(SelfCheckoutStationSoftware software, Funds funds, Products products) {
+    public SelfCheckoutCoordinator(SelfCheckoutStationSoftware software, Funds funds, Products products) {
         this.software = software;
         this.funds = funds;
         this.products = products;

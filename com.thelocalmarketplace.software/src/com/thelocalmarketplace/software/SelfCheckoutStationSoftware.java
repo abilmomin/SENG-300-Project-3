@@ -68,7 +68,7 @@ public class SelfCheckoutStationSoftware {
 	// Facades and listeners
 	private Funds funds;
 	private Products products;
-	private Coordination coordination;
+	private SelfCheckoutCoordinator selfCheckoutCoordinator;
 
 	/**
 	 * Creates an instance of the software for a self-checkout station.
@@ -88,10 +88,10 @@ public class SelfCheckoutStationSoftware {
 		
 		this.funds = new Funds(this);
 		this.products = new Products(this);
-		this.coordination = new Coordination(this, funds, products);
+		this.selfCheckoutCoordinator = new SelfCheckoutCoordinator(this, funds, products);
 		
-		products.register(coordination);
-		funds.register(coordination);
+		products.register(selfCheckoutCoordinator);
+		funds.register(selfCheckoutCoordinator);
 
 		allProducts = new ProductsDatabase();
 		setStationActive(false);
@@ -105,7 +105,7 @@ public class SelfCheckoutStationSoftware {
 	 */
 	public void setGUI(CustomerStation gui) {
 		this.gui = gui;
-		coordination.setGUI(gui);
+		selfCheckoutCoordinator.setGUI(gui);
 	}
 	
 	/**
