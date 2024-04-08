@@ -69,8 +69,8 @@ public class ProductsDatabase {
 		barcodes.add(barcode3);
 
 		BarcodedProduct milk = new BarcodedProduct(barcode1, "Milk", 3, 3894);
-		BarcodedProduct chocolate = new BarcodedProduct(barcode1, "Chocolate bar", 2, 49);
-		BarcodedProduct sushi = new BarcodedProduct(barcode1, "20pc Sushi", 10, 600);
+		BarcodedProduct chocolate = new BarcodedProduct(barcode2, "Chocolate bar", 2, 49);
+		BarcodedProduct sushi = new BarcodedProduct(barcode3, "20pc Sushi", 10, 600);
 		 
 		productDatabase.put(barcode1, milk); 
 		productDatabase.put(barcode2, chocolate);

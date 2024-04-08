@@ -1,39 +1,44 @@
 /**
 
-Name                      UCID
+ SENG 300 - ITERATION 3
+ GROUP GOLD {8}
 
-Yotam Rojnov             30173949
-Duncan McKay             30177857
-Mahfuz Alam              30142265
-Luis Trigueros Granillo  30167989
-Lilia Skumatova          30187339
-Abdelrahman Abbas        30110374
-Talaal Irtija            30169780
-Alejandro Cardona        30178941
-Alexandre Duteau         30192082
-Grace Johnson            30149693
-Abil Momin               30154771
-Tara Ghasemi M. Rad      30171212
-Izabella Mawani          30179738
-Binish Khalid            30061367
-Fatima Khalid            30140757
-Lucas Kasdorf            30173922
-Emily Garcia-Volk        30140791
-Yuinikoru Futamata       30173228
-Joseph Tandyo            30182561
-Syed Haider              30143096
-Nami Marwah              30178528
+ Name                      UCID
+
+ Yotam Rojnov             30173949
+ Duncan McKay             30177857
+ Mahfuz Alam              30142265
+ Luis Trigueros Granillo  30167989
+ Lilia Skumatova          30187339
+ Abdelrahman Abbas        30110374
+ Talaal Irtija            30169780
+ Alejandro Cardona        30178941
+ Alexandre Duteau         30192082
+ Grace Johnson            30149693
+ Abil Momin               30154771
+ Tara Ghasemi M. Rad      30171212
+ Izabella Mawani          30179738
+ Binish Khalid            30061367
+ Fatima Khalid            30140757
+ Lucas Kasdorf            30173922
+ Emily Garcia-Volk        30140791
+ Yuinikoru Futamata       30173228
+ Joseph Tandyo            30182561
+ Syed Haider              30143096
+ Nami Marwah              30178528
 
  */
 
 package com.thelocalmarketplace.software.test;
+
 import com.thelocalmarketplace.software.product.AddownBag;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+
 import java.math.BigInteger;
 
 import org.junit.Assert;
@@ -44,19 +49,17 @@ import com.jjjwelectronics.Item;
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.scale.AbstractElectronicScale;
-import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
+
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
+
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
-import com.thelocalmarketplace.software.product.ScaleListener;
-import com.thelocalmarketplace.software.test.WeightchangeTest.MockItem;
 
 import powerutility.PowerGrid;
 
 public class AddownBagTest {
 	PowerGrid grid;
-	private AddownBag addownBag;
 	private SelfCheckoutStationSoftware station; 
 	private SelfCheckoutStationBronze checkoutStationBronze;
 	private AbstractElectronicScale scale; 
@@ -67,20 +70,17 @@ public class AddownBagTest {
     @Before
     public void setUp() {
     	grid = PowerGrid.instance();
-		// to avoid power outages when there is a power surge
 		PowerGrid.engageUninterruptiblePowerSource();
 		grid.forcePowerRestore();
     	checkoutStationBronze = new SelfCheckoutStationBronze();
 		checkoutStationBronze.plugIn(grid);
 		checkoutStationBronze.turnOn();
 		
-    	
     	station = new SelfCheckoutStationSoftware(checkoutStationBronze); 
     	station.setStationActive(true);
     	scale = new MockScale(new Mass(40000000),new Mass(40000000));
     	customerStation = new CustomerStation(0, station, scale, attendantGUI); 
     	attendantGUI = new AttendantPageGUI(); 
-    	addownBag = new AddownBag(station, scale, customerStation, attendantGUI); 
     	massLimit = scale.getMassLimit(); 
     	scale.plugIn(grid);
 		scale.turnOn();
@@ -89,13 +89,11 @@ public class AddownBagTest {
 		this.scale.turnOn(); 
     }    
     
-    
    /**
     * Testing when a bag above the weight threshold is added. The item instance has a mass higher than the scale mass 
     * expected station block from the bag being over the threshold limit 
     * @throws OverloadedDevice
     */
-    
 	@Test 
 	public void testAddBagWeight_OverThreshold() throws OverloadedDevice {
 		MockScale scaleOverLimit = new MockScale(new Mass(40000000), new Mass(40000000)); 
@@ -108,7 +106,6 @@ public class AddownBagTest {
 		addownBag.addBagWeight(station, scaleOverLimit, 1000000, 1);
         assertFalse(station.getStationBlock());	
 	}
- 
 	
 	/**
 	 * Testing the circumstance of adding a bag that is within the threshold weight of the scale. 
@@ -133,14 +130,12 @@ public class AddownBagTest {
 	 * an expected bag weight of 0.0 is calculated. The scale and station will be the same weight 
 	 * @throws OverloadedDevice
 	 */
-	
 	@Test 
 	public void testGetBagWeight_noBagAdded() throws OverloadedDevice {
 		MockScale orderNoBagScale = new MockScale(new Mass(4000000), new Mass (4000000));
 		AddownBag addOwnBag = new AddownBag(station, orderNoBagScale, customerStation, attendantGUI);
 		double bagWeight = addOwnBag.getBagWeight(station, orderNoBagScale);
 		assertEquals(0.0, bagWeight, 0.0); //120.0? 
-		
 	}
 	
 	/**
@@ -161,7 +156,6 @@ public class AddownBagTest {
 	/**
 	 * Testing printMessage. Making sure the message printed is the same as the expected message 
 	 */
-	
 	@Test 
 	public void testPrint_mess() {
 		ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
@@ -171,13 +165,11 @@ public class AddownBagTest {
         Assert.assertEquals("You may now continue", outputStreamCaptor.toString().trim()); 
 	}
 	
-	
 	//Overload Test 1
 	@Test 
 	public void testOverloadThrown_1() {
 		MockScale scale = new MockScale(massLimit, massLimit) {
 			@Override
-			
 			public Mass getCurrentMassOnTheScale() throws OverloadedDevice{
 				throw new OverloadedDevice(); 
 			}
@@ -187,17 +179,16 @@ public class AddownBagTest {
 		Assert.assertEquals(0.0, bagWeight, 0.001);
 	}
 
-	
 	//Overload Test 2
 	@Test 
 	public void testOverloadThrown_2() {
 		MockScale scale = new MockScale(massLimit, massLimit) {
 			@Override 
-			
 			public Mass getCurrentMassOnTheScale() throws OverloadedDevice {
 				throw new OverloadedDevice();
 				
 			}
+			
 			@Override 
 			public Mass getMassLimit() {
 				return new Mass(BigInteger.valueOf(1000000)); 
@@ -208,15 +199,13 @@ public class AddownBagTest {
 		addownBag.addBagWeight(station, scale, weightOfBag, 1);
 			assertFalse(false); 
 	}
-	 
 	
 	/**
 	 * creating a mock of Item for testing purposes. MockItem Extends the Item class 
 	 */
 	class MockItem extends Item { // need power for addAnItem
-	        public MockItem(Mass mass) {
-	            super(mass);
-	        }
-	 }
+        public MockItem(Mass mass) {
+            super(mass);
+        }
+	}
 }
-
