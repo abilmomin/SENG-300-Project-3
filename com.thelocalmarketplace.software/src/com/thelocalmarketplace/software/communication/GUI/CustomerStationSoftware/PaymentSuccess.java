@@ -29,19 +29,17 @@ public class PaymentSuccess extends JFrame {
 
 	public PaymentSuccess(double change, SelfCheckoutStationSoftware stationSoftware) {
 
-//		stationSoftware.getStationHardware().getPrinter().addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
-//		stationSoftware.getStationHardware().getPrinter().addInk(ReceiptPrinterBronze.MAXIMUM_INK);
-
 		setTitle("Thank you!");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(600, 500);
+		setSize(380, 250);
 		setLocationRelativeTo(null);
 
 		JPanel mainPanel = new JPanel();
+
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-		JLabel bigTextLabel = new JLabel("Payment successful");
-		bigTextLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+		JLabel bigTextLabel = new JLabel("Payment successful!");
+		bigTextLabel.setFont(new Font("Arial", Font.BOLD, 24));
 		bigTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		double amountDue = stationSoftware.getTotalOrderPrice() - stationSoftware.getFunds().getTotalPaid().doubleValue();
@@ -54,7 +52,12 @@ public class PaymentSuccess extends JFrame {
 		smallTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		JLabel receiptQuestion = new JLabel("Would you like a receipt?");
+		receiptQuestion.setFont(new Font("Arial", Font.BOLD, 18));
+		receiptQuestion.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+
 		JCheckBox ck1 = new JCheckBox("Yes");
+		ck1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		ck1.addActionListener(new ActionListener() {
 
 			@Override
@@ -70,6 +73,7 @@ public class PaymentSuccess extends JFrame {
 			}
 		});
 		JCheckBox ck2 = new JCheckBox("No");
+		ck2.setAlignmentX(Component.CENTER_ALIGNMENT);
 		ck2.addActionListener(new ActionListener() {
 
 			@Override
@@ -78,10 +82,7 @@ public class PaymentSuccess extends JFrame {
 				System.exit(EXIT_ON_CLOSE);
 			}
 		});
-		
-//	    JLabel bye = new JLabel("Have a great day!");
-//	    bye.setAlignmentX(Component.CENTER_ALIGNMENT);
-//	    bye.setFont(new Font("Arial", Font.BOLD, 32));
+
 
 		mainPanel.add(Box.createVerticalGlue());
 		mainPanel.add(bigTextLabel);
@@ -97,8 +98,7 @@ public class PaymentSuccess extends JFrame {
 		mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 		mainPanel.add(ck2);
 		mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-//	    mainPanel.add(bye);
-//	    mainPanel.add(Box.createVerticalGlue());
+
 
 		add(mainPanel);
 
