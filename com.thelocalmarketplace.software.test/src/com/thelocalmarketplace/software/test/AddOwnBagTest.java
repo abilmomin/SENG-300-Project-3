@@ -58,7 +58,7 @@ import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftwar
 
 import powerutility.PowerGrid;
 
-public class AddownBagTest {
+public class AddOwnBagTest {
 	PowerGrid grid;
 	private SelfCheckoutStationSoftware station; 
 	private SelfCheckoutStationBronze checkoutStationBronze;
