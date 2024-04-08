@@ -641,6 +641,10 @@ public class CustomerStation extends JFrame {
         return needsAssistance;
     }
 
+	public AttendantPageGUI getAttendantGUI() {
+		return this.attendantGUI;
+	}
+
 
 }
 
