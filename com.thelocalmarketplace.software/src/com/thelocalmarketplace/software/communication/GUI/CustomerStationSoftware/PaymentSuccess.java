@@ -57,7 +57,7 @@ public class PaymentSuccess extends JFrame {
 	public PaymentSuccess(double change, SelfCheckoutStationSoftware stationSoftware) {
 		setTitle("Thank you!");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(380, 250);
+		setSize(900, 700);
 		setLocationRelativeTo(null);
 
 		JPanel mainPanel = new JPanel();
@@ -103,7 +103,6 @@ public class PaymentSuccess extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("No is selected"); // Debugging output
 				JOptionPane.showMessageDialog(PaymentSuccess.this, "Thank you for shopping with us! We hope to see you again!");
-				System.exit(EXIT_ON_CLOSE);
 			}
 		});
 
