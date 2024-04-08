@@ -33,6 +33,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.BaggingArea;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -49,7 +51,7 @@ public class SearchProductByText extends JFrame {
     private DefaultListModel<Product> listModel;
     private CustomKeyboard keyboard;
 
-    public SearchProductByText(SelfCheckoutStationSoftware software) {
+    public SearchProductByText(SelfCheckoutStationSoftware software, AttendantPageGUI attendantGUI) {
         setTitle("Product Search");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -98,13 +100,15 @@ public class SearchProductByText extends JFrame {
             if (selectedProduct != null) {
                 String productName = selectedProduct.getName();
                 
-                software.getProductHandler().addItemByTextSearch(productName);
+                com.thelocalmarketplace.hardware.Product product = software.getProductHandler().findProductByTextSearch(productName);
                 
-                new AddtoBagging()
+                new AddtoBagging(product, software, attendantGUI, new BaggingArea());
 
             } else {
                 JOptionPane.showMessageDialog(SearchProductByText.this, "Please select a product first.");
             }
+            
+            this.setVisible(false);
         });
 
 
