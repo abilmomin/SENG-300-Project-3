@@ -1,46 +1,54 @@
 /**
 
-Name                      UCID
+ SENG 300 - ITERATION 3
+ GROUP GOLD {8}
 
-Yotam Rojnov             30173949
-Duncan McKay             30177857
-Mahfuz Alam              30142265
-Luis Trigueros Granillo  30167989
-Lilia Skumatova          30187339
-Abdelrahman Abbas        30110374
-Talaal Irtija            30169780
-Alejandro Cardona        30178941
-Alexandre Duteau         30192082
-Grace Johnson            30149693
-Abil Momin               30154771
-Tara Ghasemi M. Rad      30171212
-Izabella Mawani          30179738
-Binish Khalid            30061367
-Fatima Khalid            30140757
-Lucas Kasdorf            30173922
-Emily Garcia-Volk        30140791
-Yuinikoru Futamata       30173228
-Joseph Tandyo            30182561
-Syed Haider              30143096
-Nami Marwah              30178528
+ Name                      UCID
+
+ Yotam Rojnov             30173949
+ Duncan McKay             30177857
+ Mahfuz Alam              30142265
+ Luis Trigueros Granillo  30167989
+ Lilia Skumatova          30187339
+ Abdelrahman Abbas        30110374
+ Talaal Irtija            30169780
+ Alejandro Cardona        30178941
+ Alexandre Duteau         30192082
+ Grace Johnson            30149693
+ Abil Momin               30154771
+ Tara Ghasemi M. Rad      30171212
+ Izabella Mawani          30179738
+ Binish Khalid            30061367
+ Fatima Khalid            30140757
+ Lucas Kasdorf            30173922
+ Emily Garcia-Volk        30140791
+ Yuinikoru Futamata       30173228
+ Joseph Tandyo            30182561
+ Syed Haider              30143096
+ Nami Marwah              30178528
 
  */
+
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
 
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Frame;
+import java.awt.GridLayout;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import com.thelocalmarketplace.software.MembershipCard;
-import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
-
-import java.awt.*;
 
 public class MembershipNumberInput extends JDialog {
 	private static final long serialVersionUID = 1997230330248440038L;
 	private JTextField membershipNumberField;
 	private JPanel membershipPanel;
 	private SelectPayment parent;
-
-	
 	
 	public MembershipNumberInput(Frame parent) {
 		super(parent, "Membership Number", true);
@@ -64,9 +72,6 @@ public class MembershipNumberInput extends JDialog {
 		add(membershipPanel, BorderLayout.CENTER);
 		pack();
 		setLocationRelativeTo(getParent());
-		
-		
-	
 	}
 
 	private void addOptionsPanel() {
@@ -109,13 +114,12 @@ public class MembershipNumberInput extends JDialog {
     
     private void swipeCard() {
 		
-		
 	}
 
 	private void scanCard() {
 		
-		
 	}
+	
 	public void checkMembershipNumber(String membershipNumber) {
 		MembershipCard membershipCard = new MembershipCard();
         if (membershipNumber != null && !membershipNumber.isEmpty()) {
@@ -157,7 +161,6 @@ public class MembershipNumberInput extends JDialog {
     			break;
     	}
     }
-	
 
 	private void createAccount() {
         String memberName = JOptionPane.showInputDialog(this, "Please enter your name:");
@@ -202,7 +205,4 @@ public class MembershipNumberInput extends JDialog {
 	public JTextField getMembershipNumberField() {
 		return membershipNumberField;
 	}
-	
-
-	
 }
