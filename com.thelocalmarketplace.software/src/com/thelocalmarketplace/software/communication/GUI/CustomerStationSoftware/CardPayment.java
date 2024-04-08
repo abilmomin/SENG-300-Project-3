@@ -32,8 +32,10 @@ public class CardPayment extends JFrame {
         insertButton.addActionListener(e -> {
             paymentType = 3;
 
+            JFrame pinFrame = new JFrame("Pin Panel");
             JPanel pinPanel = createPinPanel();
-            pinPanel.setVisible(true);
+            pinFrame.add(pinPanel);
+            pinFrame.setVisible(true);
         });
 
         ButtonGroup group = new ButtonGroup();
