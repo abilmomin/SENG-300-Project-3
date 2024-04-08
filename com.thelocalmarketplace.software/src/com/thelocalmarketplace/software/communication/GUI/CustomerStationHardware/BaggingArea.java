@@ -30,11 +30,13 @@ package com.thelocalmarketplace.software.communication.GUI.CustomerStationHardwa
 
 import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
+import java.awt.*;
 
 public class BaggingArea extends JFrame {
-    JFrame baggingAreaFrame;
+    public JFrame baggingAreaFrame;
     JPanel baggingAreaPanel;
-    JButton returnToCheckoutButton, removeItemButton;
+    JButton returnToCheckoutButton;
     JList<Product> productList;
     JScrollPane scrollPane;
     DefaultListModel<Product> listModel;
@@ -45,18 +47,14 @@ public class BaggingArea extends JFrame {
         baggingAreaPanel = new JPanel();
         baggingAreaPanel.setLayout(new BoxLayout(baggingAreaPanel, BoxLayout.Y_AXIS));
 
-        initializeProducts();
+        listModel = new DefaultListModel<>();
 
         addWidgets();
     }
 
-    // Initialize the products with corresponding images
-    private void initializeProducts() {
-        listModel = new DefaultListModel<>();
-        listModel.addElement(new Product("Asparagus", "./images/asparagus.png"));
-        listModel.addElement(new Product("Banana", "./images/banana.png"));
-        listModel.addElement(new Product("Apples", "./images/apple.png"));
-        listModel.addElement(new Product("Carrots", "./images/carrots.png"));
+    public void addProduct(String name) {
+        System.out.println("Adding product: " + name);
+        listModel.addElement(new Product(name));
     }
 
     // Add widgets to the frame
@@ -66,23 +64,15 @@ public class BaggingArea extends JFrame {
         scrollPane = new JScrollPane(productList);
         baggingAreaPanel.add(scrollPane);
 
-        removeItemButton = createStyledButton("Remove Item");
-        removeItemButton.addActionListener(e -> {
-            if (!productList.isSelectionEmpty()) {
-                listModel.removeElement(productList.getSelectedValue());
-            }
-        });
-        baggingAreaPanel.add(removeItemButton);
-
         returnToCheckoutButton = createStyledButton("Return to Checkout");
         returnToCheckoutButton.addActionListener(e -> baggingAreaFrame.dispose());
         baggingAreaPanel.add(returnToCheckoutButton);
 
         baggingAreaFrame.add(baggingAreaPanel);
-        baggingAreaFrame.setSize(600, 400); // Increased size
+        baggingAreaFrame.setSize(600, 400);
         baggingAreaFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         baggingAreaFrame.setLocationRelativeTo(null);
-        baggingAreaFrame.setVisible(true);
+        baggingAreaFrame.setVisible(false);
     }
 
     // Method to create styled buttons
@@ -97,38 +87,22 @@ public class BaggingArea extends JFrame {
     // Product class to hold item information
     static class Product {
         String name;
-        String imagePath;
 
-        public Product(String name, String imagePath) {
+        public Product(String name) {
             this.name = name;
-            this.imagePath = imagePath;
         }
 
         public String getName() {
             return name;
         }
-
-        public String getImagePath() {
-            return imagePath;
-        }
     }
 
-    // Custom cell renderer to display products with images
+    // Custom cell renderer to display products
     static class ProductRenderer extends JLabel implements ListCellRenderer<Product> {
         @Override
         public Component getListCellRendererComponent(JList<? extends Product> list, Product product, int index,
                                                       boolean isSelected, boolean cellHasFocus) {
             setText(product.getName());
-
-            // Load the image
-            ImageIcon icon = createImageIcon(product.getImagePath(), product.getName());
-            if (icon != null) {
-                // Scale the icon if necessary
-                Image img = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-                setIcon(new ImageIcon(img));
-            } else {
-                System.out.println("Image not found: " + product.getImagePath());
-            }
 
             if (isSelected) {
                 setBackground(list.getSelectionBackground());
@@ -142,19 +116,5 @@ public class BaggingArea extends JFrame {
             setOpaque(true);
             return this;
         }
-
-        // Helper method to load images
-        protected static ImageIcon createImageIcon(String path, String description) {
-            java.net.URL imgURL = BaggingArea.class.getResource(path);
-            if (imgURL != null) {
-                return new ImageIcon(imgURL, description);
-            } else {
-                System.err.println("Couldn't find file: " + path);
-                return null;
-            }
-        }
-    }
-    public static void main(final String[] args) {
-        SwingUtilities.invokeLater(BaggingArea::new);
     }
 }

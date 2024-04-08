@@ -16,6 +16,7 @@ import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.ProductsDatabase;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.BaggingArea;
 import com.thelocalmarketplace.software.product.AddownBag;
 import com.thelocalmarketplace.software.product.Products;
 import com.jjjwelectronics.bag.ReusableBag;
@@ -49,7 +50,8 @@ public class CustomerStation extends JFrame {
     private boolean needsAssistance = false;
     private int selectedStation;
     private SelectPayment paymentWindow;
-    private SearchProductByText visualAddPanel;
+    private SearchProductByText searchProductByText;
+    private BaggingArea baggingArea;
     private SettingsPanel settingsPanel;
 
     private JButton selectedCartItemButton = null; // Variable to track the selected cart item button
@@ -62,7 +64,8 @@ public class CustomerStation extends JFrame {
     	stationSoftwareInstance.setGUI(this);
     	products = new Products(stationSoftwareInstance);
     	paymentWindow = new SelectPayment(stationSoftwareInstance);
-    	visualAddPanel = new SearchProductByText();
+    	searchProductByText = new SearchProductByText();
+        baggingArea = new BaggingArea();
     	
         setTitle("Self-Checkout Station " + selectedStation);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -98,9 +101,9 @@ public class CustomerStation extends JFrame {
         JButton enterPLUBtn = createButton("Enter PLU Code", e -> {
         	
         });
-        
+
         JButton searchProductBtn = createButton("Search Product", e -> {
-        	visualAddPanel.setVisible(true);
+        	searchProductByText.setVisible(true);
         });
         
 
@@ -114,7 +117,9 @@ public class CustomerStation extends JFrame {
         });
         
         JButton viewBaggingAreaBtn = createButton("View Bagging Area", e -> {
-        	
+            baggingArea.baggingAreaFrame.setVisible(true);
+            baggingArea.baggingAreaFrame.revalidate();
+            baggingArea.baggingAreaFrame.pack();
         });
         
         JButton helpBtn = createButton("Help", e -> {
@@ -277,7 +282,7 @@ public class CustomerStation extends JFrame {
     	        	
     	BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
     	
-    	new AddtoBagging(product, stationSoftwareInstance, productWeight, attendantGUI);
+    	new AddtoBagging(product, stationSoftwareInstance, productWeight, attendantGUI, baggingArea);
     }
 
 	private void handleUseOwnBags() {
@@ -482,7 +487,7 @@ public class CustomerStation extends JFrame {
 
     	    if (product != null) {
     	        // If a product is found, display the AddtoBagging popup
-    	        AddtoBagging popup = new AddtoBagging(product, stationSoftwareInstance, 0.0, attendantGUI);
+    	        AddtoBagging popup = new AddtoBagging(product, stationSoftwareInstance, 0.0, attendantGUI, baggingArea);
     	        popup.setVisible(true);
     	    } else {
     	        // If no product is found, show an error message
@@ -581,7 +586,7 @@ public class CustomerStation extends JFrame {
     		BarcodedProduct barcodedProduct = (BarcodedProduct) product;
     		weight = barcodedProduct.getExpectedWeight();
     	}
-    	new AddtoBagging(product, stationSoftwareInstance, weight, attendantGUI);
+    	new AddtoBagging(product, stationSoftwareInstance, weight, attendantGUI, baggingArea);
     }
 
     public void handleRequestAssistance() {
