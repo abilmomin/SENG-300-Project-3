@@ -37,6 +37,7 @@ public class ProductTest {
 	private Mass itemMass;
 	private PriceLookUpCode pluCode;
 	private Products testProducts;
+	private Product product;
 	private ReusableBag bags; 
 	private AttendantPageGUI attendantGUI;
 	//private ReusableBagDispenserBronze reusableBagDispenserBronze;
@@ -262,6 +263,107 @@ public class ProductTest {
 		    testProducts.PurchaseBags(bags);
 		    assertTrue(dispenser.getQuantityRemaining() == 0);
 		}
+	@Test
+		public void testRegisterAndNotifyProductAdded() {
+		    final boolean[] wasCalled = {false};
+		    final Product[] notifiedProduct = {null};
+
+		    ProductsListener listener = new ProductsListener() {
+		        @Override
+		        public void productAdded(Products productFacade, Product product) {
+		            wasCalled[0] = true;
+		            notifiedProduct[0] = product;
+		        }
+		    };
+
+		    testProducts.register(listener);
+		    testProducts.notifyProductAdded(product);
+
+		    assertTrue("Listener should be notified", wasCalled[0]);
+		    assertEquals("Notified product should be the same as added", product, notifiedProduct[0]);
+		}
+		@Test
+		public void testDeregisterAndNotNotifyProduct() {
+		    final boolean[] wasCalled = {false};
+
+		    ProductsListener listener = new ProductsListener() {
+		        @Override
+		        public void productAdded(Products productFacade, Product product) {
+		            wasCalled[0] = true;
+		        }
+		    };
+
+		    testProducts.register(listener);
+		    testProducts.deregister(listener);
+		    testProducts.notifyProductAdded(product);
+
+		    assertFalse("Listener should not be notified after deregistration", wasCalled[0]);
+		}
+
+
+		
+		@Test
+		public void testNotifyProductRemoved() {
+		    final boolean[] wasCalled = {false};
+		    final Product[] notifiedProduct = {null};
+
+		    ProductsListener listener = new ProductsListener() {
+		        @Override
+		        public void productRemoved(Products productFacade, Product product) {
+		            wasCalled[0] = true;
+		            notifiedProduct[0] = product;
+		        }
+		    };
+
+		    testProducts.register(listener);
+		    testProducts.notifyProductRemoved(product);
+
+		    assertTrue("Listener should be notified", wasCalled[0]);
+		    assertEquals("Notified product should be the same as removed", product, notifiedProduct[0]);
+		}
+
+		
+		@Test
+		public void testNotifyAddProductToBaggingArea() {
+		    final boolean[] wasCalled = {false};
+		    final Product[] notifiedProduct = {null};
+
+		    ProductsListener listener = new ProductsListener() {
+		        @Override
+		        public void productToBaggingArea(Products productFacade, Product product) {
+		            wasCalled[0] = true;
+		            notifiedProduct[0] = product;
+		        }
+		    };
+
+		    testProducts.register(listener);
+		    testProducts.notifyAddProductToBaggingArea(product);
+
+		    assertTrue("Listener should be notified", wasCalled[0]);
+		    assertEquals("Notified product should be the same as the one added to bagging area", product, notifiedProduct[0]);
+		}
+		
+		@Test
+		public void testNotifyBagsPurchased() {
+		    final boolean[] wasCalled = {false};
+		    final long[] notifiedTotalCost = {0};
+
+		    ProductsListener listener = new ProductsListener() {
+		        @Override
+		        public void bagsPurchased(Products productFacade, long totalCost) {
+		            wasCalled[0] = true;
+		            notifiedTotalCost[0] = totalCost;
+		        }
+		    };
+
+		    testProducts.register(listener);
+		    long totalCost = 150;
+		    testProducts.notifyBagsPurchased(totalCost);
+
+		    assertTrue("Listener should be notified", wasCalled[0]);
+		    assertEquals("Notified total cost should match", totalCost, notifiedTotalCost[0]);
+		}
+	
 		
 	
 }
