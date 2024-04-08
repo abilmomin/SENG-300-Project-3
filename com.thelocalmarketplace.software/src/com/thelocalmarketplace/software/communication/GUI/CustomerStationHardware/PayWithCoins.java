@@ -44,8 +44,6 @@ import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
-
-// Swing library methods
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -64,11 +62,12 @@ public class PayWithCoins extends JFrame {
     private JLabel coinTotalLabel;
     private BigDecimal totalCount = BigDecimal.ZERO;
     private SelfCheckoutStationSoftware software;
-
     
     /**
      * Constructor that creates a panel containing coin information and options.
-     * @param software The SelfCheckoutStationSoftware to which the hardware is attached.
+     * 
+     * @param software 
+     * 			The SelfCheckoutStationSoftware to which the hardware is attached.
      */
     public PayWithCoins(SelfCheckoutStationSoftware software) {
     	this.software = software;
@@ -76,20 +75,16 @@ public class PayWithCoins extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 300);
         setLocationRelativeTo(null);
-
         
         JPanel mainPanel = new JPanel(new BorderLayout());
-
         
         JPanel headerPanel = new JPanel();
         JLabel headerLabel = new JLabel("Insert Coin", SwingConstants.CENTER);
         headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
         headerPanel.add(headerLabel);
-
         
         JPanel coinPanel = new JPanel(new GridLayout(0, 3, 10, 10));
         coinPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
         
         List<BigDecimal> coinDenominations = software.station.getCoinDenominations();
 
@@ -98,15 +93,12 @@ public class PayWithCoins extends JFrame {
             JButton coinButton = createCoinButton(denomination);
             coinPanel.add(coinButton);
         }
-
         
         coinTotalLabel = new JLabel("Total Value of Coins Added: $0.00", SwingConstants.CENTER);
         coinTotalLabel.setFont(new Font("Arial", Font.BOLD, 16));
-
         
         JPanel totalPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         totalPanel.add(coinTotalLabel);
-
         
         JButton finishButton = new JButton("Finish");
         finishButton.addActionListener(new ActionListener() {
@@ -126,18 +118,17 @@ public class PayWithCoins extends JFrame {
         mainPanel.add(headerPanel, BorderLayout.NORTH);
         mainPanel.add(coinAndTotalPanel, BorderLayout.CENTER);
         mainPanel.add(finishButton, BorderLayout.SOUTH);
-
        
         add(mainPanel);
-
         
         setVisible(false);
     }
-
     
     /**
      * Creates a JButton representing a coin denomination.
-     * @param denomination The denomination of the coin.
+     * 
+     * @param denomination 
+     * 			The denomination of the coin.
      * @return A styled JButton representing the coin denomination.
      */
     private JButton createCoinButton(BigDecimal denomination) {
@@ -159,7 +150,6 @@ public class PayWithCoins extends JFrame {
         });
         return button;
     }
-    
     
     /**
      * Updates the total label with the current total value of coins.
