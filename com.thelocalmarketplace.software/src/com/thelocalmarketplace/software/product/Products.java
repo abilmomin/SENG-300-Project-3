@@ -64,7 +64,7 @@ public class Products {
 	public Set<ProductsListener> listeners = new HashSet<>();
 
 	/**
-	 * Basic constructor.
+	 * Basic constructor
 	 * 
 	 * @param software
 	 * 		The main software hub.
