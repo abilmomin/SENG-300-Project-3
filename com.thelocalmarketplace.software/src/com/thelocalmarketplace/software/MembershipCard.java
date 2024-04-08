@@ -111,7 +111,9 @@ public class MembershipCard {
 	 * @param hasChip
 	 * 			If the card has a chip as a boolean value.
 	 */
-	public void createMembershipCard(String cardType, String number, String cardholder, String cvv, String pin, boolean isTapEnabled, boolean hasChip) {
+	public void createMembershipCard(String cardType, String number, String cardholder, String cvv, String pin, 
+			boolean isTapEnabled, boolean hasChip) {
+		
 		this.membershipCard = new Card(cardType, number, cardholder, cvv, pin, isTapEnabled, hasChip);
 		this.membershipNumber = number;
 		this.memberName = cardholder;
