@@ -41,20 +41,35 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 import com.thelocalmarketplace.software.MembershipCard;
 
+
+/**
+ * MembershipNumberInput class represents a dialog for entering a membership number.
+ * This dialog provides options for entering a membership number manually, scanning a membership card,
+ * swiping a membership card, creating a new membership account, or canceling the operation.
+ */
 public class MembershipNumberInput extends JDialog {
 	private static final long serialVersionUID = 1997230330248440038L;
 	private JTextField membershipNumberField;
 	private JPanel membershipPanel;
 	private SelectPayment parent;
 	
+	
+	/**
+     * Constructs a MembershipNumberInput dialog with the specified parent frame.
+     * 
+     * @param parent The parent frame of the dialog.
+     */
 	public MembershipNumberInput(Frame parent) {
 		super(parent, "Membership Number", true);
 		this.parent = (SelectPayment) parent;
 	}
 	
+	
+	/**
+     * Initializes the frame components and layout.
+     */
 	public void frameInit() {
 		membershipPanel = new JPanel(new BorderLayout(5,5));
 		membershipNumberField = new JTextField(20);
@@ -73,7 +88,11 @@ public class MembershipNumberInput extends JDialog {
 		pack();
 		setLocationRelativeTo(getParent());
 	}
-
+	
+	
+	/**
+	 * Displays options for entering a membership number, such as manual entry, scanning, swiping, or creating a new account.
+	 */
 	private void addOptionsPanel() {
 		Object[] options = {"Enter", "Scan Card", "swipe Card","become a member", "Cancel"};
 
@@ -111,15 +130,27 @@ public class MembershipNumberInput extends JDialog {
             break;
         }
     }
-    
+	
+	/**
+	 * Initiates the action of swiping a membership card.
+	 */
     private void swipeCard() {
 		
 	}
-
+    
+    /**
+     * Initiates the action of scanning a membership card.
+     */
 	private void scanCard() {
 		
 	}
 	
+	
+	/**
+	 * Validates the entered membership number.
+	 * 
+	 * @param membershipNumber The membership number to be validated.
+	 */
 	public void checkMembershipNumber(String membershipNumber) {
 		MembershipCard membershipCard = new MembershipCard();
         if (membershipNumber != null && !membershipNumber.isEmpty()) {
@@ -132,7 +163,11 @@ public class MembershipNumberInput extends JDialog {
             JOptionPane.showMessageDialog(this, "No membership number entered.");
         }
     }
-
+	
+	
+	/**
+	 * Displays options when an invalid membership number is entered.
+	 */
 	private void showOptions() {
 		String options[] = new String[] {"Try again", "Become a member", "continue"};
     	int response = JOptionPane.showOptionDialog(
@@ -161,7 +196,11 @@ public class MembershipNumberInput extends JDialog {
     			break;
     	}
     }
-
+	
+	
+	/**
+	 * Creates a new membership account.
+	 */
 	private void createAccount() {
         String memberName = JOptionPane.showInputDialog(this, "Please enter your name:");
         if (memberName != null && !memberName.trim().isEmpty()) {
@@ -172,7 +211,11 @@ public class MembershipNumberInput extends JDialog {
             JOptionPane.showMessageDialog(this, "You must enter a name to create a membership account.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+	
+	
+	/**
+	 * Adds a virtual number keyboard to the dialog.
+	 */
 	private void addVirtualNumberKeyboard() {
 		JPanel keyboardPanel = new JPanel();
     	keyboardPanel.setLayout(new GridLayout(4,3,5,5));
@@ -202,6 +245,12 @@ public class MembershipNumberInput extends JDialog {
         membershipPanel.add(keyboardPanel, BorderLayout.SOUTH);
 	}
 	
+	
+	/**
+	 * Retrieves the membership number text field.
+	 * 
+	 * @return The membership number text field.
+	 */
 	public JTextField getMembershipNumberField() {
 		return membershipNumberField;
 	}
