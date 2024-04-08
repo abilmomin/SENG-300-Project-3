@@ -36,7 +36,7 @@ import com.thelocalmarketplace.hardware.Product;
 import com.thelocalmarketplace.software.product.Products;
 import com.thelocalmarketplace.software.product.ProductsListener;
 
-public class ProductListenerStub implements ProductsListener{
+public class ProductsListenerStub implements ProductsListener{
 	private boolean productAddedCalled = false;
     private Product lastAddedProduct = null;
 

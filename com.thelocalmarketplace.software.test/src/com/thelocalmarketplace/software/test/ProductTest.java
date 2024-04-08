@@ -119,7 +119,12 @@ public class ProductTest {
 
 	    // Create a stub for AttendantPageGUI that simulates attendant approval
 	    AttendantPageGUI attendantGUIStub = new AttendantPageGUI() {
-	        @Override
+	        /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
 	        public boolean bulkItemRequest(String message) {
 	            return true; // Simulate attendant approval
 	        }
