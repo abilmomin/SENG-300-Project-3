@@ -1,5 +1,8 @@
 /**
 
+ SENG 300 - ITERATION 3
+ GROUP GOLD {8}
+ 
  Name                      UCID
 
  Yotam Rojnov             30173949
@@ -34,15 +37,10 @@ import java.util.ArrayList;
 
 import java.util.HashSet;
 
-import java.util.Map;
 
 import java.util.Set;
 
 import com.jjjwelectronics.EmptyDevice;
-
-import com.jjjwelectronics.IDevice;
-
-import com.jjjwelectronics.IDeviceListener;
 
 import com.jjjwelectronics.Item;
 
@@ -50,18 +48,8 @@ import com.jjjwelectronics.OverloadedDevice;
 
 import com.jjjwelectronics.printer.IReceiptPrinter;
 
-import com.jjjwelectronics.printer.ReceiptPrinterBronze;
-
-import com.jjjwelectronics.printer.ReceiptPrinterGold;
-
-import com.jjjwelectronics.printer.ReceiptPrinterListener;
-
-import com.jjjwelectronics.printer.ReceiptPrinterSilver;
-
 import com.jjjwelectronics.scanner.BarcodedItem;
 
-import com.tdc.coin.ICoinDispenser;
-import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 
 import com.thelocalmarketplace.hardware.PLUCodedItem;
@@ -71,11 +59,6 @@ import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
-import powerutility.PowerGrid;
-
-/**
- * Receipt class which handles the logic of the receipt.
- */
 public class Receipt {
 
     public IReceiptPrinter receiptPrinter;
@@ -85,9 +68,9 @@ public class Receipt {
     private ArrayList<Item> order;
 
     /**
-     * Constructor for the receipt class.
+     * Constructs a new Receipt instance.
      *
-     * @param printer the receipt printer.
+     * @param printer The receipt printer.
      * @param funds The Funds facade.
      * @param checkoutStation The checkout station software.
      */
@@ -102,52 +85,65 @@ public class Receipt {
         this.order = checkoutStationSoftware.getOrder();
     }
 
+    /**
+     * Prints receipt with details of each item, total cost, payment, and change due.
+     *
+     * @return The printed receipt as a String.
+     * @throws EmptyDevice If receipt printer is out of paper or ink.
+     * @throws OverloadedDevice If receipt printer is overloaded with commands.
+     */
     public String printReceipt() throws EmptyDevice, OverloadedDevice {
+        ArrayList<String> receiptItems = compileReceiptItems();
+        printItems(receiptItems);
+        this.receiptPrinter.cutPaper();
+        notifyReceiptPrinted(order);
+        return this.receiptPrinter.removeReceipt();
+    }
 
-        ArrayList<String> receiptItems = new ArrayList<String>();
+    private ArrayList<String> compileReceiptItems() {
+        ArrayList<String> receiptItems = new ArrayList<>();
 
-        for (int i = 0; i < order.size(); i++) {
-            String productDescription;
-            Item item = order.get(i);
-
-            if (item instanceof BarcodedItem) { // Gets the product description and the price of a barcoded product
-                BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(((BarcodedItem) item).getBarcode());
-                productDescription = product.getDescription();
-                long price = product.getPrice();
-                receiptItems.add(productDescription + " $" + String.format("%.2f", (float)price));
-            }
-
-            else if (item instanceof PLUCodedItem) { // Gets the product description and the price of a product inputted
-                // through price-lookup (PLU)
-                PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(((PLUCodedItem) item).getPLUCode());
-                productDescription = product.getDescription();
-                long price = product.getPrice();
-                receiptItems.add(productDescription + " $" + String.format("%.2f", (float)price));
-            }
-            else {
-                throw new NullPointerException("This product is not a supported product, can not be registered for a price");
-            }
+        for (Item item : order) {
+            receiptItems.add(formatItemDescription(item));
         }
 
         BigDecimal purchaseValue = new BigDecimal(String.valueOf(checkoutStationSoftware.getTotalOrderPrice()));
         BigDecimal amountPaid = this.funds.getTotalPaid();
-        BigDecimal changeDue = this.funds.getMoneyLeft().multiply(new BigDecimal(-1));
+        BigDecimal changeDue = this.funds.getMoneyLeft().multiply(new BigDecimal("-1"));
 
         receiptItems.add("Total: $" + String.format("%.2f", purchaseValue));
         receiptItems.add("Paid: $" + String.format("%.2f", amountPaid));
         receiptItems.add("Change: $" + String.format("%.2f", changeDue));
- 
-        for (int i = 0; i < receiptItems.size(); i++) {
-            this.receiptPrinter.print('\n');
 
-            for (int j = 0; j < receiptItems.get(i).length(); j++) {
-                this.receiptPrinter.print(receiptItems.get(i).charAt(j));
-            }
+        return receiptItems;
+    }
+
+    private String formatItemDescription(Item item) {
+        String productDescription;
+        long price;
+
+        if (item instanceof BarcodedItem) {
+            BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(((BarcodedItem) item).getBarcode());
+            productDescription = product.getDescription();
+            price = product.getPrice();
+        } else if (item instanceof PLUCodedItem) {
+            PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(((PLUCodedItem) item).getPLUCode());
+            productDescription = product.getDescription();
+            price = product.getPrice();
+        } else {
+            throw new IllegalArgumentException("Unsupported product type.");
         }
 
-        this.receiptPrinter.cutPaper();
-        notifyReceiptPrinted(order);
-        return this.receiptPrinter.removeReceipt();
+        return productDescription + " $" + String.format("%.2f", (float)price);
+    }
+
+    private void printItems(ArrayList<String> receiptItems) throws EmptyDevice, OverloadedDevice {
+        for (String item : receiptItems) {
+            this.receiptPrinter.print('\n');
+            for (char ch : item.toCharArray()) {
+                this.receiptPrinter.print(ch);
+            }
+        }
     }
 
     public void register(ReceiptObserver listener) {
@@ -193,8 +189,4 @@ public class Receipt {
         for(ReceiptObserver observer : observers)
             observer.paperAdded(printer);
     }
-
-
-
-
 }
