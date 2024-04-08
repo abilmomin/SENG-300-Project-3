@@ -110,7 +110,6 @@ public class Products {
 				
 				software.setStationUnblock();
 		 }
-
 	}
 	
 	/**
@@ -256,11 +255,19 @@ public class Products {
                 notifyProductAdded(product);
                 notifyAddProductToBaggingArea(product);
         	}
-        	
-        } else {
-        	// idk
         }
     }
+	    
+    /**
+     * Searches for a product with the provided text to find a match in either barcode or PLU code databases
+     * 
+     * @param searchText
+     * 		The string containing the text used to find either type of product
+     * 						
+     * @return
+     * 		Returns a BarcodedProduct or PLUCodedProduct if found, otherwise null
+     */
+
     
     public Product findProductByTextSearch(String searchText) {
         // Split the search text into keywords
@@ -281,7 +288,6 @@ public class Products {
                 return product;
             }
         }
-
         return null;
     }
 
@@ -302,7 +308,6 @@ public class Products {
         }
         return true;
     }
-
 	
 	/**
 	 * Adds an item after customer selects it from the visual catalog
@@ -355,8 +360,7 @@ public class Products {
 						throw new EmptyDevice("Dispenser is now out of bags");
 					}	
 				}
-			double reusableBagWeight = 0; 
-						
+			double reusableBagWeight = 0; 	
 			long reusableBagPrice = 1; // $1
 			
 			for(ReusableBag bag: bags) {
@@ -377,7 +381,6 @@ public class Products {
 			}
 		}
 	}
-	
 	
 	/**
 	 * Registers the given listener with this facade so that the listener will be
