@@ -61,7 +61,6 @@ import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantLogic;
-import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
@@ -71,7 +70,7 @@ import ca.ucalgary.seng300.simulation.SimulationException;
 
 import powerutility.PowerGrid;
 
-public class ALogicTest {
+public class AttendantLogicTest {
 	private AttendantLogic aLogic;
 	public ReceiptObserver rO;
 

@@ -29,15 +29,17 @@ package com.thelocalmarketplace.software;
 
 import java.util.ArrayList;
 import java.util.Map;
-
 import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.scanner.Barcode;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
-import com.thelocalmarketplace.hardware.Product;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 
+/**
+ * The ProductsDatabase class initializes and maintains the databases for 
+ * barcoded and PLU-coded products available.
+ */
 public class ProductsDatabase {
 
 	private static Map<Barcode, BarcodedProduct> productDatabase = ProductDatabases.BARCODED_PRODUCT_DATABASE;
@@ -45,7 +47,7 @@ public class ProductsDatabase {
 	private static ArrayList<Barcode> barcodes = new ArrayList<>();
 
 	/**
-	 * Constructor for ProductsDatabase class
+	 * Constructor for ProductsDatabase class.
 	 */
 	public ProductsDatabase() {
 		InitializeBarcodedProducts();
@@ -53,8 +55,8 @@ public class ProductsDatabase {
 	}
 
 	/**
-	 * Initialize bar-codes and assign them to products 
-	 * Add bar-coded products to the database  
+	 * Initialize barcodes and assign them to products and
+	 * adds barcoded products to the database.
 	 */
 	private static void InitializeBarcodedProducts() {
 		Numeral[] code1Digits = {Numeral.one, Numeral.two, Numeral.three, Numeral.four};
@@ -78,8 +80,8 @@ public class ProductsDatabase {
 	}
 
 	/**
-	 * Initialize PLU codes and assign them to products 
-	 * Add the PLU-coded products to the PLU database 
+	 * Initialize PLU codes and assign them to products and
+	 * adds the PLU-coded products to the PLU database. 
 	 */
 	private static void InitializePLUProducts() {
 		PriceLookUpCode plu1 = new PriceLookUpCode("1234");
@@ -100,8 +102,8 @@ public class ProductsDatabase {
 	
 	/**
 	 * Returns a list of all the barcodes available for products.
-	 * @return
-	 * 			The list of available barcodes 
+	 * 
+	 * @return The list of available barcodes.
 	 */
 	public static ArrayList<Barcode> getBarcodes() {
 		return barcodes;

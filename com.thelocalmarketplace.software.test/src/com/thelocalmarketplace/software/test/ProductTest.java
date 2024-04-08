@@ -44,7 +44,7 @@ import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.bag.ReusableBag;
 import com.jjjwelectronics.scanner.Barcode;
-
+import com.jjjwelectronics.scanner.BarcodedItem;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
@@ -139,6 +139,38 @@ public class ProductTest {
 
 	    assertEquals("The total order weight should be reduced by the weight of the bulky item upon attendant's approval",
 	                 expectedTotalWeightAfterHandling, actualTotalWeightAfterHandling, 0.001);
+	}
+	@Test
+	public void testRemoveBarcodedItemFromOrder() {
+	    
+	    Numeral[] barcodeDigits = {Numeral.one, Numeral.two, Numeral.three, Numeral.four};
+	    Barcode barcode = new Barcode(barcodeDigits);
+	    double initialItemWeightInGrams = 500.0;
+	    long initialItemPrice = 10;
+	    BarcodedProduct barcodedProduct = new BarcodedProduct(barcode, "Barcoded Product", initialItemPrice, initialItemWeightInGrams);
+	    ProductDatabases.BARCODED_PRODUCT_DATABASE.put(barcode, barcodedProduct);
+	    double productWeight = barcodedProduct.getExpectedWeight(); 
+	    Mass mass = new Mass(productWeight);
+	    BarcodedItem barcodedItem = new BarcodedItem(barcode, mass);
+	    station.addItemToOrder(barcodedItem);  
+
+	    
+	    assertTrue(station.getOrder().contains(barcodedItem));
+	    double initialTotalWeight = station.getTotalOrderWeightInGrams();
+	    double initialTotalPrice = station.getTotalOrderPrice();
+
+	    
+	    boolean result = testProducts.removeItemFromOrder(barcodedItem);
+
+	   
+	    assertTrue("The item should be successfully removed from the order", result);
+	    assertFalse("The order should no longer contain the removed item", station.getOrder().contains(barcodedItem));
+	    assertEquals("The total order weight should be reduced by the weight of the removed item",
+	                 initialTotalWeight - initialItemWeightInGrams, station.getTotalOrderWeightInGrams(), 0.001);
+	    assertEquals("The total order price should be reduced by the price of the removed item",
+	                 initialTotalPrice - initialItemPrice, station.getTotalOrderPrice());
+	    
+	    
 	}
 	
 	@Test

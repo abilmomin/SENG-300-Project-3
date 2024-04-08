@@ -32,11 +32,9 @@
 package com.thelocalmarketplace.software;
 
 import java.math.BigDecimal;
-
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.Product;
-
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.funds.FundsObserver;
@@ -44,6 +42,10 @@ import com.thelocalmarketplace.software.funds.PaymentKind.Kind;
 import com.thelocalmarketplace.software.product.Products;
 import com.thelocalmarketplace.software.product.ProductsListener;
 
+/**
+ * The Coordination class acts as a middle man in the self-checkout system, coordinating between the GUI, 
+ * payment processing, and product management.
+ */
 public class Coordination implements FundsObserver, ProductsListener {
 	SelfCheckoutStationSoftware software;
     Funds funds;
@@ -52,12 +54,13 @@ public class Coordination implements FundsObserver, ProductsListener {
 
     /**
      * Constructor for Coordination class
+     * 
      * @param software 
      * 			the SelfCheckoutStation device 
      * @param funds 
      * 			the Funds facade to handle all payments and change 
      * @param products 
-     * 			the Products facade for product handling 
+	 *          the Products facade for product handling 
      */
     public Coordination(SelfCheckoutStationSoftware software, Funds funds, Products products) {
         this.software = software;
@@ -66,14 +69,23 @@ public class Coordination implements FundsObserver, ProductsListener {
     }
     
     /**
-     * Set the gui
+     * Sets the GUI for this class to use.
+     * 
      * @param gui 
-     * 			gui for this CustomerStation
+     * 			GUI for this self checkout station.
      */
     public void setGUI(CustomerStation gui) {
     	this.gui = gui;
     }
     
+    /**
+     * Handles situations where valid change cannot be dispensed.
+     * 
+     * @param fundsFacade 
+     * 			The funds management system interface.
+     * @param changeDue 
+     * 			The amount of change that could not be dispensed.
+     */
     public void noValidChange(Funds fundsFacade, BigDecimal changeDue) {
     	if(gui != null) {
     		gui.handleRequestAssistance();
@@ -83,7 +95,7 @@ public class Coordination implements FundsObserver, ProductsListener {
 
     /**
      * Override of fundsAdded from FundsObserver interface
-     * Notifies the gui and update that funds have been added 
+     * Notifies the GUI and update that funds have been added.
      */
     @Override
     public void fundsAdded(Funds fundsFacade, BigDecimal funds) {
@@ -95,7 +107,7 @@ public class Coordination implements FundsObserver, ProductsListener {
 
     /**
      * Override of fundsRemoved from FundsObserver interface
-     * Notifies the gui and update that funds have been removed
+     * Notifies the GUI and update that funds have been removed.
      */
     @Override
     public void fundsRemoved(Funds fundsFacade, BigDecimal funds) {
@@ -107,7 +119,7 @@ public class Coordination implements FundsObserver, ProductsListener {
 
     /**
      * Override of fundsStored from FundsObserver interface
-     * Notifies the gui and update that funds have been removed, but are stored internally 
+     * Notifies the GUI and update that funds have been removed, but are stored internally.
      */
     @Override
     public void fundsStored(Funds fundsFacade, BigDecimal funds) {
@@ -117,7 +129,7 @@ public class Coordination implements FundsObserver, ProductsListener {
 
     /**
      * Override of fundsInvalid from FundsObserver interface
-     * Notifies the gui that the funds are invalid for the payment kind
+     * Notifies the GUI that the funds are invalid for the payment kind.
      */
     @Override
     public void fundsInvalid(Funds fundsFacade, Kind kind) {
@@ -127,7 +139,7 @@ public class Coordination implements FundsObserver, ProductsListener {
 
     /**
      * Override of fundsPaidInFull from FundsObserver interface 
-     * Notifies the gui that funds have been paid in full and change has been returned 
+     * Notifies the GUI that funds have been paid in full and change has been returned.
      */
     @Override
     public void fundsPaidInFull(Funds fundsFacade, BigDecimal changeReturned) {
@@ -137,7 +149,7 @@ public class Coordination implements FundsObserver, ProductsListener {
 
     /**
      * Override of fundsStationBlocked from FundsObserver interface
-     * Notifies the gui that the station has been blocked during payment
+     * Notifies the GUI that the station has been blocked during payment.
      */
     @Override
     public void fundsStationBlocked(Funds fundsFacade) {
@@ -147,7 +159,7 @@ public class Coordination implements FundsObserver, ProductsListener {
     
     /**
      * Override of productAdded from ProductListener interface
-     * Notifies the gui that a product has been added 
+     * Notifies the GUI that a product has been added.
      */
     @Override
     public void productAdded(Products productFacade, Product product) {
@@ -169,7 +181,7 @@ public class Coordination implements FundsObserver, ProductsListener {
     
     /**
      * Override of productRemoved from ProductsListener interface 
-     * Notifies the gui that a product has been removed  
+     * Notifies the GUI that a product has been removed.
      */
     @Override
     public void productRemoved(Products productFacade, Product product) {
@@ -179,7 +191,7 @@ public class Coordination implements FundsObserver, ProductsListener {
    
     /**
      * Override of productToBaggingArea from ProductsListener interface
-     * Notifies the gui that a product must be added to the bagging area 
+     * Notifies the GUI that a product must be added to the bagging area.
      */
     @Override
     public void productToBaggingArea(Products productFacade, Product product) {
@@ -189,7 +201,7 @@ public class Coordination implements FundsObserver, ProductsListener {
 
     /**
      * Override of bagsPurchased from ProductsListener interface
-     * Notifies the gui that one or more reusable bags have been purchased
+     * Notifies the GUI that one or more reusable bags have been purchased.
      */
     @Override
     public void bagsPurchased(Products productFacade, long totalCost) {
