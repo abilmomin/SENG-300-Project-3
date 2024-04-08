@@ -106,7 +106,9 @@ public class AttendantListeners {
         this.stationEnabled = stationEnabled;
         this.logic = new AttendantLogic();
     }
-
+    
+    
+    
     private class refillCoinServiceButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
