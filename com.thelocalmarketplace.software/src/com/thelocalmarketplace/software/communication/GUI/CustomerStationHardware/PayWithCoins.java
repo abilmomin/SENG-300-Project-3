@@ -34,21 +34,18 @@ package com.thelocalmarketplace.software.communication.GUI.CustomerStationHardwa
 import com.tdc.CashOverloadException;
 import com.tdc.DisabledException;
 import com.tdc.coin.Coin;
-
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
-
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.math.BigDecimal;
-
 import java.util.Currency;
 import java.util.List;
 
+// Swing library methods
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -56,6 +53,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+
+/**
+ * Represents a user interface for paying with coins in a self-checkout system.
+ * This class provides functionality for selecting coins and displaying the total value.
+ */
 @SuppressWarnings("serial")
 public class PayWithCoins extends JFrame {
 
@@ -63,6 +65,7 @@ public class PayWithCoins extends JFrame {
     private BigDecimal totalCount = BigDecimal.ZERO;
     private SelfCheckoutStationSoftware software;
 
+    
     /**
      * Constructor that creates a panel containing coin information and options.
      * @param software The SelfCheckoutStationSoftware to which the hardware is attached.
@@ -74,20 +77,20 @@ public class PayWithCoins extends JFrame {
         setSize(400, 300);
         setLocationRelativeTo(null);
 
-        // Main panel
+        
         JPanel mainPanel = new JPanel(new BorderLayout());
 
-        // Header panel
+        
         JPanel headerPanel = new JPanel();
         JLabel headerLabel = new JLabel("Insert Coin", SwingConstants.CENTER);
         headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
         headerPanel.add(headerLabel);
 
-        // Coin options panel
+        
         JPanel coinPanel = new JPanel(new GridLayout(0, 3, 10, 10));
         coinPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Coin denominations
+        
         List<BigDecimal> coinDenominations = software.station.getCoinDenominations();
 
         // Add coin buttons
@@ -96,18 +99,18 @@ public class PayWithCoins extends JFrame {
             coinPanel.add(coinButton);
         }
 
-        // Coin total label
+        
         coinTotalLabel = new JLabel("Total Value of Coins Added: $0.00", SwingConstants.CENTER);
         coinTotalLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
-        // Total panel
+        
         JPanel totalPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         totalPanel.add(coinTotalLabel);
 
-        // Finish button
+        
         JButton finishButton = new JButton("Finish");
         finishButton.addActionListener(new ActionListener() {
-        	//this should replaced with a return to customer homepage instead later
+        	
             @Override
             public void actionPerformed(ActionEvent e) {
             	setVisible(false);
@@ -124,13 +127,19 @@ public class PayWithCoins extends JFrame {
         mainPanel.add(coinAndTotalPanel, BorderLayout.CENTER);
         mainPanel.add(finishButton, BorderLayout.SOUTH);
 
-        // Add main panel to frame
+       
         add(mainPanel);
 
-        // Set frame visible
+        
         setVisible(false);
     }
 
+    
+    /**
+     * Creates a JButton representing a coin denomination.
+     * @param denomination The denomination of the coin.
+     * @return A styled JButton representing the coin denomination.
+     */
     private JButton createCoinButton(BigDecimal denomination) {
         JButton button = new JButton("$" + (denomination));
         button.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -150,7 +159,11 @@ public class PayWithCoins extends JFrame {
         });
         return button;
     }
-
+    
+    
+    /**
+     * Updates the total label with the current total value of coins.
+     */
     private void updateTotalLabel() {
         BigDecimal totalAmount = totalCount;
         coinTotalLabel.setText(String.format("Total Value of Coins Added: $%.2f", totalAmount));
