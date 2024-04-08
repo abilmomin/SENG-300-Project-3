@@ -55,6 +55,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+
+/**
+ * Represents a user interface for paying with banknotes in a self-checkout system.
+ * This class provides functionality for selecting banknotes and displaying the total amount.
+ */
 @SuppressWarnings("serial")
 public class PayWithBanknotes extends JFrame {
 
@@ -74,21 +79,21 @@ public class PayWithBanknotes extends JFrame {
         setSize(600, 500);
         setLocationRelativeTo(null);
 
-        // Main panel
+     
         JPanel mainPanel = new JPanel(new BorderLayout());
 
-        // Header panel
+        
         JPanel headerPanel = new JPanel();
         JLabel headerLabel = new JLabel("Push Banknote", SwingConstants.CENTER);
         headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
         headerPanel.add(headerLabel);
 
-        // Banknote options panel
+        
         JPanel banknotePanel = new JPanel();
         banknotePanel.setLayout(new GridLayout(0, 1, 10, 5));
         banknotePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Banknote denominations
+        
         BigDecimal[] banknoteDenominations = software.station.getBanknoteDenominations();
 
         // Add banknote buttons
@@ -97,11 +102,10 @@ public class PayWithBanknotes extends JFrame {
             banknotePanel.add(banknoteButton);
         }
 
-        // Total label
         totalLabel = new JLabel("Total Amount: $0", SwingConstants.CENTER);
         totalLabel.setFont(new Font("Arial", Font.BOLD, 20));
         
-        // Total panel
+        
         JPanel totalPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         totalPanel.add(totalLabel);
 
@@ -129,13 +133,17 @@ public class PayWithBanknotes extends JFrame {
         mainPanel.add(banknoteAndTotalPanel, BorderLayout.CENTER);
         mainPanel.add(finishButton, BorderLayout.SOUTH);
 
-        // Add main panel to frame
         add(mainPanel);
 
-        // Set frame visible
         setVisible(false);
     }
-
+    
+    
+    /**
+     * Creates a JButton representing a banknote denomination.
+     * @param denomination The denomination of the banknote.
+     * @return A styled JButton representing the banknote denomination.
+     */
     private JButton createBanknoteButton(BigDecimal denomination) {
         JButton button = new JButton("$" + (denomination));
         button.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -158,7 +166,11 @@ public class PayWithBanknotes extends JFrame {
         });
         return button;
     }
-
+    
+    
+    /**
+     * Updates the total label with the current total amount of banknotes.
+     */
     private void updateTotalLabel() {
         totalLabel.setText("Total Amount: $" + totalCount);
     }
