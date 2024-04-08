@@ -33,7 +33,12 @@ package com.thelocalmarketplace.software.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.Arrays;
+
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -307,8 +312,7 @@ public class ProductTest {
         ReusableBag[] bags = {bag1, bag2, bag3}; 
         // trying to purchase 3 bags when there is only 1 in the dispenser
         testProducts.PurchaseBags(bags);  
-       // dispenser.dispense();
-        //assertEquals(0, dispenser.getQuantityRemaining()); 
+       // assertTrue(dispenser.getQuantityRemaining() == 0); 
 	}
 	
 	//Testing when there are enough bags in the dispenser and the dispenser is not fully emptied 
@@ -327,30 +331,47 @@ public class ProductTest {
 		
 	//Testing when the amount of bags in dispenser are being loaded (dispenser bags and purchased bags = same) 
 	// this one should notify that the dispenser is empty after its been dispensed
-	@Test(expected= OverloadedDevice.class)
-	public void testPurchaseBags_JustEnoughBags() throws OverloadedDevice, EmptyDevice{
+	@Test
+	public void testPurchaseBags_BorderEnoughBags() throws OverloadedDevice, EmptyDevice{
 		MockReusableBagDispenser dispenser = new MockReusableBagDispenser(2, 100); 
 		ReusableBag bag1 = new ReusableBag(); 
         ReusableBag bag2 = new ReusableBag();
         ReusableBag[] bags = {bag1, bag2};
-	    //dispenser.load(bags);
-	    //see how many bags are now present. Loaded 2 
-	    assertEquals(2, dispenser.getQuantityRemaining());
-	    //dispenser.dispense();
-	    testProducts.PurchaseBags(bags);
-	    //purchasing all bags in the dispenser and emptying it 
-	   // assertEquals(0, dispenser.getQuantityRemaining()); 
+	    // 2 bags in the dispenser 
+        //purchasing  2 bags 
+        testProducts.PurchaseBags(bags);
+	    assertEquals(0, dispenser.getQuantityRemaining());
 	}
 	
+	
 	@Test
-	public void testPurchaseBags_DispenserOverload() throws OverloadedDevice, EmptyDevice{
-		MockReusableBagDispenser dispenser = new MockReusableBagDispenser(60, 50);
-		ReusableBag bag1 = new ReusableBag(); 
-        ReusableBag bag2 = new ReusableBag();
-        ReusableBag[] bags = {bag1, bag2};
-	    //dispenser.load(bags); 
-	    testProducts.PurchaseBags(bags);
+    public void testLoad_OverloadedDeviceThrown() {
+        int initialQuantityRemaining = 0;
+        int capacity = 10; // Example capacity
+        MockReusableBagDispenser dispenser = new MockReusableBagDispenser(initialQuantityRemaining, capacity);
+
+        // Create an array of bags exceeding the capacity
+        int bagsCount = capacity + 1;
+        ReusableBag[] bags = new ReusableBag[bagsCount];
+        for (int i = 0; i < bagsCount; i++) {
+            bags[i] = new ReusableBag();
+        }
+
+        // Ensure that the load method throws OverloadedDevice
+        assertThrows(OverloadedDevice.class, () -> dispenser.load(bags));
+    }
+
+	
+	@Test
+	public void testDispense_EmptyDeviceThrown() {
+	    int initialQuantityRemaining = 0; // Dispenser is initially empty
+	    int capacity = 10; // Example capacity
+	    MockReusableBagDispenser dispenser = new MockReusableBagDispenser(initialQuantityRemaining, capacity);
+
+	    // Attempt to dispense when the dispenser is empty
+	    assertThrows(EmptyDevice.class, dispenser::dispense);
 	}
+	
 
 	@Test
 	public void testRegisterAndNotifyProductAdded() {
