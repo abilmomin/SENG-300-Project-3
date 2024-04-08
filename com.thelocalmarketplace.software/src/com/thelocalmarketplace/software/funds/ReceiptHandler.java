@@ -77,9 +77,6 @@ public class ReceiptHandler implements ReceiptPrinterListener{
 		// TODO Auto-generated method stub
 	}
 
-	/**
-	 * Overrides the hardware listener's out of paper function
-	 */
 	@Override
 	public void thePrinterIsOutOfPaper() {
 		this.receipt.notifyPaperEmpty(receiptPrinter);
