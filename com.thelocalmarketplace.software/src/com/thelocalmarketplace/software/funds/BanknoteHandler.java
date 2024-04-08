@@ -32,10 +32,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Currency;
 
-import com.jjjwelectronics.EmptyDevice;
-
-import com.jjjwelectronics.OverloadedDevice;
-
 import com.tdc.CashOverloadException;
 
 import com.tdc.DisabledException;
