@@ -60,7 +60,16 @@ import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftwar
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
 import com.thelocalmarketplace.software.funds.Receipt;
 
+/**
+ * The AttendantLogic class contains methods that represent the logic and actions
+ * performed by an attendant on the self-checkout station.
+ */
 public class AttendantLogic {
+	
+	/**
+     * Empties the coin storage unit and coin dispensers of the self-checkout station.
+     * @param cSoftware The self-checkout station software instance
+     */
 	public void emptyCoinStorage(SelfCheckoutStationSoftware cSoftware) {
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
 		CoinStorageUnit storage = cS.getCoinStorage();
@@ -73,6 +82,10 @@ public class AttendantLogic {
 		}
 	}
 	
+	/**
+     * Empties the banknote storage unit and banknote dispensers of the self-checkout station.
+     * @param cSoftware The self-checkout station software instance
+     */
 	public void emptyBanknoteStorage(SelfCheckoutStationSoftware cSoftware) {
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
 		BanknoteStorageUnit storage = cS.getBanknoteStorage();
@@ -85,6 +98,12 @@ public class AttendantLogic {
 		}
 	}
 	
+	 /**
+     * Refills the coin dispensers of the self-checkout station with coins.
+     * @param cSoftware The self-checkout station software instance
+     * @throws SimulationException If an error occurs during simulation
+     * @throws CashOverloadException If the coin dispensers are overloaded
+     */
 	public void refillCoinDispensers(SelfCheckoutStationSoftware cSoftware) throws SimulationException, CashOverloadException {
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
 		Currency currency = Currency.getInstance("CAD");
@@ -97,6 +116,12 @@ public class AttendantLogic {
 		}
 	}
 	
+	 /**
+     * Refills the banknote dispensers of the self-checkout station with banknotes.
+     * @param cSoftware The self-checkout station software instance
+     * @throws SimulationException If an error occurs during simulation
+     * @throws CashOverloadException If the banknote dispensers are overloaded
+     */
 	public void refillBanknoteDispensers(SelfCheckoutStationSoftware cSoftware) throws SimulationException, CashOverloadException {
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
 		AbstractSelfCheckoutStation aCS = (AbstractSelfCheckoutStation) cS;
@@ -111,7 +136,12 @@ public class AttendantLogic {
 		}
 	}
 
-	// ONLY USE ONCE INK IS EMPTY
+	
+	/**
+	 * Refills the printer ink of the self-checkout station with the maximum ink capacity.
+	 * @param cSoftware The self-checkout station software instance
+	 * @throws OverloadedDevice If an error occurs due to printer overload
+	 */
 	public void refillPrinterInk(SelfCheckoutStationSoftware cSoftware) throws OverloadedDevice {
 		Receipt receipt = cSoftware.getReceipt();
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
@@ -120,7 +150,11 @@ public class AttendantLogic {
 		receipt.notifyInkAdded(printer);
 	}
 
-	// ONLY USE ONCE PAPER IS EMPTY
+	/**
+	 * Refills the printer paper of the self-checkout station with the maximum paper capacity.
+	 * @param cSoftware The self-checkout station software instance
+	 * @throws OverloadedDevice If an error occurs due to printer overload
+	 */
 	public void refillPrinterPaper(SelfCheckoutStationSoftware cSoftware) throws OverloadedDevice {
 		Receipt receipt = cSoftware.getReceipt();
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
@@ -128,7 +162,14 @@ public class AttendantLogic {
 		printer.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
 		receipt.notifyPaperAdded(printer);
 	}
-
+	
+	
+	/**
+	 * Refills the printer paper of the self-checkout station when paper is low.
+	 * If paper is empty, it fills the printer to maximum capacity.
+	 * @param cSoftware The self-checkout station software instance
+	 * @throws OverloadedDevice If an error occurs due to printer overload
+	 */
 	public void refillPrinterPaperWhenLow(SelfCheckoutStationSoftware cSoftware) throws OverloadedDevice {
 		Receipt receipt = cSoftware.getReceipt();
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
@@ -147,7 +188,14 @@ public class AttendantLogic {
 		
 		receipt.notifyPaperAdded(printer);
 	}
-
+	
+	
+	/**
+	 * Refills the printer ink of the self-checkout station when ink is low.
+	 * If ink is empty, it fills the printer to maximum capacity.
+	 * @param cSoftware The self-checkout station software instance
+	 * @throws OverloadedDevice If an error occurs due to printer overload
+	 */
 	public void refillPrinterInkWhenLow(SelfCheckoutStationSoftware cSoftware) throws OverloadedDevice {
 		Receipt receipt = cSoftware.getReceipt();
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
@@ -165,7 +213,15 @@ public class AttendantLogic {
 		}
 		receipt.notifyInkAdded(printer);
 	}
-
+	
+	/**
+     * Enables the specified self-checkout station.
+     * @param selectedStation The index of the selected station
+     * @param customerStation Array of customer stations
+     * @param stationSoftwareInstances Array of self-checkout station software instances
+     * @param checkoutStation The abstract self-checkout station instance
+     * @param startSessions Array of start session instances
+     */
 	public void EnableStation(int selectedStation,CustomerStation[] customerStation, SelfCheckoutStationSoftware[] stationSoftwareInstances,AbstractSelfCheckoutStation checkoutStation, StartSession[] startSessions )  {
 		if (stationSoftwareInstances[selectedStation].getStationBlock()== true) {
 			stationSoftwareInstances[selectedStation].setStationUnblock();	
@@ -173,6 +229,16 @@ public class AttendantLogic {
 		startSessions[selectedStation].enableMouseListener();
 	}
 	
+	
+	/**
+     * Disables the specified self-checkout station.
+     * @param selectedStation The index of the selected station
+     * @param customerStation Array of customer stations
+     * @param stationSoftwareInstances Array of self-checkout station software instances
+     * @param checkoutStation The abstract self-checkout station instance
+     * @param startSessions Array of start session instances
+     * @return True if the station is successfully disabled, otherwise false
+     */
 	public boolean DisableStation(int selectedStation,CustomerStation[] customerStation, SelfCheckoutStationSoftware[] stationSoftwareInstances,AbstractSelfCheckoutStation checkoutStation, StartSession[] startSessions) {
         if (stationSoftwareInstances[selectedStation].getStationBlock() == false) {
         	if (stationSoftwareInstances[selectedStation].getStationActive() == false) {
