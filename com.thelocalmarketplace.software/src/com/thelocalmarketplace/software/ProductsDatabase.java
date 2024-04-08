@@ -87,8 +87,8 @@ public class ProductsDatabase {
 		PriceLookUpCode plu3 = new PriceLookUpCode("6789");
 		
 		PLUCodedProduct apple = new PLUCodedProduct(plu1, "Apple", 1);
-		PLUCodedProduct banana = new PLUCodedProduct(plu1, "Banana", 1);
-		PLUCodedProduct kiwi = new PLUCodedProduct(plu1, "Kiwi", 2);
+		PLUCodedProduct banana = new PLUCodedProduct(plu2, "Banana", 1);
+		PLUCodedProduct kiwi = new PLUCodedProduct(plu3, "Kiwi", 2);
 		
 		PLUDatabase.put(plu1, apple);
 		PLUDatabase.put(plu2, banana);
