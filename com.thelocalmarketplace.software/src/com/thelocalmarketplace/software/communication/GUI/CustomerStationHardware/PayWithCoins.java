@@ -44,8 +44,6 @@ import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
-
-// Swing library methods
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;

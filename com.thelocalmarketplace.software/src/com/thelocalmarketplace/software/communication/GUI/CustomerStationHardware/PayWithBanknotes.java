@@ -34,20 +34,15 @@ package com.thelocalmarketplace.software.communication.GUI.CustomerStationHardwa
 import com.tdc.CashOverloadException;
 import com.tdc.DisabledException;
 import com.tdc.banknote.Banknote;
-
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
-
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.math.BigDecimal;
-
 import java.util.Currency;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
