@@ -21,11 +21,14 @@ import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
+import com.thelocalmarketplace.hardware.Product;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.product.Products;
+import com.thelocalmarketplace.software.product.ProductsListener;
+
 import powerutility.PowerGrid;
 
 public class ProductTest {
@@ -218,52 +221,53 @@ public class ProductTest {
 	}
 	
 	
-	
 	//testing when not enough bags are in the dispenser 
-	@Test (expected = OverloadedDevice.class)
-	public void testPurchaseBags_notEnoughBags() throws OverloadedDevice, EmptyDevice {
-		//initializing a new dispenser that has 2 bags loaded and a capacity of 100 reusable bags 
-		MockReusableBagDispenser dispenser = new MockReusableBagDispenser(2, 100); 
-		ReusableBag bag1 = new ReusableBag(); 
-        ReusableBag bag2 = new ReusableBag();
-        ReusableBag bag3 = new ReusableBag();
-        ReusableBag[] bags = {bag1, bag2, bag3}; 
-        
-        dispenser.load(bags);
-        
-        // Invoke the PurchaseBags method
-        testProducts.PurchaseBags(bags);  
-	}
-	
-	//Testing when there are enough bags in the dispenser 
-		@Test 
-		public void testPurchaseBags_EnoughBags() throws OverloadedDevice, EmptyDevice {
+		@Test (expected = OverloadedDevice.class)
+		public void testPurchaseBags_notEnoughBags() throws OverloadedDevice, EmptyDevice {
+			//initializing a new dispenser that has 2 bags loaded and a capacity of 100 reusable bags 
 			MockReusableBagDispenser dispenser = new MockReusableBagDispenser(2, 100); 
 			ReusableBag bag1 = new ReusableBag(); 
 	        ReusableBag bag2 = new ReusableBag();
-	        ReusableBag[] bags = {bag1, bag2}; 
-	        dispenser.load(bags);
-	        testProducts.PurchaseBags(bags);
+	        ReusableBag bag3 = new ReusableBag();
+	        ReusableBag[] bags = {bag1, bag2, bag3}; 
 	        
+	        dispenser.load(bags);
+	        testProducts.PurchaseBags(bags);  
 		}
 		
+		//Testing when there are enough bags in the dispenser 
+			@Test 
+			public void testPurchaseBags_EnoughBags() throws OverloadedDevice, EmptyDevice {
+				MockReusableBagDispenser dispenser = new MockReusableBagDispenser(2, 100); 
+				ReusableBag bag1 = new ReusableBag(); 
+		        ReusableBag bag2 = new ReusableBag();
+		        ReusableBag[] bags = {bag1, bag2}; 
+		        dispenser.load(bags);
+		        testProducts.PurchaseBags(bags);
+		        
+			}
+			
+			
+			//Testing when the amount of bags in dispenser are being loaded (dispenser bags and purchased bags = same) 
+			// this one should notify that the bags are empty after its been dispensed
+			@Test 
+			public void testPurchaseBags_JustEnoughBags() throws OverloadedDevice, EmptyDevice{
+				MockReusableBagDispenser dispenser = new MockReusableBagDispenser(3, 100); 
+				ReusableBag[] bags = new ReusableBag[3];
+			    for (int i = 0; i < 3; i++) {
+			        bags[i] = new ReusableBag();
+			    }
+			    dispenser.load(bags);
+			    
+			    // Ensure dispenser notifies that bags are empty after being dispensed
+			    testProducts.PurchaseBags(bags);
+			   // assertTrue(dispenser.getQuantityRemaining() == 0);
+			    assertTrue("Dispenser is now out of bags",
+			               dispenser.getQuantityRemaining() == 0);
+			}
+
 		
-		//Testing when the amount of bags in dispenser are being loaded (dispenser bags and purchased bags = same) 
-		// this one should notify that the bags are empty after its been dispensed
-		@Test 
-		public void testPurchaseBags_JustEnoughBags() throws OverloadedDevice, EmptyDevice{
-			MockReusableBagDispenser dispenser = new MockReusableBagDispenser(3, 100); 
-			ReusableBag[] bags = new ReusableBag[3];
-		    for (int i = 0; i < 3; i++) {
-		        bags[i] = new ReusableBag();
-		    }
-		    dispenser.load(bags);
-		    
-		    // Ensure dispenser notifies that bags are empty after being dispensed
-		    testProducts.PurchaseBags(bags);
-		    assertTrue(dispenser.getQuantityRemaining() == 0);
-		}
-	@Test
+		@Test
 		public void testRegisterAndNotifyProductAdded() {
 		    final boolean[] wasCalled = {false};
 		    final Product[] notifiedProduct = {null};
