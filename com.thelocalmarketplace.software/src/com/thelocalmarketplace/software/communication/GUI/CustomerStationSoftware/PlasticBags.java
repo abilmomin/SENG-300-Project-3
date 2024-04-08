@@ -153,4 +153,8 @@ public class PlasticBags extends JFrame {
         
         return screenPanel;
     }
+
+	public static void main(String[] args) {
+		new PlasticBags();
+	}
 }

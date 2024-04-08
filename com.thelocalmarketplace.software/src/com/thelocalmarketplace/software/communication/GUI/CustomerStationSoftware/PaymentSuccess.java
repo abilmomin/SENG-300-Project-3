@@ -57,7 +57,7 @@ public class PaymentSuccess extends JFrame {
 	public PaymentSuccess(double change, SelfCheckoutStationSoftware stationSoftware) {
 		setTitle("Thank you!");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(380, 250);
+		setSize(900, 700);
 		setLocationRelativeTo(null);
 
 		JPanel mainPanel = new JPanel();
@@ -90,7 +90,6 @@ public class PaymentSuccess extends JFrame {
 				Receipt rec = new Receipt(stationSoftware.getStationHardware().getPrinter(), stationSoftware.getFunds());
 				try {
 					JOptionPane.showMessageDialog(PaymentSuccess.this, rec.printReceipt());
-					System.exit(EXIT_ON_CLOSE);
 				} catch (HeadlessException | EmptyDevice | OverloadedDevice e1) {
 					e1.printStackTrace();
 				}
@@ -103,7 +102,6 @@ public class PaymentSuccess extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(PaymentSuccess.this, "Thank you for shopping with us! We hope to see you again!");
-				System.exit(EXIT_ON_CLOSE);
 			}
 		});
 
