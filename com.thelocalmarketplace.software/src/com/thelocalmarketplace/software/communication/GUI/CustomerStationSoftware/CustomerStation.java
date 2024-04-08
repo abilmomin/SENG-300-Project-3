@@ -378,10 +378,14 @@ public class CustomerStation extends JFrame {
     public void handleRemoveItem() {
         if (selectedCartItemButton != null) {
         	boolean itemRemoved = false;
+        	
             // look through the order and remove the item
             ArrayList<Item> listOfOrders = stationSoftwareInstance.getOrder();
+            System.out.println(listOfOrders == null);
             for (Item item : listOfOrders) {
+            	System.out.println("in loop");
                 if (item instanceof PLUCodedItem) {
+                	System.out.println("in plu");
                     PLUCodedItem pluItem = (PLUCodedItem) item;
 
                     PriceLookUpCode pluCode = pluItem.getPLUCode();
@@ -389,12 +393,15 @@ public class CustomerStation extends JFrame {
 
                     // create regex to match the product description
                     String productGettingRemoved = extractProductName(selectedCartItemButton.getText());
+                    System.out.println(productGettingRemoved);
+                    
+                    System.out.println(product.getDescription());
 
 
                     if (product.getDescription().equals(productGettingRemoved)) {
+                        itemRemoved = true;
                         stationSoftwareInstance.getProductHandler().removeItemFromOrder(pluItem);
                         boolean itemRemovedFromBaggingArea = baggingArea.itemToRemove(productGettingRemoved);
-                        itemRemoved = true;
 
                         if(itemRemovedFromBaggingArea)
                             new RemoveFromBagging(pluItem, stationSoftwareInstance, attendantGUI, baggingArea);
@@ -402,6 +409,7 @@ public class CustomerStation extends JFrame {
                         break;
                     }
                 } else if (item instanceof BarcodedItem) {
+                	System.out.println("in barcode");
                     BarcodedItem barcodeItem = (BarcodedItem) item;
 
                     Barcode barcode = barcodeItem.getBarcode();
@@ -410,10 +418,12 @@ public class CustomerStation extends JFrame {
 
                     // create regex to match the product description
                     String productGettingRemoved = extractProductName(selectedCartItemButton.getText());
+                    System.out.println(productGettingRemoved);
+                    System.out.println(product.getDescription());
 
                     if (product.getDescription().equals(productGettingRemoved)) {
+                    	itemRemoved = true;
                         stationSoftwareInstance.getProductHandler().removeItemFromOrder(barcodeItem);
-                        itemRemoved = true;
 
                         boolean itemRemovedFromBaggingArea = baggingArea.itemToRemove(productGettingRemoved);
                         if(itemRemovedFromBaggingArea)
@@ -426,6 +436,7 @@ public class CustomerStation extends JFrame {
             
             if (!itemRemoved) {
             	stationSoftwareInstance.addTotalOrderPrice(-1);
+            	System.out.println("literally how the fuck");
             }
             
             cartItemsPanel.remove(selectedCartItemButton); // Remove the selected item button from the panel
@@ -599,10 +610,6 @@ public class CustomerStation extends JFrame {
     }
     
     public void customerBaggingAreaPopUp(Product product) {
-    	double weight = 0.0;
-    	if (product instanceof BarcodedProduct) {
-    		BarcodedProduct barcodedProduct = (BarcodedProduct) product;
-    	}
     	new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
     }
     
