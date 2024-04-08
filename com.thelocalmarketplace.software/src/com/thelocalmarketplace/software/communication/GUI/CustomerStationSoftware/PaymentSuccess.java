@@ -1,8 +1,37 @@
+/**
+
+ SENG 300 - ITERATION 3
+ GROUP GOLD {8}
+
+ Name                      UCID
+
+ Yotam Rojnov             30173949
+ Duncan McKay             30177857
+ Mahfuz Alam              30142265
+ Luis Trigueros Granillo  30167989
+ Lilia Skumatova          30187339
+ Abdelrahman Abbas        30110374
+ Talaal Irtija            30169780
+ Alejandro Cardona        30178941
+ Alexandre Duteau         30192082
+ Grace Johnson            30149693
+ Abil Momin               30154771
+ Tara Ghasemi M. Rad      30171212
+ Izabella Mawani          30179738
+ Binish Khalid            30061367
+ Fatima Khalid            30140757
+ Lucas Kasdorf            30173922
+ Emily Garcia-Volk        30140791
+ Yuinikoru Futamata       30173228
+ Joseph Tandyo            30182561
+ Syed Haider              30143096
+ Nami Marwah              30178528
+
+ */
+
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.HeadlessException;
@@ -19,16 +48,13 @@ import javax.swing.JPanel;
 
 import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.OverloadedDevice;
-import com.jjjwelectronics.printer.IReceiptPrinter;
-import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
+
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
-import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.funds.Receipt;
 
+@SuppressWarnings("serial")
 public class PaymentSuccess extends JFrame {
-
 	public PaymentSuccess(double change, SelfCheckoutStationSoftware stationSoftware) {
-
 		setTitle("Thank you!");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(380, 250);
@@ -55,7 +81,6 @@ public class PaymentSuccess extends JFrame {
 		receiptQuestion.setFont(new Font("Arial", Font.BOLD, 18));
 		receiptQuestion.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-
 		JCheckBox ck1 = new JCheckBox("Yes");
 		ck1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		ck1.addActionListener(new ActionListener() {
@@ -67,7 +92,6 @@ public class PaymentSuccess extends JFrame {
 					JOptionPane.showMessageDialog(PaymentSuccess.this, rec.printReceipt());
 					System.exit(EXIT_ON_CLOSE);
 				} catch (HeadlessException | EmptyDevice | OverloadedDevice e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -82,7 +106,6 @@ public class PaymentSuccess extends JFrame {
 				System.exit(EXIT_ON_CLOSE);
 			}
 		});
-
 
 		mainPanel.add(Box.createVerticalGlue());
 		mainPanel.add(bigTextLabel);
@@ -99,13 +122,8 @@ public class PaymentSuccess extends JFrame {
 		mainPanel.add(ck2);
 		mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
-
 		add(mainPanel);
 
 		setVisible(true);
 	}
-
-//	 public static void main(String[] args) {
-//	 	PaymentSuccess success = new PaymentSuccess(12, new SelfCheckoutStationSoftware(new SelfCheckoutStationGold()));
-//	 }
 }
