@@ -548,6 +548,7 @@ public class CustomerStation extends JFrame {
     		} 
     	}
     }
+    
     private void replaceGrids() {
         // Remove current panels from mainPanel
         mainPanel.remove(menuPanel);

@@ -80,11 +80,10 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
         this.fundController.addToTotalPaid(value);
         this.fundController.notifyFundsAdded(value);
 
-        BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(value);
+        BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(this.fundController.getTotalPaid());
         amountDue = amountDue.setScale(2, RoundingMode.CEILING);
         
         if (amountDue.compareTo(BigDecimal.ZERO) <= 0) {
-        	this.fundController.checkoutStationSoftware.setOrderTotalPrice(0);
             amountDue = amountDue.abs();
             
             boolean missed = false;
@@ -105,9 +104,6 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
 				}
             }
             this.fundController.notifyPaidFunds(amountDue);
-        }
-        else {
-        	this.fundController.checkoutStationSoftware.removeTotalOrderPrice(value.doubleValue());
         }
     }
 

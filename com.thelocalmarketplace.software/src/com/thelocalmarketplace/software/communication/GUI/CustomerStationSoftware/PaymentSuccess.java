@@ -42,8 +42,8 @@ public class PaymentSuccess extends JFrame {
 		bigTextLabel.setFont(new Font("Arial", Font.BOLD, 24));
 		bigTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		double amountDue = stationSoftware.getTotalOrderPrice() - stationSoftware.getFunds().getTotalPaid().doubleValue();
-		JLabel mediumTextLabel = new JLabel("Amount Due: $" + amountDue);
+		double amountDue =  stationSoftware.getFunds().getTotalPaid().doubleValue();
+		JLabel mediumTextLabel = new JLabel("Amount Paid: $" + amountDue);
 		mediumTextLabel.setFont(new Font("Arial", Font.PLAIN, 15));
 		mediumTextLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 

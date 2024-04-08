@@ -277,7 +277,7 @@ public class AttendantPageGUI extends JFrame {
                 setStationAssistanceRequested(selectedStation, false);
                 revertHighlight();
                 System.out.println("HELP");
-                attendantListeners.getRefillCoinServiceButtonListener();
+                attendantListeners.getRefillCoinServiceButtonListener().actionPerformed(e);
                 dialog.dispose();
         });
         
@@ -287,7 +287,7 @@ public class AttendantPageGUI extends JFrame {
                 setStationAssistanceRequested(selectedStation, false);
                 revertHighlight();
                 System.out.println("HELP");
-                attendantListeners.getRefillBanknotesServiceButtonListener();	
+                attendantListeners.getRefillBanknotesServiceButtonListener().actionPerformed(e);	
                 dialog.dispose();
         });
 
