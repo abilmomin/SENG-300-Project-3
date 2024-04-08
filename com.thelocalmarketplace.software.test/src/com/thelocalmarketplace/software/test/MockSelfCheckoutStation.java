@@ -3,7 +3,7 @@ package com.thelocalmarketplace.software.test;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
-public class mockSelfCheckoutStation {
+public class MockSelfCheckoutStation {
 	public class StubSelfCheckoutStationSoftware extends SelfCheckoutStationSoftware {
 
 	    public StubSelfCheckoutStationSoftware(AbstractSelfCheckoutStation station) {

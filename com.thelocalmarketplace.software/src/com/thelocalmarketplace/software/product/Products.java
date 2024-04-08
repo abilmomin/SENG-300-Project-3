@@ -127,10 +127,7 @@ public class Products {
 
 				software.addTotalOrderWeightInGrams(itemWeight);
 				software.addTotalOrderPrice(productPrice);
-
-				Mass mass = new Mass(itemWeight);
-				PLUCodedItem newItem = new PLUCodedItem(PLUCode, mass);
-				software.addItemToOrder(newItem);	
+				software.addItemToOrder(pluItem);	
 				
 				notifyProductAdded(product);
 			}
@@ -311,8 +308,7 @@ public class Products {
 			
 			for(ReusableBag bag: bags) {
 				reusableBagWeight = bag.getMass().inGrams().doubleValue(); 
-				long bagPrice = reusableBagPrice * bags.length; 
-				software.addTotalOrderPrice(bagPrice); 
+				software.addTotalOrderPrice(reusableBagPrice); 
 				software.addTotalOrderWeightInGrams(reusableBagWeight);
 				
 				notifyBagsPurchased(reusableBagPrice);

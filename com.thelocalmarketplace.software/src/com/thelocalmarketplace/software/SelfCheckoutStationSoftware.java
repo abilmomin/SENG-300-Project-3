@@ -29,23 +29,12 @@ Nami Marwah              30178528
 package com.thelocalmarketplace.software;
 
 import ca.ucalgary.seng300.simulation.InvalidStateSimulationException;
-import powerutility.PowerGrid;
-
 import static com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation.resetConfigurationToDefaults;
-
-import java.math.BigDecimal;
 import java.util.*;
-
 import com.jjjwelectronics.Item;
 import com.jjjwelectronics.Mass;
-import com.jjjwelectronics.bag.IReusableBagDispenser;
-import com.jjjwelectronics.card.ICardReader;
-import com.jjjwelectronics.printer.IReceiptPrinter;
-import com.jjjwelectronics.scale.IElectronicScale;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
-import com.jjjwelectronics.scanner.IBarcodeScanner;
-import com.tdc.coin.CoinSlot;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
@@ -68,13 +57,6 @@ import com.jjjwelectronics.card.Card;
 public class SelfCheckoutStationSoftware {
 	// Things to listen to (hardware)
 	public AbstractSelfCheckoutStation station;
-	private IElectronicScale baggingArea;
-	private IReusableBagDispenser reusableBagDispenser;
-	private IReceiptPrinter printer;
-	private ICardReader cardReader;
-	private IBarcodeScanner mainScanner;
-	private IBarcodeScanner handheldScanner;
-	private CoinSlot coinSlot;
 	private CustomerStation gui;
 	private ProductsDatabase allProducts; 
 
@@ -103,20 +85,19 @@ public class SelfCheckoutStationSoftware {
 	/**
 	 * Creates an instance of the software for a self-checkout station.
 	 * 
-	 * @param station The self-checkout station that requires the software.
+	 * @param station 
+	 * 			The self-checkout station that requires the software.
 	 */
 	public SelfCheckoutStationSoftware(AbstractSelfCheckoutStation station) {
 		if (station == null) {
-			throw new IllegalArgumentException("The station cannot be null");		// IS THIS IS THE RIGHT ERROR TO THROW HERE
-		}
+			throw new IllegalArgumentException("The station cannot be null");	
+		}	
 		this.station = station;
 
-		// Initialize a new order and all its info
 		this.order = new ArrayList<Item>();
 		this.totalOrderWeight = 0;
 		this.totalOrderPrice = 0;
 		
-		// Make facades
 		this.funds = new Funds(this);
 		this.products = new Products(this);
 		this.coordination = new Coordination(this, funds, products);
@@ -129,7 +110,9 @@ public class SelfCheckoutStationSoftware {
 	}
 	
 	/**
-	 * 
+	 * Set the gui for the station and for coordination
+	 * @param gui
+	 * 			The CustomerStation gui
 	 */
 	public void setGUI(CustomerStation gui) {
 		this.gui = gui;
@@ -137,22 +120,35 @@ public class SelfCheckoutStationSoftware {
 	}
 	
 	/**
-	 * 
+	 * Get the gui for the station
+	 * @return
+	 * 			The gui of type CustomerStation
 	 */
 	public CustomerStation getGUI() {
 		return gui;
 	}
 
+	/**
+	 * Get the funds facade for the station
+	 * @return
+	 * 			The funds Facade of type Funds
+	 */
 	public Funds getFunds() {
 		return funds;
 	}
 	
+	/**
+	 * Get the database of products
+	 * @return
+	 * 			The database of all products of type ProductsDatabase
+	 */
 	public ProductsDatabase getAllProducts() {
 		return allProducts;
 	}
 
 	/**
-	 * Set function to change the blocked variable value.
+	 * Set function to block the station
+	 * Disables parts of the station to block further customer interaction
 	 */
 	public void setStationBlock() {
 		blocked = true;
@@ -164,7 +160,8 @@ public class SelfCheckoutStationSoftware {
 	}
 	
 	/**
-	 * Set function to unblock the system enables functions again
+	 * Set function to unblock the station
+	 * Enables parts of the station to allow further customer interaction 
 	 */
 	public void setStationUnblock() {
 		blocked = false;
@@ -196,12 +193,19 @@ public class SelfCheckoutStationSoftware {
 		return activeSession;
 	}
 	
+	/**
+	 * Get the receipt
+	 * @return
+	 * 			The receipt as type Receipt
+	 */
 	public Receipt getReceipt() {
 		return funds.receipt;
 	}
+	
 	/**
 	 * Function to start a session for self-checkout machine
-	 * @param scanner The scanner used to obtain user input.
+	 * @param scanner 
+	 * 			The scanner used to obtain user input.
 	 * @throws InvalidStateSimulationException If a session is already active.
 	 */
 	public void startSession(Scanner scanner) {
@@ -247,6 +251,7 @@ public class SelfCheckoutStationSoftware {
 	 * @return true if the item was successfully removed, false otherwise.
 	 */
 	public boolean removeItemFromOrder(Item item) {
+		System.out.println("Removing item from order");
 		if (this.order.contains(item)) {
 			this.order.remove(item);
 			

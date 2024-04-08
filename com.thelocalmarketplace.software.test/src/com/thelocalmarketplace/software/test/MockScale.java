@@ -10,11 +10,11 @@ import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
-public class mockScale extends AbstractElectronicScale {
+public class MockScale extends AbstractElectronicScale {
 
 	
 	// mockScale constructor 
-	 protected mockScale(Mass limit, Mass sensitivityLimit) {
+	 protected MockScale(Mass limit, Mass sensitivityLimit) {
 		super(limit, sensitivityLimit);
 		this.currentMass = currentMass; // just added this idk? 
 		// TODO Auto-generated constructor stub

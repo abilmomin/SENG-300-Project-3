@@ -70,7 +70,7 @@ public class MembershipNumberInput extends JDialog {
 	}
 
 	private void addOptionsPanel() {
-		Object[] options = {"Enter", "Scan Card", "swipe Card", "Cancel"};
+		Object[] options = {"Enter", "Scan Card", "swipe Card","become a member", "Cancel"};
 
         int choice = JOptionPane.showOptionDialog(
             this,
@@ -86,19 +86,23 @@ public class MembershipNumberInput extends JDialog {
         case 0:
         	String membershipNumber = membershipNumberField.getText();
             checkMembershipNumber(membershipNumber);
-            dispose(); // Close the dialog
+            dispose(); 
             break;
         case 1:
         	scanCard();
-        	dispose(); // Close the dialog
+        	dispose(); 
             break;
         case 2:
         	swipeCard();
-        	dispose(); // Close the dialog
+        	dispose(); 
             break;
+        case 3:
+        	createAccount();
+			dispose();
+			break;
         default:
-            membershipNumber = null; // Reset the number
-            dispose(); // Close the dialog
+            membershipNumber = null; 
+            dispose(); 
             break;
         }
     }

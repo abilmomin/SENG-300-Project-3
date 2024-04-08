@@ -19,9 +19,8 @@ public class SelectPayment extends JFrame {
 	private CardPayment creditWindow;
 	private PayWithBanknotes banknoteWindow;
 	private PayWithCoins coinWindow;
-	private MembershipNumberInput membershipWindow;
-
-    public SelectPayment(SelfCheckoutStationSoftware software) {
+	
+	public SelectPayment(SelfCheckoutStationSoftware software) {
     	this.software = software;
     	this.debitWindow = new CardPayment(software, "debit");
     	this.creditWindow = new CardPayment(software, "credit");
@@ -75,8 +74,6 @@ public class SelectPayment extends JFrame {
         buttonPanel.add(coinButton);
         buttonPanel.add(cashButton);
         
-        membershipWindow = null;
-
         // Bottom panel for membership and return options
         JPanel bottomPanel = new JPanel(new GridLayout(2, 1, 0, 10));
         JButton addMembershipButton = createColoredButton("Add Membership", new Color(0, 128, 128));
@@ -91,7 +88,7 @@ public class SelectPayment extends JFrame {
         bottomPanel.add(returnToCheckoutButton);
         
         addMembershipButton.addActionListener(e -> showMembershipInputDialog());
-
+        returnToCheckoutButton.addActionListener(e->returnToCheckout());
         mainPanel.add(topPanel, BorderLayout.NORTH);
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
@@ -104,6 +101,10 @@ public class SelectPayment extends JFrame {
         setVisible(false);
     }
     
+	private void returnToCheckout() {
+		this.setVisible(false);
+	}
+
 	void showMembershipInputDialog() {
     	MembershipNumberInput dialog = new MembershipNumberInput(this);
     	dialog.frameInit();

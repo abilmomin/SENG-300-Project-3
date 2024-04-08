@@ -202,6 +202,10 @@ public class ALogicTest {
 	  }
 	  
 
+	  @Test 
+	  public void testRefillPrinterPaperWhenLow() {
+		  
+	  }
 	@After
 	public void tearDown() {
 		station = null;

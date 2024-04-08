@@ -9,6 +9,7 @@ import javax.swing.*;
 import com.jjjwelectronics.Item;
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.scale.IElectronicScale;
+import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.PLUCodedItem;
@@ -18,6 +19,7 @@ import com.thelocalmarketplace.hardware.Product;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.BaggingArea;
 
 
 // GENERAL LAYOUT
@@ -27,11 +29,13 @@ import com.thelocalmarketplace.software.communication.GUI.AttendantStation.Atten
 public class AddtoBagging extends JFrame {
 	SelfCheckoutStationSoftware stationSoftwareInstance;
 	AttendantPageGUI attendantGUI;
+	BaggingArea baggingArea;
 	
-	public AddtoBagging(Product product, SelfCheckoutStationSoftware stationSoftwareInstance, double weight, AttendantPageGUI attendantGUI) {
+	public AddtoBagging(Product product, SelfCheckoutStationSoftware stationSoftwareInstance, AttendantPageGUI attendantGUI, BaggingArea baggingArea) {
 		this.stationSoftwareInstance = stationSoftwareInstance;
 		this.attendantGUI = attendantGUI;
-		
+		this.baggingArea = baggingArea;
+
 	    setTitle("Add to Bag");
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setSize(600, 500);
@@ -70,30 +74,36 @@ public class AddtoBagging extends JFrame {
 	    doNotBagBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 	    doNotBagBtn.setFont(new Font("Arial", Font.PLAIN, 16));
 	    doNotBagBtn.setPreferredSize(new Dimension(100, 30));
-	    
-	    button.addActionListener(e -> {
-	    	if (product instanceof BarcodedProduct) {
-	    		BarcodedProduct barcodedProduct = (BarcodedProduct) product;	
-	    		
-	            double productWeight = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcodedProduct.getBarcode()).getExpectedWeight();
-	            Mass mass = new Mass(weight);
-	            BarcodedItem barcodedItem = new BarcodedItem(barcodedProduct.getBarcode(), mass);
-	            
-	        	IElectronicScale baggingArea = stationSoftwareInstance.getStationHardware().getBaggingArea();
-	        	baggingArea.addAnItem(barcodedItem);
-	    		
-	    	} else {
-	    		PLUCodedProduct pluCodedProduct = (PLUCodedProduct) product;
-	    		
-	    		PLUCodedItem pluItem = new PLUCodedItem(pluCodedProduct.getPLUCode(), new Mass(1.0));
-	    		
-	    		stationSoftwareInstance.getProductHandler().addItemByPLUCode(pluItem);
-	    		
-	        	IElectronicScale baggingArea = stationSoftwareInstance.getStationHardware().getBaggingArea();
-	        	baggingArea.addAnItem(pluItem);
-	    	}
-	    	dispose();
-	    });
+
+        button.addActionListener(e -> {
+            if (product instanceof BarcodedProduct) {
+                ArrayList<Item> order = stationSoftwareInstance.getOrder();
+
+                if (order.size() > 0) {
+                    BarcodedItem itemToAdd = (BarcodedItem) order.get(order.size() - 1);
+
+                    IElectronicScale baggingAreaScale = stationSoftwareInstance.getStationHardware().getBaggingArea();
+                    baggingAreaScale.addAnItem(itemToAdd);
+
+					Barcode barcode = itemToAdd.getBarcode();
+					BarcodedProduct barcodedProduct = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+				    baggingArea.addProduct(barcodedProduct.getDescription());
+                }
+
+            } else {
+                PLUCodedProduct pluCodedProduct = (PLUCodedProduct) product;
+
+                PLUCodedItem pluItem = new PLUCodedItem(pluCodedProduct.getPLUCode(), new Mass(1.0));
+
+                stationSoftwareInstance.getProductHandler().addItemByPLUCode(pluItem);
+
+                IElectronicScale baggingAreaScale = stationSoftwareInstance.getStationHardware().getBaggingArea();
+                baggingAreaScale.addAnItem(pluItem);
+                
+				baggingArea.addProduct(pluCodedProduct.getDescription());
+            }
+            dispose();
+        });
 	    
 	    doNotBagBtn.addActionListener(e -> {
 	    	dontBagItem();
