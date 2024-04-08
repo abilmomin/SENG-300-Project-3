@@ -29,7 +29,7 @@ import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftwar
 import com.thelocalmarketplace.software.funds.Receipt;
 import powerutility.PowerGrid;
 
-public class ALogic {
+public class AttendantLogic {
 	
 	public void emptyCoinStorage(SelfCheckoutStationSoftware cSoftware) {
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();

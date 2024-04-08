@@ -78,15 +78,13 @@ public class RemoveFromBagging extends JFrame {
 
         String finalItemText = itemText;
         button.addActionListener(e -> {
-            baggingArea.removeProduct(finalItemText);
             IElectronicScale scale = stationSoftwareInstance.getStationHardware().getBaggingArea();
 
             boolean itemRemovedFromBaggingArea = baggingArea.itemToRemove(finalItemText);
-
             if(itemRemovedFromBaggingArea) {
                 scale.removeAnItem(item);
             }
-
+            baggingArea.removeProduct(finalItemText);
             dispose();
         });
 

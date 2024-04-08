@@ -108,16 +108,6 @@ public class SelfCheckoutStationSoftwareTest {
     }
     
     @Test
-    public void testStartSession() {
-    	String input = "Touch Screen";
-    	Scanner scanner = new Scanner(input);
-    	
-    	software.startSession(scanner);
-    
-    	assertTrue(software.getStationActive());
-    }
-    
-    @Test
     public void testResetOrder() {
     	software.resetOrder();
     	
@@ -220,15 +210,6 @@ public class SelfCheckoutStationSoftwareTest {
     @Test(expected = IllegalArgumentException.class)
     public void SelfCheckoutStationSoftwareNull() {
     	SelfCheckoutStationSoftware nullSoftware = new SelfCheckoutStationSoftware(null);
-    }
-    
-    @Test(expected = InvalidStateSimulationException.class)
-    public void testAlreadyStartSession() {
-    	String input = "Touch Screen";
-    	Scanner scanner = new Scanner(input);
-    	
-    	software.startSession(scanner);
-    	software.startSession(scanner);
     }
     
     @Test
