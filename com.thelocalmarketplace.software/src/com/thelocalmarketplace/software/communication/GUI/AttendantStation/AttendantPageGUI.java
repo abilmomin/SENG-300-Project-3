@@ -52,9 +52,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+
+/**
+ * AttendantPageGUI class represents the graphical user interface (GUI) for the attendant page.
+ * This class extends JFrame to create a window for the attendant interface.
+ */
 @SuppressWarnings("serial")
 public class AttendantPageGUI extends JFrame {
-    // CONSTANTS FOR THE GUI
+	
+    
     private static final int NUM_STATIONS = 4;
     private static final int WINDOW_WIDTH = 900;
     private static final int WINDOW_HEIGHT = 700;
@@ -82,19 +88,26 @@ public class AttendantPageGUI extends JFrame {
 
     // Panel for customer services
     private final JPanel customerServicesPanel = new JPanel(new FlowLayout());
-    private int selectedStation = -1; // Variable to store the selected station number
-    private final JButton[] stationStartButtons = new JButton[NUM_STATIONS]; // Array to hold the station buttons
-    private final StartSession[] startSessions = new StartSession[NUM_STATIONS]; // Array to hold StartSession instances
-    private final boolean[] stationEnabled = new boolean[NUM_STATIONS]; // Array to keep track of station status
+    private int selectedStation = -1;
+    private final JButton[] stationStartButtons = new JButton[NUM_STATIONS]; 
+    private final StartSession[] startSessions = new StartSession[NUM_STATIONS];
+    private final boolean[] stationEnabled = new boolean[NUM_STATIONS]; 
     private final CustomerStation[] customerStation = new CustomerStation[NUM_STATIONS];
     private final SelfCheckoutStationSoftware[] stationSoftwareInstances = new SelfCheckoutStationSoftware[NUM_STATIONS];
 
-    // Variables for station hardware
-    public final boolean[] stationAssistanceRequested = new boolean[NUM_STATIONS]; // Track assistance requests
-
+   
+    public final boolean[] stationAssistanceRequested = new boolean[NUM_STATIONS]; 
     private AttendantListeners attendantListeners;
+    
+    
+    /**
+     * Constructs an instance of the AttendantPageGUI.
+     * Initializes the GUI components and sets up the necessary panels and listeners.
+     */
     public AttendantPageGUI() {
-        this.attendantListeners = new AttendantListeners(this, selectedStation, stationSoftwareInstances, customerStation, startSessions, stationEnabled);
+        this.attendantListeners = new AttendantListeners(this, selectedStation, stationSoftwareInstances, customerStation, 
+        		startSessions, stationEnabled);
+        
         // Initialize the GUI
         setupGUI();
         setupStationStartPanel();
@@ -125,26 +138,39 @@ public class AttendantPageGUI extends JFrame {
         add(mainPanel);
         setVisible(true);
     }
-
+    
+    
+    /**
+     * Sets up the graphical user interface properties such as title, size, and default close operation.
+     */
     private void setupGUI() {
         setTitle("Attendant Page");
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Center the window
+        setLocationRelativeTo(null); 									// Center the window
     }
-
+    
+    /**
+     * Sets up the panel for managing customer checkout stations by creating buttons for each station.
+     * Each button is associated with an action listener for handling station selection.
+     */
     private void setupStationStartPanel() {
+    	
         // Create station buttons
         for (int i = 0; i < NUM_STATIONS; i++) {
             String buttonText = getjButtonText(i);
             JButton checkoutButton = new JButton(buttonText);
             checkoutButton.addActionListener(attendantListeners.getStationButtonListener(i));
             stationStartPanel.add(checkoutButton);
-            stationStartButtons[i] = checkoutButton; // Add button to the array
-            stationEnabled[i] = true; // Initialize station as enabled
+            stationStartButtons[i] = checkoutButton; 					// Add button to the array
+            stationEnabled[i] = true; 									// Initialize station as enabled
         }
     }
-
+    
+    /**
+     * Creates buttons and adds them to the panel for controlling checkout stations.
+     * These buttons include options to enable/disable stations and clear station signals.
+     */
     private void createStationControls() {
         enableStation.addActionListener(attendantListeners.getEnableStationButtonListener());
         disableStation.addActionListener(attendantListeners.getDisableStationButtonListener());
@@ -154,7 +180,13 @@ public class AttendantPageGUI extends JFrame {
         stationControlPanel.add(disableStation);
         stationControlPanel.add(clearStationSignal);
     }
-
+    
+    
+    /**
+     * Creates buttons and adds them to the panel for hardware services.
+     * These buttons include options to start/close stations, refill coins/banknotes/paper/ink,
+     * and empty coins/banknotes.
+     */
     private void createStationServices() {
         startStation.addActionListener(attendantListeners.getStartStationButtonListener());
         closeStation.addActionListener(attendantListeners.getCloseStationButtonListener());
@@ -177,7 +209,12 @@ public class AttendantPageGUI extends JFrame {
         stationServicesPanel.add(emptyBanknotes);
 
     }
-
+    
+    
+    /**
+     * Creates buttons and adds them to the panel for customer services.
+     * These buttons include options to add items by text search.
+     */
     private void createCustomerServices() {
         addItemByText.addActionListener(attendantListeners.getCustomerServiceButtonListener());
         customerServicesPanel.add(addItemByText);
@@ -185,7 +222,12 @@ public class AttendantPageGUI extends JFrame {
 
 
 
-    // Method to get the station button with the station number
+    /**
+     * Generates the text for the checkout station buttons based on the station number.
+     * 
+     * @param i The station number.
+     * @return The text for the checkout station button.
+     */
     private static String getjButtonText(int i) {
         String checkoutButtonText = "Checkout Station " + (i + 1);
         String stationTypeLabel = switch (i) {
@@ -196,62 +238,97 @@ public class AttendantPageGUI extends JFrame {
         };
         return checkoutButtonText + stationTypeLabel;
     }
-
+    
+    /**
+     * Updates the information of a specific customer station.
+     * 
+     * @param stationNumber   The number of the station to update.
+     * @param customerStation The updated customer station object.
+     */
     public void updateCustomerStation(int stationNumber, CustomerStation customerStation) {
         this.customerStation[stationNumber - 1] = customerStation;
     }
 
-    // Method to wait for session completion
-    void waitForSessionCompletion(int stationNumber) {
+    /**
+     * Waits for the session completion at a specified station and then disables the station.
+     * 
+     * @param stationNumber The number of the station to monitor.
+     */
+    public void waitForSessionCompletion(int stationNumber) {
         try {
             while (stationSoftwareInstances[stationNumber].getStationActive()) {
-                // Sleep for a certain period before checking again
-                Thread.sleep(5000); // Sleep for 5 seconds
+                
+                Thread.sleep(5000); 
             }
             // Once the session is complete, disable the station
             SwingUtilities.invokeLater(() -> {
                 stationSoftwareInstances[selectedStation].setStationBlock();
                 
-            });
+            }); 
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
     }
     
+    /**
+     * Retrieves the current station number that is selected.
+     * 
+     * @return The current station number.
+     */
     public int getCurrentStationNumber() {
     	return this.selectedStation + 1;
     }
     
+    
+    /**
+     * Displays a message dialog to notify about bag weight discrepancy and handles attendant's action.
+     * 
+     * @param instance        The instance of the self-checkout station software.
+     * @param customerStation2 The customer station object associated with the discrepancy.
+     */
     public void bagdiscpreancydectected(SelfCheckoutStationSoftware instance, CustomerStation customerStation2) {
-        // Display a message dialog to prompt the user
         int option = JOptionPane.showConfirmDialog(this, "Bags Too Heavy, Inspect.", "Bag Discrepancy Detected", JOptionPane.OK_CANCEL_OPTION);
-        
-        // Check if the user clicked OK
+
         if (option == JOptionPane.OK_OPTION) {
-            // User clicked OK, proceed with unblocking the station
-            
-            // Unblocking the station
             instance.setStationUnblock();
             customerStation2.customerPopUp("You may now continue");
+            
         } else {
         	JOptionPane.getRootFrame().dispose();
         }
     }
 
-
+    
+    /**
+     * Displays a message dialog to notify about a bulk item request.
+     * 
+     * @param message The message to display in the dialog.
+     * @return True if the request is acknowledged.
+     */
     public boolean bulkItemRequest(String message) {
         JOptionPane.showMessageDialog(this, message);
         return true;
     }
     
+    
+    /**
+     * Displays a message dialog to notify about weight discrepancy and handles attendant's action.
+     * 
+     * @param instance The instance of the self-checkout station software.
+     */
     public void weightDiscpreancydNotify(SelfCheckoutStationSoftware instance) {
     	// Attendant approves discrepancy 
     	JOptionPane.showMessageDialog(this, "Weight Discrepancy Detected.");
     	instance.setStationUnblock();
     }
-
-    // Method to highlight the selected station button
-    void highlightSelectedStation(int selectedStation) {
+    
+    
+    /**
+     * Highlights the selected station button and marks it as needing assistance if requested.
+     * 
+     * @param selectedStation The index of the selected station.
+     */
+    public void highlightSelectedStation(int selectedStation) {
         this.selectedStation = selectedStation;
         for (int i = 0; i < stationStartButtons.length; i++) {
             String buttonText = getjButtonText(i);
@@ -265,30 +342,39 @@ public class AttendantPageGUI extends JFrame {
             // If stationAssistanceRequested[i] is true, additional handling may be needed to reflect assistance requested state
             if (stationAssistanceRequested[i]) {
                 stationStartButtons[i].setText("(Assistance Requested) " + buttonText);
-                stationStartButtons[i].setBackground(Color.ORANGE); // Mark as needing assistance
+                stationStartButtons[i].setBackground(Color.ORANGE); 			// Mark as needing assistance
             } else {
-                stationStartButtons[i].setBackground(null); // Reset background color if no assistance is requested
+                stationStartButtons[i].setBackground(null); 					// Reset background color if no assistance is requested
             }
         }
     }
     
-    // Method to revert the highlighting of station buttons
-    void revertHighlight() {
+    
+    /**
+     * Reverts the highlighting of all station buttons to their default state.
+     */
+    public void revertHighlight() {
         for (int i = 0; i < stationStartButtons.length; i++) {
             String buttonText = getjButtonText(i);
-            stationStartButtons[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 1)); // Reset border
+            stationStartButtons[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 1)); 	
             if (stationAssistanceRequested[i]) {
                 stationStartButtons[i].setText("(Assistance Requested) " + buttonText);
-                stationStartButtons[i].setBackground(Color.ORANGE); // Mark as needing assistance
+                stationStartButtons[i].setBackground(Color.ORANGE); 					// Mark as needing assistance
             } else {
                 // Remove the additional text if assistance is not requested
                 String originalText = buttonText.replace("(Assistance Requested) ", "");
                 stationStartButtons[i].setText(originalText);
-                stationStartButtons[i].setBackground(null); // Reset background color if no assistance is requested
+                stationStartButtons[i].setBackground(null); 							// Reset background color if no assistance is requested
             }
         }
     }
-
+    
+    /**
+     * Sets the assistance requested status for a specific station button.
+     * 
+     * @param stationNumber The index of the station button.
+     * @param requested      The requested assistance status.
+     */
     public void setStationAssistanceRequested(int stationNumber, boolean requested) {
         if (stationNumber >= 0 && stationNumber < stationStartButtons.length) {
             stationAssistanceRequested[stationNumber] = requested;
@@ -296,8 +382,14 @@ public class AttendantPageGUI extends JFrame {
             highlightSelectedStation(stationNumber);
         }
     } 
-
+    
+    /**
+     * Displays a warning dialog for change due at a specific station.
+     * 
+     * @param change The amount of change due.
+     */
     public void warnForChange(BigDecimal change) {
+    	
         JDialog dialog = new JDialog(this, "Amount Due", Dialog.ModalityType.APPLICATION_MODAL);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -334,9 +426,16 @@ public class AttendantPageGUI extends JFrame {
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }
-
+    
+    
+    /**
+     * Entry point to launch the AttendantPageGUI.
+     * 
+     * @param args The command line arguments (not used).
+     */
     public static void main(final String[] args) {
+    	
         SwingUtilities.invokeLater(AttendantPageGUI::new);
-    }
+   }
      
 }
