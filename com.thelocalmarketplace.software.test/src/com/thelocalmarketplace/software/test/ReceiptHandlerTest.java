@@ -29,24 +29,22 @@
 
  */
 
-
-
 package com.thelocalmarketplace.software.test;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.*;
 
 import com.jjjwelectronics.printer.IReceiptPrinter;
+
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
+
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.funds.Receipt;
 import com.thelocalmarketplace.software.funds.ReceiptHandler;
 
 public class ReceiptHandlerTest {
-
     private ReceiptHandler handler;
     private Funds funds;
     private SelfCheckoutStationSoftware station;
@@ -62,7 +60,6 @@ public class ReceiptHandlerTest {
         this.receipt = new Receipt(printer, funds);
         this.handler = new ReceiptHandler(this.receipt);
         this.observer = new mockReceiptObserver();
-
         this.receipt.register(observer);
     }
 
@@ -70,31 +67,25 @@ public class ReceiptHandlerTest {
     public void testOutOfPaper() {
         this.handler.thePrinterIsOutOfPaper();
         assertTrue(observer.noPaperCalled);
-
     }
 
     @Test
     public void testOutOfInk() {
         this.handler.thePrinterIsOutOfInk();
         assertTrue(observer.noInkCalled);
-
     }
 
     @Test
     public void testLowInk() {
         this.handler.thePrinterHasLowInk();;
         assertTrue(observer.lowInkCalled);
-
     }
 
     @Test
     public void testLowPaper() {
         this.handler.thePrinterHasLowPaper();;
         assertTrue(observer.lowPaperCalled);
-
     }
-
-
 
     @Test
     public void testPaperHasBeenAdded() {
@@ -106,9 +97,5 @@ public class ReceiptHandlerTest {
     public void testInkHasBeenAdded() {
         this.handler.inkHasBeenAddedToThePrinter();
         assertTrue(observer.inkAddedCalled);
-
     }
-
-
-
 }

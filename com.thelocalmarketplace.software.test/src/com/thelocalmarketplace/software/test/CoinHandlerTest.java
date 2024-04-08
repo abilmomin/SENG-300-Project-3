@@ -42,12 +42,12 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Test.None;
 
 import com.tdc.CashOverloadException;
 import com.tdc.DisabledException;
 import com.tdc.NoCashAvailableException;
-import com.tdc.banknote.Banknote;
-import com.tdc.banknote.BanknoteInsertionSlot;
+
 import com.tdc.coin.Coin;
 import com.tdc.coin.CoinSlot;
 import com.tdc.coin.CoinStorageUnit;
@@ -63,9 +63,8 @@ import com.thelocalmarketplace.software.funds.*;
 
 import ca.ucalgary.seng300.simulation.NullPointerSimulationException;
 import ca.ucalgary.seng300.simulation.SimulationException;
-import powerutility.NoPowerException;
+
 import powerutility.PowerGrid;
-import powerutility.PowerSurge;
 
 public class CoinHandlerTest {
 	private SelfCheckoutStationSoftware stationG;
@@ -108,7 +107,6 @@ public class CoinHandlerTest {
 		this.checkoutStationB.plugIn(PowerGrid.instance());
 		this.checkoutStationB.turnOn();
 		this.stationB = new SelfCheckoutStationSoftware(checkoutStationB);
-
 	}
 	
 	@After
@@ -131,7 +129,6 @@ public class CoinHandlerTest {
 		stationG.setOrderTotalPrice(0.25);
 		cs.receive(coin1);
 		assertTrue(stationG.getTotalOrderPrice() == 0.15);
-		
 	}
 
 	@Test
@@ -175,9 +172,8 @@ public class CoinHandlerTest {
 		stationG.setOrderTotalPrice(0.05);
 		cs.receive(new Coin(currency, new BigDecimal("0.10")));
 	}
-	
 
-	@Test
+	@Test(expected = None.class)
 	public void validCoinDetectedGoldTest() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		// Prepare some coins
@@ -186,7 +182,7 @@ public class CoinHandlerTest {
 		cs.receive(coin1);
 	}
 
-	@Test
+	@Test(expected = None.class)
 	public void validCoinDetectedSilverTest() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		// Prepare some coins
@@ -195,7 +191,7 @@ public class CoinHandlerTest {
 		cs.receive(coin1);
 	}
 
-	@Test
+	@Test(expected = None.class)
 	public void validCoinDetectedBronzeTest() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		// Prepare some coins
@@ -222,7 +218,7 @@ public class CoinHandlerTest {
 		cs.receive(null);
 	}
 
-	@Test
+	@Test(expected = None.class)
 	public void invalidCoinDetectedGoldTest() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		coin1 = new Coin(currency, BigDecimal.valueOf(5.56));
@@ -230,7 +226,7 @@ public class CoinHandlerTest {
 		cs.receive(coin1);
 	}
 
-	@Test
+	@Test(expected = None.class)
 	public void invalidCoinDetectedSilverTest() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		coin1 = new Coin(currency, BigDecimal.valueOf(5.56));
@@ -238,7 +234,7 @@ public class CoinHandlerTest {
 		cs.receive(coin1);
 	}
 
-	@Test
+	@Test(expected = None.class)
 	public void invalidCoinDetectedBronzeTest() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		coin1 = new Coin(currency, BigDecimal.valueOf(5.56));
@@ -246,7 +242,7 @@ public class CoinHandlerTest {
 		cs.receive(coin1);
 	}
 
-	@Test
+	@Test(expected = None.class)
 	public void coinsLoadedG() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		// Prepare some coins
@@ -256,7 +252,7 @@ public class CoinHandlerTest {
 		checkoutStationG.getCoinDispensers().get(new BigDecimal("0.25")).load(coin1);
 	}
 
-	@Test
+	@Test(expected = None.class)
 	public void coinsLoadedS() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		// Prepare some coins
@@ -266,7 +262,7 @@ public class CoinHandlerTest {
 		checkoutStationS.getCoinDispensers().get(new BigDecimal("0.25")).load(coin1);
 	}
 
-	@Test
+	@Test(expected = None.class)
 	public void coinsLoadedB() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		// Prepare some coins
@@ -276,7 +272,7 @@ public class CoinHandlerTest {
 		checkoutStationB.getCoinDispensers().get(new BigDecimal("0.25")).load(coin1);
 	}
 
-	@Test
+	@Test(expected = None.class)
 	public void coinsUnloadedG() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		// Prepare some coins
@@ -287,7 +283,7 @@ public class CoinHandlerTest {
 		checkoutStationG.getCoinDispensers().get(new BigDecimal("0.25")).unload();
 	}
 
-	@Test
+	@Test(expected = None.class)
 	public void coinsUnloadedS() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		// Prepare some coins
@@ -298,7 +294,7 @@ public class CoinHandlerTest {
 		checkoutStationS.getCoinDispensers().get(new BigDecimal("0.25")).unload();
 	}
 
-	@Test
+	@Test(expected = None.class)
 	public void coinsUnloadedB() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		// Prepare some coins
@@ -309,7 +305,7 @@ public class CoinHandlerTest {
 		checkoutStationB.getCoinDispensers().get(new BigDecimal("0.25")).unload();
 	}
 
-	@Test
+	@Test(expected = None.class)
 	public void coinRemovedTestG() throws DisabledException, CashOverloadException, NoCashAvailableException {
 		Currency currency = Currency.getInstance("CAD");
 		// Prepare some coins
@@ -320,7 +316,7 @@ public class CoinHandlerTest {
 		checkoutStationG.getCoinDispensers().get(new BigDecimal("0.25")).emit();
 	}
 
-	@Test
+	@Test(expected = None.class)
 	public void coinRemovedTestS() throws DisabledException, CashOverloadException, NoCashAvailableException {
 		Currency currency = Currency.getInstance("CAD");
 		// Prepare some coins
@@ -331,7 +327,7 @@ public class CoinHandlerTest {
 		checkoutStationS.getCoinDispensers().get(new BigDecimal("0.25")).emit();
 	}
 
-	@Test
+	@Test(expected = None.class)
 	public void coinRemovedTestB() throws DisabledException, CashOverloadException, NoCashAvailableException {
 		Currency currency = Currency.getInstance("CAD");
 		// Prepare some coins
@@ -343,7 +339,7 @@ public class CoinHandlerTest {
 	}
 	
 	// Coin Dispenser Tests
-	@Test
+	@Test(expected = None.class)
 	public void testCoinsEmptyDG() throws SimulationException, CashOverloadException, NoCashAvailableException, DisabledException {
 		Currency currency = Currency.getInstance("CAD");
 		List<BigDecimal> denominations = checkoutStationG.getCoinDenominations();
@@ -356,7 +352,7 @@ public class CoinHandlerTest {
 		}
 	}
 	
-	@Test
+	@Test(expected = None.class)
 	public void testCoinsEmptyDS() throws SimulationException, CashOverloadException, NoCashAvailableException, DisabledException {
 		Currency currency = Currency.getInstance("CAD");
 		List<BigDecimal> denominations = checkoutStationS.getCoinDenominations();
@@ -369,7 +365,7 @@ public class CoinHandlerTest {
 		}
 	}
 	
-	@Test
+	@Test(expected = None.class)
 	public void testCoinsEmptyDB() throws SimulationException, CashOverloadException, NoCashAvailableException, DisabledException {
 		Currency currency = Currency.getInstance("CAD");
 		List<BigDecimal> denominations = checkoutStationB.getCoinDenominations();
@@ -383,7 +379,7 @@ public class CoinHandlerTest {
 	}
 	
 	// Coin Storage Unit Tests
-	@Test
+	@Test(expected = None.class)
 	public void testCoinsFullSG() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		CoinStorageUnit storage = checkoutStationG.getCoinStorage();
@@ -395,7 +391,7 @@ public class CoinHandlerTest {
 		}
 	}
 	
-	@Test
+	@Test(expected = None.class)
 	public void testCoinsFullSS() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		CoinStorageUnit storage = checkoutStationS.getCoinStorage();
@@ -407,7 +403,7 @@ public class CoinHandlerTest {
 		}
 	}
 	
-	@Test
+	@Test(expected = None.class)
 	public void testCoinsFullSB() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		CoinStorageUnit storage = checkoutStationB.getCoinStorage();
@@ -419,7 +415,7 @@ public class CoinHandlerTest {
 		}
 	}
 	
-	@Test
+	@Test(expected = None.class)
 	public void testCoinsLoadSG() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		CoinStorageUnit storage = checkoutStationG.getCoinStorage();
@@ -431,7 +427,7 @@ public class CoinHandlerTest {
 		}
 	}
 	
-	@Test
+	@Test(expected = None.class)
 	public void testCoinsLoadSS() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		CoinStorageUnit storage = checkoutStationS.getCoinStorage();
@@ -443,7 +439,7 @@ public class CoinHandlerTest {
 		}
 	}
 	
-	@Test
+	@Test(expected = None.class)
 	public void testCoinsLoadSB() throws DisabledException, CashOverloadException {
 		Currency currency = Currency.getInstance("CAD");
 		CoinStorageUnit storage = checkoutStationB.getCoinStorage();

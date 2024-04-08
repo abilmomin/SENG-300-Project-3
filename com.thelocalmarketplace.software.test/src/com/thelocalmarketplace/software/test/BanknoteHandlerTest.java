@@ -34,30 +34,34 @@ package com.thelocalmarketplace.software.test;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
+
 import java.util.Currency;
-import java.util.List;
 import java.util.Map;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.tdc.CashOverloadException;
 import com.tdc.DisabledException;
 import com.tdc.NoCashAvailableException;
-import com.tdc.banknote.AbstractBanknoteDispenser;
+
 import com.tdc.banknote.Banknote;
 import com.tdc.banknote.BanknoteInsertionSlot;
 import com.tdc.banknote.BanknoteStorageUnit;
 import com.tdc.banknote.IBanknoteDispenser;
+
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
+
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.funds.BanknoteHandler;
-import com.thelocalmarketplace.software.funds.CoinHandler;
 import com.thelocalmarketplace.software.funds.Funds;
 
 import ca.ucalgary.seng300.simulation.NullPointerSimulationException;
 import ca.ucalgary.seng300.simulation.SimulationException;
+
 import powerutility.NoPowerException;
 import powerutility.PowerGrid;
 import powerutility.PowerSurge;
@@ -73,11 +77,9 @@ public class BanknoteHandlerTest {
 
 	@Before
 	public void setUp() {
-
 		BigDecimal[] banknoteDenominations = { new BigDecimal("5.0"), new BigDecimal("10.0"), new BigDecimal("20.0"),
 				new BigDecimal("50.0"), new BigDecimal("100.0") };
 		
-
 		// Set up Gold selfCheckoutStation
 		SelfCheckoutStationGold.resetConfigurationToDefaults();
 		SelfCheckoutStationGold.configureBanknoteDenominations(banknoteDenominations);
@@ -95,7 +97,6 @@ public class BanknoteHandlerTest {
 		this.checkoutStationS.plugIn(PowerGrid.instance());
 		this.checkoutStationS.turnOn();
 		this.stationS = new SelfCheckoutStationSoftware(checkoutStationS);
-		
 
 		// Set up Bronze selfCheckoutStation
 		SelfCheckoutStationBronze.resetConfigurationToDefaults();
@@ -397,8 +398,6 @@ public class BanknoteHandlerTest {
 		} catch (PowerSurge | NoPowerException e) {}
 	}
 
-	// Banknote Dispenser Tests
-
 	@Test
 	public void testBanknotesEmptyDG()
 			throws SimulationException, CashOverloadException, NoCashAvailableException, DisabledException {
@@ -446,8 +445,6 @@ public class BanknoteHandlerTest {
 			}
 		} catch (PowerSurge | NoPowerException e) {}
 	}
-
-	// Banknote Storage Unit Tests
 
 	@Test
 	public void testBanknotesFullSG() throws DisabledException, CashOverloadException {
