@@ -1,43 +1,50 @@
 /**
 
-Name                      UCID
+ SENG 300 - ITERATION 3
+ GROUP GOLD {8}
 
-Yotam Rojnov             30173949
-Duncan McKay             30177857
-Mahfuz Alam              30142265
-Luis Trigueros Granillo  30167989
-Lilia Skumatova          30187339
-Abdelrahman Abbas        30110374
-Talaal Irtija            30169780
-Alejandro Cardona        30178941
-Alexandre Duteau         30192082
-Grace Johnson            30149693
-Abil Momin               30154771
-Tara Ghasemi M. Rad      30171212
-Izabella Mawani          30179738
-Binish Khalid            30061367
-Fatima Khalid            30140757
-Lucas Kasdorf            30173922
-Emily Garcia-Volk        30140791
-Yuinikoru Futamata       30173228
-Joseph Tandyo            30182561
-Syed Haider              30143096
-Nami Marwah              30178528
+ Name                      UCID
+
+ Yotam Rojnov             30173949
+ Duncan McKay             30177857
+ Mahfuz Alam              30142265
+ Luis Trigueros Granillo  30167989
+ Lilia Skumatova          30187339
+ Abdelrahman Abbas        30110374
+ Talaal Irtija            30169780
+ Alejandro Cardona        30178941
+ Alexandre Duteau         30192082
+ Grace Johnson            30149693
+ Abil Momin               30154771
+ Tara Ghasemi M. Rad      30171212
+ Izabella Mawani          30179738
+ Binish Khalid            30061367
+ Fatima Khalid            30140757
+ Lucas Kasdorf            30173922
+ Emily Garcia-Volk        30140791
+ Yuinikoru Futamata       30173228
+ Joseph Tandyo            30182561
+ Syed Haider              30143096
+ Nami Marwah              30178528
 
  */
+
+
 package com.thelocalmarketplace.software;
 
 import java.util.ArrayList;
 import java.util.Map;
-
 import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.scanner.Barcode;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
-import com.thelocalmarketplace.hardware.Product;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 
+/**
+ * The ProductsDatabase class initializes and maintains the databases for 
+ * barcoded and PLU-coded products available.
+ */
 public class ProductsDatabase {
 
 	private static Map<Barcode, BarcodedProduct> productDatabase = ProductDatabases.BARCODED_PRODUCT_DATABASE;
@@ -45,7 +52,7 @@ public class ProductsDatabase {
 	private static ArrayList<Barcode> barcodes = new ArrayList<>();
 
 	/**
-	 * Constructor for ProductsDatabase class
+	 * Constructor for ProductsDatabase class.
 	 */
 	public ProductsDatabase() {
 		InitializeBarcodedProducts();
@@ -53,8 +60,8 @@ public class ProductsDatabase {
 	}
 
 	/**
-	 * Initialize bar-codes and assign them to products 
-	 * Add bar-coded products to the database  
+	 * Initialize barcodes and assign them to products and
+	 * adds barcoded products to the database.
 	 */
 	private static void InitializeBarcodedProducts() {
 		Numeral[] code1Digits = {Numeral.one, Numeral.two, Numeral.three, Numeral.four};
@@ -78,8 +85,8 @@ public class ProductsDatabase {
 	}
 
 	/**
-	 * Initialize PLU codes and assign them to products 
-	 * Add the PLU-coded products to the PLU database 
+	 * Initialize PLU codes and assign them to products and
+	 * adds the PLU-coded products to the PLU database. 
 	 */
 	private static void InitializePLUProducts() {
 		PriceLookUpCode plu1 = new PriceLookUpCode("1234");
@@ -100,8 +107,8 @@ public class ProductsDatabase {
 	
 	/**
 	 * Returns a list of all the barcodes available for products.
-	 * @return
-	 * 			The list of available barcodes 
+	 * 
+	 * @return The list of available barcodes.
 	 */
 	public static ArrayList<Barcode> getBarcodes() {
 		return barcodes;

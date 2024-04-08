@@ -48,16 +48,19 @@ import javax.swing.JPanel;
 
 import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.OverloadedDevice;
-
+import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.funds.Receipt;
 
 @SuppressWarnings("serial")
 public class PaymentSuccess extends JFrame {
-	public PaymentSuccess(double change, SelfCheckoutStationSoftware stationSoftware) {
+	private SelectPayment paymentWindow;
+	public PaymentSuccess(double change, SelfCheckoutStationSoftware stationSoftware, AttendantPageGUI attendantGUI) {
+		paymentWindow = new SelectPayment(stationSoftware);
 		setTitle("Thank you!");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(380, 250);
+		setSize(900, 700);
 		setLocationRelativeTo(null);
 
 		JPanel mainPanel = new JPanel();
@@ -81,16 +84,20 @@ public class PaymentSuccess extends JFrame {
 		receiptQuestion.setFont(new Font("Arial", Font.BOLD, 18));
 		receiptQuestion.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+		AbstractElectronicScale scale = (AbstractElectronicScale) stationSoftware.getStationHardware().getBaggingArea();
+		
 		JCheckBox ck1 = new JCheckBox("Yes");
 		ck1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		ck1.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Receipt rec = new Receipt(stationSoftware.getStationHardware().getPrinter(), stationSoftware.getFunds());
+				Receipt rec = new Receipt(stationSoftware.getStationHardware().getPrinter(), stationSoftware.getFunds()); 
 				try {
 					JOptionPane.showMessageDialog(PaymentSuccess.this, rec.printReceipt());
-					System.exit(EXIT_ON_CLOSE);
+					dispose();
+					JOptionPane.showMessageDialog(PaymentSuccess.this, "Thank you for shopping with us! We hope to see you again!");
+					new StartSession(attendantGUI.getCurrentStationNumber(), stationSoftware, scale);
 				} catch (HeadlessException | EmptyDevice | OverloadedDevice e1) {
 					e1.printStackTrace();
 				}
@@ -103,7 +110,8 @@ public class PaymentSuccess extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(PaymentSuccess.this, "Thank you for shopping with us! We hope to see you again!");
-				System.exit(EXIT_ON_CLOSE);
+				dispose();
+				new StartSession(attendantGUI.getCurrentStationNumber(), stationSoftware, scale);
 			}
 		});
 

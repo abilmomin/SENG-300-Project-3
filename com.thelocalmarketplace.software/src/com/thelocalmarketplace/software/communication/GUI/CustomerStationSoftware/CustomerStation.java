@@ -68,8 +68,8 @@ public class CustomerStation extends JFrame {
     	stationSoftwareInstance.setGUI(this);
     	products = new Products(stationSoftwareInstance);
     	paymentWindow = new SelectPayment(stationSoftwareInstance);
-    	searchProductByText = new SearchProductByText(stationSoftwareInstance, attendantGUI);
         baggingArea = new BaggingArea();
+    	searchProductByText = new SearchProductByText(stationSoftwareInstance, attendantGUI, baggingArea);
         
         cartItemButtons = new ArrayList<>();
     	
@@ -105,17 +105,15 @@ public class CustomerStation extends JFrame {
         });
         
         JButton enterPLUBtn = createButton("Enter PLU Code", e -> {
-        	
+        	replaceCartPanelWithKeypadPanel();
         });
 
         JButton searchProductBtn = createButton("Search Product", e -> {
         	searchProductByText.setVisible(true);
         });
-        
 
         JButton removeItemBtn = createButton("Remove Item", e -> {
             handleRemoveItem();
-        	
         });
         
         JButton purchaseBagsBtn = createButton("Purchase Bags", e -> {
@@ -227,10 +225,6 @@ public class CustomerStation extends JFrame {
         PLUPanel.add(screenPanel, BorderLayout.NORTH);
         PLUPanel.add(returnBtn, BorderLayout.SOUTH);
         
-        enterPLUBtn.addActionListener(e -> {
-        	replaceCartPanelWithKeypadPanel();
-        });
-        
         // Add main panel to frame
         add(mainPanel);
 
@@ -253,22 +247,6 @@ public class CustomerStation extends JFrame {
     public void updateTotalOwedDisplay() {
     	paymentWindow.updatePanel();
     }
-    
-    private void dontBagItem() {
-		// TODO Auto-generated method stub
-    	ArrayList<Item> orderList = stationSoftwareInstance.getOrder();
-    	if (!orderList.isEmpty()) {
-    		int lastIndex = orderList.size() - 1;
-
-            // Extract the last item from the list
-            Item lastItem = orderList.get(lastIndex);
-            double massInGramsDouble = lastItem.getMass().inGrams().doubleValue();
-    		products.handleBulkyItem(massInGramsDouble,this.attendantGUI);
-    	} else {
-    	    // Handle the case when the list is empty
-    		JOptionPane.showMessageDialog(this, "Scan Item First");
-    	}
-	}
     
     private void handleScanBarcode() {
         // Get a random barcode from the available barcoded products
@@ -333,8 +311,7 @@ public class CustomerStation extends JFrame {
 	
     public void setPaymentSuccesful(double change) {
         this.dispose();
-        PaymentSuccess paymentSuccess = new PaymentSuccess(change, stationSoftwareInstance);
-
+        new PaymentSuccess(change, stationSoftwareInstance, attendantGUI);
     }
 
     // Method to extract the product name from the button's text
@@ -467,7 +444,6 @@ public class CustomerStation extends JFrame {
             button.setFont(new Font("Arial", Font.PLAIN, 16));
             keypadPanel.add(button);
             button.addActionListener(addNum);
-            
         }
     	
     	JButton enter = new JButton("Enter");
@@ -496,29 +472,30 @@ public class CustomerStation extends JFrame {
         	}
         });
     	
-    	
     	enter.addActionListener(e -> {
     	    String userInput = screenTextField.getText();
+    	    
+    	    if (userInput.length() == 4) {
+        	    PLUCodedProduct product = stationSoftwareInstance.matchCodeAndPLUProduct(userInput);
+        	    
+        	    if (product != null) {
+                    PLUCodedItem pluItem = new PLUCodedItem(product.getPLUCode(), new Mass(1.0));
 
-    	    PLUCodedProduct product = stationSoftwareInstance.matchCodeAndPLUProduct(userInput);
+                    stationSoftwareInstance.getProductHandler().addItemByPLUCode(pluItem);
 
-    	    if (product != null) {
-    	        // If a product is found, display the AddtoBagging popup
-    	        AddtoBagging popup = new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
-    	        popup.setVisible(true);
+            	    AddtoBagging popup = new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
+        			popup.setVisible(true);
+            	    screenTextField.setText("");
+
+            	    replaceCartPanelWithKeypadPanel();
+        	    } else {
+                    JOptionPane.showMessageDialog(this, "No product found for corresponding PLU code.");
+        	    }
     	    } else {
-    	        // If no product is found, show an error message
-    	        JOptionPane.showMessageDialog(this, "Product not found. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "PLU code must be 4 digits.");
     	    }
-
-    	    // Clear the PLU input field
-    	    screenTextField.setText("");
-
-    	    // Switch back to the previous panel if needed
-    	    replaceCartPanelWithKeypadPanel();
     	});
 
-    	
     	 return keypadPanel;
     }
    
@@ -641,11 +618,9 @@ public class CustomerStation extends JFrame {
         return needsAssistance;
     }
 
-	public AttendantPageGUI getAttendantGUI() {
-		return this.attendantGUI;
-	}
-
-
+    public AttendantPageGUI getAttendantGUI() {
+    	return attendantGUI;
+    }
 }
 
 

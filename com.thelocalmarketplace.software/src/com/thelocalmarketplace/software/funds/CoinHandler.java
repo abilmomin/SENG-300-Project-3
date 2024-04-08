@@ -1,5 +1,8 @@
 /**
 
+ SENG 300 - ITERATION 3
+ GROUP GOLD {8}
+
 Name                      UCID
 
 Yotam Rojnov             30173949
@@ -23,7 +26,6 @@ Yuinikoru Futamata       30173228
 Joseph Tandyo            30182561
 Syed Haider              30143096
 Nami Marwah              30178528
-
  */
 
 package com.thelocalmarketplace.software.funds;
@@ -31,7 +33,6 @@ package com.thelocalmarketplace.software.funds;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import com.jjjwelectronics.EmptyDevice;
 import com.tdc.CashOverloadException;
 
 import com.tdc.DisabledException;
@@ -86,18 +87,18 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
         if (amountDue.compareTo(BigDecimal.ZERO) <= 0) {
             amountDue = amountDue.abs();
             
-            boolean missed = false;
+            boolean validChange = false;
             try {
-                missed = this.fundController.dispenseAccurateChange(amountDue);
+            	validChange = this.fundController.dispenseAccurateChange(amountDue);
             } catch (DisabledException | CashOverloadException  | NoCashAvailableException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             
-            while (!missed) {   
+            while (!validChange) {   
                 this.fundController.notifyNoValidChange(amountDue);
                 try {
-					missed = this.fundController.dispenseAccurateChange(amountDue);
+                	validChange = this.fundController.dispenseAccurateChange(amountDue);
 				} catch (CashOverloadException | NoCashAvailableException | DisabledException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -176,18 +177,14 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
             if((int)this.fundController.coinsAvailable.get(c.getValue()) > 0) {
                 this.fundController.coinsAvailable.put(c.getValue(), (int)this.fundController.coinsAvailable.get(c.getValue()) - 1);
                 this.fundController.notifyFundsRemoved(c.getValue());
-
-            }
-            else {
+            } else {
                 throw new NullPointerException();
             }
         }
         if (dispenser.size() < 5)
         	this.fundController.notifyCoinsLow(dispenser);
     }
-
-    // not useful to us
-    
+   
     @Override
     public void enabled(IComponent<? extends IComponentObserver> component) {
         // TODO Auto-generated method stub
@@ -213,11 +210,6 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
         // TODO Auto-generated method stub
     }
     
-    /**
-     * Clears the list of available coins when the coin dispenser is empty.
-     * 
-     * @param dispenser The coin dispenser that is empty.
-     */
     @Override
     public void coinsEmpty(ICoinDispenser dispenser) {
         this.fundController.notifyCoinsLow(dispenser);

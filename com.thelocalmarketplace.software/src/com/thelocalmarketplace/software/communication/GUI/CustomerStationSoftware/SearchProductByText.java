@@ -32,6 +32,9 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import com.jjjwelectronics.Mass;
+import com.thelocalmarketplace.hardware.PLUCodedItem;
+import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.BaggingArea;
@@ -50,12 +53,14 @@ public class SearchProductByText extends JFrame {
     private JList<Product> searchResults;
     private DefaultListModel<Product> listModel;
     private CustomKeyboard keyboard;
+    BaggingArea baggingArea;
 
-    public SearchProductByText(SelfCheckoutStationSoftware software, AttendantPageGUI attendantGUI) {
+    public SearchProductByText(SelfCheckoutStationSoftware software, AttendantPageGUI attendantGUI, BaggingArea baggingArea) {
         setTitle("Product Search");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        this.baggingArea = baggingArea;
 
         // Components
         searchField = new JTextField();
@@ -101,8 +106,12 @@ public class SearchProductByText extends JFrame {
                 String productName = selectedProduct.getName();
                 
                 com.thelocalmarketplace.hardware.Product product = software.getProductHandler().findProductByTextSearch(productName);
+                PLUCodedItem pluItem = new PLUCodedItem(((PLUCodedProduct) product).getPLUCode(), new Mass(1.0));
+
+                software.getProductHandler().addItemByPLUCode(pluItem);
                 
                 new AddtoBagging(product, software, attendantGUI, new BaggingArea());
+                baggingArea.addProduct(productName);
 
             } else {
                 JOptionPane.showMessageDialog(SearchProductByText.this, "Please select a product first.");

@@ -35,11 +35,7 @@ import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodeScannerListener;
 import com.jjjwelectronics.scanner.BarcodedItem;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
-import com.thelocalmarketplace.hardware.BarcodedProduct;
-import com.thelocalmarketplace.hardware.external.ProductDatabases;
-import com.thelocalmarketplace.software.BlockedSystemException;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
-import com.thelocalmarketplace.software.SessionNotFoundException;
 
 public class ScannerListener implements BarcodeScannerListener {
 	// In order to access the hardware of the SelfCheckoutStation, use software.getHARDWARE_YOU_WANNA_GET()

@@ -111,10 +111,22 @@ public class SelectPayment extends JFrame {
         JButton addMembershipButton = createColoredButton("Add Membership", new Color(0, 128, 128));
         JButton returnToCheckoutButton = createColoredButton("Return to Checkout", new Color(255, 127, 80));
 
-        debitButton.addActionListener(e -> debitWindow.setVisible(true));
-        creditButton.addActionListener(e -> creditWindow.setVisible(true));        
-        cashButton.addActionListener(e -> banknoteWindow.setVisible(true));
-        coinButton.addActionListener(e -> coinWindow.setVisible(true));
+        debitButton.addActionListener(e -> {
+        	debitWindow.setVisible(true);
+        	closePanel();
+        });
+        creditButton.addActionListener(e -> {
+        	creditWindow.setVisible(true);     
+        	closePanel();
+        });
+        cashButton.addActionListener(e -> {
+        	banknoteWindow.setVisible(true);
+        	closePanel();
+        });
+        coinButton.addActionListener(e -> {
+        	coinWindow.setVisible(true);
+        	closePanel();
+        });
         
         bottomPanel.add(addMembershipButton);
         bottomPanel.add(returnToCheckoutButton);
@@ -133,7 +145,7 @@ public class SelectPayment extends JFrame {
         setVisible(false);
     }
     
-	private void returnToCheckout() {
+	void returnToCheckout() {
 		this.setVisible(false);
 	}
 

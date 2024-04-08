@@ -53,6 +53,7 @@ import com.jjjwelectronics.scanner.BarcodedItem;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
+import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.Product;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 
@@ -132,16 +133,17 @@ public class AddtoBagging extends JFrame {
                 }
 
             } else {
-                PLUCodedProduct pluCodedProduct = (PLUCodedProduct) product;
+                ArrayList<Item> order = stationSoftwareInstance.getOrder();
+                if (order.size() > 0) {
+                    PLUCodedItem itemToAdd = (PLUCodedItem) order.get(order.size() - 1);
+                    
+                    IElectronicScale baggingAreaScale = stationSoftwareInstance.getStationHardware().getBaggingArea();
+                    baggingAreaScale.addAnItem(itemToAdd);
 
-                PLUCodedItem pluItem = new PLUCodedItem(pluCodedProduct.getPLUCode(), new Mass(1.0));
-
-                stationSoftwareInstance.getProductHandler().addItemByPLUCode(pluItem);
-
-                IElectronicScale baggingAreaScale = stationSoftwareInstance.getStationHardware().getBaggingArea();
-                baggingAreaScale.addAnItem(pluItem);
-                
-				baggingArea.addProduct(pluCodedProduct.getDescription());
+					PriceLookUpCode pluCode = itemToAdd.getPLUCode();
+					PLUCodedProduct pluCodedProduct = ProductDatabases.PLU_PRODUCT_DATABASE.get(pluCode);
+    				baggingArea.addProduct(pluCodedProduct.getDescription());
+                }
             }
             dispose();
         });

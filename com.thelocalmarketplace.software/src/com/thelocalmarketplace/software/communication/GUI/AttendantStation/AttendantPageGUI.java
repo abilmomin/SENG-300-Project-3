@@ -218,6 +218,10 @@ public class AttendantPageGUI extends JFrame {
         }
     }
     
+    public int getCurrentStationNumber() {
+    	return this.selectedStation + 1;
+    }
+    
     public void bagdiscpreancydectected(SelfCheckoutStationSoftware instance, CustomerStation customerStation2) {
         // Display a message dialog to prompt the user
         int option = JOptionPane.showConfirmDialog(this, "Bags Too Heavy, Inspect.", "Bag Discrepancy Detected", JOptionPane.OK_CANCEL_OPTION);
