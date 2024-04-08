@@ -33,7 +33,21 @@ public class CardPayment extends JFrame {
             paymentType = 3;
 
             JFrame pinFrame = new JFrame("Pin Panel");
-            JPanel pinPanel = createPinPanel();
+            pinFrame.setLocationRelativeTo(null);
+            pinFrame.setSize(380, 350);
+
+            JPanel pinPanel = new JPanel();
+            pinPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+            pinTextField = new JTextField(); // Initialize the screen text field
+            pinTextField.setEditable(false); // Make it read-only
+            pinTextField.setBackground(Color.WHITE);
+            pinTextField.setHorizontalAlignment(JTextField.CENTER);
+            pinPanel.add(pinTextField, BorderLayout.CENTER);
+            pinTextField.setPreferredSize(new Dimension(300, 75));
+
+            JPanel keypadPanel = createPinPanel(pinFrame);
+            pinPanel.add(keypadPanel);
             pinFrame.add(pinPanel);
             pinFrame.setVisible(true);
         });
@@ -62,7 +76,6 @@ public class CardPayment extends JFrame {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-//            dispose();
         });
 
         add(radioPanel);
@@ -71,7 +84,7 @@ public class CardPayment extends JFrame {
         setVisible(false);
     }
 
-    public JPanel createPinPanel() {
+    public JPanel createPinPanel(JFrame pinPanel) {
     	JPanel keypadPanel = new JPanel();
     	keypadPanel.setLayout(new GridLayout(4,4,10,10));
     	keypadPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -113,6 +126,7 @@ public class CardPayment extends JFrame {
     	
     	enter.addActionListener(e -> {
     	    pinInput = pinTextField.getText();
+            pinPanel.dispose();
     	});
 
     	
