@@ -67,7 +67,13 @@ import java.util.Currency;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+
+/**
+ * AttendantListeners class handles the action listeners for attendant operations.
+ */
 public class AttendantListeners {
+	
+	
     private AttendantPageGUI gui;
     private int selectedStation;
     private SelfCheckoutStationSoftware[] stationSoftwareInstances;
@@ -75,11 +81,23 @@ public class AttendantListeners {
     private StartSession[] startSessions;
     private boolean[] stationEnabled;
     private AttendantLogic logic;
-
     private AbstractSelfCheckoutStation checkoutStation;
     private AbstractElectronicScale scale;
-
-    public AttendantListeners(AttendantPageGUI gui, int selectedStation, SelfCheckoutStationSoftware[] stationSoftwareInstances, CustomerStation[] customerStation, StartSession[] startSessions, boolean[] stationEnabled) {
+    
+    
+    /**
+     * Constructor for AttendantListeners.
+     * 
+     * @param gui                  AttendantPageGUI instance
+     * @param selectedStation      Index of the selected station
+     * @param stationSoftwareInstances Array of SelfCheckoutStationSoftware instances
+     * @param customerStation      Array of CustomerStation instances
+     * @param startSessions        Array of StartSession instances
+     * @param stationEnabled       Array indicating whether stations are enabled
+     */
+    public AttendantListeners(AttendantPageGUI gui, int selectedStation, SelfCheckoutStationSoftware[] stationSoftwareInstances, 
+    		CustomerStation[] customerStation, StartSession[] startSessions, boolean[] stationEnabled) {
+    	
         this.gui = gui;
         this.selectedStation = selectedStation;
         this.stationSoftwareInstances = stationSoftwareInstances;
@@ -183,99 +201,6 @@ public class AttendantListeners {
         }
     }
 
-//    // Action listener for start station button
-//    private class StartStationButtonListener implements ActionListener {
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            if (selectedStation != -1 && (startSessions[selectedStation] == null || customerStation[selectedStation] == null)) { // Check if a station is selected
-//                // Use a separate thread to initialize SelfCheckoutStationBronze
-//                new Thread(() -> {
-//                    try {
-//                    	BigDecimal[] coinDenominations = { new BigDecimal("0.25"), new BigDecimal("0.10"), new BigDecimal("0.50"),
-//                    			new BigDecimal("1.0") };
-//                    	BigDecimal[] banknoteDenominations = { new BigDecimal("5.0"), new BigDecimal("10.0"), new BigDecimal("20.0"),
-//                				new BigDecimal("50.0"), new BigDecimal("100.0") };
-//                    	PowerGrid.engageUninterruptiblePowerSource();
-//                    	
-//                		SelfCheckoutStationGold.configureCurrency(Currency.getInstance("CAD"));
-//                		SelfCheckoutStationSilver.configureCurrency(Currency.getInstance("CAD"));
-//                		SelfCheckoutStationBronze.configureCurrency(Currency.getInstance("CAD"));
-//
-//                    	SelfCheckoutStationGold.configureCoinDenominations(coinDenominations);
-//                    	SelfCheckoutStationSilver.configureCoinDenominations(coinDenominations);
-//                    	SelfCheckoutStationBronze.configureCoinDenominations(coinDenominations);
-//                    	
-//                    	SelfCheckoutStationGold.configureBanknoteDenominations(banknoteDenominations);
-//                		SelfCheckoutStationSilver.configureBanknoteDenominations(banknoteDenominations);
-//                		SelfCheckoutStationBronze.configureBanknoteDenominations(banknoteDenominations);
-//
-//                        if (selectedStation == 0) {
-//                            checkoutStation = new SelfCheckoutStationGold();
-//                            scale = new ElectronicScaleGold();
-//                
-//                        } else if (selectedStation == 1) {
-//                            checkoutStation = new SelfCheckoutStationSilver();
-//                        
-//                            scale = new ElectronicScaleSilver();
-//                        } else {
-//                            checkoutStation = new SelfCheckoutStationBronze();
-//                            scale = new ElectronicScaleBronze();
-//                      
-//                        }
-//
-//                        PowerGrid.engageUninterruptiblePowerSource();
-//                        checkoutStation.plugIn(PowerGrid.instance());
-//                        checkoutStation.turnOn();
-//                        PowerGrid.engageUninterruptiblePowerSource();
-//                        scale.plugIn(PowerGrid.instance());
-//                       
-//                        scale.turnOn();
-//
-//                        Card creditCard = new Card("credit", "99988877", "User", "111", "1234", true, true);
-//                        Card debitCard = new Card("debit", "11122233", "User", "222", "1234", true, true);
-//
-//                        CardIssuer cardIssuer = new CardIssuer("TD", 100);
-//
-//                        Calendar expiryDate = Calendar.getInstance();
-//                        expiryDate.set(2027, Calendar.DECEMBER, 1);
-//
-//                        cardIssuer.addCardData("99988877", "User", expiryDate, "111", 1000000);
-//                        cardIssuer.addCardData("11122233", "User", expiryDate, "222", 1000000);
-//
-//                        SwingUtilities.invokeLater(() -> {
-//                            stationSoftwareInstances[selectedStation] = new SelfCheckoutStationSoftware(checkoutStation);
-//                            stationSoftwareInstances[selectedStation].setStationUnblock();
-//                            stationSoftwareInstances[selectedStation].addPaymentCard(creditCard, "credit");
-//                            stationSoftwareInstances[selectedStation].addPaymentCard(debitCard, "debit");
-//                            stationSoftwareInstances[selectedStation].addBank(cardIssuer);
-//
-//                            try {
-//                                stationSoftwareInstances[selectedStation].getStationHardware().getPrinter().addInk(ReceiptPrinterBronze.MAXIMUM_INK);
-//                                stationSoftwareInstances[selectedStation].getStationHardware().getPrinter().addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
-//                            } catch (OverloadedDevice ex) {
-//                                throw new RuntimeException(ex);
-//                            }
-//
-//                            if (stationEnabled[selectedStation]) {
-//                                if (startSessions[selectedStation] == null) {
-//                                    startSessions[selectedStation] = new StartSession(selectedStation + 1, stationSoftwareInstances[selectedStation],scale);
-//                                    startSessions[selectedStation].setVisible(true);
-//                                    startSessions[selectedStation].setAttendantPageGUI(gui); // Pass the reference to AttendantPageGUI
-//                                }
-//                            } else {
-//                                JOptionPane.showMessageDialog(null, "Selected station is disabled. Please enable it.");
-//                            }
-//                        });
-//                    } catch (Exception ex) {
-//                        ex.printStackTrace();
-//                        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, "Error initializing station."));
-//                    }
-//                }).start();
-//            } else {
-//                JOptionPane.showMessageDialog(null, "Please select a station first.");
-//            }
-//        }
-//    }
     
     private void initializeCheckoutStation() {
         try {
