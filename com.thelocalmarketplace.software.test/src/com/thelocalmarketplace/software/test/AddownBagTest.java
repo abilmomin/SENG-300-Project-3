@@ -1,3 +1,31 @@
+/**
+
+Name                      UCID
+
+Yotam Rojnov             30173949
+Duncan McKay             30177857
+Mahfuz Alam              30142265
+Luis Trigueros Granillo  30167989
+Lilia Skumatova          30187339
+Abdelrahman Abbas        30110374
+Talaal Irtija            30169780
+Alejandro Cardona        30178941
+Alexandre Duteau         30192082
+Grace Johnson            30149693
+Abil Momin               30154771
+Tara Ghasemi M. Rad      30171212
+Izabella Mawani          30179738
+Binish Khalid            30061367
+Fatima Khalid            30140757
+Lucas Kasdorf            30173922
+Emily Garcia-Volk        30140791
+Yuinikoru Futamata       30173228
+Joseph Tandyo            30182561
+Syed Haider              30143096
+Nami Marwah              30178528
+
+ */
+
 package com.thelocalmarketplace.software.test;
 import com.thelocalmarketplace.software.product.AddownBag;
 import static org.junit.Assert.assertEquals;
@@ -35,11 +63,6 @@ public class AddownBagTest {
     private CustomerStation customerStation; 
     private AttendantPageGUI attendantGUI; 
     private Mass massLimit; 
-	
-	//private SelfCheckoutStationBronze checkoutSB; // 
-	//private ScaleListener listen;
-	//private Mass mass_test; 
-	//private int station_number; 
     
     @Before
     public void setUp() {
@@ -67,12 +90,11 @@ public class AddownBagTest {
     }    
     
     
-    /**
-	 * Test for getBagWeight when a bag has been added to the scale. Creating a scale heavier than the order value 
-	 * calling getBagWeight, using order mass and new mockscale mass created. 
-	 * expected weight = bag weight, calculated from the scale and order weight difference
-	 * @throws OverloadedDevice
-	 */ 
+   /**
+    * Testing when a bag above the weight threshold is added. The item instance has a mass higher than the scale mass 
+    * expected station block from the bag being over the threshold limit 
+    * @throws OverloadedDevice
+    */
     
 	@Test 
 	public void testAddBagWeight_OverThreshold() throws OverloadedDevice {
@@ -88,6 +110,11 @@ public class AddownBagTest {
 	}
  
 	
+	/**
+	 * Testing the circumstance of adding a bag that is within the threshold weight of the scale. 
+	 * System is expected to remain unblocked 
+	 * @throws OverloadedDevice
+	 */
 	@Test
 	public void testAddBagWeight_UnderThreshold() throws OverloadedDevice {
 		MockScale scaleInLimit = new MockScale(new Mass(40000000), new Mass(40000000));
@@ -101,6 +128,12 @@ public class AddownBagTest {
 		assertFalse(station.getStationBlock()); 
 	}
 	
+	/**
+	 * Testing the circumstance of no bag being added and making sure that
+	 * an expected bag weight of 0.0 is calculated. The scale and station will be the same weight 
+	 * @throws OverloadedDevice
+	 */
+	
 	@Test 
 	public void testGetBagWeight_noBagAdded() throws OverloadedDevice {
 		MockScale orderNoBagScale = new MockScale(new Mass(4000000), new Mass (4000000));
@@ -110,6 +143,11 @@ public class AddownBagTest {
 		
 	}
 	
+	/**
+	 * Testing the circumstance when a bag is added. The scale is heavier than the station indicating addition of a bag. 
+	 * making sure the correct bag weight is being calculated 
+	 * @throws OverloadedDevice
+	 */
 	
 	@Test 
 	public void testGetBagWeight_BagAdded () throws OverloadedDevice {
@@ -120,6 +158,9 @@ public class AddownBagTest {
 		assertEquals(10.0, bagWeight, 10.0); //there should be weight becasue the bag has been added
 	}
 
+	/**
+	 * Testing printMessage. Making sure the message printed is the same as the expected message 
+	 */
 	
 	@Test 
 	public void testPrint_mess() {
@@ -131,7 +172,7 @@ public class AddownBagTest {
 	}
 	
 	
-	//overload test 1
+	//Overload Test 1
 	@Test 
 	public void testOverloadThrown_1() {
 		MockScale scale = new MockScale(massLimit, massLimit) {
@@ -146,7 +187,8 @@ public class AddownBagTest {
 		Assert.assertEquals(0.0, bagWeight, 0.001);
 	}
 
-	//overload test 2 
+	
+	//Overload Test 2
 	@Test 
 	public void testOverloadThrown_2() {
 		MockScale scale = new MockScale(massLimit, massLimit) {
@@ -166,11 +208,15 @@ public class AddownBagTest {
 		addownBag.addBagWeight(station, scale, weightOfBag, 1);
 			assertFalse(false); 
 	}
-	
 	 
+	
+	/**
+	 * creating a mock of Item for testing purposes. MockItem Extends the Item class 
+	 */
 	class MockItem extends Item { // need power for addAnItem
 	        public MockItem(Mass mass) {
 	            super(mass);
 	        }
 	 }
 }
+
