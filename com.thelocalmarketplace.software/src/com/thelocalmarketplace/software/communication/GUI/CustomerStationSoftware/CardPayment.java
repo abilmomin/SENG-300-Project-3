@@ -188,7 +188,13 @@ public class CardPayment extends JDialog {
 	  }
     }
 
-
+    
+    /**
+     * Creates a panel for entering PIN numbers.
+     *
+     * @param pinPanel The parent JFrame where the panel will be added.
+     * @return The JPanel containing the PIN entry keypad.
+     */
     public JPanel createPinPanel(JFrame pinPanel) {
     	JPanel keypadPanel = new JPanel();
     	keypadPanel.setLayout(new GridLayout(4,4,10,10));
