@@ -202,28 +202,6 @@ public class SelfCheckoutStationSoftware {
 	}
 	
 	/**
-	 * Function to start a session for self-checkout machine
-	 * @param scanner 
-	 * 			The scanner used to obtain user input.
-	 * @throws InvalidStateSimulationException If a session is already active.
-	 */
-	public void startSession(Scanner scanner) {
-		if (activeSession) {
-			throw new InvalidStateSimulationException("Session already started.");
-		}
-		
-		resetConfigurationToDefaults();
-		
-		// Prompt the user to touch anywhere to start and wait for an input.
-		System.out.println("Welcome to The Local Marketplace. Touch anywhere to start.");
-		
-		// assume the user gives some kind of input.
-		scanner.nextLine();
-
-		setStationActive(true);
-	}
-	
-	/**
 	 * Resets the current order monitored by the software.
 	 */
 	public void resetOrder() {
