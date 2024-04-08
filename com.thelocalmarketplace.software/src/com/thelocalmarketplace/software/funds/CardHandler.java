@@ -84,11 +84,12 @@ public class CardHandler implements CardReaderListener {
             return;
         }
 
-        double totalOrderPrice = fundController.checkoutStationSoftware.getTotalOrderPrice();
-        boolean purchaseStatus = approvePurchase(data.getNumber(), totalOrderPrice);
+        double amountDue = fundController.getMoneyLeft().doubleValue();
+        boolean purchaseStatus = approvePurchase(data.getNumber(), amountDue);
 
         if (purchaseStatus) {
-            fundController.addToTotalPaid(BigDecimal.valueOf(totalOrderPrice));
+            fundController.addToTotalPaid(BigDecimal.valueOf(amountDue));
+            fundController.notifyFundsAdded(BigDecimal.valueOf(amountDue));
             fundController.notifyPaidFunds(BigDecimal.ZERO);
         } else {
             fundController.notifyInvalidFunds(cardType);

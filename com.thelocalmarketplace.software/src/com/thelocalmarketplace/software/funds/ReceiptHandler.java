@@ -39,7 +39,7 @@ import com.jjjwelectronics.printer.IReceiptPrinter;
 import com.jjjwelectronics.printer.ReceiptPrinterBronze;
 
 import com.jjjwelectronics.printer.ReceiptPrinterListener;
-import com.thelocalmarketplace.software.communication.GUI.AttendantStation.ALogic;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantLogic;
 
 /**
  * This class is a listener which implements and overrides the receipt printer listener in the hardware.
@@ -47,7 +47,7 @@ import com.thelocalmarketplace.software.communication.GUI.AttendantStation.ALogi
 public class ReceiptHandler implements ReceiptPrinterListener{
 	private IReceiptPrinter receiptPrinter;
 	private Receipt receipt;
-	ALogic logic = new ALogic();
+	AttendantLogic logic = new AttendantLogic();
 
 
 	public ReceiptHandler(Receipt receipt) {

@@ -60,7 +60,6 @@ public class SelfCheckoutStationSoftware {
 	private CustomerStation gui;
 	private ProductsDatabase allProducts; 
 
-	
 	// Listeners
 	public ScannerListener scannerListener;
 
@@ -215,7 +214,6 @@ public class SelfCheckoutStationSoftware {
 		
 		resetConfigurationToDefaults();
 		
-
 		// Prompt the user to touch anywhere to start and wait for an input.
 		System.out.println("Welcome to The Local Marketplace. Touch anywhere to start.");
 		
@@ -223,7 +221,6 @@ public class SelfCheckoutStationSoftware {
 		scanner.nextLine();
 
 		setStationActive(true);
-
 	}
 	
 	/**
@@ -264,17 +261,16 @@ public class SelfCheckoutStationSoftware {
 					double productWeight = product.getExpectedWeight();
 					long productPrice = product.getPrice();
 					
-					removeTotalOrderWeightInGrams(productWeight);
-					removeTotalOrderPrice(productPrice);
+					addTotalOrderWeightInGrams(-productWeight);
+					addTotalOrderPrice(-productPrice);
 					
 					System.out.println("Please remove item from the bagging area");
 					
 					products.notifyProductRemoved(product);
 				}
 				return true;
-			} 
-			
-			if (item instanceof PLUCodedItem) {
+			}
+			else if (item instanceof PLUCodedItem) {
 				PriceLookUpCode PLUCode = ((PLUCodedItem) item).getPLUCode();
 				PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
 				if (product != null) {
@@ -282,8 +278,8 @@ public class SelfCheckoutStationSoftware {
 					double productWeight = itemMass.inGrams().doubleValue();
 					long productPrice = product.getPrice();
 					
-					removeTotalOrderWeightInGrams(productWeight);
-					removeTotalOrderPrice(productPrice);
+					addTotalOrderWeightInGrams(-productWeight);
+					addTotalOrderPrice(-productPrice);
 					
 					System.out.println("Please remove item from the bagging area");
 					
@@ -292,22 +288,22 @@ public class SelfCheckoutStationSoftware {
 				return true;
 			}
 			
-		} else {
-			System.out.println("Item not found in the order.");
-			return false;
 		}
+		System.out.println("Item not found in the order.");
 		return false;
-		
-	
 	}
 	
+	/**
+	 * Find the associated product with a given PLU.
+	 * 
+	 * @param code The PLU code of a product.
+	 * @return the product with the given PLU code.
+	 */
 	public PLUCodedProduct matchCodeAndPLUProduct(String code) {
 		PriceLookUpCode plu = new PriceLookUpCode(code);
 		PLUCodedProduct currentItem = ProductDatabases.PLU_PRODUCT_DATABASE.get(plu);
 		return currentItem;	
 	}
-	
-
 	
 	/**
 	 * Gets the order.
@@ -341,7 +337,6 @@ public class SelfCheckoutStationSoftware {
 	 * 
 	 * @return The total price of order.
 	 */
-	
 	public void setOrderTotalPrice(double price) {
 		this.totalOrderPrice = price;
 	}
@@ -352,18 +347,12 @@ public class SelfCheckoutStationSoftware {
 	public void addTotalOrderWeightInGrams(double weight) {
 		this.totalOrderWeight += weight;
 	}
-	public void removeTotalOrderWeightInGrams(double weight) {
-		this.totalOrderWeight -= weight;
-	}
 	
 	/**
 	 * Updates the total price of the order
 	 */
 	public void addTotalOrderPrice(double price) {
 		this.totalOrderPrice += price;
-	}
-	public void removeTotalOrderPrice(double price) {
-		this.totalOrderPrice -= price;
 	}
 
 	/**
@@ -395,7 +384,7 @@ public class SelfCheckoutStationSoftware {
 		if (Objects.equals(type, "credit")) {
 			creditCard = card;
 		}
-		else if (Objects.equals(type, "debit")){
+		else if (Objects.equals(type, "debit")) {
 			debitCard = card;
 		}
 	}
@@ -412,5 +401,4 @@ public class SelfCheckoutStationSoftware {
 	public Products getProductHandler() {
 		return products;
 	}
-	
 }
