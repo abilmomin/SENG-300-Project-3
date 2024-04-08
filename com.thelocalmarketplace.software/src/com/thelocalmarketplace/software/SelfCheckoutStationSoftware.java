@@ -289,6 +289,10 @@ public class SelfCheckoutStationSoftware {
 	public void addTotalOrderPrice(double price) {
 		this.totalOrderPrice += price;
 	}
+	
+	public void notifyUserOfOverload() {
+		gui.customerRemoveItemPopUp();
+	}
 
 	/**
 	 * Checks whether the order is empty or not.
@@ -297,10 +301,6 @@ public class SelfCheckoutStationSoftware {
 	 */
 	public boolean isOrderEmpty() {
 		return order.isEmpty();
-	}
-	
-	public void notifyUserOfOverload() {
-		System.out.println("Scale Overload. Please remove some items.");
 	}
 
 	public ISelfCheckoutStation getStationHardware() {
