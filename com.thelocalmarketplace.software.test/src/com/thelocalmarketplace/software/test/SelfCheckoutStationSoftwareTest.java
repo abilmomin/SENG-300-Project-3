@@ -188,9 +188,9 @@ public class SelfCheckoutStationSoftwareTest {
 
     	oldTotalOrderPrice = software.getTotalOrderWeightInGrams();
     	
-    	double priceToRemove = 20;
-    	software.removeTotalOrderWeightInGrams(priceToRemove);
-    	assertEquals(oldTotalOrderPrice - priceToRemove, software.getTotalOrderWeightInGrams(), 0.0001);
+    	double priceToRemove = -20;
+    	software.addTotalOrderWeightInGrams(priceToRemove);
+    	assertEquals(oldTotalOrderPrice + priceToRemove, software.getTotalOrderWeightInGrams(), 0.0001);
     }
     
     @Test
@@ -203,15 +203,15 @@ public class SelfCheckoutStationSoftwareTest {
     	
     	oldTotalOrderPrice = software.getTotalOrderPrice();
     	
-    	double priceToRemove = 10;
-    	software.removeTotalOrderPrice(priceToRemove);
-    	assertEquals(oldTotalOrderPrice - priceToRemove, software.getTotalOrderPrice(), 0.0001);
+    	double priceToRemove = -10;
+    	software.addTotalOrderPrice(priceToRemove);
+    	assertEquals(oldTotalOrderPrice + priceToRemove, software.getTotalOrderPrice(), 0.0001);
     }
     
     @Test
     public void testSetTotalOrderPrice() {
     	software.setOrderTotalPrice(20);
-    	software.removeTotalOrderPrice(10);
+    	software.addTotalOrderPrice(-10);
     	assertEquals(10, software.getTotalOrderPrice(), 0.0001);
     	software.addTotalOrderPrice(20);
     	assertEquals(30, software.getTotalOrderPrice(), 0.0001);
