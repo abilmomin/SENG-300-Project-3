@@ -127,10 +127,7 @@ public class Products {
 
 				software.addTotalOrderWeightInGrams(itemWeight);
 				software.addTotalOrderPrice(productPrice);
-
-				Mass mass = new Mass(itemWeight);
-				PLUCodedItem newItem = new PLUCodedItem(PLUCode, mass);
-				software.addItemToOrder(newItem);	
+				software.addItemToOrder(pluItem);	
 				
 				notifyProductAdded(product);
 			}

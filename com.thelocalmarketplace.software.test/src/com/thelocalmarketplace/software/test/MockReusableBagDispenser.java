@@ -6,12 +6,12 @@ import com.jjjwelectronics.bag.AbstractReusableBagDispenser;
 import com.jjjwelectronics.bag.IReusableBagDispenser;
 import com.jjjwelectronics.bag.ReusableBag;
 
-public class mockReusableBagDispenser extends AbstractReusableBagDispenser implements IReusableBagDispenser {
+public class MockReusableBagDispenser extends AbstractReusableBagDispenser implements IReusableBagDispenser {
     private int quantityRemaining;
     private int capacity;
 
 
-    public mockReusableBagDispenser(int quantityRemaining, int capacity) {
+    public MockReusableBagDispenser(int quantityRemaining, int capacity) {
         super(); 
     	this.quantityRemaining = quantityRemaining;
         this.capacity = capacity;

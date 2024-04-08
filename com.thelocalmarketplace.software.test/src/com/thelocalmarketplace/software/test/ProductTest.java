@@ -2,6 +2,7 @@ package com.thelocalmarketplace.software.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import org.junit.Before;
@@ -39,7 +40,7 @@ public class ProductTest {
 	private ReusableBag bags; 
 	private AttendantPageGUI attendantGUI;
 	//private ReusableBagDispenserBronze reusableBagDispenserBronze;
-	private mockReusableBagDispenser dispenser; 
+	private MockReusableBagDispenser dispenser; 
 	
 	
 	@Before
@@ -57,7 +58,7 @@ public class ProductTest {
 		checkoutStationBronze.turnOn();
 		
 		
-		dispenser = new mockReusableBagDispenser(3, 100); 
+		dispenser = new MockReusableBagDispenser(3, 100); 
 		dispenser.plugIn(grid);
 		dispenser.turnOn();
 		
@@ -155,6 +156,24 @@ public class ProductTest {
 	    assertTrue("The total order weight should be updated to include the product weight.",
 	               station.getTotalOrderWeightInGrams() == expectedProduct.getExpectedWeight());
 	}
+
+	@Test
+	public void testAddItemViaPluCodeWithValidPluCode() {
+		
+		station.setStationActive(true);
+	        boolean addItemResult = testProducts.addItemByPLUCode(pluCodedItem);
+		assertTrue("The PlUCodedItem should be added sucessfully", addItemResult);
+		
+	}
+	
+	@Test
+	public void testAddItemViaPluCodeWhileStationIsInactive() {
+		station.setStationActive(false);
+		boolean result = testProducts.addItemByPLUCode(pluCodedItem);
+		assertFalse("The item should not be added to order since station is inactive", result);
+	}
+	
+	
 	@Test
 	public void testAddBarcodedProductByTextSearch() {
 	    
@@ -203,7 +222,7 @@ public class ProductTest {
 	@Test (expected = OverloadedDevice.class)
 	public void testPurchaseBags_notEnoughBags() throws OverloadedDevice, EmptyDevice {
 		//initializing a new dispenser that has 2 bags loaded and a capacity of 100 reusable bags 
-		mockReusableBagDispenser dispenser = new mockReusableBagDispenser(2, 100); 
+		MockReusableBagDispenser dispenser = new MockReusableBagDispenser(2, 100); 
 		ReusableBag bag1 = new ReusableBag(); 
         ReusableBag bag2 = new ReusableBag();
         ReusableBag bag3 = new ReusableBag();
@@ -218,7 +237,7 @@ public class ProductTest {
 	//Testing when there are enough bags in the dispenser 
 		@Test 
 		public void testPurchaseBags_EnoughBags() throws OverloadedDevice, EmptyDevice {
-			mockReusableBagDispenser dispenser = new mockReusableBagDispenser(2, 100); 
+			MockReusableBagDispenser dispenser = new MockReusableBagDispenser(2, 100); 
 			ReusableBag bag1 = new ReusableBag(); 
 	        ReusableBag bag2 = new ReusableBag();
 	        ReusableBag[] bags = {bag1, bag2}; 
@@ -232,7 +251,16 @@ public class ProductTest {
 		// this one should notify that the bags are empty after its been dispensed
 		@Test 
 		public void testPurchaseBags_JustEnoughBags() throws OverloadedDevice, EmptyDevice{
-			
+			MockReusableBagDispenser dispenser = new MockReusableBagDispenser(3, 100); 
+			ReusableBag[] bags = new ReusableBag[3];
+		    for (int i = 0; i < 3; i++) {
+		        bags[i] = new ReusableBag();
+		    }
+		    dispenser.load(bags);
+		    
+		    // Ensure dispenser notifies that bags are empty after being dispensed
+		    testProducts.PurchaseBags(bags);
+		    assertTrue(dispenser.getQuantityRemaining() == 0);
 		}
 		
 	

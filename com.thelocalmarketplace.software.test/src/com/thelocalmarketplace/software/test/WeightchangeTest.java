@@ -18,8 +18,8 @@ import powerutility.PowerGrid;
 
 public class WeightchangeTest {
 	 
-	private mockScale scale;
-	private mockScale scale1;
+	private MockScale scale;
+	private MockScale scale1;
 	private AbstractElectronicScale tehst;
 	private SelfCheckoutStationSoftware station;
 	private SelfCheckoutStationBronze checkoutSB;
@@ -35,8 +35,8 @@ public class WeightchangeTest {
 		this.station = new SelfCheckoutStationSoftware(checkoutSB);
 		listen = new ScaleListener(station, null);
 		
-		scale = new mockScale(new Mass(6000000),new Mass (6000000));
-		scale1 = new mockScale(new Mass(600000000000L),new Mass (60000000000l));
+		scale = new MockScale(new Mass(6000000),new Mass (6000000));
+		scale1 = new MockScale(new Mass(600000000000L),new Mass (60000000000l));
 		this.scale.plugIn(PowerGrid.instance());
 		this.scale.turnOn();
 		
@@ -90,7 +90,7 @@ public class WeightchangeTest {
 	
 	@Test
 	public void unBlockCatchExceptionTest() throws OverloadedDevice{
-		mockScale scale2 = new mockScale(new Mass(6),new Mass (6));
+		MockScale scale2 = new MockScale(new Mass(6),new Mass (6));
 		scale2.plugIn(PowerGrid.instance());
 		scale2.turnOn();
         MockItem item2 = new MockItem(new Mass(200000000000000000L));
