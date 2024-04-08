@@ -68,8 +68,8 @@ public class CustomerStation extends JFrame {
     	stationSoftwareInstance.setGUI(this);
     	products = new Products(stationSoftwareInstance);
     	paymentWindow = new SelectPayment(stationSoftwareInstance);
-    	searchProductByText = new SearchProductByText(stationSoftwareInstance, attendantGUI);
         baggingArea = new BaggingArea();
+    	searchProductByText = new SearchProductByText(stationSoftwareInstance, attendantGUI, baggingArea);
         
         cartItemButtons = new ArrayList<>();
     	
