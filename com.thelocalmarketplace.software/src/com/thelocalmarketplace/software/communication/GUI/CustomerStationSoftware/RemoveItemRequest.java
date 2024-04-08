@@ -46,8 +46,26 @@ import com.thelocalmarketplace.software.communication.GUI.AttendantStation.Atten
 
 import ca.ucalgary.seng300.simulation.InvalidArgumentSimulationException;
 
+
+/**
+ * Represents a graphical user interface for requesting the removal of an item from the bagging area.
+ */
 @SuppressWarnings("serial")
 public class RemoveItemRequest extends JFrame {
+	
+	
+	/**
+     * Initializes a new instance of the RemoveItemRequest class.
+     * 
+     * @param itemName              
+     * 						The name of the item to be removed.
+     * 
+     * @param stationSoftwareInstance 
+     * 						The instance of the self-checkout station software.
+     * 
+     * @param attendantGUI          
+     * 						The GUI instance for the attendant page.
+     */
     public RemoveItemRequest(String itemName, SelfCheckoutStationSoftware stationSoftwareInstance, AttendantPageGUI attendantGUI) {
         setTitle("Item Removed");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
