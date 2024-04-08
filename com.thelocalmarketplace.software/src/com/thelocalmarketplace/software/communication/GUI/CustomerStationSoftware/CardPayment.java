@@ -1,5 +1,6 @@
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
 
+import com.jjjwelectronics.card.BlockedCardException;
 import com.jjjwelectronics.card.InvalidPINException;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
@@ -78,6 +79,9 @@ public class CardPayment extends JFrame {
                 ex.printStackTrace();
             } catch (InvalidPINException ipe) {
                 software.getGUI().customerPopUp("Invalid PIN Entered");
+                software.getStationHardware().getCardReader().remove();
+            } catch (BlockedCardException bce) {
+                software.getGUI().customerPopUp("The Card is Blocked");
                 software.getStationHardware().getCardReader().remove();
             }
         });
