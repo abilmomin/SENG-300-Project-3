@@ -1,29 +1,58 @@
+/**
+
+ SENG 300 - ITERATION 3
+ GROUP GOLD {8}
+
+ Name                      UCID
+
+ Yotam Rojnov             30173949
+ Duncan McKay             30177857
+ Mahfuz Alam              30142265
+ Luis Trigueros Granillo  30167989
+ Lilia Skumatova          30187339
+ Abdelrahman Abbas        30110374
+ Talaal Irtija            30169780
+ Alejandro Cardona        30178941
+ Alexandre Duteau         30192082
+ Grace Johnson            30149693
+ Abil Momin               30154771
+ Tara Ghasemi M. Rad      30171212
+ Izabella Mawani          30179738
+ Binish Khalid            30061367
+ Fatima Khalid            30140757
+ Lucas Kasdorf            30173922
+ Emily Garcia-Volk        30140791
+ Yuinikoru Futamata       30173228
+ Joseph Tandyo            30182561
+ Syed Haider              30143096
+ Nami Marwah              30178528
+
+ */
+
 package com.thelocalmarketplace.software.communication.GUI.AttendantStation;
 
-import javax.swing.*;
-
-import com.jjjwelectronics.OverloadedDevice;
-import com.jjjwelectronics.scale.AbstractElectronicScale;
-import com.jjjwelectronics.scale.ElectronicScaleBronze;
-import com.jjjwelectronics.scale.ElectronicScaleGold;
-import com.jjjwelectronics.scale.ElectronicScaleSilver;
-import com.tdc.CashOverloadException;
-import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
-import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
-import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
-import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
-import com.thelocalmarketplace.software.product.Products;
 
-import ca.ucalgary.seng300.simulation.SimulationException;
-import powerutility.PowerGrid;
+import java.awt.Color;
+import java.awt.Dialog;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 
-import java.awt.*;
-import java.awt.event.*;
 import java.math.BigDecimal;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
+@SuppressWarnings("serial")
 public class AttendantPageGUI extends JFrame {
     // CONSTANTS FOR THE GUI
     private static final int NUM_STATIONS = 4;
@@ -61,8 +90,6 @@ public class AttendantPageGUI extends JFrame {
     private final SelfCheckoutStationSoftware[] stationSoftwareInstances = new SelfCheckoutStationSoftware[NUM_STATIONS];
 
     // Variables for station hardware
-    private AbstractElectronicScale scale;
-    private AbstractSelfCheckoutStation checkoutStation;
     public final boolean[] stationAssistanceRequested = new boolean[NUM_STATIONS]; // Track assistance requests
 
     private AttendantListeners attendantListeners;
