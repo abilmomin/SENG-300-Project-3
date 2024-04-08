@@ -270,19 +270,26 @@ public class Funds {
 			BigDecimal lowestBankNote = bankNoteDenominations.get(bankNoteDenominations.size() - 1);
 			BigDecimal lowestVal;
 			int sizeOfLowest;
+			
 			if(lowestCoin.compareTo(lowestBankNote) > 0) {
 				lowestVal = lowestBankNote;
 				sizeOfLowest = (int)banknotesAvailable.get(lowestVal);
+				if (remainingAmount.compareTo(lowestVal) < 0 && ( sizeOfLowest > 0) ) {
+					station.getBanknoteDispensers().get(lowestVal).emit();
+					amountDispensed = changeValue;
+					remainingAmount = BigDecimal.ZERO;
+					break;
+				}
 			}
 			else {
 				lowestVal = lowestCoin;
 				sizeOfLowest = (int)coinsAvailable.get(lowestVal);
-			}
-			if (remainingAmount.compareTo(lowestVal) < 0 && ( sizeOfLowest > 0) ) {
-				station.getCoinDispensers().get(lowestVal).emit();
-				amountDispensed = changeValue;
-				remainingAmount = BigDecimal.ZERO;
-				break;
+				if (remainingAmount.compareTo(lowestVal) < 0 && ( sizeOfLowest > 0) ) {
+					station.getCoinDispensers().get(lowestVal).emit();
+					amountDispensed = changeValue;
+					remainingAmount = BigDecimal.ZERO;
+					break;
+				}
 			}
 			
 			boolean dispensed = false;

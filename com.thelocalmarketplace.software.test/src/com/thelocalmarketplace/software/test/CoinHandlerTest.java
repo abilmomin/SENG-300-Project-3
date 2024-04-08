@@ -130,7 +130,7 @@ public class CoinHandlerTest {
 		CoinSlot cs = this.checkoutStationG.getCoinSlot();
 		stationG.setOrderTotalPrice(0.25);
 		cs.receive(coin1);
-		assertTrue(stationG.getTotalOrderPrice() == 0.15);
+		assertTrue(stationG.getFunds().getMoneyLeft().doubleValue() == 0.15);
 		
 	}
 
@@ -143,7 +143,7 @@ public class CoinHandlerTest {
 		CoinSlot cs = this.checkoutStationS.getCoinSlot();
 		stationS.setOrderTotalPrice(0.25);
 		cs.receive(coin1);
-		assertTrue(stationS.getTotalOrderPrice() == 0.15);
+		assertTrue(stationS.getFunds().getMoneyLeft().doubleValue() == 0.15);
 	}
 
 	@Test
@@ -155,7 +155,7 @@ public class CoinHandlerTest {
 		CoinSlot cs = this.checkoutStationB.getCoinSlot();
 		stationB.setOrderTotalPrice(0.25);
 		cs.receive(coin1);
-		assertTrue(stationB.getTotalOrderPrice() == 0.15);
+		assertTrue(stationB.getFunds().getMoneyLeft().doubleValue() == 0.15);
 	}
 	
 	@Test
@@ -167,13 +167,13 @@ public class CoinHandlerTest {
 
 		CoinSlot cs = this.checkoutStationG.getCoinSlot();
 		checkoutStationG.getCoinDispensers().get(new BigDecimal("0.10")).receive(coin2);
-		stationG.setOrderTotalPrice(0.15);
+		checkoutStationG.getCoinDispensers().get(new BigDecimal("0.10")).receive(new Coin(currency, new BigDecimal("0.10")));
+		stationG.setOrderTotalPrice(0.1);
 		cs.receive(coin1);
-		assertTrue(checkoutStationG.getCoinDispensers().get(new BigDecimal("0.25")).size() == 1);
-		assertTrue(stationG.getTotalOrderPrice() == 0);
+
+		assertTrue(checkoutStationG.getCoinDispensers().get(new BigDecimal("0.10")).size() == 0);
+		assertTrue(stationG.getFunds().getMoneyLeft().doubleValue() == -0.15);
 		checkoutStationG.getCoinDispensers().get(new BigDecimal("0.10")).receive(coin2);
-		stationG.setOrderTotalPrice(0.05);
-		cs.receive(new Coin(currency, new BigDecimal("0.10")));
 	}
 	
 
@@ -182,6 +182,8 @@ public class CoinHandlerTest {
 		Currency currency = Currency.getInstance("CAD");
 		// Prepare some coins
 		coin1 = new Coin(currency, BigDecimal.valueOf(0.25));
+		checkoutStationG.getCoinDispensers().get(new BigDecimal("0.25")).load(new Coin(currency, BigDecimal.valueOf(0.25)));
+
 		CoinSlot cs = this.checkoutStationG.getCoinSlot();
 		cs.receive(coin1);
 	}
@@ -191,8 +193,11 @@ public class CoinHandlerTest {
 		Currency currency = Currency.getInstance("CAD");
 		// Prepare some coins
 		coin1 = new Coin(currency, BigDecimal.valueOf(0.25));
+		checkoutStationS.getCoinDispensers().get(new BigDecimal("0.25")).load(new Coin(currency, BigDecimal.valueOf(0.25)));
+		
 		CoinSlot cs = this.checkoutStationS.getCoinSlot();
 		cs.receive(coin1);
+		
 	}
 
 	@Test
@@ -200,6 +205,8 @@ public class CoinHandlerTest {
 		Currency currency = Currency.getInstance("CAD");
 		// Prepare some coins
 		coin1 = new Coin(currency, BigDecimal.valueOf(0.25));
+		checkoutStationB.getCoinDispensers().get(new BigDecimal("0.25")).load(new Coin(currency, BigDecimal.valueOf(0.25)));
+
 		CoinSlot cs = this.checkoutStationB.getCoinSlot();
 		cs.receive(coin1);
 	}

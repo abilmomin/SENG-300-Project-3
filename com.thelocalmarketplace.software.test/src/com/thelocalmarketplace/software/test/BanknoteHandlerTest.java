@@ -76,11 +76,13 @@ public class BanknoteHandlerTest {
 
 		BigDecimal[] banknoteDenominations = { new BigDecimal("5.0"), new BigDecimal("10.0"), new BigDecimal("20.0"),
 				new BigDecimal("50.0"), new BigDecimal("100.0") };
-		
+		BigDecimal[] coinDenominations = { new BigDecimal("8.0") };
+		PowerGrid.engageUninterruptiblePowerSource();
 
 		// Set up Gold selfCheckoutStation
 		SelfCheckoutStationGold.resetConfigurationToDefaults();
 		SelfCheckoutStationGold.configureBanknoteDenominations(banknoteDenominations);
+		SelfCheckoutStationGold.configureCoinDenominations(coinDenominations);
 		SelfCheckoutStationGold.configureCurrency(Currency.getInstance("CAD"));
 		this.checkoutStationG = new SelfCheckoutStationGold();
 		this.checkoutStationG.plugIn(PowerGrid.instance());
@@ -126,7 +128,7 @@ public class BanknoteHandlerTest {
 			BanknoteInsertionSlot cs = this.checkoutStationG.getBanknoteInput();
 			stationG.setOrderTotalPrice(10);
 			cs.receive(banknote1);
-			assertTrue(stationG.getTotalOrderPrice() == 5);
+			assertTrue(stationG.getFunds().getMoneyLeft().intValue() == 5);
 		} catch (PowerSurge | NoPowerException e) {}
 	}
 
@@ -139,7 +141,7 @@ public class BanknoteHandlerTest {
 			BanknoteInsertionSlot cs = this.checkoutStationS.getBanknoteInput();
 			stationS.setOrderTotalPrice(10);
 			cs.receive(banknote1);
-			assertTrue(stationS.getTotalOrderPrice() == 5);
+			assertTrue(stationS.getFunds().getMoneyLeft().intValue() == 5);
 		} catch (PowerSurge | NoPowerException e) {}
 	}
 
@@ -152,7 +154,7 @@ public class BanknoteHandlerTest {
 			BanknoteInsertionSlot cs = this.checkoutStationB.getBanknoteInput();
 			stationB.setOrderTotalPrice(10);
 			cs.receive(banknote1);
-			assertTrue(stationB.getTotalOrderPrice() == 5);
+			assertTrue(stationB.getFunds().getMoneyLeft().intValue() == 5);
 		} catch (PowerSurge | NoPowerException e) {}
 	}
 	
@@ -165,15 +167,12 @@ public class BanknoteHandlerTest {
 			banknote2 = new Banknote(currency, new BigDecimal("5.0"));
 	
 			BanknoteInsertionSlot cs = this.checkoutStationG.getBanknoteInput();
-			checkoutStationG.getBanknoteDispensers().get(new BigDecimal("5.0")).load(banknote2);
-			stationG.setOrderTotalPrice(5);
+			checkoutStationG.getBanknoteDispensers().get(new BigDecimal("5.0")).load(banknote2, new Banknote(currency, new BigDecimal("5.0")));
+			stationG.setOrderTotalPrice(4.9);
 			cs.receive(banknote1);
-			
+		
 			assertTrue(checkoutStationG.getBanknoteDispensers().get(new BigDecimal("5.0")).size() == 0);
-			assertTrue(stationG.getTotalOrderPrice() == 0);
-			checkoutStationG.getBanknoteDispensers().get(new BigDecimal("5.0")).load(banknote2);
-			stationG.setOrderTotalPrice(0.05);
-			cs.receive(new Banknote(currency, new BigDecimal("5.0")));
+			assertTrue(stationG.getFunds().getMoneyLeft().doubleValue() == -5.1);
 		} catch (PowerSurge | NoPowerException e) {}
 	}
 
@@ -183,6 +182,7 @@ public class BanknoteHandlerTest {
 			Currency currency = Currency.getInstance("CAD");
 			// Prepare some banknotes
 			banknote1 = new Banknote(currency, BigDecimal.valueOf(20.0));
+			checkoutStationG.getBanknoteDispensers().get(new BigDecimal("20.0")).load(new Banknote(currency, BigDecimal.valueOf(20.0)));
 	
 			BanknoteInsertionSlot bs = this.checkoutStationG.getBanknoteInput();
 			bs.receive(banknote1);
@@ -195,7 +195,8 @@ public class BanknoteHandlerTest {
 			Currency currency = Currency.getInstance("CAD");
 			// Prepare some banknotes
 			banknote1 = new Banknote(currency, BigDecimal.valueOf(20.0));
-	
+			checkoutStationS.getBanknoteDispensers().get(new BigDecimal("20.0")).load(new Banknote(currency, BigDecimal.valueOf(20.0)));
+
 			BanknoteInsertionSlot bs = this.checkoutStationS.getBanknoteInput();
 			bs.receive(banknote1);
 		} catch (PowerSurge | NoPowerException e) {}
@@ -207,8 +208,10 @@ public class BanknoteHandlerTest {
 			Currency currency = Currency.getInstance("CAD");
 			// Prepare some banknotes
 			banknote1 = new Banknote(currency, BigDecimal.valueOf(20.0));
-	
+			checkoutStationB.getBanknoteDispensers().get(new BigDecimal("20.0")).load(new Banknote(currency, BigDecimal.valueOf(20.0)));
+
 			BanknoteInsertionSlot bs = this.checkoutStationB.getBanknoteInput();
+			
 			bs.receive(banknote1);
 		} catch (PowerSurge | NoPowerException e) {}
 	}
