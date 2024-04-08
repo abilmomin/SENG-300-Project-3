@@ -1,89 +1,41 @@
-/**
-
- SENG 300 - ITERATION 3
- GROUP GOLD {8}
-
- Name                      UCID
-
- Yotam Rojnov             30173949
- Duncan McKay             30177857
- Mahfuz Alam              30142265
- Luis Trigueros Granillo  30167989
- Lilia Skumatova          30187339
- Abdelrahman Abbas        30110374
- Talaal Irtija            30169780
- Alejandro Cardona        30178941
- Alexandre Duteau         30192082
- Grace Johnson            30149693
- Abil Momin               30154771
- Tara Ghasemi M. Rad      30171212
- Izabella Mawani          30179738
- Binish Khalid            30061367
- Fatima Khalid            30140757
- Lucas Kasdorf            30173922
- Emily Garcia-Volk        30140791
- Yuinikoru Futamata       30173228
- Joseph Tandyo            30182561
- Syed Haider              30143096
- Nami Marwah              30178528
-
- */
-
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
+
+import javax.swing.*;
 
 import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.Item;
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.scale.AbstractElectronicScale;
+import com.jjjwelectronics.scale.IElectronicScale;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
-
-import com.thelocalmarketplace.hardware.BarcodedProduct;
-import com.thelocalmarketplace.hardware.PLUCodedItem;
-import com.thelocalmarketplace.hardware.PLUCodedProduct;
-import com.thelocalmarketplace.hardware.PriceLookUpCode;
-import com.thelocalmarketplace.hardware.Product;
+import com.thelocalmarketplace.hardware.*;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
-
 import com.thelocalmarketplace.software.ProductsDatabase;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.BaggingArea;
 import com.thelocalmarketplace.software.product.AddownBag;
 import com.thelocalmarketplace.software.product.Products;
-
 import com.jjjwelectronics.bag.ReusableBag;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
-
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-
-@SuppressWarnings("serial")
 public class CustomerStation extends JFrame {
 
+    //private JTextArea cartTextArea;
     private JPanel cartItemsPanel;
     private JLabel totalPriceLabel;
     private JPanel menuPanel;
@@ -105,8 +57,8 @@ public class CustomerStation extends JFrame {
     private BaggingArea baggingArea;
     private SettingsPanel settingsPanel;
     private ArrayList<JButton> cartItemButtons;
+
     private JButton selectedCartItemButton = null; // Variable to track the selected cart item button
-    public boolean canMakePopUp = true;
 
     public CustomerStation(int selectedStation, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale, AttendantPageGUI attendantGUI) {
     	this.scale = scale;
@@ -160,8 +112,10 @@ public class CustomerStation extends JFrame {
         	searchProductByText.setVisible(true);
         });
         
+
         JButton removeItemBtn = createButton("Remove Item", e -> {
             handleRemoveItem();
+        	
         });
         
         JButton purchaseBagsBtn = createButton("Purchase Bags", e -> {
@@ -187,23 +141,32 @@ public class CustomerStation extends JFrame {
         
         // Add buttons to menu panel
         menuPanel.add(useOwnBagsBtn);
+        //menuPanel.add(scanBarcodeBtn);
+        //menuPanel.add(enterPLUBtn);
+        //menuPanel.add(searchProductBtn);
         menuPanel.add(addItemBtn);
         menuPanel.add(removeItemBtn);
         menuPanel.add(purchaseBagsBtn);
         menuPanel.add(viewBaggingAreaBtn);
         menuPanel.add(helpBtn);
         
-        addItemBtnPanel = new JPanel(new GridLayout(2, 2,10,10));
-        addItemBtnPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         
-        addItemBtnPanel.add(scanBarcodeBtn);
-        addItemBtnPanel.add(enterPLUBtn);
-        addItemBtnPanel.add(searchProductBtn);
-        addItemBtnPanel.add(backBtn);
+         addItemBtnPanel = new JPanel(new GridLayout(2, 2,10,10));
+         addItemBtnPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+         
+         addItemBtnPanel.add(scanBarcodeBtn);
+         addItemBtnPanel.add(enterPLUBtn);
+         addItemBtnPanel.add(searchProductBtn);
+         addItemBtnPanel.add(backBtn);
          
         // Cart panel
         cartPanel = new JPanel(new BorderLayout());
         cartPanel.setBorder(BorderFactory.createTitledBorder("Cart"));
+
+        // Cart contents
+//        cartTextArea = new JTextArea(20, 30);
+//        cartTextArea.setEditable(false);
+//        JScrollPane cartScrollPane = new JScrollPane(cartTextArea);
 
         // Total price label
         totalPriceLabel = new JLabel("Total Price: $0.00");
@@ -271,6 +234,10 @@ public class CustomerStation extends JFrame {
         // Add main panel to frame
         add(mainPanel);
 
+        // Add sample products to the cart
+        // addProductToCart("Apple", 1.99);
+        // addProductToCart("Banana", 0.99);
+
         // Set frame visible
         setVisible(true);
     }
@@ -288,6 +255,7 @@ public class CustomerStation extends JFrame {
     }
     
     private void dontBagItem() {
+		// TODO Auto-generated method stub
     	ArrayList<Item> orderList = stationSoftwareInstance.getOrder();
     	if (!orderList.isEmpty()) {
     		int lastIndex = orderList.size() - 1;
@@ -303,9 +271,9 @@ public class CustomerStation extends JFrame {
 	}
     
     private void handleScanBarcode() {
-    	// Get a random barcode from the available barcoded products
-    	ArrayList<Barcode> barcodes = ProductsDatabase.getBarcodes();    	
-    	Random random = new Random();   	
+        // Get a random barcode from the available barcoded products
+        ArrayList<Barcode> barcodes = ProductsDatabase.getBarcodes();        
+        Random random = new Random();       
         int randomIndex = random.nextInt(barcodes.size());
         Barcode barcode = barcodes.get(randomIndex);
         
@@ -315,18 +283,18 @@ public class CustomerStation extends JFrame {
         BarcodedItem barcodedItem = new BarcodedItem(barcode, mass); 
         
         int initialOrderSize = stationSoftwareInstance.getOrder().size();
-    	
-    	IBarcodeScanner scanner = stationSoftwareInstance.getStationHardware().getMainScanner();
-    	scanner.scan(barcodedItem);
-    	
-    	int newOrderSize = stationSoftwareInstance.getOrder().size();
-    	
-    	// Check if the scan didn't fail
-    	if (newOrderSize > initialOrderSize) {
-        	BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
-        	
-        	new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
-    	}
+        
+        IBarcodeScanner scanner = stationSoftwareInstance.getStationHardware().getMainScanner();
+        scanner.scan(barcodedItem);
+        
+        int newOrderSize = stationSoftwareInstance.getOrder().size();
+        
+        // Check if the scan didn't fail
+        if (newOrderSize > initialOrderSize) {
+            BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+            
+            new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
+        }
     }
 
 	private void handleUseOwnBags() {
@@ -366,6 +334,7 @@ public class CustomerStation extends JFrame {
     public void setPaymentSuccesful(double change) {
         this.dispose();
         PaymentSuccess paymentSuccess = new PaymentSuccess(change, stationSoftwareInstance);
+
     }
 
     // Method to extract the product name from the button's text
@@ -384,6 +353,8 @@ public class CustomerStation extends JFrame {
         return "";
     }
     
+    // I MADE THIS PUBLIC IDK IF IM RIGHT BUT IM USING THIS IN COORDINATION!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // Currently PLU prices are in cents, 
     public void addProductToCart(String productName, double price) {
         JButton itemButton = new JButton(productName + " - $" + String.format("%.2f", price));
         itemButton.addActionListener(e -> {
@@ -401,18 +372,17 @@ public class CustomerStation extends JFrame {
 
         double totalPrice = stationSoftwareInstance.getTotalOrderPrice();
         totalPriceLabel.setText("Total Price: $" + String.format("%.2f", totalPrice));
+
     }
 
     public void handleRemoveItem() {
         if (selectedCartItemButton != null) {
         	boolean itemRemoved = false;
+        	
             // look through the order and remove the item
             ArrayList<Item> listOfOrders = stationSoftwareInstance.getOrder();
-            System.out.println(listOfOrders == null);
             for (Item item : listOfOrders) {
-            	System.out.println("in loop");
                 if (item instanceof PLUCodedItem) {
-                	System.out.println("in plu");
                     PLUCodedItem pluItem = (PLUCodedItem) item;
 
                     PriceLookUpCode pluCode = pluItem.getPLUCode();
@@ -420,14 +390,11 @@ public class CustomerStation extends JFrame {
 
                     // create regex to match the product description
                     String productGettingRemoved = extractProductName(selectedCartItemButton.getText());
-                    System.out.println(productGettingRemoved);
-                    
-                    System.out.println(product.getDescription());
 
                     if (product.getDescription().equals(productGettingRemoved)) {
-                        itemRemoved = true;
                         stationSoftwareInstance.getProductHandler().removeItemFromOrder(pluItem);
                         boolean itemRemovedFromBaggingArea = baggingArea.itemToRemove(productGettingRemoved);
+                        itemRemoved = true;
 
                         if(itemRemovedFromBaggingArea)
                             new RemoveFromBagging(pluItem, stationSoftwareInstance, attendantGUI, baggingArea);
@@ -435,20 +402,18 @@ public class CustomerStation extends JFrame {
                         break;
                     }
                 } else if (item instanceof BarcodedItem) {
-                	System.out.println("in barcode");
                     BarcodedItem barcodeItem = (BarcodedItem) item;
 
                     Barcode barcode = barcodeItem.getBarcode();
                     BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+                    long productWeight = barcodeItem.getMass().inGrams().longValue();
 
                     // create regex to match the product description
                     String productGettingRemoved = extractProductName(selectedCartItemButton.getText());
-                    System.out.println(productGettingRemoved);
-                    System.out.println(product.getDescription());
 
                     if (product.getDescription().equals(productGettingRemoved)) {
-                    	itemRemoved = true;
                         stationSoftwareInstance.getProductHandler().removeItemFromOrder(barcodeItem);
+                        itemRemoved = true;
 
                         boolean itemRemovedFromBaggingArea = baggingArea.itemToRemove(productGettingRemoved);
                         if(itemRemovedFromBaggingArea)
@@ -461,7 +426,6 @@ public class CustomerStation extends JFrame {
             
             if (!itemRemoved) {
             	stationSoftwareInstance.addTotalOrderPrice(-1);
-            	System.out.println("literally how the fuck");
             }
             
             cartItemsPanel.remove(selectedCartItemButton); // Remove the selected item button from the panel
@@ -476,9 +440,11 @@ public class CustomerStation extends JFrame {
         }
     }
 
+    // Method to refresh the cart panel UI
     private void refreshCartPanel() {
         cartItemsPanel.revalidate();
         cartItemsPanel.repaint();
+        // Update the total price display...
     }
 
     private JButton createButton(String text, ActionListener actionListener) {
@@ -489,6 +455,7 @@ public class CustomerStation extends JFrame {
         }
         return button;
     }
+
     
     public JPanel createKeypadPanel() {
     	JPanel keypadPanel = new JPanel();
@@ -500,6 +467,7 @@ public class CustomerStation extends JFrame {
             button.setFont(new Font("Arial", Font.PLAIN, 16));
             keypadPanel.add(button);
             button.addActionListener(addNum);
+            
         }
     	
     	JButton enter = new JButton("Enter");
@@ -528,6 +496,7 @@ public class CustomerStation extends JFrame {
         	}
         });
     	
+    	
     	enter.addActionListener(e -> {
     	    String userInput = screenTextField.getText();
 
@@ -548,8 +517,9 @@ public class CustomerStation extends JFrame {
     	    // Switch back to the previous panel if needed
     	    replaceCartPanelWithKeypadPanel();
     	});
+
     	
-    	return keypadPanel;
+    	 return keypadPanel;
     }
    
     ActionListener addNum = e -> {
@@ -590,6 +560,7 @@ public class CustomerStation extends JFrame {
     	} else {
     		if (!PLUPanel.isVisible()) {
     			cartPanel.setVisible(true);
+
     		} 
     	}
     }
@@ -605,6 +576,7 @@ public class CustomerStation extends JFrame {
             addItemBtnPanel.setVisible(true);
             
             PLUPanel.setVisible(false);
+
         } else {
             // Hide addItemBtnPanel and show menuPanel
             addItemBtnPanel.setVisible(false);
@@ -627,8 +599,10 @@ public class CustomerStation extends JFrame {
     }
     
     public void customerBaggingAreaPopUp(Product product) {
-    	new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
+        new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
     }
+    
+    public boolean canMakePopUp = true;
 
     public void customerRemoveItemPopUp() {
         if (canMakePopUp && !cartItemButtons.isEmpty()) {
@@ -647,9 +621,11 @@ public class CustomerStation extends JFrame {
         }
     }
 
+
     public void handleRequestAssistance() {
         needsAssistance = true;
         attendantGUI.setStationAssistanceRequested(selectedStation - 1, true);
+
     }
     
     // Method to display a pop-up dialog with the amount of money due
@@ -659,15 +635,17 @@ public class CustomerStation extends JFrame {
 
     public void clearSignal() {
         needsAssistance = false;
-        attendantGUI.setStationAssistanceRequested(selectedStation - 1, false);
-    }
+        attendantGUI.setStationAssistanceRequested(selectedStation - 1, false);}
 
     public boolean getSignal() {
         return needsAssistance;
     }
-    
 
 	public AttendantPageGUI getAttendantGUI() {
 		return this.attendantGUI;
 	}
+
+
 }
+
+

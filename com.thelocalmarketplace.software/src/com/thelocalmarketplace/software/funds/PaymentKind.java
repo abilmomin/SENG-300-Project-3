@@ -1,5 +1,8 @@
 /**
-
+ * 
+ SENG 300 - ITERATION 3
+ GROUP GOLD {8}
+ 
 Name                      UCID
 
 Yotam Rojnov             30173949
@@ -23,7 +26,6 @@ Yuinikoru Futamata       30173228
 Joseph Tandyo            30182561
 Syed Haider              30143096
 Nami Marwah              30178528
-
  */
 
 package com.thelocalmarketplace.software.funds;
@@ -44,7 +46,10 @@ public class PaymentKind {
 	}
 
 	/**
-	 *
+	 * Determines the card type based on the provided string representation.
+	 * @param The string representation of the card type.
+	 * @return The card type as a Kind enum value.
+	 * 
 	 */
 	public static Kind getCardType(String cardType) {
 		if (cardType.equalsIgnoreCase("debit")) {
