@@ -1,9 +1,39 @@
+/**
+
+ SENG 300 - ITERATION 3
+ GROUP GOLD {8}
+
+ Name                      UCID
+
+ Yotam Rojnov             30173949
+ Duncan McKay             30177857
+ Mahfuz Alam              30142265
+ Luis Trigueros Granillo  30167989
+ Lilia Skumatova          30187339
+ Abdelrahman Abbas        30110374
+ Talaal Irtija            30169780
+ Alejandro Cardona        30178941
+ Alexandre Duteau         30192082
+ Grace Johnson            30149693
+ Abil Momin               30154771
+ Tara Ghasemi M. Rad      30171212
+ Izabella Mawani          30179738
+ Binish Khalid            30061367
+ Fatima Khalid            30140757
+ Lucas Kasdorf            30173922
+ Emily Garcia-Volk        30140791
+ Yuinikoru Futamata       30173228
+ Joseph Tandyo            30182561
+ Syed Haider              30143096
+ Nami Marwah              30178528
+
+ */
+
 package com.thelocalmarketplace.software.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,11 +42,9 @@ import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.Numeral;
 import com.jjjwelectronics.OverloadedDevice;
-import com.jjjwelectronics.bag.AbstractReusableBagDispenser;
-import com.jjjwelectronics.bag.IReusableBagDispenser;
 import com.jjjwelectronics.bag.ReusableBag;
-import com.jjjwelectronics.bag.ReusableBagDispenserBronze;
 import com.jjjwelectronics.scanner.Barcode;
+
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
@@ -24,6 +52,7 @@ import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.Product;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
+
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.product.Products;
@@ -41,38 +70,27 @@ public class ProductTest {
 	private PriceLookUpCode pluCode;
 	private Products testProducts;
 	private Product product;
-	private ReusableBag bags; 
-	private AttendantPageGUI attendantGUI;
-	//private ReusableBagDispenserBronze reusableBagDispenserBronze;
 	private MockReusableBagDispenser dispenser; 
-	
 	
 	@Before
 	public void setup() {
-		// create a power grid
 		grid = PowerGrid.instance();
-		// to avoid power outages when there is a power surge
 		PowerGrid.engageUninterruptiblePowerSource();
 		grid.forcePowerRestore();
-		
-		attendantGUI = new AttendantPageGUI();
 		
 		checkoutStationBronze = new SelfCheckoutStationBronze();
 		checkoutStationBronze.plugIn(grid);
 		checkoutStationBronze.turnOn();
 		
-		
 		dispenser = new MockReusableBagDispenser(3, 100); 
 		dispenser.plugIn(grid);
 		dispenser.turnOn();
-		
 		
 		station = new SelfCheckoutStationSoftware(checkoutStationBronze);
 		station.setStationActive(true);
 		pluCode = new PriceLookUpCode("1234");
 		itemMass = new Mass(1000000000);
 		pluCodedItem = new PLUCodedItem(pluCode, itemMass);
-		bags = new ReusableBag(); 
 		
 		// Create a PlUCodedProduct and add it to the database
 		String pluProductDescription = "Apple";
@@ -82,8 +100,8 @@ public class ProductTest {
 		
 		testProducts = new Products(station);
 		testProducts.reusableBagDispenser = dispenser; 
-		
 	}
+	
 	@Test
 	public void testHandleBulkyItemReducesTotalOrderWeightWithAttendantApproval() {
 	    double initialItemWeightInGrams = 2000.0;
@@ -117,7 +135,6 @@ public class ProductTest {
 	    assertEquals("The total order weight should be reduced by the weight of the bulky item upon attendant's approval",
 	                 expectedTotalWeightAfterHandling, actualTotalWeightAfterHandling, 0.001);
 	}
-	
 	
 	@Test
 	public void testPriceChangeAfterAddItemByVisualCatalogue() {
@@ -163,11 +180,9 @@ public class ProductTest {
 
 	@Test
 	public void testAddItemViaPluCodeWithValidPluCode() {
-		
 		station.setStationActive(true);
 	        boolean addItemResult = testProducts.addItemByPLUCode(pluCodedItem);
 		assertTrue("The PlUCodedItem should be added sucessfully", addItemResult);
-		
 	}
 	
 	@Test
@@ -177,13 +192,10 @@ public class ProductTest {
 		assertFalse("The item should not be added to order since station is inactive", result);
 	}
 	
-	
 	@Test
 	public void testAddBarcodedProductByTextSearch() {
-	    
 	    station.setStationActive(true);
 	    
-
 	    // Create and add a barcoded product to the database for the test
 	    Numeral[] barcodeDigits = {Numeral.one, Numeral.two, Numeral.three};
 	    Barcode barcode = new Barcode(barcodeDigits);
@@ -198,18 +210,15 @@ public class ProductTest {
 	               station.getTotalOrderWeightInGrams() == 500.0);
 	    assertEquals("The total order weight should include the weight of the added product", 500.0, station.getTotalOrderWeightInGrams(), 0.001);
 	    assertEquals("The total order price should include the price of the added product", 100, station.getTotalOrderPrice(), 0.001);
-
 	}
+	
 	@Test
 	public void testProductNotFoundByTextSearch() {
-	    
 	    station.setStationActive(true);
 	    
-
 	    // Record the initial total order weight and price
 	    double initialWeight = station.getTotalOrderWeightInGrams();
 	    double initialPrice = station.getTotalOrderPrice();
-
 	   
 	    testProducts.addItemByTextSearch("Non-existent Product");
 
@@ -220,154 +229,145 @@ public class ProductTest {
 	               station.getTotalOrderPrice() == initialPrice);
 	}
 	
-	
 	//testing when not enough bags are in the dispenser 
-		@Test (expected = OverloadedDevice.class)
-		public void testPurchaseBags_notEnoughBags() throws OverloadedDevice, EmptyDevice {
-			//initializing a new dispenser that has 2 bags loaded and a capacity of 100 reusable bags 
-			MockReusableBagDispenser dispenser = new MockReusableBagDispenser(2, 100); 
-			ReusableBag bag1 = new ReusableBag(); 
-	        ReusableBag bag2 = new ReusableBag();
-	        ReusableBag bag3 = new ReusableBag();
-	        ReusableBag[] bags = {bag1, bag2, bag3}; 
-	        
-	        dispenser.load(bags);
-	        testProducts.PurchaseBags(bags);  
-		}
-		
-		//Testing when there are enough bags in the dispenser 
-			@Test 
-			public void testPurchaseBags_EnoughBags() throws OverloadedDevice, EmptyDevice {
-				MockReusableBagDispenser dispenser = new MockReusableBagDispenser(2, 100); 
-				ReusableBag bag1 = new ReusableBag(); 
-		        ReusableBag bag2 = new ReusableBag();
-		        ReusableBag[] bags = {bag1, bag2}; 
-		        dispenser.load(bags);
-		        testProducts.PurchaseBags(bags);
-		        
-			}
-			
-			
-			//Testing when the amount of bags in dispenser are being loaded (dispenser bags and purchased bags = same) 
-			// this one should notify that the bags are empty after its been dispensed
-			@Test 
-			public void testPurchaseBags_JustEnoughBags() throws OverloadedDevice, EmptyDevice{
-				MockReusableBagDispenser dispenser = new MockReusableBagDispenser(3, 100); 
-				ReusableBag[] bags = new ReusableBag[3];
-			    for (int i = 0; i < 3; i++) {
-			        bags[i] = new ReusableBag();
-			    }
-			    dispenser.load(bags);
-			    
-			    // Ensure dispenser notifies that bags are empty after being dispensed
-			    testProducts.PurchaseBags(bags);
-			   // assertTrue(dispenser.getQuantityRemaining() == 0);
-			    assertTrue("Dispenser is now out of bags",
-			               dispenser.getQuantityRemaining() == 0);
-			}
-
-		
-		@Test
-		public void testRegisterAndNotifyProductAdded() {
-		    final boolean[] wasCalled = {false};
-		    final Product[] notifiedProduct = {null};
-
-		    ProductsListener listener = new ProductsListener() {
-		        @Override
-		        public void productAdded(Products productFacade, Product product) {
-		            wasCalled[0] = true;
-		            notifiedProduct[0] = product;
-		        }
-		    };
-
-		    testProducts.register(listener);
-		    testProducts.notifyProductAdded(product);
-
-		    assertTrue("Listener should be notified", wasCalled[0]);
-		    assertEquals("Notified product should be the same as added", product, notifiedProduct[0]);
-		}
-		@Test
-		public void testDeregisterAndNotNotifyProduct() {
-		    final boolean[] wasCalled = {false};
-
-		    ProductsListener listener = new ProductsListener() {
-		        @Override
-		        public void productAdded(Products productFacade, Product product) {
-		            wasCalled[0] = true;
-		        }
-		    };
-
-		    testProducts.register(listener);
-		    testProducts.deregister(listener);
-		    testProducts.notifyProductAdded(product);
-
-		    assertFalse("Listener should not be notified after deregistration", wasCalled[0]);
-		}
-
-
-		
-		@Test
-		public void testNotifyProductRemoved() {
-		    final boolean[] wasCalled = {false};
-		    final Product[] notifiedProduct = {null};
-
-		    ProductsListener listener = new ProductsListener() {
-		        @Override
-		        public void productRemoved(Products productFacade, Product product) {
-		            wasCalled[0] = true;
-		            notifiedProduct[0] = product;
-		        }
-		    };
-
-		    testProducts.register(listener);
-		    testProducts.notifyProductRemoved(product);
-
-		    assertTrue("Listener should be notified", wasCalled[0]);
-		    assertEquals("Notified product should be the same as removed", product, notifiedProduct[0]);
-		}
-
-		
-		@Test
-		public void testNotifyAddProductToBaggingArea() {
-		    final boolean[] wasCalled = {false};
-		    final Product[] notifiedProduct = {null};
-
-		    ProductsListener listener = new ProductsListener() {
-		        @Override
-		        public void productToBaggingArea(Products productFacade, Product product) {
-		            wasCalled[0] = true;
-		            notifiedProduct[0] = product;
-		        }
-		    };
-
-		    testProducts.register(listener);
-		    testProducts.notifyAddProductToBaggingArea(product);
-
-		    assertTrue("Listener should be notified", wasCalled[0]);
-		    assertEquals("Notified product should be the same as the one added to bagging area", product, notifiedProduct[0]);
-		}
-		
-		@Test
-		public void testNotifyBagsPurchased() {
-		    final boolean[] wasCalled = {false};
-		    final long[] notifiedTotalCost = {0};
-
-		    ProductsListener listener = new ProductsListener() {
-		        @Override
-		        public void bagsPurchased(Products productFacade, long totalCost) {
-		            wasCalled[0] = true;
-		            notifiedTotalCost[0] = totalCost;
-		        }
-		    };
-
-		    testProducts.register(listener);
-		    long totalCost = 150;
-		    testProducts.notifyBagsPurchased(totalCost);
-
-		    assertTrue("Listener should be notified", wasCalled[0]);
-		    assertEquals("Notified total cost should match", totalCost, notifiedTotalCost[0]);
-		}
+	@Test (expected = OverloadedDevice.class)
+	public void testPurchaseBags_notEnoughBags() throws OverloadedDevice, EmptyDevice {
+		//initializing a new dispenser that has 2 bags loaded and a capacity of 100 reusable bags 
+		MockReusableBagDispenser dispenser = new MockReusableBagDispenser(2, 100); 
+		ReusableBag bag1 = new ReusableBag(); 
+        ReusableBag bag2 = new ReusableBag();
+        ReusableBag bag3 = new ReusableBag();
+        ReusableBag[] bags = {bag1, bag2, bag3}; 
+        
+        dispenser.load(bags);
+        testProducts.PurchaseBags(bags);  
+	}
 	
+	//Testing when there are enough bags in the dispenser 
+	@Test 
+	public void testPurchaseBags_EnoughBags() throws OverloadedDevice, EmptyDevice {
+		MockReusableBagDispenser dispenser = new MockReusableBagDispenser(2, 100); 
+		ReusableBag bag1 = new ReusableBag(); 
+        ReusableBag bag2 = new ReusableBag();
+        ReusableBag[] bags = {bag1, bag2}; 
+        dispenser.load(bags);
+        testProducts.PurchaseBags(bags);
+	}
 		
+	//Testing when the amount of bags in dispenser are being loaded (dispenser bags and purchased bags = same) 
+	// this one should notify that the bags are empty after its been dispensed
+	@Test 
+	public void testPurchaseBags_JustEnoughBags() throws OverloadedDevice, EmptyDevice{
+		MockReusableBagDispenser dispenser = new MockReusableBagDispenser(3, 100); 
+		ReusableBag[] bags = new ReusableBag[3];
+	    for (int i = 0; i < 3; i++) {
+	        bags[i] = new ReusableBag();
+	    }
+	    dispenser.load(bags);
+	    
+	    // Ensure dispenser notifies that bags are empty after being dispensed
+	    testProducts.PurchaseBags(bags);
+	   // assertTrue(dispenser.getQuantityRemaining() == 0);
+	    assertTrue("Dispenser is now out of bags",
+	               dispenser.getQuantityRemaining() == 0);
+	}
+
+	@Test
+	public void testRegisterAndNotifyProductAdded() {
+	    final boolean[] wasCalled = {false};
+	    final Product[] notifiedProduct = {null};
+
+	    ProductsListener listener = new ProductsListener() {
+	        @Override
+	        public void productAdded(Products productFacade, Product product) {
+	            wasCalled[0] = true;
+	            notifiedProduct[0] = product;
+	        }
+	    };
+
+	    testProducts.register(listener);
+	    testProducts.notifyProductAdded(product);
+
+	    assertTrue("Listener should be notified", wasCalled[0]);
+	    assertEquals("Notified product should be the same as added", product, notifiedProduct[0]);
+	}
 	
+	@Test
+	public void testDeregisterAndNotNotifyProduct() {
+	    final boolean[] wasCalled = {false};
+
+	    ProductsListener listener = new ProductsListener() {
+	        @Override
+	        public void productAdded(Products productFacade, Product product) {
+	            wasCalled[0] = true;
+	        }
+	    };
+
+	    testProducts.register(listener);
+	    testProducts.deregister(listener);
+	    testProducts.notifyProductAdded(product);
+
+	    assertFalse("Listener should not be notified after deregistration", wasCalled[0]);
+	}
+
+	@Test
+	public void testNotifyProductRemoved() {
+	    final boolean[] wasCalled = {false};
+	    final Product[] notifiedProduct = {null};
+
+	    ProductsListener listener = new ProductsListener() {
+	        @Override
+	        public void productRemoved(Products productFacade, Product product) {
+	            wasCalled[0] = true;
+	            notifiedProduct[0] = product;
+	        }
+	    };
+
+	    testProducts.register(listener);
+	    testProducts.notifyProductRemoved(product);
+
+	    assertTrue("Listener should be notified", wasCalled[0]);
+	    assertEquals("Notified product should be the same as removed", product, notifiedProduct[0]);
+	}
+	
+	@Test
+	public void testNotifyAddProductToBaggingArea() {
+	    final boolean[] wasCalled = {false};
+	    final Product[] notifiedProduct = {null};
+
+	    ProductsListener listener = new ProductsListener() {
+	        @Override
+	        public void productToBaggingArea(Products productFacade, Product product) {
+	            wasCalled[0] = true;
+	            notifiedProduct[0] = product;
+	        }
+	    };
+
+	    testProducts.register(listener);
+	    testProducts.notifyAddProductToBaggingArea(product);
+
+	    assertTrue("Listener should be notified", wasCalled[0]);
+	    assertEquals("Notified product should be the same as the one added to bagging area", product, notifiedProduct[0]);
+	}
+	
+	@Test
+	public void testNotifyBagsPurchased() {
+	    final boolean[] wasCalled = {false};
+	    final long[] notifiedTotalCost = {0};
+
+	    ProductsListener listener = new ProductsListener() {
+	        @Override
+	        public void bagsPurchased(Products productFacade, long totalCost) {
+	            wasCalled[0] = true;
+	            notifiedTotalCost[0] = totalCost;
+	        }
+	    };
+
+	    testProducts.register(listener);
+	    long totalCost = 150;
+	    testProducts.notifyBagsPurchased(totalCost);
+
+	    assertTrue("Listener should be notified", wasCalled[0]);
+	    assertEquals("Notified total cost should match", totalCost, notifiedTotalCost[0]);
+	}
 }
