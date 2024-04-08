@@ -296,7 +296,7 @@ public class ProductTest {
 	               station.getTotalOrderPrice() == initialPrice);
 	}
 	
-	//testing when not enough bags are in the dispenser 
+	//testing when not enough bags are in the dispenser. Should give EmptyDevice exception
 	@Test (expected = EmptyDevice.class)
 	public void testPurchaseBags_notEnoughBags() throws OverloadedDevice, EmptyDevice {
 		//initializing a new dispenser that has 2 bags loaded and a capacity of 100 reusable bags 
@@ -311,7 +311,8 @@ public class ProductTest {
         assertEquals(0, dispenser.getQuantityRemaining()); 
 	}
 	
-	//Testing when there are enough bags in the dispenser 
+	//Testing when there are enough bags in the dispenser and the dispenser is not fully emptied 
+	//This test is passing. The issue comes from the quanitityRemaining of the dispenser being emptied to 0. When tested it will never empty all the way to 0 tho. 
 	@Test 
 	public void testPurchaseBags_EnoughBags() throws OverloadedDevice, EmptyDevice {
 		MockReusableBagDispenser dispenser = new MockReusableBagDispenser(2, 100); 
@@ -327,7 +328,7 @@ public class ProductTest {
 	}
 		
 	//Testing when the amount of bags in dispenser are being loaded (dispenser bags and purchased bags = same) 
-	// this one should notify that the bags are empty after its been dispensed
+	// this one should notify that the dispenser is empty after its been dispensed
 	@Test
 	public void testPurchaseBags_JustEnoughBags() throws OverloadedDevice, EmptyDevice{
 		MockReusableBagDispenser dispenser = new MockReusableBagDispenser(0, 100); 
