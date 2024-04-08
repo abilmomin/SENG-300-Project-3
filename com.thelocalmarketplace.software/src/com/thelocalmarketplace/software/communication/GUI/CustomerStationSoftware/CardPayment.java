@@ -41,6 +41,7 @@ import java.io.IOException;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -55,13 +56,22 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 
+
+/**
+ * Dialog window for selecting card payment method.
+ */
 @SuppressWarnings("serial")
-public class CardPayment extends JFrame {
-
-    private int paymentType = 0;
-    private JTextField pinTextField;
+public class CardPayment extends JDialog {
+    private int paymentType = 0; 					// 1 for Swipe, 2 for Tap, 3 for Insert with PIN
+    private JTextField pinTextField; 				// Text field for PIN input
     private String pinInput;
-
+    
+    /**
+     * Constructs a new CardPayment dialog.
+     *
+     * @param software The SelfCheckoutStationSoftware instance.
+     * @param typeOfCard The type of card being used for payment.
+     */
     public CardPayment(SelfCheckoutStationSoftware software, String typeOfCard) {
         setTitle("Select Card Payment Method");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -69,6 +79,7 @@ public class CardPayment extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new FlowLayout());
 
+        // Radio buttons for selecting payment method
         JRadioButton swipeButton = new JRadioButton("Swipe");
         swipeButton.addActionListener(e -> {
             paymentType = 1;
@@ -80,25 +91,7 @@ public class CardPayment extends JFrame {
         JRadioButton insertButton = new JRadioButton("Insert Card");
         insertButton.addActionListener(e -> {
             paymentType = 3;
-
-            JFrame pinFrame = new JFrame("Pin Panel");
-            pinFrame.setLocationRelativeTo(null);
-            pinFrame.setSize(380, 350);
-
-            JPanel pinPanel = new JPanel();
-            pinPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-            pinTextField = new JTextField(); // Initialize the screen text field
-            pinTextField.setEditable(false); // Make it read-only
-            pinTextField.setBackground(Color.WHITE);
-            pinTextField.setHorizontalAlignment(JTextField.CENTER);
-            pinPanel.add(pinTextField, BorderLayout.CENTER);
-            pinTextField.setPreferredSize(new Dimension(300, 75));
-
-            JPanel keypadPanel = createPinPanel(pinFrame);
-            pinPanel.add(keypadPanel);
-            pinFrame.add(pinPanel);
-            pinFrame.setVisible(true);
+            openPinPanel(software, typeOfCard);
         });
 
         ButtonGroup group = new ButtonGroup();
@@ -111,40 +104,10 @@ public class CardPayment extends JFrame {
         radioPanel.add(tapButton);
         radioPanel.add(insertButton);
 
+        // Button to complete the payment process
         JButton finishPaymentButton = new JButton("Finish Payment");
         finishPaymentButton.addActionListener(e -> {
-            try {
-                switch (paymentType) {
-                    case 1 :
-                    	software.getStationHardware().getCardReader().swipe(software.getCard(typeOfCard));
-                    	dispose(); 
-                    	break;
-                    case 2 :
-                    	software.getStationHardware().getCardReader().tap(software.getCard(typeOfCard));
-                    	dispose();
-                    	break;
-                    case 3: 
-                    	software.getStationHardware().getCardReader().insert(software.getCard(typeOfCard), pinInput);
-                    	dispose();
-                    	break;
-                    default :
-                    	JOptionPane.showMessageDialog(this, "Please select a payment method.", "Payment", JOptionPane.INFORMATION_MESSAGE);
-                    	dispose();
-                    	break;
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } catch (InvalidPINException ipe) {
-                software.getGUI().customerPopUp("Invalid PIN Entered");
-                software.getStationHardware().getCardReader().remove();
-            } catch (BlockedCardException bce) {
-                software.getGUI().customerPopUp("The Card is Blocked");
-                try {
-                    software.getStationHardware().getCardReader().remove();
-                } catch (NullPointerSimulationException npse) { // Unable to remove card
-
-                }
-            }
+            processPayment(software, typeOfCard);
         });
 
         add(radioPanel);
@@ -152,6 +115,79 @@ public class CardPayment extends JFrame {
 
         setVisible(false);
     }
+
+    /**
+     * Opens a PIN entry panel when the "Insert Card" option is selected.
+     *
+     * @param software The SelfCheckoutStationSoftware instance.
+     * @param typeOfCard The type of card being used for payment.
+     */
+    private void openPinPanel(SelfCheckoutStationSoftware software, String typeOfCard) {
+    	
+    	 JFrame pinFrame = new JFrame("Pin Panel");
+    	    pinFrame.setLocationRelativeTo(null);
+    	    pinFrame.setSize(380, 350);
+
+    	    JPanel pinPanel = new JPanel();
+    	    pinPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+    	    pinTextField = new JTextField(); // Initialize the screen text field
+    	    pinTextField.setEditable(false); // Make it read-only
+    	    pinTextField.setBackground(Color.WHITE);
+    	    pinTextField.setHorizontalAlignment(JTextField.CENTER);
+    	    pinPanel.add(pinTextField, BorderLayout.CENTER);
+    	    pinTextField.setPreferredSize(new Dimension(300, 75));
+
+    	    JPanel keypadPanel = createPinPanel(pinFrame);
+    	    pinPanel.add(keypadPanel);
+    	    pinFrame.add(pinPanel);
+    	    pinFrame.setVisible(true);
+    }
+
+    /**
+     * Processes the selected payment method and completes the payment.
+     *
+     * @param software The SelfCheckoutStationSoftware instance.
+     * @param typeOfCard The type of card being used for payment.
+     */
+    private void processPayment(SelfCheckoutStationSoftware software, String typeOfCard) {
+    	 try {
+    		 switch (paymentType) {
+	            case 1 :
+	                software.getStationHardware().getCardReader().swipe(software.getCard(typeOfCard));
+	                dispose();
+	                break;
+	            case 2 :
+	                software.getStationHardware().getCardReader().tap(software.getCard(typeOfCard));
+	                dispose();
+	                break;
+	            case 3:
+	                software.getStationHardware().getCardReader().insert(software.getCard(typeOfCard), pinInput);
+	                dispose();
+	                break;
+	            default :
+	                JOptionPane.showMessageDialog(this, "Please select a payment method.", "Payment", JOptionPane.INFORMATION_MESSAGE);
+	                dispose();
+	                break;
+    		 	}
+	    } catch (IOException ex) {
+	        ex.printStackTrace();
+	        
+	    } catch (InvalidPINException ipe) {
+	        software.getGUI().customerPopUp("Invalid PIN Entered");
+	        software.getStationHardware().getCardReader().remove();
+	        
+	    } catch (BlockedCardException bce) {
+	        software.getGUI().customerPopUp("The Card is Blocked");
+	        
+	        try {
+	            software.getStationHardware().getCardReader().remove();
+	        } catch (NullPointerSimulationException npse) { 						// Unable to remove card
+
+	        }
+	  }
+    }
+
 
     public JPanel createPinPanel(JFrame pinPanel) {
     	JPanel keypadPanel = new JPanel();
@@ -202,7 +238,7 @@ public class CardPayment extends JFrame {
     ActionListener addNum = e -> {
         JButton button = (JButton) e.getSource();
         String digit = button.getText();
-        String current = pinTextField.getText(); // Append the digit to the screen
+        String current = pinTextField.getText(); 									// Append the digit to the screen
         String newText = current + digit;
         
         Font currentFont = pinTextField.getFont();
