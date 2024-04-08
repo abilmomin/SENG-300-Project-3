@@ -388,7 +388,7 @@ public class Products {
 					throw new OverloadedDevice();
 				}
 				else {
-					reusableBagDispenser.load(bags);
+					//reusableBagDispenser.load(bags);
 					//dispensing appropriate number of bags
 						reusableBagDispenser.dispense();
 					//When the customer required the exact amount of bags that are in the dispenser and empty it when their bags are dispensed 
