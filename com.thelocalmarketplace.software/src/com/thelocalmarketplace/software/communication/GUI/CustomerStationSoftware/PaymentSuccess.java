@@ -90,7 +90,6 @@ public class PaymentSuccess extends JFrame {
 				Receipt rec = new Receipt(stationSoftware.getStationHardware().getPrinter(), stationSoftware.getFunds());
 				try {
 					JOptionPane.showMessageDialog(PaymentSuccess.this, rec.printReceipt());
-					System.exit(EXIT_ON_CLOSE);
 				} catch (HeadlessException | EmptyDevice | OverloadedDevice e1) {
 					e1.printStackTrace();
 				}
@@ -102,6 +101,7 @@ public class PaymentSuccess extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				System.out.println("No is selected"); // Debugging output
 				JOptionPane.showMessageDialog(PaymentSuccess.this, "Thank you for shopping with us! We hope to see you again!");
 				System.exit(EXIT_ON_CLOSE);
 			}
