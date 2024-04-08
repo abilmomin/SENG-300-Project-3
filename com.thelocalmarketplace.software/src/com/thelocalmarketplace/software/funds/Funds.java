@@ -45,13 +45,16 @@ import java.util.stream.Collectors;
 import com.jjjwelectronics.EmptyDevice;
 
 import com.jjjwelectronics.OverloadedDevice;
+import com.jjjwelectronics.printer.IReceiptPrinter;
 import com.tdc.CashOverloadException;
 
 import com.tdc.DisabledException;
 
 import com.tdc.NoCashAvailableException;
+import com.tdc.Sink;
 import com.tdc.banknote.BanknoteStorageUnit;
 import com.tdc.banknote.IBanknoteDispenser;
+import com.tdc.coin.Coin;
 import com.tdc.coin.CoinStorageUnit;
 import com.tdc.coin.ICoinDispenser;
 
@@ -82,6 +85,9 @@ public class Funds {
 		coinsAvailable = new HashMap<BigDecimal, Number>();
 		banknotesAvailable = new HashMap<BigDecimal, Number>();
 		
+		if(checkoutStation == null)
+			throw new IllegalArgumentException("The argument cannot be null");
+
 		this.checkoutStationSoftware = checkoutStation;
 		
 		// register the coin payment handler to track coin available and that were entered into the checkout station
@@ -224,39 +230,7 @@ public class Funds {
 		BigDecimal total = new BigDecimal(checkoutStationSoftware.getTotalOrderPrice());
 		return total.subtract(getTotalPaid());
 	}
-	/**
-	 * Helper method for dispenseAccurateChange
-	 * @throws CashOverloadException 
-	 * @throws DisabledException 
-	 * @throws NoCashAvailableException 
-	 * */
-	public BigDecimal dispenseBanknote(BigDecimal remainingAmount, BigDecimal[] bankNoteDenominations, AbstractSelfCheckoutStation station) throws NoCashAvailableException, DisabledException, CashOverloadException {
-		// Try using banknotes first
-		for (BigDecimal bankNote : bankNoteDenominations) {
-			if (remainingAmount.compareTo(bankNote) >= 0 && (int)banknotesAvailable.get(bankNote) > 0) {
-				station.getBanknoteDispensers().get(bankNote).emit();
-				remainingAmount = remainingAmount.subtract(bankNote);
-				break;
-			}
-		}
-		return remainingAmount;
-	}
-	/**
-	 * Helper method for dispenseAccurateChange
-	 * @throws CashOverloadException 
-	 * @throws DisabledException 
-	 * @throws NoCashAvailableException 
-	 * */
-	public BigDecimal dispenseCoin(BigDecimal remainingAmount, List<BigDecimal> coinDenominations, AbstractSelfCheckoutStation station) throws NoCashAvailableException, DisabledException, CashOverloadException {
-		for (BigDecimal coin : coinDenominations) {
-			if (remainingAmount.compareTo(coin) >= 0 && (int)coinsAvailable.get(coin) > 0) {
-				station.getCoinDispensers().get(coin).emit();
-				remainingAmount = remainingAmount.subtract(coin);
-				break;
-			}
-		}
-		return remainingAmount;
-	}
+	
 	/**
 	 * Dispenses the correct amount of change to the customer and gives them the
 	 * choice to print a receipt.
@@ -276,21 +250,75 @@ public class Funds {
 		AbstractSelfCheckoutStation station = (AbstractSelfCheckoutStation) checkoutStationSoftware.getStationHardware();
 		
 		BigDecimal remainingAmount = changeValue;
-		List<BigDecimal> coinDenominations = station.getCoinDenominations().stream().sorted(Collections.reverseOrder()).collect(Collectors.toList());
-	    BigDecimal[] bankNoteDenominations = Arrays.stream(station.getBanknoteDenominations()).sorted(Collections.reverseOrder()).toArray(BigDecimal[]::new);
+		BigDecimal amountDispensed = BigDecimal.ZERO;
+
+		List<BigDecimal> coinDenominations = station.getCoinDenominations();
+		Collections.sort(coinDenominations);
+		Collections.reverse(coinDenominations);
+		List<BigDecimal> bankNoteDenominations = Arrays.stream(station.getBanknoteDenominations())
+				.collect(Collectors.toList());
+		Collections.sort(bankNoteDenominations);
+		Collections.reverse(bankNoteDenominations);
 
 		// This approach aims to find the optimal combination of denominations to minimize the
 		// number of banknotes and coins used while considering the limited availability of
 		// each denomination.
 		while (remainingAmount.compareTo(BigDecimal.ZERO) > 0) {
-			BigDecimal newRemainingAmount = dispenseBanknote(remainingAmount, bankNoteDenominations, station);
-			if (newRemainingAmount.compareTo(remainingAmount) == 0) { // If no banknotes were dispensed, try coins.
-	            newRemainingAmount = dispenseCoin(remainingAmount, coinDenominations, station);
-	        }
-	        if (newRemainingAmount.compareTo(remainingAmount) == 0) break; // If no change was dispensed, exit.
-	        remainingAmount = newRemainingAmount; // Update remaining amount for next iteration.
-	    }
+			// If neither banknotes nor coins can be used, break the loop
+			BigDecimal lowestCoin = coinDenominations.get(coinDenominations.size() - 1);
+			BigDecimal lowestBankNote = bankNoteDenominations.get(bankNoteDenominations.size() - 1);
+			BigDecimal lowestVal;
+			int sizeOfLowest;
+			
+			if(lowestCoin.compareTo(lowestBankNote) > 0) {
+				lowestVal = lowestBankNote;
+				sizeOfLowest = (int)banknotesAvailable.get(lowestVal);
+				if (remainingAmount.compareTo(lowestVal) < 0 && ( sizeOfLowest > 0) ) {
+					station.getBanknoteDispensers().get(lowestVal).emit();
+					amountDispensed = changeValue;
+					remainingAmount = BigDecimal.ZERO;
+					break;
+				}
+			}
+			else {
+				lowestVal = lowestCoin;
+				sizeOfLowest = (int)coinsAvailable.get(lowestVal);
+				if (remainingAmount.compareTo(lowestVal) < 0 && ( sizeOfLowest > 0) ) {
+					station.getCoinDispensers().get(lowestVal).emit();
+					amountDispensed = changeValue;
+					remainingAmount = BigDecimal.ZERO;
+					break;
+				}
+			}
+			
+			boolean dispensed = false;
+			// Try using banknotes first
+			for (BigDecimal bankNote : bankNoteDenominations) {
+				if (remainingAmount.compareTo(bankNote) >= 0 && (int)banknotesAvailable.get(bankNote) > 0) {
+					station.getBanknoteDispensers().get(bankNote).emit();
+					amountDispensed = amountDispensed.add(bankNote);
+					remainingAmount = remainingAmount.subtract(bankNote);
+					dispensed = true;
+					break;
+				}
+			}
 
-	    return remainingAmount.compareTo(BigDecimal.ZERO) == 0;
+			// If no banknotes are available or insufficient, try using coins
+			if (!dispensed) {
+				for (BigDecimal coin : coinDenominations) {
+					if (remainingAmount.compareTo(coin) >= 0 && (int)coinsAvailable.get(coin) > 0) {
+						station.getCoinDispensers().get(coin).emit();
+						amountDispensed = amountDispensed.add(coin);
+						remainingAmount = remainingAmount.subtract(coin);
+						dispensed = true;
+						break;
+					}
+				}
+			}
+			if(!dispensed)
+				break;
+		}
+
+		return remainingAmount.compareTo(BigDecimal.ZERO) == 0;
 	}
 }

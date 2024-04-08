@@ -27,6 +27,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,6 +56,7 @@ public class CustomerStation extends JFrame {
     private SearchProductByText searchProductByText;
     private BaggingArea baggingArea;
     private SettingsPanel settingsPanel;
+    private ArrayList<JButton> cartItemButtons;
 
     private JButton selectedCartItemButton = null; // Variable to track the selected cart item button
 
@@ -67,6 +70,8 @@ public class CustomerStation extends JFrame {
     	paymentWindow = new SelectPayment(stationSoftwareInstance);
     	searchProductByText = new SearchProductByText(stationSoftwareInstance, attendantGUI);
         baggingArea = new BaggingArea();
+        
+        cartItemButtons = new ArrayList<>();
     	
         setTitle("Self-Checkout Station " + selectedStation);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -362,6 +367,7 @@ public class CustomerStation extends JFrame {
             itemButton.setBackground(Color.LIGHT_GRAY);
         });
         cartItemsPanel.add(itemButton);
+        cartItemButtons.add(itemButton);
         refreshCartPanel();
 
         double totalPrice = stationSoftwareInstance.getTotalOrderPrice();
@@ -388,11 +394,11 @@ public class CustomerStation extends JFrame {
                     if (product.getDescription().equals(productGettingRemoved)) {
                         stationSoftwareInstance.getProductHandler().removeItemFromOrder(pluItem);
                         boolean itemRemovedFromBaggingArea = baggingArea.itemToRemove(productGettingRemoved);
+                        itemRemoved = true;
 
                         if(itemRemovedFromBaggingArea)
                             new RemoveFromBagging(pluItem, stationSoftwareInstance, attendantGUI, baggingArea);
                         else stationSoftwareInstance.setStationUnblock();
-                        itemRemoved = true;
                         break;
                     }
                 } else if (item instanceof BarcodedItem) {
@@ -599,6 +605,26 @@ public class CustomerStation extends JFrame {
     	}
     	new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
     }
+    
+    public boolean canMakePopUp = true;
+
+    public void customerRemoveItemPopUp() {
+        if (canMakePopUp && !cartItemButtons.isEmpty()) {
+            canMakePopUp = false;
+            JButton itemButton = cartItemButtons.get(cartItemButtons.size() - 1);
+
+            if (selectedCartItemButton != null) 
+                selectedCartItemButton.setBackground(null); 
+            
+            selectedCartItemButton = itemButton;
+            selectedCartItemButton.setBackground(Color.LIGHT_GRAY);
+            
+            String itemName = extractProductName(selectedCartItemButton.getText());
+            
+            new RemoveItemRequest(itemName, stationSoftwareInstance, attendantGUI);
+        }
+    }
+
 
     public void handleRequestAssistance() {
         needsAssistance = true;
