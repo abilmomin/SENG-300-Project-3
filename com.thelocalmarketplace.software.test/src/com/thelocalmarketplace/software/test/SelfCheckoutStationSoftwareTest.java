@@ -38,11 +38,9 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigInteger;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.Set;
 
 import org.junit.Before;
-
 import org.junit.Test;
 
 import com.jjjwelectronics.Item;
@@ -59,9 +57,9 @@ import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.external.CardIssuer;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
+
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
-import ca.ucalgary.seng300.simulation.InvalidStateSimulationException;
 import powerutility.PowerGrid;
 
 public class SelfCheckoutStationSoftwareTest {
@@ -209,7 +207,7 @@ public class SelfCheckoutStationSoftwareTest {
     
     @Test(expected = IllegalArgumentException.class)
     public void SelfCheckoutStationSoftwareNull() {
-    	SelfCheckoutStationSoftware nullSoftware = new SelfCheckoutStationSoftware(null);
+    	new SelfCheckoutStationSoftware(null);
     }
     
     @Test
