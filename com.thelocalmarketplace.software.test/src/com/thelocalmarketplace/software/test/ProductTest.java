@@ -370,4 +370,60 @@ public class ProductTest {
 	    assertTrue("Listener should be notified", wasCalled[0]);
 	    assertEquals("Notified total cost should match", totalCost, notifiedTotalCost[0]);
 	}
+	@Test
+		public void testProductAddedNotification() {
+		   
+		    ProductsListenerStub listenerStub = new ProductsListenerStub();
+		    testProducts.register(listenerStub); 
+
+		    
+		    testProducts.notifyProductAdded(product); 
+
+		    // Assert
+		    assertTrue("Product added should be called", listenerStub.isProductAddedCalled());
+		    assertEquals("The added product should be the same as notified", product, listenerStub.getLastAddedProduct());
+		}
+		
+		@Test
+		public void testProductRemovedNotification() {
+		    
+		    ProductsListenerStub listenerStub = new ProductsListenerStub();
+		    testProducts.register(listenerStub); 
+
+		    
+		    testProducts.notifyProductRemoved(product); 
+
+		    // Assert
+		    assertTrue("Product removed should be called", listenerStub.isProductRemovedCalled());
+		    assertEquals("The removed product should be the same as notified", product, listenerStub.getLastRemovedProduct());
+		}
+		
+		@Test
+		public void testProductToBaggingAreaNotification() {
+		    
+		    ProductsListenerStub listenerStub = new ProductsListenerStub();
+		    testProducts.register(listenerStub);
+
+		    
+		    testProducts.notifyAddProductToBaggingArea(product); 
+
+		    // Assert
+		    assertTrue("productToBaggingArea should be called", listenerStub.isProductToBaggingAreaCalled());
+		    assertEquals("The product notified for bagging area should be the same as provided", product, listenerStub.getLastBaggingAreaProduct());
+		}
+
+		@Test
+		public void testBagsPurchasedNotification() {
+		    
+		    ProductsListenerStub listenerStub = new ProductsListenerStub();
+		    testProducts.register(listenerStub);
+		    long totalCost = 150; 
+
+		    
+		    testProducts.notifyBagsPurchased(totalCost); 
+
+		    // Assert
+		    assertTrue("bagsPurchased should be called", listenerStub.isBagsPurchasedCalled());
+		    assertEquals("The total cost notified should match the provided cost", totalCost, listenerStub.getLastBagsPurchasedTotalCost());
+		}
 }
