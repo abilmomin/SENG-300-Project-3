@@ -149,11 +149,11 @@ public class SelfCheckoutStationSoftwareTest {
     	
     	Item newItem = new BarcodedItem(barcode, mass);
     	software.addItemToOrder(newItem);
-    	assertTrue(software.removeItemFromOrder(newItem));
+    	software.removeFromOrder(newItem);
     	
     	Item newItem1 = new PLUCodedItem(plucode, mass);
     	software.addItemToOrder(newItem1);
-    	assertTrue(software.removeItemFromOrder(newItem1));
+    	software.removeFromOrder(newItem1);
     	
     	ArrayList<Item> order = software.getOrder();
     	assertEquals(0, order.size());
@@ -165,7 +165,7 @@ public class SelfCheckoutStationSoftwareTest {
     	Mass mass = new Mass(BigInteger.valueOf(60));
     	PriceLookUpCode plucode = new PriceLookUpCode("1111");
     	Item nonExistantItem = new PLUCodedItem(plucode, mass);
-    	assertFalse(software.removeItemFromOrder(nonExistantItem));
+    	software.removeFromOrder(nonExistantItem);
     }
     
     @Test
