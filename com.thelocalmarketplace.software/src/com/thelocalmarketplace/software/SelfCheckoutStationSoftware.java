@@ -60,7 +60,6 @@ public class SelfCheckoutStationSoftware {
 	private CustomerStation gui;
 	private ProductsDatabase allProducts; 
 
-	
 	// Listeners
 	public ScannerListener scannerListener;
 
@@ -203,30 +202,6 @@ public class SelfCheckoutStationSoftware {
 	}
 	
 	/**
-	 * Function to start a session for self-checkout machine
-	 * @param scanner 
-	 * 			The scanner used to obtain user input.
-	 * @throws InvalidStateSimulationException If a session is already active.
-	 */
-	public void startSession(Scanner scanner) {
-		if (activeSession) {
-			throw new InvalidStateSimulationException("Session already started.");
-		}
-		
-		resetConfigurationToDefaults();
-		
-
-		// Prompt the user to touch anywhere to start and wait for an input.
-		System.out.println("Welcome to The Local Marketplace. Touch anywhere to start.");
-		
-		// assume the user gives some kind of input.
-		scanner.nextLine();
-
-		setStationActive(true);
-
-	}
-	
-	/**
 	 * Resets the current order monitored by the software.
 	 */
 	public void resetOrder() {
@@ -248,66 +223,22 @@ public class SelfCheckoutStationSoftware {
 	 * Removes an item from the order.
 	 *
 	 * @param item The item to remove from order.
-	 * @return true if the item was successfully removed, false otherwise.
 	 */
-	public boolean removeItemFromOrder(Item item) {
-		System.out.println("Removing item from order");
-		if (this.order.contains(item)) {
-			this.order.remove(item);
-			
-			setStationBlock();
-			
-			if (item instanceof BarcodedItem) {
-				Barcode barcode = ((BarcodedItem) item).getBarcode();
-				BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
-				if (product != null) {
-					double productWeight = product.getExpectedWeight();
-					long productPrice = product.getPrice();
-					
-					removeTotalOrderWeightInGrams(productWeight);
-					removeTotalOrderPrice(productPrice);
-					
-					System.out.println("Please remove item from the bagging area");
-					
-					products.notifyProductRemoved(product);
-				}
-				return true;
-			} 
-			
-			if (item instanceof PLUCodedItem) {
-				PriceLookUpCode PLUCode = ((PLUCodedItem) item).getPLUCode();
-				PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
-				if (product != null) {
-					Mass itemMass = item.getMass();
-					double productWeight = itemMass.inGrams().doubleValue();
-					long productPrice = product.getPrice();
-					
-					removeTotalOrderWeightInGrams(productWeight);
-					removeTotalOrderPrice(productPrice);
-					
-					System.out.println("Please remove item from the bagging area");
-					
-					products.notifyProductRemoved(product);
-				}
-				return true;
-			}
-			
-		} else {
-			System.out.println("Item not found in the order.");
-			return false;
-		}
-		return false;
-		
-	
+	public void removeFromOrder(Item item) {
+		this.order.remove(item);
 	}
 	
+	/**
+	 * Find the associated product with a given PLU.
+	 * 
+	 * @param code The PLU code of a product.
+	 * @return the product with the given PLU code.
+	 */
 	public PLUCodedProduct matchCodeAndPLUProduct(String code) {
 		PriceLookUpCode plu = new PriceLookUpCode(code);
 		PLUCodedProduct currentItem = ProductDatabases.PLU_PRODUCT_DATABASE.get(plu);
 		return currentItem;	
 	}
-	
-
 	
 	/**
 	 * Gets the order.
@@ -341,7 +272,6 @@ public class SelfCheckoutStationSoftware {
 	 * 
 	 * @return The total price of order.
 	 */
-	
 	public void setOrderTotalPrice(double price) {
 		this.totalOrderPrice = price;
 	}
@@ -352,18 +282,12 @@ public class SelfCheckoutStationSoftware {
 	public void addTotalOrderWeightInGrams(double weight) {
 		this.totalOrderWeight += weight;
 	}
-	public void removeTotalOrderWeightInGrams(double weight) {
-		this.totalOrderWeight -= weight;
-	}
 	
 	/**
 	 * Updates the total price of the order
 	 */
 	public void addTotalOrderPrice(double price) {
 		this.totalOrderPrice += price;
-	}
-	public void removeTotalOrderPrice(double price) {
-		this.totalOrderPrice -= price;
 	}
 
 	/**
@@ -395,7 +319,7 @@ public class SelfCheckoutStationSoftware {
 		if (Objects.equals(type, "credit")) {
 			creditCard = card;
 		}
-		else if (Objects.equals(type, "debit")){
+		else if (Objects.equals(type, "debit")) {
 			debitCard = card;
 		}
 	}
@@ -412,5 +336,4 @@ public class SelfCheckoutStationSoftware {
 	public Products getProductHandler() {
 		return products;
 	}
-	
 }

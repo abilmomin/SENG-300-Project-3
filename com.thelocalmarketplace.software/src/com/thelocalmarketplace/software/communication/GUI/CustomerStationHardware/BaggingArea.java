@@ -1,5 +1,8 @@
 /**
 
+ SENG 300 - ITERATION 3
+ GROUP GOLD {8}
+
  Name                      UCID
 
  Yotam Rojnov             30173949
@@ -25,14 +28,25 @@
  Nami Marwah              30178528
 
  */
-// WORK IN PROGRESS
+
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware;
 
-import javax.swing.*;
-import java.awt.*;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
 
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListCellRenderer;
+
+@SuppressWarnings("serial")
 public class BaggingArea extends JFrame {
     public JFrame baggingAreaFrame;
     JPanel baggingAreaPanel;
@@ -41,37 +55,45 @@ public class BaggingArea extends JFrame {
     JScrollPane scrollPane;
     DefaultListModel<Product> listModel;
 
-    // Constructor for the BaggingArea class
+    /**
+     * Simple constructor for BaggingArea. Initializes a new JFrame.
+     */
     public BaggingArea() {
         baggingAreaFrame = new JFrame("Bagging Area Simulation");
         baggingAreaPanel = new JPanel();
         baggingAreaPanel.setLayout(new BoxLayout(baggingAreaPanel, BoxLayout.Y_AXIS));
-        setSize(600, 400);  // Set the size of the window
+        setSize(600, 400);
 
         listModel = new DefaultListModel<>();
 
         addWidgets();
     }
 
+    /**
+     * Add a product onto the listModel.
+     */
     public void addProduct(String name) {
-        System.out.println("Adding product: " + name);
         listModel.addElement(new Product(name));
     }
 
+    /**
+     * Remove a product from the listModel.
+     * @param name of the product to be removed.
+     */
     public void removeProduct(String name) {
-        System.out.println("Removing product: " + name);
         for (int i = 0; i < listModel.size(); i++) {
-
-            System.out.println("THIS IS THE NAME 1: " + listModel.get(i).getName());
-            System.out.println("THIS IS THE NAME 2: " + name);
             if (listModel.get(i).getName().equals(name)) {
-                System.out.println("ACTUALLY REMOVING");
                 listModel.remove(i);
                 break;
             }
         }
     }
 
+    /**
+     * Checks if a product exists in the listModel.
+     * @param name of the product to be checked.
+     * @return true if the product exists, false otherwise.
+     */
     public boolean itemToRemove(String name) {
         for (int i = 0; i < listModel.size(); i++) {
             if (listModel.get(i).getName().equals(name)) {
@@ -81,7 +103,6 @@ public class BaggingArea extends JFrame {
         return false;
     }
 
-    // Add widgets to the frame
     private void addWidgets() {
         productList = new JList<>(listModel);
         productList.setCellRenderer(new ProductRenderer());
@@ -99,7 +120,6 @@ public class BaggingArea extends JFrame {
         baggingAreaFrame.setVisible(false);
     }
 
-    // Method to create styled buttons
     private JButton createStyledButton(String text) {
         JButton button = new JButton(text);
         button.setPreferredSize(new Dimension(150, 50));
@@ -108,7 +128,6 @@ public class BaggingArea extends JFrame {
         return button;
     }
 
-    // Product class to hold item information
     static class Product {
         String name;
 
@@ -121,7 +140,6 @@ public class BaggingArea extends JFrame {
         }
     }
 
-    // Custom cell renderer to display products
     static class ProductRenderer extends JLabel implements ListCellRenderer<Product> {
         @Override
         public Component getListCellRendererComponent(JList<? extends Product> list, Product product, int index,

@@ -12,7 +12,7 @@ public class MockReusableBagDispenser extends AbstractReusableBagDispenser imple
 
 
     public MockReusableBagDispenser(int quantityRemaining, int capacity) {
-        super(); 
+       // super(); 
     	this.quantityRemaining = quantityRemaining;
         this.capacity = capacity;
     }
@@ -38,16 +38,20 @@ public class MockReusableBagDispenser extends AbstractReusableBagDispenser imple
         quantityRemaining += bags.length;
     }
     
-    @Override
-    public ReusableBag[] unload() {
+    //@Override
+    //public ReusableBag[] unload() {
         // Implementation of unload method
-        return null;
-    }
+       // return null;
+   // }
     
     @Override
     public ReusableBag dispense() throws EmptyDevice {
         // Implementation of dispense method
-        return null;
+    	if (quantityRemaining == 0) {
+            throw new EmptyDevice("Dispenser is empty");
+        }
+        quantityRemaining--;
+        return new ReusableBag();
     }
 
 }

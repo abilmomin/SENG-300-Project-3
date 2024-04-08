@@ -70,51 +70,41 @@ public class SelfCheckoutStationSoftwareTest {
     @Before
     public void setUp() {
     	SelfCheckoutStationBronze stationB = new SelfCheckoutStationBronze();
+    	PowerGrid.engageUninterruptiblePowerSource();
     	stationB.plugIn(PowerGrid.instance());
     	stationB.turnOn();
     	software = new SelfCheckoutStationSoftware(stationB);
 
     	// Adding a sample BarcodedItem
-    	Mass mass = new Mass(BigInteger.valueOf(50));
     	Numeral[] barcodeDigits = new Numeral[]{Numeral.one, Numeral.two, Numeral.three, Numeral.four, Numeral.five};
     	Barcode barcode = new Barcode(barcodeDigits);
-    	Item newItem = new BarcodedItem(barcode, mass);
+    	Mass mass = new Mass(BigInteger.valueOf(50));
+    	Item barcodedItem = new BarcodedItem(barcode, mass);
+    	software.addItemToOrder(barcodedItem);
 
     	// Adding a sample PLUCodedItem 
     	PriceLookUpCode plucode = new PriceLookUpCode("1234");
-    	Item newItem1 = new PLUCodedItem(plucode, mass);
-
-    	software.addItemToOrder(newItem);
-    	software.addItemToOrder(newItem1);
+    	mass = new Mass(BigInteger.valueOf(60));
+    	Item plucodedItem = new PLUCodedItem(plucode, mass);
+    	software.addItemToOrder(plucodedItem);
     }
 
     @Test
-    public void testSetStationBlock() {
-    	// have to give it power first
-    	software.setStationBlock();
+    public void testStationBlock() {
     	assertFalse(software.getStationBlock());
-    }
-
-    @Test
-    public void testSetStationUnblock() {
+    	software.setStationBlock();
+    	assertTrue(software.getStationBlock());
     	software.setStationUnblock();
     	assertFalse(software.getStationBlock());
     }
     
     @Test
     public void testSetStationActive() {
-    	software.setStationActive(true);
     	assertFalse(software.getStationActive());
-    }
-    
-    @Test
-    public void testStartSession() {
-    	String input = "Touch Screen";
-    	Scanner scanner = new Scanner(input);
-    	
-    	software.startSession(scanner);
-    
+    	software.setStationActive(true);
     	assertTrue(software.getStationActive());
+    	software.setStationActive(false);
+    	assertFalse(software.getStationActive());
     }
     
     @Test
@@ -125,23 +115,21 @@ public class SelfCheckoutStationSoftwareTest {
     
     	assertEquals(0, software.getTotalOrderWeightInGrams(), 0.0001);
     	assertEquals(0, software.getTotalOrderPrice(), 0.0001);
-    	assertTrue("The order should be empty", order.isEmpty());
+    	assertTrue("The order should be empty.", order.isEmpty());
     }
     
     @Test
     public void testAddItemToOrder() {
     	software.resetOrder();
     	
-    	Mass mass = new Mass(BigInteger.valueOf(54));
     	Item bag = new ReusableBag();
-    	
     	software.addItemToOrder(bag);
     	
     	ArrayList<Item> order = software.getOrder();
     
     	assertEquals(0, software.getTotalOrderWeightInGrams(), 0.0001);
     	assertEquals(0, software.getTotalOrderPrice(), 0.0001);
-    	assertTrue("The order should contain a bag ", order.contains(bag));
+    	assertTrue("The order should contain a bag.", order.contains(bag));
     }
     
     @Test
@@ -151,24 +139,24 @@ public class SelfCheckoutStationSoftwareTest {
     	Mass mass = new Mass(BigInteger.valueOf(54));
     	Numeral[] barcodeDigits = new Numeral[]{Numeral.one, Numeral.two, Numeral.three, Numeral.four, Numeral.five};
     	Barcode barcode = new Barcode(barcodeDigits);
-    	Item newItem = new BarcodedItem(barcode, mass);
     	
-    	BarcodedProduct barcodeProduct = new BarcodedProduct(barcode, "Just a testing product",10 , 50);
+    	BarcodedProduct barcodeProduct = new BarcodedProduct(barcode, "Just a testing product", 10, 50);
     	ProductDatabases.BARCODED_PRODUCT_DATABASE.put(barcode, barcodeProduct);
     	
-    	PriceLookUpCode plucode = new PriceLookUpCode("1234");
-    	Item newItem1 = new PLUCodedItem(plucode, mass);
-    	
+    	PriceLookUpCode plucode = new PriceLookUpCode("1234");    	
     	PLUCodedProduct PLUProduct = new PLUCodedProduct(plucode, "Just a testing product", 10);
     	ProductDatabases.PLU_PRODUCT_DATABASE.put(plucode, PLUProduct);
     	
+    	Item newItem = new BarcodedItem(barcode, mass);
     	software.addItemToOrder(newItem);
-    	software.addItemToOrder(newItem1);
     	assertTrue(software.removeItemFromOrder(newItem));
+    	
+    	Item newItem1 = new PLUCodedItem(plucode, mass);
+    	software.addItemToOrder(newItem1);
     	assertTrue(software.removeItemFromOrder(newItem1));
     	
     	ArrayList<Item> order = software.getOrder();
-    	
+    	assertEquals(0, order.size());
     	assertTrue("The order should be empty", software.isOrderEmpty());
     }
     
@@ -181,30 +169,42 @@ public class SelfCheckoutStationSoftwareTest {
     }
     
     @Test
-    public void testAddTotalOrderWeightInGrams() {
-    	software.addTotalOrderWeightInGrams(10);
-    	assertEquals(110, software.getTotalOrderWeightInGrams(), 0.0001);
+    public void testTotalOrderWeightInGrams() {
+    	double oldTotalOrderPrice = software.getTotalOrderWeightInGrams();
+    	
+    	double priceToAdd = 10;
+    	software.addTotalOrderWeightInGrams(priceToAdd);
+    	assertEquals(oldTotalOrderPrice + priceToAdd, software.getTotalOrderWeightInGrams(), 0.0001);
+
+    	oldTotalOrderPrice = software.getTotalOrderWeightInGrams();
+    	
+    	double priceToRemove = -20;
+    	software.addTotalOrderWeightInGrams(priceToRemove);
+    	assertEquals(oldTotalOrderPrice + priceToRemove, software.getTotalOrderWeightInGrams(), 0.0001);
     }
     
     @Test
-    public void testRemoveTotalOrderWeightInGrams() {
-    	software.removeTotalOrderWeightInGrams(10);
-    	assertEquals(90, software.getTotalOrderWeightInGrams(), 0.0001);
-    }
-    
-    @Test
-    public void testAddTotalOrderPrice() {
+    public void testTotalOrderPrice() {
     	double oldTotalOrderPrice = software.getTotalOrderPrice();
-    	software.addTotalOrderPrice(10);
-    	double newTotalOrderPrice = software.getTotalOrderPrice() + oldTotalOrderPrice;
-    	assertEquals(newTotalOrderPrice, software.getTotalOrderPrice(), 0.0001);
+    	
+    	double priceToAdd = 20;
+    	software.addTotalOrderPrice(priceToAdd);
+    	assertEquals(oldTotalOrderPrice + priceToAdd, software.getTotalOrderPrice(), 0.0001);
+    	
+    	oldTotalOrderPrice = software.getTotalOrderPrice();
+    	
+    	double priceToRemove = -10;
+    	software.addTotalOrderPrice(priceToRemove);
+    	assertEquals(oldTotalOrderPrice + priceToRemove, software.getTotalOrderPrice(), 0.0001);
     }
     
     @Test
-    public void testRemoveTotalOrderPrice() {
+    public void testSetTotalOrderPrice() {
     	software.setOrderTotalPrice(20);
-    	software.removeTotalOrderPrice(10);
+    	software.addTotalOrderPrice(-10);
     	assertEquals(10, software.getTotalOrderPrice(), 0.0001);
+    	software.addTotalOrderPrice(20);
+    	assertEquals(30, software.getTotalOrderPrice(), 0.0001);
     }
     
     @Test(expected = IllegalArgumentException.class)
@@ -212,16 +212,7 @@ public class SelfCheckoutStationSoftwareTest {
     	SelfCheckoutStationSoftware nullSoftware = new SelfCheckoutStationSoftware(null);
     }
     
-    @Test(expected = InvalidStateSimulationException.class)
-    public void testAlreadyStartSession() {
-    	String input = "Touch Screen";
-    	Scanner scanner = new Scanner(input);
-    	
-    	software.startSession(scanner);
-    	software.startSession(scanner);
-    }
-    
-    @Test()
+    @Test
 	public void testGetBanks() {
     	CardIssuer chaseBank = new CardIssuer("chasebank", 100);
 	    software.addBank(chaseBank);

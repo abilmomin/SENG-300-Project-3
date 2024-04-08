@@ -1,53 +1,71 @@
 /**
 
-Name                      UCID
+ SENG 300 - ITERATION 3
+ GROUP GOLD {8}
 
-Yotam Rojnov             30173949
-Duncan McKay             30177857
-Mahfuz Alam              30142265
-Luis Trigueros Granillo  30167989
-Lilia Skumatova          30187339
-Abdelrahman Abbas        30110374
-Talaal Irtija            30169780
-Alejandro Cardona        30178941
-Alexandre Duteau         30192082
-Grace Johnson            30149693
-Abil Momin               30154771
-Tara Ghasemi M. Rad      30171212
-Izabella Mawani          30179738
-Binish Khalid            30061367
-Fatima Khalid            30140757
-Lucas Kasdorf            30173922
-Emily Garcia-Volk        30140791
-Yuinikoru Futamata       30173228
-Joseph Tandyo            30182561
-Syed Haider              30143096
-Nami Marwah              30178528
+ Name                      UCID
+
+ Yotam Rojnov             30173949
+ Duncan McKay             30177857
+ Mahfuz Alam              30142265
+ Luis Trigueros Granillo  30167989
+ Lilia Skumatova          30187339
+ Abdelrahman Abbas        30110374
+ Talaal Irtija            30169780
+ Alejandro Cardona        30178941
+ Alexandre Duteau         30192082
+ Grace Johnson            30149693
+ Abil Momin               30154771
+ Tara Ghasemi M. Rad      30171212
+ Izabella Mawani          30179738
+ Binish Khalid            30061367
+ Fatima Khalid            30140757
+ Lucas Kasdorf            30173922
+ Emily Garcia-Volk        30140791
+ Yuinikoru Futamata       30173228
+ Joseph Tandyo            30182561
+ Syed Haider              30143096
+ Nami Marwah              30178528
 
  */
 
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware;
 
-import javax.swing.*;
-
 import com.tdc.CashOverloadException;
 import com.tdc.DisabledException;
 import com.tdc.banknote.Banknote;
+
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.math.BigDecimal;
-import java.util.Currency;
-import java.util.List;
 
+import java.math.BigDecimal;
+
+import java.util.Currency;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+@SuppressWarnings("serial")
 public class PayWithBanknotes extends JFrame {
 
     private JLabel totalLabel;
     private BigDecimal totalCount = BigDecimal.ZERO;
     private SelfCheckoutStationSoftware software;
 
+    /**
+     * Constructor that creates a panel containing banknote information and options.
+     * @param software The SelfCheckoutStationSoftware to which the hardware is attached.
+     */
     public PayWithBanknotes(SelfCheckoutStationSoftware software) {
     	this.software = software;
     	
@@ -67,7 +85,7 @@ public class PayWithBanknotes extends JFrame {
 
         // Banknote options panel
         JPanel banknotePanel = new JPanel();
-        banknotePanel.setLayout(new GridLayout(0, 1, 10, 5)); // Increased vertical padding
+        banknotePanel.setLayout(new GridLayout(0, 1, 10, 5));
         banknotePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         // Banknote denominations
@@ -83,7 +101,7 @@ public class PayWithBanknotes extends JFrame {
         totalLabel = new JLabel("Total Amount: $0", SwingConstants.CENTER);
         totalLabel.setFont(new Font("Arial", Font.BOLD, 20));
         
-     // Total panel
+        // Total panel
         JPanel totalPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         totalPanel.add(totalLabel);
 
@@ -101,7 +119,7 @@ public class PayWithBanknotes extends JFrame {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.add(finishButton);
 
-     // Add banknote panel and total panel to a separate panel with FlowLayout
+        // Add banknote panel and total panel to a separate panel with FlowLayout
         JPanel banknoteAndTotalPanel = new JPanel(new BorderLayout());
         banknoteAndTotalPanel.add(banknotePanel, BorderLayout.CENTER);
         banknoteAndTotalPanel.add(totalPanel, BorderLayout.SOUTH);
@@ -134,7 +152,6 @@ public class PayWithBanknotes extends JFrame {
 					totalCount = totalCount.add(denomination);
 	                updateTotalLabel();
 				} catch (DisabledException | CashOverloadException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
             }
@@ -145,8 +162,4 @@ public class PayWithBanknotes extends JFrame {
     private void updateTotalLabel() {
         totalLabel.setText("Total Amount: $" + totalCount);
     }
-
-//    public static void main(String[] args) {
-//        SwingUtilities.invokeLater(PayWithBanknotes::new);
-//    }
 }

@@ -35,7 +35,7 @@ public class AttendantListeners {
     private CustomerStation[] customerStation;
     private StartSession[] startSessions;
     private boolean[] stationEnabled;
-    private ALogic logic;
+    private AttendantLogic logic;
 
     private AbstractSelfCheckoutStation checkoutStation;
     private AbstractElectronicScale scale;
@@ -47,7 +47,7 @@ public class AttendantListeners {
         this.customerStation = customerStation;
         this.startSessions = startSessions;
         this.stationEnabled = stationEnabled;
-        this.logic = new ALogic();
+        this.logic = new AttendantLogic();
     }
 
     private class refillCoinServiceButtonListener implements ActionListener {

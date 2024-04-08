@@ -87,8 +87,6 @@ public class AddtoBagging extends JFrame {
 
 					Barcode barcode = itemToAdd.getBarcode();
 					BarcodedProduct barcodedProduct = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
-					System.out.println("Adding item: NEWWWW " + itemToAdd);
-					System.out.println("SCALE IS: " + baggingAreaScale);
 				    baggingArea.addProduct(barcodedProduct.getDescription());
 
                 }
@@ -136,6 +134,7 @@ public class AddtoBagging extends JFrame {
             // Extract the last item from the list
             Item lastItem = orderList.get(lastIndex);
             double massInGramsDouble = lastItem.getMass().inGrams().doubleValue();
+            
             stationSoftwareInstance.getProductHandler().handleBulkyItem(massInGramsDouble,this.attendantGUI);
     	} else {
     	    // Handle the case when the list is empty
