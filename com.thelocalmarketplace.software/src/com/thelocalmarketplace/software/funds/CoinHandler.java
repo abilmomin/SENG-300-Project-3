@@ -75,14 +75,15 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
      * @param validator The CoinValidator detecting the coin.
      * @param value The value of the detected coin.
      */
-    @Override
+    @Override 
     public void validCoinDetected(CoinValidator validator, BigDecimal value)  {
         this.fundController.addToTotalPaid(value);
-        BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(value);
+        this.fundController.notifyFundsAdded(value);
+
+        BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(this.fundController.getTotalPaid());
         amountDue = amountDue.setScale(2, RoundingMode.CEILING);
         
         if (amountDue.compareTo(BigDecimal.ZERO) <= 0) {
-        	this.fundController.checkoutStationSoftware.setOrderTotalPrice(0);
             amountDue = amountDue.abs();
             
             boolean missed = false;
@@ -93,15 +94,16 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
                 e.printStackTrace();
             }
             
-            if (missed) {                
-                this.fundController.notifyPaidFunds(amountDue);
+            while (!missed) {   
+                this.fundController.notifyNoValidChange(amountDue);
+                try {
+					missed = this.fundController.dispenseAccurateChange(amountDue);
+				} catch (CashOverloadException | NoCashAvailableException | DisabledException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
-            else {
-				this.fundController.notifyNoValidChange();
-			}
-        }
-        else {
-        	this.fundController.checkoutStationSoftware.removeTotalOrderPrice(value.doubleValue());
+            this.fundController.notifyPaidFunds(amountDue);
         }
     }
 
@@ -125,7 +127,7 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
     @Override
 	public void coinAdded(ICoinDispenser dispenser, Coin coin) {
         this.fundController.coinsAvailable.put(coin.getValue(), (int)this.fundController.coinsAvailable.get(coin.getValue()) + 1);
-        this.fundController.notifyFundsAdded(coin.getValue());
+        this.fundController.notifyFundsStored(coin.getValue());
     }
 
     /**

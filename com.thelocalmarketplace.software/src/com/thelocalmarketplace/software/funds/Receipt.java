@@ -131,13 +131,12 @@ public class Receipt {
 
         BigDecimal purchaseValue = new BigDecimal(String.valueOf(checkoutStationSoftware.getTotalOrderPrice()));
         BigDecimal amountPaid = this.funds.getTotalPaid();
-        BigDecimal changeDue = this.funds.getMoneyLeft();
-
+        BigDecimal changeDue = this.funds.getMoneyLeft().multiply(new BigDecimal(-1));
 
         receiptItems.add("Total: $" + String.format("%.2f", purchaseValue));
         receiptItems.add("Paid: $" + String.format("%.2f", amountPaid));
         receiptItems.add("Change: $" + String.format("%.2f", changeDue));
-
+ 
         for (int i = 0; i < receiptItems.size(); i++) {
             this.receiptPrinter.print('\n');
 

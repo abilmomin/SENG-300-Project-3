@@ -103,5 +103,5 @@ public interface FundsObserver {
 	
 	default public void highBanknotesError(BanknoteStorageUnit storage) {}
 	
-	default public void noValidChange() {}
+	default public void noValidChange(Funds fundsFacade, BigDecimal changeDue) {}
 }

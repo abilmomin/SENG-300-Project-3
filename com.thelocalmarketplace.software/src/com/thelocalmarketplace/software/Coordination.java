@@ -43,13 +43,11 @@ public class Coordination implements FundsObserver, ProductsListener {
     	this.gui = gui;
     }
     
-    /**
-     * Invalid change was returned 
-     * Notifies the gui that attendant assistance is needed 
-     */
-    public void noValidChange() {
-    	if(gui != null)
+    public void noValidChange(Funds fundsFacade, BigDecimal changeDue) {
+    	if(gui != null) {
     		gui.handleRequestAssistance();
+    		gui.displayAmountDuePopup(changeDue);
+    	}
     }
 
     /**

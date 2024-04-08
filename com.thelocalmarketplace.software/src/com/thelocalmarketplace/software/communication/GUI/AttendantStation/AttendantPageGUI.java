@@ -22,6 +22,7 @@ import powerutility.PowerGrid;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.math.BigDecimal;
 
 public class AttendantPageGUI extends JFrame {
     // CONSTANTS FOR THE GUI
@@ -218,7 +219,6 @@ public class AttendantPageGUI extends JFrame {
     	instance.setStationUnblock();
     }
 
-
     // Method to highlight the selected station button
     void highlightSelectedStation(int selectedStation) {
         this.selectedStation = selectedStation;
@@ -240,14 +240,69 @@ public class AttendantPageGUI extends JFrame {
             }
         }
     }
+    
+    // Method to revert the highlighting of station buttons
+    void revertHighlight() {
+        for (int i = 0; i < stationStartButtons.length; i++) {
+            String buttonText = getjButtonText(i);
+            stationStartButtons[i].setBorder(BorderFactory.createLineBorder(Color.BLACK, 1)); // Reset border
+            if (stationAssistanceRequested[i]) {
+                stationStartButtons[i].setText("(Assistance Requested) " + buttonText);
+                stationStartButtons[i].setBackground(Color.ORANGE); // Mark as needing assistance
+            } else {
+                // Remove the additional text if assistance is not requested
+                String originalText = buttonText.replace("(Assistance Requested) ", "");
+                stationStartButtons[i].setText(originalText);
+                stationStartButtons[i].setBackground(null); // Reset background color if no assistance is requested
+            }
+        }
+    }
 
     public void setStationAssistanceRequested(int stationNumber, boolean requested) {
         if (stationNumber >= 0 && stationNumber < stationStartButtons.length) {
             stationAssistanceRequested[stationNumber] = requested;
+            stationSoftwareInstances[selectedStation].setStationBlock();
             highlightSelectedStation(stationNumber);
         }
     } 
 
+    public void warnForChange(BigDecimal change) {
+        JDialog dialog = new JDialog(this, "Amount Due", Dialog.ModalityType.APPLICATION_MODAL);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        JLabel label = new JLabel("Change Due: $" + change + " at station " + selectedStation+1);
+        JButton refillCoinsButton = new JButton("Refill Coins");
+        refillCoinsButton.addActionListener(e -> {
+                stationSoftwareInstances[selectedStation].setStationUnblock();
+                setStationAssistanceRequested(selectedStation, false);
+                revertHighlight();
+                System.out.println("HELP");
+                attendantListeners.getRefillCoinServiceButtonListener().actionPerformed(e);
+                dialog.dispose();
+        });
+        
+        JButton refillBanknotessButton = new JButton("Refill Banknotes");
+        refillBanknotessButton.addActionListener(e -> {
+                stationSoftwareInstances[selectedStation].setStationUnblock();
+                setStationAssistanceRequested(selectedStation, false);
+                revertHighlight();
+                System.out.println("HELP");
+                attendantListeners.getRefillBanknotesServiceButtonListener().actionPerformed(e);	
+                dialog.dispose();
+        });
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.add(label);
+        panel.add(refillCoinsButton);
+        panel.add(refillBanknotessButton);
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        dialog.add(panel);
+        dialog.pack();
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+    }
 
     public static void main(final String[] args) {
         SwingUtilities.invokeLater(AttendantPageGUI::new);

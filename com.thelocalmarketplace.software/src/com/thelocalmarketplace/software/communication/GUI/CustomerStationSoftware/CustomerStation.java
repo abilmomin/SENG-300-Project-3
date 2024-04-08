@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -64,7 +65,7 @@ public class CustomerStation extends JFrame {
     	stationSoftwareInstance.setGUI(this);
     	products = new Products(stationSoftwareInstance);
     	paymentWindow = new SelectPayment(stationSoftwareInstance);
-    	searchProductByText = new SearchProductByText();
+    	searchProductByText = new SearchProductByText(stationSoftwareInstance, attendantGUI);
         baggingArea = new BaggingArea();
     	
         setTitle("Self-Checkout Station " + selectedStation);
@@ -281,7 +282,7 @@ public class CustomerStation extends JFrame {
     	        	
     	BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
     	
-    	new AddtoBagging(product, stationSoftwareInstance, productWeight, attendantGUI, baggingArea);
+    	new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
     }
 
 	private void handleUseOwnBags() {
@@ -489,7 +490,7 @@ public class CustomerStation extends JFrame {
 
     	    if (product != null) {
     	        // If a product is found, display the AddtoBagging popup
-    	        AddtoBagging popup = new AddtoBagging(product, stationSoftwareInstance, 0.0, attendantGUI, baggingArea);
+    	        AddtoBagging popup = new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
     	        popup.setVisible(true);
     	    } else {
     	        // If no product is found, show an error message
@@ -549,6 +550,7 @@ public class CustomerStation extends JFrame {
     		} 
     	}
     }
+    
     private void replaceGrids() {
         // Remove current panels from mainPanel
         mainPanel.remove(menuPanel);
@@ -586,15 +588,19 @@ public class CustomerStation extends JFrame {
     	double weight = 0.0;
     	if (product instanceof BarcodedProduct) {
     		BarcodedProduct barcodedProduct = (BarcodedProduct) product;
-    		weight = barcodedProduct.getExpectedWeight();
     	}
-    	new AddtoBagging(product, stationSoftwareInstance, weight, attendantGUI, baggingArea);
+    	new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
     }
 
     public void handleRequestAssistance() {
         needsAssistance = true;
         attendantGUI.setStationAssistanceRequested(selectedStation - 1, true);
 
+    }
+    
+    // Method to display a pop-up dialog with the amount of money due
+    public void displayAmountDuePopup(BigDecimal amountDue) {
+    	attendantGUI.warnForChange(amountDue);
     }
 
     public void clearSignal() {

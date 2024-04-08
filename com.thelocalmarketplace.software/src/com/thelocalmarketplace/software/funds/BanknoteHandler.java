@@ -83,33 +83,34 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	@Override
 	public void goodBanknote(BanknoteValidator validator, Currency currency, BigDecimal denomination) {
 		this.fundController.addToTotalPaid(denomination);
-//		this.fundController.totalPaid = this.fundController.totalPaid.add(denomination);
-		BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(denomination);
-        amountDue = amountDue.setScale(1, RoundingMode.CEILING);
-
+		this.fundController.notifyFundsAdded(denomination);
+		
+		BigDecimal amountDue = new BigDecimal(this.fundController.checkoutStationSoftware.getTotalOrderPrice()).subtract(this.fundController.getTotalPaid());
+		amountDue = amountDue.setScale(1, RoundingMode.CEILING);
+		
 		if (amountDue.compareTo(BigDecimal.ZERO) <= 0) {
-        	this.fundController.checkoutStationSoftware.setOrderTotalPrice(0);
-
-			amountDue = amountDue.abs();
-			
-			boolean missed = false;
-			try {
-				missed = this.fundController.dispenseAccurateChange(amountDue);
-			} catch (DisabledException | CashOverloadException | NoCashAvailableException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			if (missed) {				
-				this.fundController.notifyPaidFunds(amountDue);
-			}
-			else {
-				this.fundController.notifyNoValidChange();
-			}
+		    amountDue = amountDue.abs();
+		    
+		    boolean missed = false;
+		    try {
+		        missed = this.fundController.dispenseAccurateChange(amountDue);
+		    } catch (DisabledException | CashOverloadException  | NoCashAvailableException e) {
+		        // TODO Auto-generated catch block
+		        e.printStackTrace();
+		    }
+		    
+		    while (!missed) {   
+		        this.fundController.notifyNoValidChange(amountDue);
+		        try {
+					missed = this.fundController.dispenseAccurateChange(amountDue);
+				} catch (CashOverloadException | NoCashAvailableException | DisabledException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    }
+		    this.fundController.notifyPaidFunds(amountDue);
 		}
-		else {
-        	this.fundController.checkoutStationSoftware.removeTotalOrderPrice(denomination.doubleValue());
-        }
+
 	}
 
 	/**
