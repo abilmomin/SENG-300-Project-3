@@ -148,6 +148,20 @@ public class ALogicTest {
 		aLogic.refillPrinterPaper(station);
 	}
 
+	@Test
+	public void testRefillPrinterPaperWhenLow() throws OverloadedDevice {
+		ISelfCheckoutStation cS = station.getStationHardware();
+		IReceiptPrinter printer = cS.getPrinter();
+		aLogic.refillPrinterPaperWhenLow(station);
+	}
+
+	@Test
+	public void testRefillInkWhenLow() throws OverloadedDevice {
+		ISelfCheckoutStation cS = station.getStationHardware();
+		IReceiptPrinter printer = cS.getPrinter();
+		aLogic.refillPrinterInkWhenLow(station);
+	}
+
 
 	@Test
 	  public void testEnableStation_StationNotSelected() {
@@ -202,10 +216,6 @@ public class ALogicTest {
 	  }
 	  
 
-	  @Test 
-	  public void testRefillPrinterPaperWhenLow() {
-		  
-	  }
 	@After
 	public void tearDown() {
 		station = null;
