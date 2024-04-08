@@ -1,3 +1,34 @@
+/**
+
+ SENG 300 - ITERATION 3
+ GROUP GOLD {8}
+
+ Name                      UCID
+
+ Yotam Rojnov             30173949
+ Duncan McKay             30177857
+ Mahfuz Alam              30142265
+ Luis Trigueros Granillo  30167989
+ Lilia Skumatova          30187339
+ Abdelrahman Abbas        30110374
+ Talaal Irtija            30169780
+ Alejandro Cardona        30178941
+ Alexandre Duteau         30192082
+ Grace Johnson            30149693
+ Abil Momin               30154771
+ Tara Ghasemi M. Rad      30171212
+ Izabella Mawani          30179738
+ Binish Khalid            30061367
+ Fatima Khalid            30140757
+ Lucas Kasdorf            30173922
+ Emily Garcia-Volk        30140791
+ Yuinikoru Futamata       30173228
+ Joseph Tandyo            30182561
+ Syed Haider              30143096
+ Nami Marwah              30178528
+
+ */
+
 package com.thelocalmarketplace.software.communication.GUI.AttendantStation;
 
 import ca.ucalgary.seng300.simulation.SimulationException;
@@ -9,24 +40,32 @@ import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.jjjwelectronics.scale.ElectronicScaleBronze;
 import com.jjjwelectronics.scale.ElectronicScaleGold;
 import com.jjjwelectronics.scale.ElectronicScaleSilver;
+
 import com.tdc.CashOverloadException;
+
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationSilver;
 import com.thelocalmarketplace.hardware.external.CardIssuer;
+
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
 import com.thelocalmarketplace.software.product.Products;
+
 import powerutility.PowerGrid;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.math.BigDecimal;
+
 import java.util.Calendar;
 import java.util.Currency;
+
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 public class AttendantListeners {
     private AttendantPageGUI gui;
@@ -57,7 +96,6 @@ public class AttendantListeners {
                 logic.refillCoinDispensers(stationSoftwareInstances[selectedStation]);
                 customerStation[selectedStation].updateStatusDisplay();
             } catch (SimulationException | CashOverloadException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         }
@@ -70,7 +108,6 @@ public class AttendantListeners {
                 logic.refillBanknoteDispensers(stationSoftwareInstances[selectedStation]);
                 customerStation[selectedStation].updateStatusDisplay();
             } catch (SimulationException | CashOverloadException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         }
@@ -84,11 +121,11 @@ public class AttendantListeners {
 	            logic.refillPrinterPaper(stationSoftwareInstances[selectedStation]);
 	            customerStation[selectedStation].updateStatusDisplay();
             } catch (OverloadedDevice e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         }
     }
+    
     private class emptyCoinServiceButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -108,13 +145,12 @@ public class AttendantListeners {
     private class refillReceiptInkServiceButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-                try {
-                    logic.refillPrinterInk(stationSoftwareInstances[selectedStation]);
-                    customerStation[selectedStation].updateStatusDisplay();
-                } catch (OverloadedDevice e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
+            try {
+                logic.refillPrinterInk(stationSoftwareInstances[selectedStation]);
+                customerStation[selectedStation].updateStatusDisplay();
+            } catch (OverloadedDevice e1) {
+                e1.printStackTrace();
+            }
         }
     }
 
@@ -146,7 +182,6 @@ public class AttendantListeners {
             gui.highlightSelectedStation(stationNumber); // Highlight the selected station
         }
     }
-
 
     // Action listener for start station button
     private class StartStationButtonListener implements ActionListener {
@@ -191,9 +226,8 @@ public class AttendantListeners {
                         PowerGrid.engageUninterruptiblePowerSource();
                         checkoutStation.plugIn(PowerGrid.instance());
                         checkoutStation.turnOn();
-                        PowerGrid test = PowerGrid.instance();
-                        test.engageUninterruptiblePowerSource();
-                        scale.plugIn(test);
+                        PowerGrid.engageUninterruptiblePowerSource();
+                        scale.plugIn(PowerGrid.instance());
                        
                         scale.turnOn();
 
@@ -299,41 +333,40 @@ public class AttendantListeners {
     private class DisableStationButtonListener implements ActionListener {
         @Override 
         public void actionPerformed(ActionEvent e) {
-       
             if (selectedStation != -1) { // Check if a station is selected
-            	
                 if (logic.DisableStation(selectedStation, customerStation, stationSoftwareInstances, checkoutStation,startSessions)==true) { // Check if GUI is created for the selected station       
-                	
-                        boolean notactive_notnull = true; }
-                
-                     else {
-                        // If station is active, prompt user and disable after session completion
-                        new Thread(() -> gui.waitForSessionCompletion(selectedStation)).start();
-                    }
+                    boolean notactive_notnull = true;
+                } else {
+                    // If station is active, prompt user and disable after session completion
+                    new Thread(() -> gui.waitForSessionCompletion(selectedStation)).start();
                 }
-             else {
+            } else {
                 JOptionPane.showMessageDialog(null, "Please select a station first.");
             }
         }
     }
 
-
     // get action listeners
     public ActionListener getRefillCoinServiceButtonListener() {
         return new refillCoinServiceButtonListener();
     }
+    
     public ActionListener getRefillBanknotesServiceButtonListener() {
         return new refillBanknotesServiceButtonListener();
     }
+    
     public ActionListener getRefillReceiptPaperServiceButtonListener() {
         return new refillReceiptPaperServiceButtonListener();
     }
+    
     public ActionListener getEmptyCoinServiceButtonListener() {
         return new emptyCoinServiceButtonListener();
     }
+    
     public ActionListener getEmptyBanknotesServiceButtonListener() {
         return new emptyBanknotesServiceButtonListener();
     }
+    
     public ActionListener getCustomerServiceButtonListener() {
         return new customerServiceButtonListener();
     }
@@ -341,6 +374,7 @@ public class AttendantListeners {
     public ActionListener getStationButtonListener(int stationNumber) {
         return new StationButtonListener(stationNumber);
     }
+    
     public ActionListener getRefillReceiptInkServiceButtonListener() {
         return new refillReceiptInkServiceButtonListener();
     }
@@ -348,12 +382,15 @@ public class AttendantListeners {
     public ActionListener getStartStationButtonListener() {
         return new StartStationButtonListener();
     }
+    
     public ActionListener getCloseStationButtonListener() {
         return new CloseStationButtonListener();
     }
+    
     public ActionListener getClearStationSignalButtonListener() {
         return new ClearStationSignalButtonListener();
     }
+    
     public ActionListener getDisableStationButtonListener() {
         return new DisableStationButtonListener();
     }
@@ -361,5 +398,4 @@ public class AttendantListeners {
     public ActionListener getEnableStationButtonListener() {
         return new EnableStationButtonListener();
     }
-
 }
