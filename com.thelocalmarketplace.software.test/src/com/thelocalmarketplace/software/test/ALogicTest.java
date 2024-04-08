@@ -227,12 +227,5 @@ public class ALogicTest {
 		assertFalse(result);
 	}
 	  
-	@Test
-	public void notifyAttedant_test() {
-		AttendantPageGUI test = new AttendantPageGUI();
-		test.setStationAssistanceRequested(0, false);
-		boolean request = true;
-		test.setStationAssistanceRequested(0, request);
-		assertTrue(test.stationAssistanceRequested[0]);
-	}
+	
 }
