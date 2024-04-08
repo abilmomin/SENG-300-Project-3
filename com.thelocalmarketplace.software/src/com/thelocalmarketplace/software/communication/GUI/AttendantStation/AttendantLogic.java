@@ -1,16 +1,47 @@
+/**
+
+ SENG 300 - ITERATION 3
+ GROUP GOLD {8}
+
+ Name                      UCID
+
+ Yotam Rojnov             30173949
+ Duncan McKay             30177857
+ Mahfuz Alam              30142265
+ Luis Trigueros Granillo  30167989
+ Lilia Skumatova          30187339
+ Abdelrahman Abbas        30110374
+ Talaal Irtija            30169780
+ Alejandro Cardona        30178941
+ Alexandre Duteau         30192082
+ Grace Johnson            30149693
+ Abil Momin               30154771
+ Tara Ghasemi M. Rad      30171212
+ Izabella Mawani          30179738
+ Binish Khalid            30061367
+ Fatima Khalid            30140757
+ Lucas Kasdorf            30173922
+ Emily Garcia-Volk        30140791
+ Yuinikoru Futamata       30173228
+ Joseph Tandyo            30182561
+ Syed Haider              30143096
+ Nami Marwah              30178528
+
+ */
+
 package com.thelocalmarketplace.software.communication.GUI.AttendantStation;
 
 import java.math.BigDecimal;
+
 import java.util.Currency;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.SwingUtilities;
 
 import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.printer.IReceiptPrinter;
 import com.jjjwelectronics.printer.ReceiptPrinterBronze;
+
 import com.tdc.CashOverloadException;
 import com.tdc.banknote.Banknote;
 import com.tdc.banknote.BanknoteStorageUnit;
@@ -18,6 +49,7 @@ import com.tdc.banknote.IBanknoteDispenser;
 import com.tdc.coin.Coin;
 import com.tdc.coin.CoinStorageUnit;
 import com.tdc.coin.ICoinDispenser;
+
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
 
@@ -27,10 +59,8 @@ import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
 import com.thelocalmarketplace.software.funds.Receipt;
-import powerutility.PowerGrid;
 
 public class AttendantLogic {
-	
 	public void emptyCoinStorage(SelfCheckoutStationSoftware cSoftware) {
 		ISelfCheckoutStation cS = cSoftware.getStationHardware();
 		CoinStorageUnit storage = cS.getCoinStorage();
@@ -110,9 +140,7 @@ public class AttendantLogic {
 			for (int i = 0; i < ReceiptPrinterBronze.MAXIMUM_PAPER; i++) {
 				try {
 					printer.print('c');
-				} catch (EmptyDevice x) {
-					// TODO Auto-generated catch block
-				}
+				} catch (EmptyDevice x) { }
 			}
 			printer.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
 		}
@@ -131,18 +159,14 @@ public class AttendantLogic {
 			for (int i = 0; i < ReceiptPrinterBronze.MAXIMUM_INK; i++) {
 				try {
 					printer.print('c');
-				} catch (EmptyDevice x) {
-					// TODO Auto-generated catch block
-				}
+				} catch (EmptyDevice x) { }
 			}
 			printer.addInk(ReceiptPrinterBronze.MAXIMUM_INK);
 		}
 		receipt.notifyInkAdded(printer);
-
 	}
 
 	public void EnableStation(int selectedStation,CustomerStation[] customerStation, SelfCheckoutStationSoftware[] stationSoftwareInstances,AbstractSelfCheckoutStation checkoutStation, StartSession[] startSessions )  {
-	     
 		if (stationSoftwareInstances[selectedStation].getStationBlock()== true) {
 			stationSoftwareInstances[selectedStation].setStationUnblock();	
 		}		
@@ -150,7 +174,6 @@ public class AttendantLogic {
 	}
 	
 	public boolean DisableStation(int selectedStation,CustomerStation[] customerStation, SelfCheckoutStationSoftware[] stationSoftwareInstances,AbstractSelfCheckoutStation checkoutStation, StartSession[] startSessions) {
-		
         if (stationSoftwareInstances[selectedStation].getStationBlock() == false) {
         	if (stationSoftwareInstances[selectedStation].getStationActive() == false) {
         		stationSoftwareInstances[selectedStation].setStationBlock();
@@ -162,7 +185,5 @@ public class AttendantLogic {
         else {
         	return false;		
         }
-        
 	}
-
 }
