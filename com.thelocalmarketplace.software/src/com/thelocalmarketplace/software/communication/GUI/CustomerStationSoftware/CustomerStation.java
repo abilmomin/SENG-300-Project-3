@@ -359,6 +359,7 @@ public class CustomerStation extends JFrame {
 
     public void handleRemoveItem() {
         if (selectedCartItemButton != null) {
+        	boolean itemRemoved = false;
             // look through the order and remove the item
             ArrayList<Item> listOfOrders = stationSoftwareInstance.getOrder();
             for (Item item : listOfOrders) {
@@ -377,6 +378,7 @@ public class CustomerStation extends JFrame {
                         AbstractElectronicScale scale = (AbstractElectronicScale) stationSoftwareInstance.getStationHardware().getBaggingArea();
 
                         scale.removeAnItem(pluItem);
+                        itemRemoved = true;
                         break;
                     }
                 } else if (item instanceof BarcodedItem) {
@@ -394,10 +396,16 @@ public class CustomerStation extends JFrame {
                         AbstractElectronicScale scale = (AbstractElectronicScale) stationSoftwareInstance.getStationHardware().getBaggingArea();
 
                         scale.removeAnItem(barcodeItem);
+                        itemRemoved = true;
                         break;
                     }
                 }
             }
+            
+            if (!itemRemoved) {
+            	stationSoftwareInstance.addTotalOrderPrice(-1);
+            }
+            
             cartItemsPanel.remove(selectedCartItemButton); // Remove the selected item button from the panel
             selectedCartItemButton = null; // Clear the selected item
             refreshCartPanel(); // Refresh the UI to reflect the removal
