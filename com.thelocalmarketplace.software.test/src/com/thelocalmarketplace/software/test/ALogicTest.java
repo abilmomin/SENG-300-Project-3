@@ -26,7 +26,7 @@ import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
-import com.thelocalmarketplace.software.communication.GUI.AttendantStation.ALogic;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantLogic;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
@@ -40,7 +40,7 @@ import powerutility.PowerGrid;
 
 public class ALogicTest {
 
-	private ALogic aLogic;
+	private AttendantLogic aLogic;
 	public ReceiptObserver rO;
 
 	private SelfCheckoutStationSoftware station;
@@ -68,7 +68,7 @@ public class ALogicTest {
 		checkoutStationG.plugIn(PowerGrid.instance());
 		checkoutStationG.turnOn();
 		this.station = new SelfCheckoutStationSoftware(checkoutStationG);
-		this.aLogic = new ALogic();
+		this.aLogic = new AttendantLogic();
 		
 		customerStations = new CustomerStation[4]; // Example size
         stationSoftwareInstances = new SelfCheckoutStationSoftware[4];
@@ -165,7 +165,7 @@ public class ALogicTest {
 
 	@Test
 	  public void testEnableStation_StationNotSelected() {
-		ALogic logic = new ALogic();
+		AttendantLogic logic = new AttendantLogic();
 		int selectedStation = 1;
 		SelfCheckoutStationBronze bronzeS = new SelfCheckoutStationBronze();
 		startSessions = new StartSession[5];
@@ -186,7 +186,7 @@ public class ALogicTest {
 	
 	  @Test
 	  public void testDisableStation_StationNotSelected() {
-		  	ALogic logic = new ALogic();
+		  	AttendantLogic logic = new AttendantLogic();
 			int selectedStation = 1; 
 			SelfCheckoutStationBronze bronzeS = new SelfCheckoutStationBronze(); 
 			startSessions = new StartSession[5];	
