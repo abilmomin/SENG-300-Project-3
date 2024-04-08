@@ -95,11 +95,14 @@ public class ScaleListener implements ElectronicScaleListener {
 	       
 	        else {
 	        	software.setStationBlock();
+	        	software.getGUI().customerPopUp("Weight Discrepency Detected, Adds or removes the item." );
+	        	software.getGUI().getAttendantGUI().weightDiscpreancydNotify(software);
 	        }
 	    } catch (OverloadedDevice e) {
 	        software.setStationBlock();
 	    } 	
 	}
+
 
 	@Override
 	public void theMassOnTheScaleHasExceededItsLimit(IElectronicScale scale) {
