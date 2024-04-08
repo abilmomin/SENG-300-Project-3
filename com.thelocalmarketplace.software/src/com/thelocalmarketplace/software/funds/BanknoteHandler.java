@@ -104,7 +104,7 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 				this.fundController.notifyPaidFunds(amountDue);
 			}
 			else {
-				this.fundController.notifyNoValidChange();
+				this.fundController.notifyNoValidChange(amountDue);
 			}
 		}
 		else {

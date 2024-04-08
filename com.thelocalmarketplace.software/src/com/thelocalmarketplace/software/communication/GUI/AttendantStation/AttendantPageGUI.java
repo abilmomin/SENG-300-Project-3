@@ -22,6 +22,7 @@ import powerutility.PowerGrid;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.math.BigDecimal;
 
 public class AttendantPageGUI extends JFrame {
     // CONSTANTS FOR THE GUI
@@ -244,10 +245,27 @@ public class AttendantPageGUI extends JFrame {
     public void setStationAssistanceRequested(int stationNumber, boolean requested) {
         if (stationNumber >= 0 && stationNumber < stationStartButtons.length) {
             stationAssistanceRequested[stationNumber] = requested;
+            stationSoftwareInstances[selectedStation].setStationBlock();
             highlightSelectedStation(stationNumber);
         }
     } 
 
+    public void warnForChange(BigDecimal change) {
+    	int option = JOptionPane.showOptionDialog(this,
+                "Change Due: $" + change + " at station" + selectedStation,
+                "Amount Due",
+                JOptionPane.OK_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                new String[]{"ok"},
+                "Ok");
+
+        if (option == JOptionPane.OK_OPTION) {
+            // User clicked "Pay"
+            // Perform actions accordingly
+        	stationSoftwareInstances[selectedStation].setStationUnblock();
+        } 
+    }
 
     public static void main(final String[] args) {
         SwingUtilities.invokeLater(AttendantPageGUI::new);

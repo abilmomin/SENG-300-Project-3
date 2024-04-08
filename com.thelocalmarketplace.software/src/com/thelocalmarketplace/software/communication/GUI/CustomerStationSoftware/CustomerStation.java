@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -519,6 +520,11 @@ public class CustomerStation extends JFrame {
         needsAssistance = true;
         attendantGUI.setStationAssistanceRequested(selectedStation - 1, true);
 
+    }
+    
+    // Method to display a pop-up dialog with the amount of money due
+    public void displayAmountDuePopup(BigDecimal amountDue) {
+    	attendantGUI.warnForChange(amountDue);
     }
 
     public void clearSignal() {
