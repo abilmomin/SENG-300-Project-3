@@ -137,7 +137,7 @@ public class ProductTest {
 	    };
 
 	    // Handle the bulky item with simulated attendant approval
-	    testProducts.handleBulkyItem(bulkyItemWeightInGrams, attendantGUIStub);
+	    testProducts.handleBulkyItemRequest(bulkyItemWeightInGrams, attendantGUIStub);
 
 	    // total order weight is expected to be reduced by the weight of the bulky item after approval
 	    double expectedTotalWeightAfterHandling = initialTotalWeight - bulkyItemWeightInGrams;

@@ -52,7 +52,7 @@ import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 
 /**
- * Represents the product facade for the whole self checkout station software. Handles most product related things.
+ * Represents the product facade for the whole self-checkout station software. Handles most product related things.
  */
 public class Products {
 
@@ -65,7 +65,7 @@ public class Products {
 	public ScaleListener scaleListener;
 	public ScannerListener scannerListener;
 	public Set<ProductsListener> listeners = new HashSet<>();
-	private ArrayList<Item> bulkyItems;
+	private final ArrayList<Item> bulkyItems;
 
 	/**
 	 * Basic constructor
@@ -77,48 +77,58 @@ public class Products {
 		this.software = software;
 		this.station = software.getStationHardware();
 
-		// Get all the hardware the listeners need to listen to
 		this.mainScanner = station.getMainScanner();
 		this.handheldScanner = station.getHandheldScanner();
 		this.baggingArea = station.getBaggingArea();
 		this.reusableBagDispenser = station.getReusableBagDispenser();
 
-		// Make the listener objects
 		this.scannerListener = new ScannerListener(this);
 		this.scaleListener = new ScaleListener(software);
 
-		// Attach the listeners to the hardware
 		mainScanner.register(scannerListener);
 		handheldScanner.register(scannerListener);
 		baggingArea.register(scaleListener);
 		
 		bulkyItems = new ArrayList<Item>();
 	}
-	
+
+
 	/**
-	 * Handles bulky items.
+	 * Handles bulky item requests.
 	 * 
 	 * @param productWeight
 	 * 				The weight of the bulky item.
 	 * @param attendantGUI 
 	 * 				The GUI of the attendant station.
 	 */
-    public void handleBulkyItem(double productWeight, AttendantPageGUI attendantGUI) {
+    public void handleBulkyItemRequest(double productWeight, AttendantPageGUI attendantGUI) {
         software.setStationBlock();
         
-         if (attendantGUI.bulkItemRequest("No-bagging request is in progress, approve below") == true) {
-                double currentWeight = software.getTotalOrderWeightInGrams();
-                double finalWeight = currentWeight-productWeight;
-                if (finalWeight >= 0) software.addTotalOrderWeightInGrams(-productWeight); 
-                
-                ArrayList<Item> order = software.getOrder();
-                Item item = order.get(order.size() - 1);
-                bulkyItems.add(item);
-                
-                software.setStationUnblock();
-         }
+         if (attendantGUI.bulkItemRequest("No-bagging request is in progress, approve below"))
+			 handleBulkyItem(productWeight);
     }
-	
+
+
+	/**
+	 * Handles bulky item logic.
+	 *
+	 * @param productWeight
+	 * 				The weight of the bulky item.
+	 */
+	public void handleBulkyItem(double productWeight) {
+		double currentWeight = software.getTotalOrderWeightInGrams();
+		double finalWeight = currentWeight-productWeight;
+		if (finalWeight >= 0)
+			software.addTotalOrderWeightInGrams(-productWeight);
+
+		ArrayList<Item> order = software.getOrder();
+		Item item = order.get(order.size() - 1);
+		bulkyItems.add(item);
+
+		software.setStationUnblock();
+	}
+
+
 	/**
 	 * Removes item and updates all order info.
 	 * 
@@ -140,13 +150,11 @@ public class Products {
                 removePLUCodedItemFromOrder(item);
                 return true;
             }
-            
-        } else {
-            return false;
         }
         return false;
     }
-    
+
+
     /**
      * Removes a barcoded item from the order.
      * 
@@ -156,17 +164,17 @@ public class Products {
     public void removeBarcodedItemFromOrder(Item item) {
     	Barcode barcode = ((BarcodedItem) item).getBarcode();
         BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
-        if (product != null) {
-            double productWeight = product.getExpectedWeight();
-            long productPrice = product.getPrice();
-            
-            if (!bulkyItems.contains(item))
-                software.addTotalOrderWeightInGrams(-productWeight);
-            
-            software.addTotalOrderPrice(-productPrice);
+		if (product == null)
+			return;
 
-            notifyProductRemoved(product);
-        }
+		double productWeight = product.getExpectedWeight();
+		long productPrice = product.getPrice();
+
+		if (!bulkyItems.contains(item))
+			software.addTotalOrderWeightInGrams(-productWeight);
+
+		software.addTotalOrderPrice(-productPrice);
+		notifyProductRemoved(product);
     }
     
     /**

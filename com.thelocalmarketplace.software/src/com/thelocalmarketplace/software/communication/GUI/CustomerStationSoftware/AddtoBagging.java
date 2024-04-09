@@ -217,7 +217,7 @@ public class AddtoBagging extends JFrame {
             Item lastItem = orderList.get(lastIndex);
             double massInGramsDouble = lastItem.getMass().inGrams().doubleValue();
             
-            stationSoftwareInstance.getProductHandler().handleBulkyItem(massInGramsDouble,this.attendantGUI);
+            stationSoftwareInstance.getProductHandler().handleBulkyItemRequest(massInGramsDouble, this.attendantGUI);
     	} else {
     	  
     		JOptionPane.showMessageDialog(this, "Scan Item First");
