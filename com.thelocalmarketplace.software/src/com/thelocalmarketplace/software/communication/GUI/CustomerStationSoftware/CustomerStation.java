@@ -48,6 +48,7 @@ import com.thelocalmarketplace.software.communication.GUI.AttendantStation.Atten
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.BaggingArea;
 import com.thelocalmarketplace.software.product.AddOwnBag;
+import java.awt.event.WindowEvent;
 import com.jjjwelectronics.bag.ReusableBag;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -112,6 +113,7 @@ public class CustomerStation extends JFrame {
         cartItemButtons = new ArrayList<>();
     	
         setTitle("Self-Checkout Station " + selectedStation);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 700);
         setLocationRelativeTo(null);
@@ -260,6 +262,10 @@ public class CustomerStation extends JFrame {
         setVisible(true);
     }
     
+    public SelectPayment getPaymentWindow() {
+    	return paymentWindow;
+    }
+
     /**
      * Updates the display to reflect the amount of money paid by the customer.
      * 
@@ -346,6 +352,7 @@ public class CustomerStation extends JFrame {
 			
 			try {
 				stationSoftwareInstance.getProductHandler().PurchaseBags(bags);
+				updateTotalOwedDisplay();
 			} catch (OverloadedDevice | EmptyDevice e) {
 				e.printStackTrace(); 
 			}
@@ -727,6 +734,15 @@ public class CustomerStation extends JFrame {
         return needsAssistance;
     }
 
+    
+    @Override
+    protected void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            dispose(); // Dispose only this instance
+        } else {
+            super.processWindowEvent(e);
+        }
+    }
 	/**
 	 * Retrieves the attendant GUI associated with the self-checkout station.
 	 * 
