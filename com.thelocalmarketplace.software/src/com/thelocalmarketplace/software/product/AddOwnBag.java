@@ -89,7 +89,7 @@ public class AddOwnBag implements ElectronicScaleListener {
 	public void theMassOnTheScaleHasChanged(IElectronicScale scale, Mass mass) {
 		double bag_grams = getBagWeight(stationHardware, scale1); 
 		addBagWeight(stationHardware, scale1, bag_grams,stationNumber); 
-		}
+	}
 		
 	
 	/**
@@ -158,78 +158,38 @@ public class AddOwnBag implements ElectronicScaleListener {
 		}	
 	}  
 	
-	/**
-	 * Notifies when a device has been enabled.
-	 * This method is invoked when a device has been enabled.
-	 * 
-	 * @param device 
-	 * 			The device that has been enabled.
-	 */
+	// The below methods are unused, therefore have no JavaDoc.
+	
 	@Override
 	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	/**
-	 * Notifies when a device has been disabled.
-	 * This method is invoked when a device has been disabled.
-	 * 
-	 * @param device 
-	 * 			The device that has been disabled.
-	 */
 	@Override
 	public void aDeviceHasBeenDisabled(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	/**
-	 * Notifies when a device has been turned on.
-	 * This method is invoked when a device has been turned on.
-	 * 
-	 * @param device 
-	 * 			The device that has been turned on.
-	 */
 	@Override
 	public void aDeviceHasBeenTurnedOn(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	/**
-	 * Notifies when a device has been turned off.
-	 * This method is invoked when a device has been turned off.
-	 * 
-	 * @param device 
-	 * 			The device that has been turned off.
-	 */
 	@Override
 	public void aDeviceHasBeenTurnedOff(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
 		
 	}
 	
-	/**
-	 * Notifies when the mass on the scale has exceeded its limit.
-	 * This method is invoked when the mass on the scale has exceeded its limit.
-	 * 
-	 * @param scale 
-	 * 			The electronic scale.
-	 */
 	@Override
 	public void theMassOnTheScaleHasExceededItsLimit(IElectronicScale scale) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	/**
-	 * Notifies when the mass on the scale no longer exceeds its limit.
-	 * This method is invoked when the mass on the scale no longer exceeds its limit.
-	 * 
-	 * @param scale 
-	 * 			The electronic scale.
-	 */
 	@Override
 	public void theMassOnTheScaleNoLongerExceedsItsLimit(IElectronicScale scale) {
 		// TODO Auto-generated method stub
