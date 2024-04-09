@@ -301,10 +301,10 @@ public class ProductTest {
 	               station.getTotalOrderPrice() == initialPrice);
 	}
 	
-	//testing when not enough bags are in the dispenser. Should give EmptyDevice exception
 	@Test (expected = EmptyDevice.class)
 	public void testPurchaseBags_notEnoughBags() throws OverloadedDevice, EmptyDevice {
 		//initializing a new dispenser that has 2 bags loaded and a capacity of 100 reusable bags 
+		MockReusableBagDispenser.getStationActive(); 
 		MockReusableBagDispenser dispenser = new MockReusableBagDispenser(1, 100); 
 		ReusableBag bag1 = new ReusableBag(); 
         ReusableBag bag2 = new ReusableBag();
@@ -312,11 +312,10 @@ public class ProductTest {
         ReusableBag[] bags = {bag1, bag2, bag3}; 
         // trying to purchase 3 bags when there is only 1 in the dispenser
         testProducts.PurchaseBags(bags);  
-       // assertTrue(dispenser.getQuantityRemaining() == 0); 
+       //should be true tho
+        //assertFalse(station.getStationBlock()); 
 	}
 	
-	//Testing when there are enough bags in the dispenser and the dispenser is not fully emptied 
-	//This test is passing. The issue comes from the quanitityRemaining of the dispenser being emptied to 0. When tested it will never empty all the way to 0 tho. 
 	@Test 
 	public void testPurchaseBags_EnoughBags() throws OverloadedDevice, EmptyDevice {
 		MockReusableBagDispenser dispenser = new MockReusableBagDispenser(2, 100); 
@@ -329,20 +328,20 @@ public class ProductTest {
         assertEquals(2, dispenser.getQuantityRemaining());
 	}
 		
-	//Testing when the amount of bags in dispenser are being loaded (dispenser bags and purchased bags = same) 
-	// this one should notify that the dispenser is empty after its been dispensed
-	@Test
+	@Test 
 	public void testPurchaseBags_BorderEnoughBags() throws OverloadedDevice, EmptyDevice{
-		MockReusableBagDispenser dispenser = new MockReusableBagDispenser(2, 100); 
+		MockReusableBagDispenser.getStationActive(); 
+		MockReusableBagDispenser dispenser = new MockReusableBagDispenser(0, 100); 
 		ReusableBag bag1 = new ReusableBag(); 
         ReusableBag bag2 = new ReusableBag();
         ReusableBag[] bags = {bag1, bag2};
+        dispenser.load(bags);
 	    // 2 bags in the dispenser 
         //purchasing  2 bags 
         testProducts.PurchaseBags(bags);
-	    assertEquals(0, dispenser.getQuantityRemaining());
+	    assertEquals(0.0, dispenser.getQuantityRemaining(), 0.0);
 	}
-	
+
 	
 	@Test
     public void testLoad_OverloadedDeviceThrown() {

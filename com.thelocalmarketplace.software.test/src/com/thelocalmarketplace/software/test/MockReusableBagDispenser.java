@@ -72,4 +72,8 @@ public class MockReusableBagDispenser extends AbstractReusableBagDispenser imple
         quantityRemaining--;
         return new ReusableBag();
     }
+
+	public static void getStationActive() {
+		
+	}
 }
