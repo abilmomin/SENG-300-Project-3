@@ -35,8 +35,8 @@ import com.jjjwelectronics.IDevice;
 import com.jjjwelectronics.IDeviceListener;
 import com.jjjwelectronics.printer.IReceiptPrinter;
 import com.jjjwelectronics.printer.ReceiptPrinterListener;
-
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantLogic;
+
 
 /**
  * This class is a listener which implements and overrides the receipt printer listener in the hardware.
@@ -46,17 +46,62 @@ public class ReceiptHandler implements ReceiptPrinterListener{
 	private Receipt receipt;
 	AttendantLogic logic = new AttendantLogic();
 
-
 	/**
 	 * Constructs a ReceiptHandler with a specific receipt.
 	 * 
-	 * @param receipt The receipt that will be managed and responded to.
+	 * @param receipt 
+	 * 				The receipt that will be managed and responded to.
 	 */
 	public ReceiptHandler(Receipt receipt) {
 		receiptPrinter = receipt.receiptPrinter;
 		this.receipt = receipt;
 	}
 
+	/**
+	 * Signals that the printer is out of paper, triggering a notification to the receipt observers.
+	 */
+	@Override
+	public void thePrinterIsOutOfPaper() {
+		this.receipt.notifyPaperEmpty(receiptPrinter);
+	}
+
+	/**
+	 * Signals that the printer is out of ink, triggering a notification to the receipt observers.
+	 */
+	@Override
+	public void thePrinterIsOutOfInk() {
+		this.receipt.notifyInkEmpty(receiptPrinter);
+	}
+
+	@Override
+	public void thePrinterHasLowInk(){
+		this.receipt.notifyInkLow(receiptPrinter);
+	}
+
+	/**
+	 * Signals that the printer has low ink, triggering a notification to the receipt observers.
+	 */
+	@Override
+	public void thePrinterHasLowPaper() {
+		this.receipt.notifyPaperLow(receiptPrinter);
+	}
+
+	/**
+	 * Signals that paper has been added to the printer, triggering a notification to the receipt observers.
+	 */
+	@Override
+	public void paperHasBeenAddedToThePrinter() {
+		this.receipt.notifyPaperAdded(receiptPrinter);
+	}
+
+	/**
+	 * Signals that ink has been added to the printer, triggering a notification to the receipt observers.
+	 */
+	@Override
+	public void inkHasBeenAddedToThePrinter() {
+		this.receipt.notifyInkAdded(receiptPrinter);
+	}
+	
 	@Override
 	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
@@ -75,35 +120,5 @@ public class ReceiptHandler implements ReceiptPrinterListener{
 	@Override
 	public void aDeviceHasBeenTurnedOff(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void thePrinterIsOutOfPaper() {
-		this.receipt.notifyPaperEmpty(receiptPrinter);
-	}
-
-	@Override
-	public void thePrinterIsOutOfInk() {
-		this.receipt.notifyInkEmpty(receiptPrinter);
-	}
-
-	@Override
-	public void thePrinterHasLowInk(){
-		this.receipt.notifyInkLow(receiptPrinter);
-	}
-
-	@Override
-	public void thePrinterHasLowPaper() {
-		this.receipt.notifyPaperLow(receiptPrinter);
-	}
-
-	@Override
-	public void paperHasBeenAddedToThePrinter() {
-		this.receipt.notifyPaperAdded(receiptPrinter);
-	}
-
-	@Override
-	public void inkHasBeenAddedToThePrinter() {
-		this.receipt.notifyInkAdded(receiptPrinter);
 	}
 }

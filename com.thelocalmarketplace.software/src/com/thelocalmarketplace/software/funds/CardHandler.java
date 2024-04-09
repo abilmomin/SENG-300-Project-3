@@ -29,16 +29,12 @@ Nami Marwah              30178528
 package com.thelocalmarketplace.software.funds;
 
 import com.jjjwelectronics.IDevice;
-
 import com.jjjwelectronics.IDeviceListener;
-
 import com.jjjwelectronics.card.Card.CardData;
-
 import com.jjjwelectronics.card.CardReaderListener;
-
 import com.thelocalmarketplace.hardware.external.CardIssuer;
-
 import java.math.BigDecimal;
+
 
 /**
  * CardHandler class which handles all transactions with debit and credit cards, including tap, swipe, and insert.
@@ -47,8 +43,10 @@ public class CardHandler implements CardReaderListener {
     private final Funds fundController;
 
     /**
-     * Constructor for CardHandler class
-     * @param fundController the funds controller class
+     * Constructor for CardHandler class.
+     * 
+     * @param fundController 
+     * 				The funds controller class.
      */
     public CardHandler(Funds fundController) {
         if (fundController == null) {
@@ -58,9 +56,12 @@ public class CardHandler implements CardReaderListener {
     }
 
     /**
-     *  Function for approving a purchase using card and card issuer information
-     * @param cardNumber The user's card number
-     * @param amount Total amount to be charged
+     * Function for approving a purchase using card and card issuer information.
+     * 
+     * @param cardNumber 
+     * 				The user's card number.
+     * @param amount 
+     * 				Total amount to be charged.
      */
     public boolean approvePurchase(String cardNumber, double amount) {
         for (CardIssuer bank : fundController.checkoutStationSoftware.getBanks()) {
@@ -72,8 +73,10 @@ public class CardHandler implements CardReaderListener {
     }
 
     /**
-     * Implemented method that uses the user's card information to process transaction
-     * @param data The data of the user's card
+     * Implemented method that uses the user's card information to process transaction.
+     * 
+     * @param data 
+     * 				The data of the user's card.
      */
     @Override
     public void theDataFromACardHasBeenRead(CardData data) {
@@ -83,7 +86,6 @@ public class CardHandler implements CardReaderListener {
             fundController.notifyFundsStationBlocked();
             return;
         }
-
         double amountDue = fundController.getMoneyLeft().doubleValue();
         boolean purchaseStatus = approvePurchase(data.getNumber(), amountDue);
 
@@ -94,7 +96,6 @@ public class CardHandler implements CardReaderListener {
         } else {
             fundController.notifyInvalidFunds(cardType);
         }
-
     }
 
     /**

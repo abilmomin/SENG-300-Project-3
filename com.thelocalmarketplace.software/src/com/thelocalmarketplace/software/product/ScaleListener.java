@@ -37,40 +37,35 @@ import com.jjjwelectronics.scale.ElectronicScaleListener;
 import com.jjjwelectronics.scale.IElectronicScale;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
+
+/**
+ * This class represents a listener for changes in an electronic scale attached to a self-checkout station,
+ * managing events related to weight discrepancies and device status.
+ */
 public class ScaleListener implements ElectronicScaleListener {
-	// In order to access the hardware of the SelfCheckoutStation, use software.HARDWARE_YOU_WANNA_GET
 	
 	private SelfCheckoutStationSoftware software;
-	private Products handler;
 	
+	/**
+	 * Constructor for the listener.
+	 * 
+	 * @param software
+	 * 				The instance of the self checkout station software.
+	 * @param handler
+	 * 				The handler, in this case Product Handler.
+	 */
 	public ScaleListener (SelfCheckoutStationSoftware software, Products handler) {
-		this.software = software;
-		this.handler = handler;	
+		this.software = software;	
 	}
-	@Override
-	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void aDeviceHasBeenDisabled(IDevice<? extends IDeviceListener> device) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void aDeviceHasBeenTurnedOn(IDevice<? extends IDeviceListener> device) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void aDeviceHasBeenTurnedOff(IDevice<? extends IDeviceListener> device) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
+	/**
+	 * Handles the event when the mass on the scale changes.
+	 *
+	 * @param scale 
+	 * 				The electronic scale on which the event occurred.
+	 * @param mass  
+	 * 				The current mass measured by the scale.
+	 */
 	@Override
 	public void theMassOnTheScaleHasChanged(IElectronicScale scale, Mass mass) {
 		Mass actual;
@@ -102,8 +97,14 @@ public class ScaleListener implements ElectronicScaleListener {
 	        software.setStationBlock();
 	    } 	
 	}
-
-
+	
+	/**
+	 * Handles the event when the mass on the scale exceeds its limit.
+	 * It blocks the station and notifies the user of the overload.
+	 *
+	 * @param scale 
+	 * 				The electronic scale on which the event occurred.
+	 */
 	@Override
 	public void theMassOnTheScaleHasExceededItsLimit(IElectronicScale scale) {
 		software.setStationBlock();
@@ -111,9 +112,39 @@ public class ScaleListener implements ElectronicScaleListener {
 		
 	}
 
+	/**
+	 * Handles the event when the mass on the scale no longer exceeds its limit.
+	 * It unblocks the station.
+	 *
+	 * @param scale 
+	 * 				The electronic scale on which the event occurred.
+	 */
 	@Override
 	public void theMassOnTheScaleNoLongerExceedsItsLimit(IElectronicScale scale) {
 		software.setStationUnblock();	
 	}
 	
+	@Override
+	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void aDeviceHasBeenDisabled(IDevice<? extends IDeviceListener> device) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void aDeviceHasBeenTurnedOn(IDevice<? extends IDeviceListener> device) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void aDeviceHasBeenTurnedOff(IDevice<? extends IDeviceListener> device) {
+		// TODO Auto-generated method stub
+		
+	}
 }

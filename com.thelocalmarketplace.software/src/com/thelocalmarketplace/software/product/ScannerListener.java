@@ -30,26 +30,38 @@ package com.thelocalmarketplace.software.product;
 
 import com.jjjwelectronics.IDevice;
 import com.jjjwelectronics.IDeviceListener;
-import com.jjjwelectronics.Mass;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodeScannerListener;
-import com.jjjwelectronics.scanner.BarcodedItem;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
+
+/**
+ * Listens for barcode scanner events and adds scanned items to the customer's order.
+ */
 public class ScannerListener implements BarcodeScannerListener {
-	// In order to access the hardware of the SelfCheckoutStation, use software.getHARDWARE_YOU_WANNA_GET()
 	
-	private SelfCheckoutStationSoftware software;
 	private Products handler;
 	
+	/**
+	 * Constructor for the listener.
+	 * 
+	 * @param software
+	 * 				The self checkout station software instance.
+	 * @param handler
+	 * 				The handler, in this case Product Handler.
+	 */
 	public ScannerListener(SelfCheckoutStationSoftware software, Products handler) {
-		this.software = software;
 		this.handler = handler;
 	}
 	
 	/**
 	 * Adds an item to the customer's order when a barcode has been scanned
+	 * 
+	 * @param barcodeScanner
+	 * 				The scanner that scanned the barcode.
+	 * @param barcode
+	 * 				The barcode that got scanned.
 	 */
 	@Override
 	public void aBarcodeHasBeenScanned(IBarcodeScanner barcodeScanner, Barcode barcode) {

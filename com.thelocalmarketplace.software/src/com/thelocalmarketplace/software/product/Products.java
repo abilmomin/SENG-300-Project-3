@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.Item;
 import com.jjjwelectronics.Mass;
@@ -49,27 +48,27 @@ import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 
+/**
+ * Represents the product facade for the whole self checkout station software. Handles most product related things.
+ */
 public class Products {
-	// Things to listen to (hardware)
+
 	public SelfCheckoutStationSoftware software;
 	public ISelfCheckoutStation station;
 	public IElectronicScale baggingArea;
 	public IReusableBagDispenser reusableBagDispenser;
 	public IBarcodeScanner mainScanner;
 	public IBarcodeScanner handheldScanner;
-
-	// Listeners
 	public ScaleListener scaleListener;
 	public ScannerListener scannerListener;
 	public Set<ProductsListener> listeners = new HashSet<>();
-	
 	private ArrayList<Item> bulkyItems;
 
 	/**
 	 * Basic constructor
 	 * 
 	 * @param software
-	 * 		The main software hub.
+	 * 				The main software hub.
 	 */
 	public Products(SelfCheckoutStationSoftware software) {
 		this.software = software;
@@ -94,11 +93,12 @@ public class Products {
 	}
 	
 	/**
-	 * Handle bulky item 
+	 * Handles bulky items.
 	 * 
 	 * @param productWeight
-	 * 			The weight of the bulky item 
+	 * 				The weight of the bulky item.
 	 * @param attendantGUI 
+	 * 				The GUI of the attendant station.
 	 */
     public void handleBulkyItem(double productWeight, AttendantPageGUI attendantGUI) {
         software.setStationBlock();
@@ -114,11 +114,13 @@ public class Products {
                 
                 software.setStationUnblock();
          }
-
     }
 	
 	/**
 	 * Removes item and updates all order info.
+	 * 
+	 * @param item
+	 * 				The item being removed from the order.
 	 */
     public boolean removeItemFromOrder(Item item) {
         if (software.getOrder().contains(item)) {
@@ -143,10 +145,10 @@ public class Products {
     }
     
     /**
-     * Remove a barcoded item from the order
+     * Removes a barcoded item from the order.
      * 
      * @param item
-     * 			The barcoded item
+     * 				The barcoded item being removed.
      */
     public void removeBarcodedItemFromOrder(Item item) {
     	Barcode barcode = ((BarcodedItem) item).getBarcode();
@@ -165,10 +167,10 @@ public class Products {
     }
     
     /**
-     * Remove a PLU coded item from the order
+     * Removes a PLU coded item from the order.
      * 
      * @param item
-     * 			The PLU coded item from the order
+     * 				The PLU coded item being removed from the order.
      */
     public void removePLUCodedItemFromOrder(Item item) {
     	PriceLookUpCode PLUCode = ((PLUCodedItem) item).getPLUCode();
@@ -189,9 +191,10 @@ public class Products {
 	
 	/**
 	 * 
-	 * Adds item to order by PLU code
+	 * Adds a price look-up coded item to the order.
 	 * 
-	 * @param code
+	 * @param pluItem
+	 * 				The PLU item being added to the order.			
 	 */
 	public boolean addItemByPLUCode(PLUCodedItem pluItem) {
 		if (software.getStationActive() && !software.getStationBlock()) {
@@ -201,7 +204,6 @@ public class Products {
 			double itemWeight = itemWeightInGrams.doubleValue();
 			PriceLookUpCode PLUCode = pluItem.getPLUCode();
 			PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
-
 
 			if(product != null) {
 				long productPrice = product.getPrice();
@@ -222,7 +224,7 @@ public class Products {
 	 * Adds item to order via a barcode input.
 	 * 
 	 * @param barcode
-	 * 		The barcode that got scanned.
+	 * 				The barcode that got scanned.
 	 */
 	public void addItemViaBarcodeScan(Barcode barcode) {
 		if (software.getStationActive() && !software.getStationBlock()) {
@@ -250,7 +252,8 @@ public class Products {
 	/**
      * Adds an item to the customer's order by text search.
      *
-     * @param searchText The text to search for the product.
+     * @param searchText 
+     * 				The text to search for the product.
      */
     public void addItemByTextSearch(String searchText) {
         Product product = findProductByTextSearch(searchText);
@@ -293,16 +296,13 @@ public class Products {
     }
 	    
     /**
-     * Searches for a product with the provided text to find a match in either barcode or PLU code databases
+     * Searches for a product with the provided text to find a match in either barcode or PLU code databases.
      * 
      * @param searchText
-     * 		The string containing the text used to find either type of product
+     * 				The string containing the text used to find either type of product.
      * 						
-     * @return
-     * 		Returns a BarcodedProduct or PLUCodedProduct if found, otherwise null
+     * @return a BarcodedProduct or PLUCodedProduct if found, otherwise null.
      */
-
-    
     public Product findProductByTextSearch(String searchText) {
         // Split the search text into keywords
         String[] keywords = searchText.toLowerCase().split("\\s+");
@@ -329,9 +329,9 @@ public class Products {
      * Checks if the product text search contains all the keywords.
      * 
      * @param text 
-     * 		The text to search in.
+     * 				The text to search in.
      * @param keywords 
-     * 		The keywords to search for.
+     * 				The keywords to search for.
      * @return true if all keywords are found in the text, false otherwise.
      */
     private boolean containsAllKeywords(String text, String[] keywords) {
@@ -344,8 +344,10 @@ public class Products {
     }
 	
 	/**
-	 * Adds an item after customer selects it from the visual catalog
+	 * Adds an item after customer selects it from the visual catalog.
+	 * 
 	 * @param visualCatalogueItem
+	 * 				The visual catalogue item being added to the order.
 	 */
 	public void addItemByVisualCatalogue(PLUCodedItem visualCatalogueItem) {
 		if (software.getStationActive()) {
@@ -370,9 +372,16 @@ public class Products {
 			}
 		}
 	}
+	
 	/**
-	 * The selected amount of purchased bags are loaded and dispensed to the bagging area for purchase. 
-	 * The bag weight and price is added to the order weight and total cost 
+	 * Loads and dispenses the selected quantity of purchased bags to the bagging area, updating the order weight and total cost accordingly.
+	 * 
+	 * @param bags 
+	 * 				The reusable bags to be purchased.
+	 * @throws OverloadedDevice 
+	 * 				If the bag dispenser is overloaded.
+	 * @throws EmptyDevice 
+	 * 				If the dispenser is out of bags.
 	 */
 	public void PurchaseBags(ReusableBag...bags)throws OverloadedDevice, EmptyDevice {
 		if (software.getStationActive()) {
@@ -420,11 +429,10 @@ public class Products {
 	}
 	
 	/**
-	 * Registers the given listener with this facade so that the listener will be
-	 * notified of events emanating from here.
+	 * Registers the given listener with this facade so that the listener will be notified of events emanating from here.
 	 * 
 	 * @param listener
-	 *            The listener to be registered. No effect if it is already
+	 *            	The listener to be registered. No effect if it is already
 	 *    
 	 */
 	public void register(ProductsListener listener) {
@@ -443,45 +451,21 @@ public class Products {
 		listeners.remove(listener);
 	}
 
-	/**
-	 * Notifies observers that an item was added to the order.
-	 * 
-	 * @param product
-	 * 		The product added.
-	 */
 	public void notifyProductAdded(Product product) {
 		for(ProductsListener listener : listeners)
 			listener.productAdded(this, product);
 	}
 	
-	/**
-	 * Notifies observers that an item was removed to the order.
-	 * 
-	 * @param product
-	 * 		The product removed.
-	 */
 	public void notifyProductRemoved(Product product) {
 		for(ProductsListener listener : listeners)
 			listener.productRemoved(this, product);
 	}
 	
-	/**
-	 * Notifies observers that an item should be added to the bagging area.
-	 * 
-	 * @param product
-	 * 		The product that should be added to the bagging area.
-	 */
 	public void notifyAddProductToBaggingArea(Product product) {
 		for(ProductsListener listener : listeners)
 			listener.productToBaggingArea(this, product);
 	}
 	
-	/**
-	 * Notifies observers that bag(s) have been purchased.
-	 * 
-	 * @param totalCost
-	 * 		The total cost of the bag(s) purchased.
-	 */
 	public void notifyBagsPurchased(long totalPrice) {
 		for(ProductsListener listener : listeners)
 			listener.bagsPurchased(null, totalPrice);
