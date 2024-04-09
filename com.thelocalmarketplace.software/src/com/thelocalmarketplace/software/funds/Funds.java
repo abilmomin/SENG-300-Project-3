@@ -29,34 +29,23 @@
 package com.thelocalmarketplace.software.funds;
 
 import java.math.BigDecimal;
-
 import java.util.Arrays;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-
 import java.util.List;
-
 import java.util.Map;
-
 import java.util.Set;
-
 import java.util.stream.Collectors;
-
 import com.jjjwelectronics.EmptyDevice;
-
 import com.jjjwelectronics.OverloadedDevice;
 import com.tdc.CashOverloadException;
-
 import com.tdc.DisabledException;
-
 import com.tdc.NoCashAvailableException;
 import com.tdc.banknote.BanknoteStorageUnit;
 import com.tdc.banknote.IBanknoteDispenser;
 import com.tdc.coin.CoinStorageUnit;
 import com.tdc.coin.ICoinDispenser;
-
 import com.thelocalmarketplace.hardware.AbstractSelfCheckoutStation;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
@@ -75,7 +64,8 @@ public class Funds {
 	/**
 	 * Funds constructor which initializes all individual fund facades.
 	 *
-	 * @param checkoutStation The device facade that will be used to implement all low-level functions.
+	 * @param checkoutStation 
+	 * 				The device facade that will be used to implement all low-level functions.
 	 */
 	public Funds(SelfCheckoutStationSoftware checkoutStation) {
 		
@@ -128,48 +118,27 @@ public class Funds {
 	 * longer be notified of events emanating from here.
 	 * 
 	 * @param listener
-	 *            The listener to be de-registered. No effect if it is not already
-	 *            registered or null.
+	 *            The listener to be de-registered. No effect if it is not already registered or null.
 	 */
 	public void deregister(FundsObserver listener) {
 		observers.remove(listener);
 	}
 
-	/**
-	 * Notifies observers that the payment funds are invalid for the specified payment kind.
-	 * 
-	 * @param kind The kind of payment for which the funds are invalid.
-	 */
 	protected void notifyInvalidFunds(PaymentKind.Kind kind) {
 		for(FundsObserver observer : observers)
 			observer.fundsInvalid(this, kind);
 	}
 	
-	/**
-	 * Notifies observers that the payment funds have been paid in full, along with the change returned.
-	 * 
-	 * @param changeReturned The amount of change returned to the customer.
-	 */
 	protected void notifyPaidFunds(BigDecimal changeReturned) {
 		for(FundsObserver observer : observers)
 			observer.fundsPaidInFull(this, changeReturned);
 	}
 	
-	/**
-	 * Notifies observers that the payment funds have been added, along with the amount added.
-	 * 
-	 * @param amount The amount of funds added by the customer.
-	 */
 	protected void notifyFundsAdded(BigDecimal amount) {
 		for(FundsObserver observer : observers)
 			observer.fundsAdded(this, amount);
 	}
 	
-	/**
-	 * Notifies observers that the payment funds have removed, along with the amount removed.
-	 * 
-	 * @param amount The amount of funds removed by the customer.
-	 */
 	protected void notifyFundsRemoved(BigDecimal amount) {
 		for(FundsObserver observer : observers)
 			observer.fundsRemoved(this, amount);
@@ -180,9 +149,6 @@ public class Funds {
 			observer.fundsStored(this, amount);
 	}
 
-	/**
-	 * Notifies observers that the station is blocked at payment state.
-	 */
 	protected void notifyFundsStationBlocked() {
 		for (FundsObserver observer : observers)
 			observer.fundsStationBlocked(this);
@@ -213,15 +179,32 @@ public class Funds {
 			observer.noValidChange(this, amountDue);
 	}
 	
+	/**
+	 * Retrieves the total amount paid.
+	 * 
+	 * @return The total amount paid.
+	 */
 	public BigDecimal getTotalPaid() {
 		return totalPaid;
 	}
 
+	/**
+	 * Adds the specified amount to the total amount paid and returns the updated total.
+	 * 
+	 * @param amountPaid 
+	 * 				The amount to add to the total.
+	 * @return The updated total amount paid.
+	 */
 	public BigDecimal addToTotalPaid(BigDecimal amountPaid) {
 		totalPaid = totalPaid.add(amountPaid);
 		return totalPaid;
 	}
 
+	/**
+	 * Calculates and retrieves the amount of money left to be paid.
+	 * 
+	 * @return The amount of money left to be paid.
+	 */
 	public BigDecimal getMoneyLeft() {
 		BigDecimal total = new BigDecimal(checkoutStationSoftware.getTotalOrderPrice());
 		return total.subtract(getTotalPaid());
@@ -229,17 +212,20 @@ public class Funds {
 	
 	/**
 	 * Attempts to dispense a single banknote to contribute towards the remaining change amount.
-	 * This method selects the largest denomination banknote that is smaller than or equal to
-	 * the remaining amount and for which there is available inventory. It then updates the remaining
-	 * amount by subtracting the denomination of the dispensed banknote.
 	 *
-	 * @param remainingAmount The remaining amount of change that needs to be dispensed.
-	 * @param bankNoteDenominations An array of available banknote denominations in the system.
-	 * @param station The self-checkout station from which the banknote is to be dispensed.
+	 * @param remainingAmount 
+	 * 				The remaining amount of change that needs to be dispensed.
+	 * @param bankNoteDenominations 
+	 * 				An array of available banknote denominations in the system.
+	 * @param station 
+	 * 				The self-checkout station from which the banknote is to be dispensed.
 	 * @return The updated remaining amount after attempting to dispense a banknote.
-	 * @throws NoCashAvailableException If there are no banknotes available to be dispensed.
-	 * @throws DisabledException If the banknote dispenser is disabled.
-	 * @throws CashOverloadException If dispensing a banknote would cause the dispenser to exceed its capacity.
+	 * @throws NoCashAvailableException 
+	 * 				If there are no banknotes available to be dispensed.
+	 * @throws DisabledException 
+	 * 				If the banknote dispenser is disabled.
+	 * @throws CashOverloadException 
+	 * 				If dispensing a banknote would cause the dispenser to exceed its capacity.
 	 */
 	public BigDecimal dispenseBanknote(BigDecimal remainingAmount, BigDecimal[] bankNoteDenominations, AbstractSelfCheckoutStation station) throws NoCashAvailableException, DisabledException, CashOverloadException {
 		// Try using banknotes first
@@ -255,17 +241,20 @@ public class Funds {
 	
 	/**
 	 * Attempts to dispense a single coin to contribute towards the remaining change amount.
-	 * This method selects the largest denomination coin that is smaller than or equal to
-	 * the remaining amount and for which there is available inventory. It then updates the remaining
-	 * amount by subtracting the denomination of the dispensed coin.
 	 *
-	 * @param remainingAmount The remaining amount of change that needs to be dispensed.
-	 * @param coinDenominations A list of available coin denominations in the system, sorted in descending order.
-	 * @param station The self-checkout station from which the coin is to be dispensed.
+	 * @param remainingAmount 
+	 * 				The remaining amount of change that needs to be dispensed.
+	 * @param coinDenominations 
+	 * 				A list of available coin denominations in the system, sorted in descending order.
+	 * @param station 
+	 * 				The self-checkout station from which the coin is to be dispensed.
 	 * @return The updated remaining amount after attempting to dispense a coin.
-	 * @throws NoCashAvailableException If there are no coins available to be dispensed.
-	 * @throws DisabledException If the coin dispenser is disabled.
-	 * @throws CashOverloadException If dispensing a coin would cause the dispenser to exceed its capacity.
+	 * @throws NoCashAvailableException 
+	 * 				If there are no coins available to be dispensed.
+	 * @throws DisabledException 
+	 * 				If the coin dispenser is disabled.
+	 * @throws CashOverloadException 
+	 * 				If dispensing a coin would cause the dispenser to exceed its capacity.
 	 */
 	public BigDecimal dispenseCoin(BigDecimal remainingAmount, List<BigDecimal> coinDenominations, AbstractSelfCheckoutStation station) throws NoCashAvailableException, DisabledException, CashOverloadException {
 		for (BigDecimal coin : coinDenominations) {
@@ -279,19 +268,21 @@ public class Funds {
 	}
 	
 	/**
-	 * Dispenses the correct amount of change to the customer and gives them the
-	 * choice to print a receipt.
+	 * Dispenses the correct amount of change to the customer and gives them the choice to print a receipt.
 	 *
-	 * Implements change dispensing logic using available coin denominations.
-	 *
-	 * @param changeValue The amount of change to be dispensed.
+	 * @param changeValue 
+	 * 				The amount of change to be dispensed.
 	 * @return true if correct change is dispensed, false otherwise.
-	 * @throws DisabledException        If the coin slot is disabled.
-	 * @throws CashOverloadException    If the cash storage is overloaded.
-	 * @throws NoCashAvailableException If no cash is available for dispensing
-	 *                                  change.
+	 * @throws DisabledException        
+	 *              If the coin slot is disabled.
+	 * @throws CashOverloadException    
+	 *              If the cash storage is overloaded.
+	 * @throws NoCashAvailableException 
+	 *              If no cash is available for dispensing change.
 	 * @throws OverloadedDevice
+	 *              If the coin dispenser or banknote dispenser is overloaded during the dispensing process.
 	 * @throws EmptyDevice
+	 *              If the coin dispenser or banknote dispenser is empty during the dispensing process.
 	 */
 	public boolean dispenseAccurateChange(BigDecimal changeValue) throws CashOverloadException, NoCashAvailableException, DisabledException{
 		AbstractSelfCheckoutStation station = (AbstractSelfCheckoutStation) checkoutStationSoftware.getStationHardware();
@@ -364,9 +355,6 @@ public class Funds {
 			if(!dispensed)
 				break;
 		}
-
 		return remainingAmount.compareTo(BigDecimal.ZERO) == 0;
 	}
-	
-	
 }

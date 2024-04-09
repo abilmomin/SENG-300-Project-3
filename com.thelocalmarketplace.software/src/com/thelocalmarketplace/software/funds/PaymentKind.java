@@ -47,7 +47,9 @@ public class PaymentKind {
 
 	/**
 	 * Determines the card type based on the provided string representation.
-	 * @param The string representation of the card type.
+	 * 
+	 * @param cardType 
+	 * 				The string representation of the card type.
 	 * @return The card type as a Kind enum value.
 	 * 
 	 */

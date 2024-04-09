@@ -30,11 +30,11 @@ Nami Marwah              30178528
 package com.thelocalmarketplace.software.funds;
 
 import java.math.BigDecimal;
-
 import com.tdc.banknote.BanknoteStorageUnit;
 import com.tdc.banknote.IBanknoteDispenser;
 import com.tdc.coin.CoinStorageUnit;
 import com.tdc.coin.ICoinDispenser;
+
 
 /**
  * Permits objects to listen to one or more Funds when registered with them.
@@ -75,33 +75,70 @@ public interface FundsObserver {
     /**
      * Signals an event in which funds are invalid for a payment kind.
      * 
-     * @param fundsFacade The facade in which the event occurred.
-     * @param kind The kind of payment for which the funds are invalid.
+     * @param fundsFacade 
+     * 				The facade in which the event occurred.
+     * @param kind 
+     * 				The kind of payment for which the funds are invalid.
      */
     public void fundsInvalid(Funds fundsFacade, PaymentKind.Kind kind);
     
     /**
      * Signals an event in which funds have been paid in full, with change returned.
      * 
-     * @param fundsFacade The facade in which the event occurred.
-     * @param changeReturned The amount of change returned after paying in full.
+     * @param fundsFacade 
+     * 				The facade in which the event occurred.
+     * @param changeReturned 
+     * 				The amount of change returned after paying in full.
      */
     public void fundsPaidInFull(Funds fundsFacade, BigDecimal changeReturned);
 
 	/**
 	 * Signals an event in which the station is blocked at payment state.
 	 *
-	 * @param fundsFacade The facade in which the event occurred.
+	 * @param fundsFacade 
+	 * 				The facade in which the event occurred.
 	 */
 	public void fundsStationBlocked(Funds fundsFacade);
 	
+	/**
+	 * Signals an event when there's a low coins error in the coin dispenser.
+	 *
+	 * @param dispenser 
+	 * 				The coin dispenser where the error occurred.
+	 */	
 	default public void lowCoinsError(ICoinDispenser dispenser) {}
 	
+	/**
+	 * Signals an event when there's a low banknotes error in the banknote dispenser.
+	 *
+	 * @param dispenser 
+	 * 				The banknote dispenser where the error occurred.
+	 */
 	default public void lowBanknotesError(IBanknoteDispenser dispenser) {}
 	
+	/**
+	 * Signals an event when there's a high coins error in the coin storage unit.
+	 *
+	 * @param storage 
+	 * 				The coin storage unit where the error occurred.
+	 */
 	default public void highCoinsError(CoinStorageUnit storage) {}
 	
+	/**
+	 * Signals an event when there's a high banknotes error in the banknote storage unit.
+	 *
+	 * @param storage 
+	 * 				The banknote storage unit where the error occurred.
+	 */
 	default public void highBanknotesError(BanknoteStorageUnit storage) {}
 	
+	/**
+	 * Signals an event when no valid change can be provided.
+	 *
+	 * @param fundsFacade 
+	 * 				The facade where the event occurred.
+	 * @param changeDue    
+	 * 				The amount of change due that couldn't be provided.
+	 */
 	default public void noValidChange(Funds fundsFacade, BigDecimal changeDue) {}
 }

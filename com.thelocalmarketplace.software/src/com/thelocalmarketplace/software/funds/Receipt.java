@@ -32,33 +32,24 @@
 package com.thelocalmarketplace.software.funds;
 
 import java.math.BigDecimal;
-
 import java.util.ArrayList;
-
 import java.util.HashSet;
-
-
 import java.util.Set;
-
 import com.jjjwelectronics.EmptyDevice;
-
 import com.jjjwelectronics.Item;
-
 import com.jjjwelectronics.OverloadedDevice;
-
 import com.jjjwelectronics.printer.IReceiptPrinter;
-
 import com.jjjwelectronics.scanner.BarcodedItem;
-
 import com.thelocalmarketplace.hardware.BarcodedProduct;
-
 import com.thelocalmarketplace.hardware.PLUCodedItem;
-
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
-
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
+
+/**
+ * Represents a receipt for a self-checkout transaction, allowing printing of item details, total cost, payment, and change due.
+ */
 public class Receipt {
 
     public IReceiptPrinter receiptPrinter;
@@ -70,9 +61,12 @@ public class Receipt {
     /**
      * Constructs a new Receipt instance.
      *
-     * @param printer The receipt printer.
-     * @param funds The Funds facade.
-     * @param checkoutStation The checkout station software.
+     * @param printer 
+     * 				The receipt printer.
+     * @param funds 
+     * 				The Funds facade.
+     * @param checkoutStation 
+     * 				The checkout station software.
      */
     public Receipt (IReceiptPrinter printer, Funds funds) {
         this.funds = funds;
@@ -89,8 +83,10 @@ public class Receipt {
      * Prints receipt with details of each item, total cost, payment, and change due.
      *
      * @return The printed receipt as a String.
-     * @throws EmptyDevice If receipt printer is out of paper or ink.
-     * @throws OverloadedDevice If receipt printer is overloaded with commands.
+     * @throws EmptyDevice 
+     * 				If receipt printer is out of paper or ink.
+     * @throws OverloadedDevice 
+     * 				If receipt printer is overloaded with commands.
      */
     public String printReceipt() throws EmptyDevice, OverloadedDevice {
         ArrayList<String> receiptItems = compileReceiptItems();
@@ -146,10 +142,22 @@ public class Receipt {
         }
     }
 
+    /**
+     * Registers a ReceiptObserver to receive notifications from this Receipt.
+     *
+     * @param listener 
+     * 				The ReceiptObserver to register.
+     */
     public void register(ReceiptObserver listener) {
         observers.add(listener);
     }
 
+    /**
+     * Deregisters a ReceiptObserver from receiving notifications from this Receipt.
+     *
+     * @param listener
+     * 				The ReceiptObserver to deregister.
+     */
     public void deregister(ReceiptObserver listener) {
         observers.remove(listener);
     }

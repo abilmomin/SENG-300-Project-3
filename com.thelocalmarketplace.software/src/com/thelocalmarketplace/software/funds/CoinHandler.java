@@ -32,27 +32,19 @@ package com.thelocalmarketplace.software.funds;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
 import com.tdc.CashOverloadException;
-
 import com.tdc.DisabledException;
-
 import com.tdc.IComponent;
-
 import com.tdc.IComponentObserver;
-
 import com.tdc.NoCashAvailableException;
-
 import com.tdc.coin.Coin;
-
 import com.tdc.coin.CoinDispenserObserver;
 import com.tdc.coin.CoinStorageUnit;
 import com.tdc.coin.CoinStorageUnitObserver;
 import com.tdc.coin.CoinValidator;
-
 import com.tdc.coin.CoinValidatorObserver;
-
 import com.tdc.coin.ICoinDispenser;
+
 
 /**
  * Handles coin payment events, implementing observer interfaces for CoinValidator and CoinDispenser.
@@ -64,7 +56,8 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
     /**
      * Constructs a CoinHandler with a given fund controller.
      * 
-     * @param fundController The fund controller to associate with this handler.
+     * @param fundController 
+     * 				The fund controller to associate with this handler.
      */
     public CoinHandler(Funds fundController) {
         this.fundController = fundController;
@@ -73,8 +66,10 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
     /**
      * Handles the event when a valid coin is detected by the CoinValidator.
      * 
-     * @param validator The CoinValidator detecting the coin.
-     * @param value The value of the detected coin.
+     * @param validator 
+     * 				The CoinValidator detecting the coin.
+     * @param value 
+     * 				The value of the detected coin.
      */
     @Override 
     public void validCoinDetected(CoinValidator validator, BigDecimal value)  {
@@ -111,7 +106,8 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
     /**
      * Handles the event when an invalid coin is detected by the CoinValidator.
      * 
-     * @param validator The CoinValidator detecting the invalid coin.
+     * @param validator 
+     * 				The CoinValidator detecting the invalid coin.
      */
     @Override
     public void invalidCoinDetected(CoinValidator validator) {
@@ -121,8 +117,10 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
     /**
      * Adds a coin to the list of available coins when a coin is added to the dispenser.
      * 
-     * @param dispenser The coin dispenser where the coin is added.
-     * @param coin The coin added to the dispenser.
+     * @param dispenser 
+     * 				The coin dispenser where the coin is added.
+     * @param coin 
+     * 				The coin added to the dispenser.
      */
     @Override
 	public void coinAdded(ICoinDispenser dispenser, Coin coin) {
@@ -133,9 +131,12 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
     /**
      * Removes a coin from the list of available coins when a coin is removed from the dispenser.
      * 
-     * @param dispenser The coin dispenser where the coin is removed.
-     * @param coin The coin removed from the dispenser.
-     * @throws NullPointerException If the coin being removed is not available.
+     * @param dispenser 
+     * 				The coin dispenser where the coin is removed.
+     * @param coin 
+     * 				The coin removed from the dispenser.
+     * @throws NullPointerException 
+     * 				If the coin being removed is not available.
      */
     @Override
     public void coinRemoved(ICoinDispenser dispenser, Coin coin) {
@@ -153,8 +154,10 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
     /**
      * Loads coins into the dispenser and updates the list of available coins.
      * 
-     * @param dispenser The coin dispenser where coins are loaded.
-     * @param coins The coins loaded into the dispenser.
+     * @param dispenser 
+     * 				The coin dispenser where coins are loaded.
+     * @param coins 
+     * 				The coins loaded into the dispenser.
      */
     @Override
     public void coinsLoaded(ICoinDispenser dispenser, Coin... coins) {
@@ -167,9 +170,12 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
     /**
      * Unloads coins from the dispenser and updates the list of available coins.
      * 
-     * @param dispenser The coin dispenser where coins are unloaded.
-     * @param coins The coins unloaded from the dispenser.
-     * @throws NullPointerException If any unloaded coin is not available.
+     * @param dispenser 
+     * 				The coin dispenser where coins are unloaded.
+     * @param coins 
+     * 				The coins unloaded from the dispenser.
+     * @throws NullPointerException 
+     * 				If any unloaded coin is not available.
      */
     @Override
     public void coinsUnloaded(ICoinDispenser dispenser, Coin... coins) {
@@ -184,6 +190,43 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
         if (dispenser.size() < 5)
         	this.fundController.notifyCoinsLow(dispenser);
     }
+    
+    /**
+     * Notifies the fund controller when the coin dispenser is empty.
+     */
+    @Override
+    public void coinsEmpty(ICoinDispenser dispenser) {
+        this.fundController.notifyCoinsLow(dispenser);
+    }
+
+	/**
+	 * Notifies the fund controller when the coin storage unit is full.
+	 */
+    @Override
+	public void coinsFull(CoinStorageUnit unit) {
+		// TODO Auto-generated method stub
+        this.fundController.notifyCoinsHigh(unit);
+	}
+
+    /**
+     * Notifies the fund controller when a coin is added to the coin storage unit and it is nearly full.
+     */
+	@Override
+	public void coinAdded(CoinStorageUnit unit) {
+		// TODO Auto-generated method stub
+		if (unit.getCapacity() - unit.getCoinCount() < 5)
+        	this.fundController.notifyCoinsHigh(unit);
+	}
+
+	/**
+	 * Notifies the fund controller when the coin storage unit is loaded and nearly full.
+	 */
+	@Override
+	public void coinsLoaded(CoinStorageUnit unit) {
+		// TODO Auto-generated method stub
+		if (unit.getCapacity() - unit.getCoinCount() < 5)
+        	this.fundController.notifyCoinsHigh(unit);
+	}
    
     @Override
     public void enabled(IComponent<? extends IComponentObserver> component) {
@@ -209,31 +252,6 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
     public void coinsFull(ICoinDispenser dispenser) {
         // TODO Auto-generated method stub
     }
-    
-    @Override
-    public void coinsEmpty(ICoinDispenser dispenser) {
-        this.fundController.notifyCoinsLow(dispenser);
-    }
-
-	@Override
-	public void coinsFull(CoinStorageUnit unit) {
-		// TODO Auto-generated method stub
-        this.fundController.notifyCoinsHigh(unit);
-	}
-
-	@Override
-	public void coinAdded(CoinStorageUnit unit) {
-		// TODO Auto-generated method stub
-		if (unit.getCapacity() - unit.getCoinCount() < 5)
-        	this.fundController.notifyCoinsHigh(unit);
-	}
-
-	@Override
-	public void coinsLoaded(CoinStorageUnit unit) {
-		// TODO Auto-generated method stub
-		if (unit.getCapacity() - unit.getCoinCount() < 5)
-        	this.fundController.notifyCoinsHigh(unit);
-	}
 
 	@Override
 	public void coinsUnloaded(CoinStorageUnit unit) {

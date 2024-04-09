@@ -31,27 +31,19 @@ package com.thelocalmarketplace.software.funds;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Currency;
-
 import com.tdc.CashOverloadException;
-
 import com.tdc.DisabledException;
-
 import com.tdc.IComponent;
-
 import com.tdc.IComponentObserver;
-
 import com.tdc.NoCashAvailableException;
-
 import com.tdc.banknote.Banknote;
-
 import com.tdc.banknote.BanknoteDispenserObserver;
 import com.tdc.banknote.BanknoteStorageUnit;
 import com.tdc.banknote.BanknoteStorageUnitObserver;
 import com.tdc.banknote.BanknoteValidator;
-
 import com.tdc.banknote.BanknoteValidatorObserver;
-
 import com.tdc.banknote.IBanknoteDispenser;
+
 
 /**
  * This class acts as the facade and controller for all payments handled with banknotes.
@@ -63,7 +55,8 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	/**
 	 * Constructs a BanknoteHandler with the specified fund controller.
 	 * 
-	 * @param fundController The fund controller to associate with this handler.
+	 * @param fundController 
+	 * 			The fund controller to associate with this handler.
 	 */
 	public BanknoteHandler(Funds fundController) {
 		this.fundController = fundController;
@@ -72,9 +65,12 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	/**
 	 * Handles the event when a valid banknote is accepted.
 	 * 
-	 * @param validator The banknote validator.
-	 * @param currency The currency of the accepted banknote.
-	 * @param denomination The denomination of the accepted banknote.
+	 * @param validator 
+	 * 				The banknote validator.
+	 * @param currency 
+	 * 				The currency of the accepted banknote.
+	 * @param denomination 
+	 * 				The denomination of the accepted banknote.
 	 */
 	@Override
 	public void goodBanknote(BanknoteValidator validator, Currency currency, BigDecimal denomination) {
@@ -106,13 +102,13 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 		    }
 		    this.fundController.notifyPaidFunds(amountDue);
 		}
-
 	}
 
 	/**
 	 * Handles the event when an invalid banknote is detected.
 	 * 
-	 * @param validator The banknote validator.
+	 * @param validator 
+	 * 				The banknote validator.
 	 */
 	@Override
 	public void badBanknote(BanknoteValidator validator) {
@@ -123,8 +119,10 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	/**
 	 * Handles the event when a banknote is added to the dispenser.
 	 * 
-	 * @param dispenser The banknote dispenser.
-	 * @param banknote The banknote added to the dispenser.
+	 * @param dispenser 
+	 * 				The banknote dispenser.
+	 * @param banknote 
+	 * 				The banknote added to the dispenser.
 	 */
 	@Override
 	public void banknoteAdded(IBanknoteDispenser dispenser, Banknote banknote) {
@@ -135,8 +133,10 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	/**
 	 * Handles the event when a banknote is removed from the dispenser.
 	 * 
-	 * @param dispenser The banknote dispenser.
-	 * @param banknote The banknote removed from the dispenser.
+	 * @param dispenser 
+	 * 				The banknote dispenser.
+	 * @param banknote 
+	 * 				The banknote removed from the dispenser.
 	 */
 	@Override
 	public void banknoteRemoved(IBanknoteDispenser dispenser, Banknote banknote) {
@@ -154,8 +154,10 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	/**
 	 * Handles the event when banknotes are loaded into the dispenser.
 	 * 
-	 * @param dispenser The banknote dispenser.
-	 * @param banknotes The banknotes loaded into the dispenser.
+	 * @param dispenser 
+	 * 				The banknote dispenser.
+	 * @param banknotes 
+	 * 				The banknotes loaded into the dispenser.
 	 */
 	@Override
 	public void banknotesLoaded(IBanknoteDispenser dispenser, Banknote... banknotes) {
@@ -168,9 +170,12 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	/**
 	 * Handles the event when banknotes are unloaded from the dispenser.
 	 * 
-	 * @param dispenser The banknote dispenser.
-	 * @param banknotes The banknotes unloaded from the dispenser.
-	 * @throws NullPointerException If attempting to unload banknotes not available in the dispenser.
+	 * @param dispenser 
+	 * 				The banknote dispenser.
+	 * @param banknotes 
+	 * 				The banknotes unloaded from the dispenser.
+	 * @throws NullPointerException 
+	 * 				If attempting to unload banknotes not available in the dispenser.
 	 */
 	@Override
 	public void banknotesUnloaded(IBanknoteDispenser dispenser, Banknote... banknotes) {
@@ -186,8 +191,61 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 		if (dispenser.size() < 5)
         	this.fundController.notifyBanknotesLow(dispenser);
 	}
+	
+	/**
+	 * Handles the event when the banknote dispenser becomes empty.
+	 * 
+	 * @param dispenser 
+	 * 				The banknote dispenser.
+	 */
+	@Override
+	public void banknotesEmpty(IBanknoteDispenser dispenser) {
+		if (dispenser.size() < 5)
+        	this.fundController.notifyBanknotesLow(dispenser);
+	}
 
+	/**
+	 * Notifies the fund controller when the banknote storage unit is full.
+	 * 
+	 * @param unit
+	 * 				The banknote storage unit.
+     */
+	@Override
+	public void banknotesFull(BanknoteStorageUnit unit) {
+		this.fundController.notifyBanknotesHigh(unit);
+	}
+
+	/**
+	 * Notifies the fund controller when the banknote storage unit is nearly full.
+	 * 
+	 * @param unit
+	 * 				The banknote storage unit.
+	 */
+	@Override
+	public void banknoteAdded(BanknoteStorageUnit unit) {
+		if (unit.getCapacity() - unit.getBanknoteCount() < 5)
+        	this.fundController.notifyBanknotesHigh(unit);
+	}
+
+	/**
+	 * Notifies the fund controller when the banknote storage unit is loaded and nearly full.
+	 * 
+	 * @param unit
+	 * 				The banknote storage unit.
+	 */
+	@Override
+	public void banknotesLoaded(BanknoteStorageUnit unit) {
+		if (unit.getCapacity() - unit.getBanknoteCount() < 5)
+        	this.fundController.notifyBanknotesHigh(unit);
+	}
+	
 	// These methods are not useful for this class and thus left unimplemented with default JavaDoc comments.
+
+	@Override
+	public void banknotesUnloaded(BanknoteStorageUnit unit) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	@Override
 	public void enabled(IComponent<? extends IComponentObserver> component) {
@@ -212,42 +270,5 @@ public class BanknoteHandler implements BanknoteValidatorObserver, BanknoteDispe
 	@Override
 	public void moneyFull(IBanknoteDispenser dispenser) {
 		// TODO Auto-generated method stub
-	}
-	
-	/**
-	 * Handles the event when the banknote dispenser becomes empty.
-	 * 
-	 * @param dispenser The banknote dispenser.
-	 */
-	@Override
-	public void banknotesEmpty(IBanknoteDispenser dispenser) {
-		if (dispenser.size() < 5)
-        	this.fundController.notifyBanknotesLow(dispenser);
-	}
-
-	@Override
-	public void banknotesFull(BanknoteStorageUnit unit) {
-		// TODO Auto-generated method stub
-		this.fundController.notifyBanknotesHigh(unit);
-	}
-
-	@Override
-	public void banknoteAdded(BanknoteStorageUnit unit) {
-		// TODO Auto-generated method stub
-		if (unit.getCapacity() - unit.getBanknoteCount() < 5)
-        	this.fundController.notifyBanknotesHigh(unit);
-	}
-
-	@Override
-	public void banknotesLoaded(BanknoteStorageUnit unit) {
-		// TODO Auto-generated method stub
-		if (unit.getCapacity() - unit.getBanknoteCount() < 5)
-        	this.fundController.notifyBanknotesHigh(unit);
-	}
-
-	@Override
-	public void banknotesUnloaded(BanknoteStorageUnit unit) {
-		// TODO Auto-generated method stub
-		
 	}
 }
