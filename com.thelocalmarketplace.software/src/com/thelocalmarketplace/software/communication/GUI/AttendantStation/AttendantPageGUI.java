@@ -300,7 +300,16 @@ public class AttendantPageGUI extends JFrame {
         JOptionPane.showMessageDialog(this, message);
         return true;
     }
-    
+    /**
+     * Displays a message dialog to notify the attendant
+     * 
+     * @param message 
+     * 			The message to display in the dialog.
+     * @return True if the request is acknowledged.
+     */
+    public void notifyAttendant(String message) {
+        JOptionPane.showMessageDialog(this, message);
+    }
     /**
      * Displays a message dialog to notify about weight discrepancy and handles attendant's action.
      * 
