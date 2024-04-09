@@ -57,16 +57,19 @@ public class WeightChangeTest {
 	private CustomerStation cus_station;
 	private ScaleListener listen2;
 	
+	/**
+	 * Create set up that will be called before every test, intalize selfcheckoutstationbronze and turn it on.
+	 * Initialze scalelistener and mockscale and turn these on. 
+	 */
+
 	@Before
 	public void setUp() {
-		// we need scale first
 		SelfCheckoutStationBronze.resetConfigurationToDefaults();
 		this.checkoutSB = new SelfCheckoutStationBronze();
 		this.checkoutSB.plugIn(PowerGrid.instance());
 		this.checkoutSB.turnOn();
 		this.station = new SelfCheckoutStationSoftware(checkoutSB);
 		listen = new ScaleListener(station);
-		
 		scale = new MockScale(new Mass(6000000),new Mass (6000000));
 		scale1 = new MockScale(new Mass(600000000000L),new Mass (60000000000l));
 		scale1 = new MockScale(new Mass(10),new Mass (10));
@@ -75,6 +78,11 @@ public class WeightChangeTest {
 		this.scale.turnOn();
 	}
 	
+	/**
+	 * Create test thats adds 2 items to the scale but only one to the order, throws exception.
+	 * @throws Exception
+	 */
+
 	@Test
 	public void unBlockTest() throws Exception {
 		MockItem item1 = new MockItem(new Mass(100));
@@ -91,6 +99,12 @@ public class WeightChangeTest {
         assertFalse(station.getStationBlock());     
     }
 	
+	
+	/**
+	 * create test that has a very low scale limit and sensitivty then add item that is much larger.
+	 * Causes weight discrepancy and throws OverloadedDevice error.
+	 * @throws OverloadedDevice
+	 */
 
 	@Test
 	public void unBlockCatchExceptionTest() throws OverloadedDevice{
@@ -113,6 +127,10 @@ public class WeightChangeTest {
         assertFalse(station.getStationBlock());    
     }
 
+	/**
+	 * Create test that tests that the station is blocked and after calling fuction should be not blocked.
+	 */
+
 	@Test
 	public void testTheMassOnTheScaleNoLongerExceedsItsLimit() {
 		station.setStationBlock();
@@ -120,6 +138,10 @@ public class WeightChangeTest {
 		assertFalse(station.getStationBlock());
 	}
 	
+	/**
+	 * Create test that sets a low scale limit, add ensure that a pop-up occurs and station should be blocked.
+	 */
+
 	@Test
 	public void testTheMassOnTheScaleHasExceededItsLimit() {
 		
@@ -130,18 +152,19 @@ public class WeightChangeTest {
 		scale1.plugIn(PowerGrid.instance());
 		scale1.turnOn();
 		CustomerStation cus_Station_Test = new CustomerStation(0, test1, scale5, null);
-        
 	    cus_Station_Test.setAttendantGUI(A_station1);
 		test1.setGUI(cus_Station_Test);
 		test1.getGUI().customerPopUp("test");
 		test1.notifyUserOfOverload();
-		
 		listen2.theMassOnTheScaleHasExceededItsLimit(scale5);
 		assertTrue(test1.getStationBlock());
 		
 	}
 	
-	
+	/**
+	 * MockItem class created to be used in the tests.
+	 */
+
 	class MockItem extends Item {
 		public MockItem(Mass mass) {
 			super(mass);
