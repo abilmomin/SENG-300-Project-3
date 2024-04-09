@@ -36,7 +36,6 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -52,10 +51,11 @@ import javax.swing.JTextField;
 public class BagPurchaseInput extends JDialog {
     private int numOfBags = 0;
     
-    
     /**
      * Constructs a dialog window for purchasing bags.
-     * @param owner The Frame from which the dialog is displayed.
+     * 
+     * @param owner 
+     * 			The Frame from which the dialog is displayed.
      */
     public BagPurchaseInput(Frame owner) {
         super(owner, "Purchase Bags", true);
@@ -118,6 +118,7 @@ public class BagPurchaseInput extends JDialog {
     
     /**
      * Retrieves the number of bags entered by the user.
+     * 
      * @return The number of bags.
      */
     public int getNumOfBags() {

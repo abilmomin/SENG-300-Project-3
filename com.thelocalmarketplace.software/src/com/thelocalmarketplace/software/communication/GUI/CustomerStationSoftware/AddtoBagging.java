@@ -35,7 +35,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -43,30 +42,19 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
 import com.jjjwelectronics.Item;
 import com.jjjwelectronics.scale.IElectronicScale;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
-
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.Product;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
-
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.BaggingArea;
-
-
-/* GENERAL LAYOUT
- * Box layout is used to arrange items vertically or horizontally
- * Glue is like a spring << add on before and after box components to squish them to the middle
- */
-
-
 
 
 /**
@@ -81,10 +69,15 @@ public class AddtoBagging extends JFrame {
     
     /**
      * Constructor that creates a panel for adding items to the bagging area.
-     * @param product The product to be added to the bagging area.
-     * @param stationSoftwareInstance The SelfCheckoutStationSoftware instance associated with the hardware.
-     * @param attendantGUI The AttendantPageGUI instance for the attendant user interface.
-     * @param baggingArea The BaggingArea instance for displaying the bagging area interface.
+     * 
+     * @param product 
+     * 			The product to be added to the bagging area.
+     * @param stationSoftwareInstance 
+     * 			The SelfCheckoutStationSoftware instance associated with the hardware.
+     * @param attendantGUI 
+     * 			The AttendantPageGUI instance for the attendant user interface.
+     * @param baggingArea 
+     * 			The BaggingArea instance for displaying the bagging area interface.
      */
     public AddtoBagging(Product product, SelfCheckoutStationSoftware stationSoftwareInstance, AttendantPageGUI attendantGUI, BaggingArea baggingArea) {
         this.stationSoftwareInstance = stationSoftwareInstance;
@@ -97,7 +90,9 @@ public class AddtoBagging extends JFrame {
 
     /**
      * Initializes the user interface components for adding items to the bagging area.
-     * @param product The product to be added to the bagging area.
+     * 
+     * @param product 
+     * 			The product to be added to the bagging area.
      */
     private void initializeUI(Product product) {
         setTitle("Add to Bag");
@@ -144,7 +139,9 @@ public class AddtoBagging extends JFrame {
 
     /**
      * Creates and configures the button panel for adding items to the bagging area.
-     * @param product The product to be added to the bagging area.
+     * 
+     * @param product 
+     * 			The product to be added to the bagging area.
      * @return The configured button panel.
      */
     private JPanel createButtonPanel(Product product) {
@@ -180,7 +177,9 @@ public class AddtoBagging extends JFrame {
 
     /**
      * Handles the scenario when the item is placed in the bagging area.
-     * @param product The product to be placed in the bagging area.
+     * 
+     * @param product 
+     * 		The product to be placed in the bagging area.
      */
     private void placeItemInBaggingArea(Product product) {
         if (product instanceof BarcodedProduct) {
@@ -206,12 +205,10 @@ public class AddtoBagging extends JFrame {
         }
     }
 
-
 	 /**
      * Handles the scenario when the item is not added to the bagging area.
      */
     private void dontBagItem() {
-		
     	ArrayList<Item> orderList = stationSoftwareInstance.getOrder();
     	if (!orderList.isEmpty()) {
     		int lastIndex = orderList.size() - 1;

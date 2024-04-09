@@ -35,9 +35,7 @@ import com.jjjwelectronics.card.BlockedCardException;
 import com.jjjwelectronics.card.InvalidPINException;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import ca.ucalgary.seng300.simulation.NullPointerSimulationException;
-
 import java.io.IOException;
-
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -47,7 +45,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -69,8 +66,10 @@ public class CardPayment extends JDialog {
     /**
      * Constructs a new CardPayment dialog.
      *
-     * @param software The SelfCheckoutStationSoftware instance.
-     * @param typeOfCard The type of card being used for payment.
+     * @param software 
+     * 			The SelfCheckoutStationSoftware instance.
+     * @param typeOfCard 
+     * 			The type of card being used for payment.
      */
     public CardPayment(SelfCheckoutStationSoftware software, String typeOfCard) {
         setTitle("Select Card Payment Method");
@@ -119,8 +118,10 @@ public class CardPayment extends JDialog {
     /**
      * Opens a PIN entry panel when the "Insert Card" option is selected.
      *
-     * @param software The SelfCheckoutStationSoftware instance.
-     * @param typeOfCard The type of card being used for payment.
+     * @param software 
+     * 			The SelfCheckoutStationSoftware instance.
+     * @param typeOfCard 
+     * 			The type of card being used for payment.
      */
     private void openPinPanel(SelfCheckoutStationSoftware software, String typeOfCard) {
     	
@@ -147,8 +148,10 @@ public class CardPayment extends JDialog {
     /**
      * Processes the selected payment method and completes the payment.
      *
-     * @param software The SelfCheckoutStationSoftware instance.
-     * @param typeOfCard The type of card being used for payment.
+     * @param software 
+     * 			The SelfCheckoutStationSoftware instance.
+     * @param typeOfCard 
+     * 			The type of card being used for payment.
      */
     private void processPayment(SelfCheckoutStationSoftware software, String typeOfCard) {
     	 try {
@@ -185,14 +188,14 @@ public class CardPayment extends JDialog {
 	        } catch (NullPointerSimulationException npse) { 						// Unable to remove card
 
 	        }
-	  }
+	    }
     }
-
     
     /**
      * Creates a panel for entering PIN numbers.
      *
-     * @param pinPanel The parent JFrame where the panel will be added.
+     * @param pinPanel 
+     * 			The parent JFrame where the panel will be added.
      * @return The JPanel containing the PIN entry keypad.
      */
     public JPanel createPinPanel(JFrame pinPanel) {
@@ -240,7 +243,6 @@ public class CardPayment extends JDialog {
     	
     	return keypadPanel;
     }
-   
     
     /**
      * ActionListener implementation for adding a digit to the pinTextField.

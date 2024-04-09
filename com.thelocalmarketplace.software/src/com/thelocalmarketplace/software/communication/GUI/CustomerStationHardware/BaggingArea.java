@@ -84,7 +84,6 @@ public class BaggingArea extends JFrame {
         listModel.addElement(new Product(name));
     }
 
-    
     /**
      * Remove a product from the listModel.
      * 
@@ -114,8 +113,7 @@ public class BaggingArea extends JFrame {
             }
         }
         return false;
-    }
-    
+    }  
     
     /**
      * Adds all the necessary GUI components to the bagging area panel.
@@ -139,7 +137,6 @@ public class BaggingArea extends JFrame {
         baggingAreaFrame.setVisible(false);
     }
     
-    
     /**
      * Creates a styled JButton with the specified text.
      * 
@@ -154,7 +151,6 @@ public class BaggingArea extends JFrame {
         button.setBackground(Color.LIGHT_GRAY);
         return button;
     }
-    
     
     /**
      * Represents a product in the bagging area.
@@ -172,7 +168,6 @@ public class BaggingArea extends JFrame {
             this.name = name;
         }
         
-        
         /**
          * Retrieves the name of the product.
          * 
@@ -182,7 +177,6 @@ public class BaggingArea extends JFrame {
             return name;
         }
     }
-    
     
     /**
      * Custom renderer for displaying product names in the JList.
