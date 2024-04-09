@@ -48,7 +48,7 @@ import com.thelocalmarketplace.software.product.ScaleListener;
 
 import powerutility.PowerGrid;
 
-public class WeightchangeTest {
+public class WeightChangeTest {
 	private MockScale scale;
 	private MockScale scale1;
 	private SelfCheckoutStationSoftware station;
@@ -65,7 +65,7 @@ public class WeightchangeTest {
 		this.checkoutSB.plugIn(PowerGrid.instance());
 		this.checkoutSB.turnOn();
 		this.station = new SelfCheckoutStationSoftware(checkoutSB);
-		listen = new ScaleListener(station, null);
+		listen = new ScaleListener(station);
 		
 		scale = new MockScale(new Mass(6000000),new Mass (6000000));
 		scale1 = new MockScale(new Mass(600000000000L),new Mass (60000000000l));
@@ -126,7 +126,7 @@ public class WeightchangeTest {
 		MockScale scale5 = new MockScale(new Mass(6),new Mass (6));
 		SelfCheckoutStationSoftware test1 = new SelfCheckoutStationSoftware(checkoutSB);
 		AttendantPageGUI A_station1 = new AttendantPageGUI();
-		listen2 = new ScaleListener(test1, null);
+		listen2 = new ScaleListener(test1);
 		scale1.plugIn(PowerGrid.instance());
 		scale1.turnOn();
 		CustomerStation cus_Station_Test = new CustomerStation(0, test1, scale5, null);

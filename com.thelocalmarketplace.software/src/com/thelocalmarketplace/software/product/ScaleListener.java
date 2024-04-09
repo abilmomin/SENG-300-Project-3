@@ -46,18 +46,16 @@ import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
  * managing events related to weight discrepancies and device status.
  */
 public class ScaleListener implements ElectronicScaleListener {
-	
-	private SelfCheckoutStationSoftware software;
+
+	private final SelfCheckoutStationSoftware software;
 	
 	/**
 	 * Constructor for the listener.
 	 * 
 	 * @param software
-	 * 				The instance of the self checkout station software.
-	 * @param handler
-	 * 				The handler, in this case Product Handler.
+	 * 				The instance of the self-checkout station software.
 	 */
-	public ScaleListener (SelfCheckoutStationSoftware software, Products handler) {
+	public ScaleListener (SelfCheckoutStationSoftware software) {
 		this.software = software;	
 	}
 	
@@ -71,36 +69,36 @@ public class ScaleListener implements ElectronicScaleListener {
 	 */
 	@Override
 	public void theMassOnTheScaleHasChanged(IElectronicScale scale, Mass mass) {
-		Mass actual;
-	    Mass expected;
-	    long tolerance;
-
 	    try {
 	    	AbstractElectronicScale allScales = (AbstractElectronicScale) scale;
-	        actual = allScales.getCurrentMassOnTheScale();
-	        expected = new Mass(software.getTotalOrderWeightInGrams());
-	        tolerance = allScales.getSensitivityLimit().inMicrograms().longValue() / 2;
+			Mass actualMass = allScales.getCurrentMassOnTheScale();
+			Mass expectedMass = new Mass(software.getTotalOrderWeightInGrams());
+			long weightTolerance = allScales.getSensitivityLimit().inMicrograms().longValue() / 2;
 
-	        long actualInMicrograms = actual.inMicrograms().longValue();
-	        long expectedInMicrograms = expected.inMicrograms().longValue();
+	        long actualInMicrograms = actualMass.inMicrograms().longValue();
+	        long expectedInMicrograms = expectedMass.inMicrograms().longValue();
 
-	        // Calculate the absolute difference and compare it with the tolerance
-	        long difference = Math.abs(actualInMicrograms - expectedInMicrograms);
+	        long absoluteDifference = Math.abs(actualInMicrograms - expectedInMicrograms);
 
-	        if (difference <= tolerance) {
+	        if (absoluteDifference <= weightTolerance)
 	            software.setStationUnblock();
-	        }
-	       
-	        else {
-	        	software.setStationBlock();
-	        	software.getGUI().customerPopUp("Weight Discrepency Detected, Adds or removes the item." );
-	        	software.getGUI().getAttendantGUI().weightDiscpreancydNotify(software);
-	        }
+	        else
+	        	detectedWeightDiscrepancy();
 	    } catch (OverloadedDevice e) {
 	        software.setStationBlock();
 	    } 	
 	}
-	
+
+	/**
+	 * Handles the event when a weight discrepancy is detected.
+	 */
+	public void detectedWeightDiscrepancy() {
+		software.setStationBlock();
+		software.getGUI().customerPopUp("Weight discrepancy detected. Add or remove the item." );
+		software.getGUI().getAttendantGUI().weightDiscpreancydNotify(software);
+	}
+
+
 	/**
 	 * Handles the event when the mass on the scale exceeds its limit.
 	 * It blocks the station and notifies the user of the overload.
@@ -112,8 +110,8 @@ public class ScaleListener implements ElectronicScaleListener {
 	public void theMassOnTheScaleHasExceededItsLimit(IElectronicScale scale) {
 		software.setStationBlock();
 		software.notifyUserOfOverload();
-		
 	}
+
 
 	/**
 	 * Handles the event when the mass on the scale no longer exceeds its limit.
@@ -126,7 +124,8 @@ public class ScaleListener implements ElectronicScaleListener {
 	public void theMassOnTheScaleNoLongerExceedsItsLimit(IElectronicScale scale) {
 		software.setStationUnblock();	
 	}
-	
+
+
 	/**
 	 * Notifies when a device has been enabled.
 	 * This method is invoked when a device has been enabled.
@@ -139,7 +138,8 @@ public class ScaleListener implements ElectronicScaleListener {
 		// TODO Auto-generated method stub
 		
 	}
-	
+
+
 	/**
 	 * Notifies when a device has been disabled.
 	 * This method is invoked when a device has been disabled.
@@ -152,7 +152,8 @@ public class ScaleListener implements ElectronicScaleListener {
 		// TODO Auto-generated method stub
 		
 	}
-	
+
+
 	/**
 	 * Notifies when a device has been turned on.
 	 * This method is invoked when a device has been turned on.
@@ -165,7 +166,8 @@ public class ScaleListener implements ElectronicScaleListener {
 		// TODO Auto-generated method stub
 		
 	}
-	
+
+
 	/**
 	 * Notifies when a device has been turned off.
 	 * This method is invoked when a device has been turned off.

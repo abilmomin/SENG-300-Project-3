@@ -36,26 +36,23 @@ import com.jjjwelectronics.IDeviceListener;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodeScannerListener;
 import com.jjjwelectronics.scanner.IBarcodeScanner;
-import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 
 
 /**
  * Listens for barcode scanner events and adds scanned items to the customer's order.
  */
 public class ScannerListener implements BarcodeScannerListener {
-	
-	private Products handler;
-	
+
+	private final Products productHandler;
+
 	/**
 	 * Constructor for the listener.
-	 * 
-	 * @param software
-	 * 				The self checkout station software instance.
-	 * @param handler
+	 *
+	 * @param productHandler
 	 * 				The handler, in this case Product Handler.
 	 */
-	public ScannerListener(SelfCheckoutStationSoftware software, Products handler) {
-		this.handler = handler;
+	public ScannerListener(Products productHandler) {
+		this.productHandler = productHandler;
 	}
 	
 	/**
@@ -68,7 +65,7 @@ public class ScannerListener implements BarcodeScannerListener {
 	 */
 	@Override
 	public void aBarcodeHasBeenScanned(IBarcodeScanner barcodeScanner, Barcode barcode) {
-		handler.addItemViaBarcodeScan(barcode);
+		productHandler.addItemViaBarcodeScan(barcode);
 	}
 	
 	/**
