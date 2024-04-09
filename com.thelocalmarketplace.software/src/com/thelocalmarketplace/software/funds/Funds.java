@@ -1,5 +1,8 @@
 /**
 
+ SENG 300 - ITERATION 3
+ GROUP GOLD {8}
+
  Name                      UCID
 
  Yotam Rojnov             30173949
@@ -124,56 +127,120 @@ public class Funds {
 		observers.remove(listener);
 	}
 
+	
+	/**
+	 * Notifies observers that funds are invalid for a certain payment kind.
+	 * 
+	 * @param kind 
+	 * 			The kind of payment for which funds are invalid.
+	 */
 	protected void notifyInvalidFunds(PaymentKind.Kind kind) {
 		for(FundsObserver observer : observers)
 			observer.fundsInvalid(this, kind);
 	}
 	
+	/**
+	 * Notifies observers that funds have been paid in full.
+	 * 
+	 * @param changeReturned 
+	 * 					The amount of change returned.
+	 */
 	protected void notifyPaidFunds(BigDecimal changeReturned) {
 		for(FundsObserver observer : observers)
 			observer.fundsPaidInFull(this, changeReturned);
 	}
 	
+	/**
+	 * Notifies observers that funds have been added.
+	 * 
+	 * @param amount 
+	 * 			The amount of funds added.
+	 */
 	protected void notifyFundsAdded(BigDecimal amount) {
 		for(FundsObserver observer : observers)
 			observer.fundsAdded(this, amount);
 	}
 	
+	/**
+	 * Notifies observers that funds have been removed.
+	 * 
+	 * @param amount 
+	 * 			The amount of funds removed.
+	 */
 	protected void notifyFundsRemoved(BigDecimal amount) {
 		for(FundsObserver observer : observers)
 			observer.fundsRemoved(this, amount);
 	}
 	
+	/**
+	 * Notifies observers that funds have been stored.
+	 * 
+	 * @param amount 
+	 * 			The amount of funds stored.
+	 */
 	protected void notifyFundsStored(BigDecimal amount) {
 		for(FundsObserver observer : observers)
 			observer.fundsStored(this, amount);
 	}
 
+	/**
+	 * Notifies observers that the funds station is blocked.
+	 */
 	protected void notifyFundsStationBlocked() {
 		for (FundsObserver observer : observers)
 			observer.fundsStationBlocked(this);
 	}
 	
+	/**
+	 * Notifies observers of a high coin level in the storage unit.
+	 * 
+	 * @param storage 
+	 * 			The coin storage unit.
+	 */
 	protected void notifyCoinsHigh(CoinStorageUnit storage) {
 		for (FundsObserver observer : observers)
 			observer.highCoinsError(storage);
 	}
-	
+
+	/**
+	 * Notifies observers of a low coin level in the dispenser.
+	 * 
+	 * @param dispenser 
+	 * 				The coin dispenser.
+	 */
 	protected void notifyCoinsLow(ICoinDispenser dispenser) {
 		for (FundsObserver observer : observers)
 			observer.lowCoinsError(dispenser);
 	}
 	
+	/**
+	 * Notifies observers of a high banknote level in the storage unit.
+	 * 
+	 * @param storage 
+	 * 			The banknote storage unit.
+	 */
 	protected void notifyBanknotesHigh(BanknoteStorageUnit storage) {
 		for (FundsObserver observer : observers)
 			observer.highBanknotesError(storage);
 	}
 	
+	/**
+	 * Notifies observers of a low banknote level in the dispenser.
+	 * 
+	 * @param dispenser 
+	 * 				The banknote dispenser.
+	 */
 	protected void notifyBanknotesLow(IBanknoteDispenser dispenser) {
 		for (FundsObserver observer : observers)
 			observer.lowBanknotesError(dispenser);
 	}
 	
+	/**
+	 * Notifies observers that no valid change is available for the given amount due.
+	 * 
+	 * @param amountDue 
+	 * 				The amount due for which no valid change is available.
+	 */
 	protected void notifyNoValidChange(BigDecimal amountDue) {
 		for (FundsObserver observer : observers)
 			observer.noValidChange(this, amountDue);
@@ -215,19 +282,28 @@ public class Funds {
 	 *
 	 * @param remainingAmount 
 	 * 				The remaining amount of change that needs to be dispensed.
+	 * 
 	 * @param bankNoteDenominations 
 	 * 				An array of available banknote denominations in the system.
+	 * 
 	 * @param station 
 	 * 				The self-checkout station from which the banknote is to be dispensed.
-	 * @return The updated remaining amount after attempting to dispense a banknote.
+	 * 
+	 * @return remainingAmount
+	 * 				The updated remaining amount after attempting to dispense a banknote.
+	 * 
 	 * @throws NoCashAvailableException 
 	 * 				If there are no banknotes available to be dispensed.
+	 * 
 	 * @throws DisabledException 
 	 * 				If the banknote dispenser is disabled.
+	 * 
 	 * @throws CashOverloadException 
 	 * 				If dispensing a banknote would cause the dispenser to exceed its capacity.
 	 */
-	public BigDecimal dispenseBanknote(BigDecimal remainingAmount, BigDecimal[] bankNoteDenominations, AbstractSelfCheckoutStation station) throws NoCashAvailableException, DisabledException, CashOverloadException {
+	public BigDecimal dispenseBanknote(BigDecimal remainingAmount, BigDecimal[] bankNoteDenominations, AbstractSelfCheckoutStation station) 
+							throws NoCashAvailableException, DisabledException, CashOverloadException {
+		
 		// Try using banknotes first
 		for (BigDecimal bankNote : bankNoteDenominations) {
 			if (remainingAmount.compareTo(bankNote) >= 0 && (int)banknotesAvailable.get(bankNote) > 0) {
@@ -244,19 +320,28 @@ public class Funds {
 	 *
 	 * @param remainingAmount 
 	 * 				The remaining amount of change that needs to be dispensed.
+	 * 
 	 * @param coinDenominations 
 	 * 				A list of available coin denominations in the system, sorted in descending order.
+	 * 
 	 * @param station 
 	 * 				The self-checkout station from which the coin is to be dispensed.
-	 * @return The updated remaining amount after attempting to dispense a coin.
+	 * 
+	 * @return remainingAmount
+	 * 				The updated remaining amount after attempting to dispense a coin.
+	 * 
 	 * @throws NoCashAvailableException 
 	 * 				If there are no coins available to be dispensed.
+	 * 
 	 * @throws DisabledException 
 	 * 				If the coin dispenser is disabled.
+	 * 
 	 * @throws CashOverloadException 
 	 * 				If dispensing a coin would cause the dispenser to exceed its capacity.
 	 */
-	public BigDecimal dispenseCoin(BigDecimal remainingAmount, List<BigDecimal> coinDenominations, AbstractSelfCheckoutStation station) throws NoCashAvailableException, DisabledException, CashOverloadException {
+	public BigDecimal dispenseCoin(BigDecimal remainingAmount, List<BigDecimal> coinDenominations, AbstractSelfCheckoutStation station) 
+							throws NoCashAvailableException, DisabledException, CashOverloadException {
+		
 		for (BigDecimal coin : coinDenominations) {
 			if (remainingAmount.compareTo(coin) >= 0 && (int)coinsAvailable.get(coin) > 0) {
 				station.getCoinDispensers().get(coin).emit();
@@ -272,15 +357,22 @@ public class Funds {
 	 *
 	 * @param changeValue 
 	 * 				The amount of change to be dispensed.
-	 * @return true if correct change is dispensed, false otherwise.
+	 * 
+	 * @return true 
+	 * 				if correct change is dispensed, false otherwise.
+	 * 
 	 * @throws DisabledException        
 	 *              If the coin slot is disabled.
+	 *              
 	 * @throws CashOverloadException    
 	 *              If the cash storage is overloaded.
+	 *              
 	 * @throws NoCashAvailableException 
 	 *              If no cash is available for dispensing change.
+	 *              
 	 * @throws OverloadedDevice
 	 *              If the coin dispenser or banknote dispenser is overloaded during the dispensing process.
+	 *              
 	 * @throws EmptyDevice
 	 *              If the coin dispenser or banknote dispenser is empty during the dispensing process.
 	 */

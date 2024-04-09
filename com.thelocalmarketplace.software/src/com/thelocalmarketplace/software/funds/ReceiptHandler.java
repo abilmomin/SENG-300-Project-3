@@ -102,21 +102,49 @@ public class ReceiptHandler implements ReceiptPrinterListener{
 		this.receipt.notifyInkAdded(receiptPrinter);
 	}
 	
+	/**
+	 * Notifies when a device has been enabled.
+	 * This method is invoked when a device has been enabled.
+	 * 
+	 * @param device 
+	 * 			The device that has been enabled.
+	 */
 	@Override
 	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
 	}
-
+	
+	/**
+	 * Notifies when a device has been disabled.
+	 * This method is invoked when a device has been disabled.
+	 * 
+	 * @param device 
+	 * 			The device that has been disabled.
+	 */
 	@Override
 	public void aDeviceHasBeenDisabled(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
 	}
-
+	
+	/**
+	 * Notifies when a device has been turned on.
+	 * This method is invoked when a device has been turned on.
+	 * 
+	 * @param device 
+	 * 			The device that has been turned on.
+	 */
 	@Override
 	public void aDeviceHasBeenTurnedOn(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
 	}
-
+	
+	/**
+	 * Notifies when a device has been turned off.
+	 * This method is invoked when a device has been turned off.
+	 * 
+	 * @param device 
+	 * 			The device that has been turned off.
+	 */
 	@Override
 	public void aDeviceHasBeenTurnedOff(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub

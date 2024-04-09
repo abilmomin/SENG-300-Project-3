@@ -161,38 +161,80 @@ public class Receipt {
     public void deregister(ReceiptObserver listener) {
         observers.remove(listener);
     }
-
+    
+    /**
+     * Notifies observers that a receipt has been printed.
+     * 
+     * @param order 
+     * 			The list of items in the order.
+     */
     public void notifyReceiptPrinted(ArrayList<Item> order) {
         for(ReceiptObserver observer : observers)
             observer.receiptPrinted(order);
     }
-
+    
+    /**
+     * Notifies observers that the ink cartridge of the receipt printer is empty.
+     * 
+     * @param printer 
+     * 			The receipt printer with an empty ink cartridge.
+     */
     public void notifyInkEmpty(IReceiptPrinter printer) {
     	for(ReceiptObserver observer : observers)
             observer.noInkError(printer);
     }
-
+    
+    /**
+     * Notifies observers that the paper roll of the receipt printer is empty.
+     * 
+     * @param printer 
+     * 			The receipt printer with an empty paper roll.
+     */
     public void notifyPaperEmpty(IReceiptPrinter printer) {
     	for(ReceiptObserver observer : observers)
             observer.noPaperError(printer);
     }
-
+    
+    /**
+     * Notifies observers that the ink cartridge of the receipt printer is low.
+     * 
+     * @param printer 
+     * 			The receipt printer with a low ink level.
+     */
     public void notifyInkLow(IReceiptPrinter printer) {
     	for(ReceiptObserver observer : observers)
             observer.lowInkError(printer);
     }
-
+    
+    /**
+     * Notifies observers that the paper roll of the receipt printer is low.
+     * 
+     * @param printer 
+     * 			The receipt printer with a low paper level.
+     */
     public void notifyPaperLow(IReceiptPrinter printer) {
     	for(ReceiptObserver observer : observers)
             observer.lowPaperError(printer);
     }
-
-
+    
+    /**
+     * Notifies observers that ink has been added to the receipt printer.
+     * 
+     * @param printer 
+     * 			The receipt printer with ink added.
+     */
     public void notifyInkAdded(IReceiptPrinter printer) {
         for(ReceiptObserver observer : observers)
             observer.inkAdded(printer);
     }
+    
 
+    /**
+     * Notifies observers that paper has been added to the receipt printer.
+     * 
+     * @param printer 
+     * 			The receipt printer with paper added.
+     */
     public void notifyPaperAdded(IReceiptPrinter printer) {
         for(ReceiptObserver observer : observers)
             observer.paperAdded(printer);
