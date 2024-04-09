@@ -173,6 +173,16 @@ public class StatusOfStation extends JFrame {
         repaint();
     }
     
+    
+    /**
+     * Processes window events for the GUI window.
+     * Overrides the default behavior to ensure proper disposal of the window
+     * when the close button is clicked, while also allowing other window events
+     * to be handled by the superclass.
+     *
+     * @param e 
+     * 			The WindowEvent to be processed.
+     */
     @Override
     protected void processWindowEvent(WindowEvent e) {
         if (e.getID() == WindowEvent.WINDOW_CLOSING) {
