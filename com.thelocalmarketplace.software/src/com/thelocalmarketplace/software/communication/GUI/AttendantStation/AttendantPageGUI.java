@@ -335,6 +335,8 @@ public class AttendantPageGUI extends JFrame {
                 stationStartButtons[i].setBackground(Color.ORANGE); 			// Mark as needing assistance
             } else {
                 stationStartButtons[i].setBackground(null); 					// Reset background color if no assistance is requested
+                String originalText = buttonText.replace("(Assistance Requested) ", "");
+                stationStartButtons[i].setText(originalText);
             }
         }
     }
