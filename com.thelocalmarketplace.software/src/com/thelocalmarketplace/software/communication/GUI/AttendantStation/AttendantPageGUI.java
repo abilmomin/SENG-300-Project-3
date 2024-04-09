@@ -80,6 +80,7 @@ public class AttendantPageGUI extends JFrame {
     private final JButton emptyBanknotes = new JButton("Empty Banknotes");
     private final JButton refillReceiptInk = new JButton("Refill Receipt Ink");
     private final JButton addItemByText = new JButton("Add Item by Text Search");
+    private final JButton helpAnswered = new JButton("Answered Help");
 
     // Panel for customer services
     private final JPanel customerServicesPanel = new JPanel(new FlowLayout());
@@ -188,7 +189,7 @@ public class AttendantPageGUI extends JFrame {
         refillReceiptInk.addActionListener(attendantListeners.getRefillReceiptInkServiceButtonListener());
         emptyCoins.addActionListener(attendantListeners.getEmptyCoinServiceButtonListener());
         emptyBanknotes.addActionListener(attendantListeners.getEmptyBanknotesServiceButtonListener());
-
+        
         stationServicesPanel.add(startStation);
         stationServicesPanel.add(closeStation);
 
@@ -206,7 +207,14 @@ public class AttendantPageGUI extends JFrame {
      */
     private void createCustomerServices() {
         addItemByText.addActionListener(attendantListeners.getCustomerServiceButtonListener());
+        helpAnswered.addActionListener(e -> {
+        	for (int i = 0; i < stationStartButtons.length; i++) {
+            	setStationAssistanceRequested(i, false);
+        	}
+        	revertHighlight();
+        });
         customerServicesPanel.add(addItemByText);
+        customerServicesPanel.add(helpAnswered);
     }
 
     /**

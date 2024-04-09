@@ -90,7 +90,7 @@ public class StatusOfStation extends JFrame {
         mainPanel.add(paperPanel);
 
         // Coin denominations
-        JLabel coinLabel = new JLabel("Coin Denominations:");
+        JLabel coinLabel = new JLabel("Coin Dispensers:");
         JPanel coinPanel = new JPanel(new BorderLayout());
         coinPanel.add(coinLabel, BorderLayout.NORTH);
         coinPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -100,7 +100,7 @@ public class StatusOfStation extends JFrame {
         mainPanel.add(coinPanel);
 
         // Banknote denominations
-        JLabel banknoteLabel = new JLabel("Banknote Denominations:");
+        JLabel banknoteLabel = new JLabel("Banknote Dispensers:");
         JPanel banknotePanel = new JPanel(new BorderLayout());
         banknotePanel.add(banknoteLabel, BorderLayout.NORTH);
         banknotePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));

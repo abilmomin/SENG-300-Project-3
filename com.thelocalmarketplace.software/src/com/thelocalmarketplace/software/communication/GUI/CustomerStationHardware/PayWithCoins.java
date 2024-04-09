@@ -41,6 +41,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
@@ -72,7 +73,7 @@ public class PayWithCoins extends JFrame {
     public PayWithCoins(SelfCheckoutStationSoftware software) {
     	this.software = software;
         setTitle("Coin Counter");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(400, 300);
         setLocationRelativeTo(null);
         
@@ -157,5 +158,14 @@ public class PayWithCoins extends JFrame {
     private void updateTotalLabel() {
         BigDecimal totalAmount = totalCount;
         coinTotalLabel.setText(String.format("Total Value of Coins Added: $%.2f", totalAmount));
+    }
+    
+    @Override
+    protected void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            dispose(); // Dispose only this instance
+        } else {
+            super.processWindowEvent(e);
+        }
     }
 }

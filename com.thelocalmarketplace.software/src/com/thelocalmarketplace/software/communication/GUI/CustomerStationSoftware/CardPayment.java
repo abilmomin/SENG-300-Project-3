@@ -52,6 +52,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 
 
 /**
@@ -259,4 +260,13 @@ public class CardPayment extends JDialog {
         
         pinTextField.setText(newText);
     };
+    
+    @Override
+    protected void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            dispose(); // Dispose only this instance
+        } else {
+            super.processWindowEvent(e);
+        }
+    }
 }

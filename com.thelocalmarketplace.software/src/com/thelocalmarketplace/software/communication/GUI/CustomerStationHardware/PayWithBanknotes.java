@@ -41,6 +41,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
 import java.util.Currency;
 import javax.swing.BorderFactory;
@@ -72,7 +73,7 @@ public class PayWithBanknotes extends JFrame {
     	this.software = software;
     	
         setTitle("Banknote Counter");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(600, 500);
         setLocationRelativeTo(null);
      
@@ -165,5 +166,14 @@ public class PayWithBanknotes extends JFrame {
      */
     private void updateTotalLabel() {
         totalLabel.setText("Total Amount: $" + totalCount);
+    }
+    
+    @Override
+    protected void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            dispose(); // Dispose only this instance
+        } else {
+            super.processWindowEvent(e);
+        }
     }
 }

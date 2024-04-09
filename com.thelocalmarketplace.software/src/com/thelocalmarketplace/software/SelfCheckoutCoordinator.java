@@ -143,8 +143,10 @@ public class SelfCheckoutCoordinator implements FundsObserver, ProductsListener 
      */
     @Override
     public void fundsPaidInFull(Funds fundsFacade, BigDecimal changeReturned) {
-        if(gui != null)
+        if(gui != null) {
 			gui.setPaymentSuccesful(changeReturned.doubleValue());
+			gui.getPaymentWindow().closePanel();
+        }
     }
 
     /**

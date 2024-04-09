@@ -36,6 +36,7 @@ import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardwar
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.PayWithBanknotes;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
 
 
 /**
@@ -122,19 +123,15 @@ public class SelectPayment extends JFrame {
 
         debitButton.addActionListener(e -> {
         	debitWindow.setVisible(true);
-        	closePanel();
         });
         creditButton.addActionListener(e -> {
         	creditWindow.setVisible(true);     
-        	closePanel();
         });
         cashButton.addActionListener(e -> {
         	banknoteWindow.setVisible(true);
-        	closePanel();
         });
         coinButton.addActionListener(e -> {
         	coinWindow.setVisible(true);
-        	closePanel();
         });
         
         bottomPanel.add(addMembershipButton);
@@ -147,7 +144,7 @@ public class SelectPayment extends JFrame {
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         add(mainPanel);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setTitle("Select Payment Method");
         setSize(400, 500);
         setLocationRelativeTo(null);
@@ -194,6 +191,11 @@ public class SelectPayment extends JFrame {
      */
     public void closePanel() {
         setVisible(false);
+        debitWindow.setVisible(false);
+        creditWindow.setVisible(false);
+        coinWindow.setVisible(false);
+        banknoteWindow.setVisible(false);
+        
     }
     
     private void updatePanelsAndVariables() {
@@ -208,5 +210,14 @@ public class SelectPayment extends JFrame {
         button.setBorderPainted(false); 
         button.setFont(new Font("Arial", Font.BOLD, 16));
         return button;
+    }
+    
+    @Override
+    protected void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            dispose(); // Dispose only this instance
+        } else {
+            super.processWindowEvent(e);
+        }
     }
 }
