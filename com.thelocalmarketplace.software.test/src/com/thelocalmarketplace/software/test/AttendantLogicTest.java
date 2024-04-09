@@ -190,6 +190,11 @@ public class AttendantLogicTest {
 	public void testRefillInkWhenLow() throws OverloadedDevice {
 		aLogic.refillPrinterInkWhenLow(station);
 	}
+	
+	/**
+	 * Test that checks if the station has been correctly enabled. 
+	 * The station should initially be blocked then after calling function,unblocked.
+	 */
 
 	@Test
 	public void testEnableStation_StationNotSelected() {
@@ -209,6 +214,10 @@ public class AttendantLogicTest {
 		assertFalse(stationSoftwareInstances[1].getStationBlock());
 	}
 	
+	/**
+	 * Test that the station has been correctly disabled. Station should not be blocked should be active before calling function.
+	 * After calling function, station should be blocked and a pop-up should appear.
+	 */
 	@Test
 	public void testDisableStation_StationNotSelected() {
 		AttendantLogic logic = new AttendantLogic();
@@ -229,6 +238,10 @@ public class AttendantLogicTest {
 		assertFalse(result);
 	}
 	
+	/**
+	 * Test that the attentand is alerted if customer runs into issue.
+	 * Station should be blocked and after Attendant clears error, station should unblock and pop-up should appear.
+	 */
 	@Test
 	public void test_Alertattendant() {
 		AttendantLogic logic = new AttendantLogic();
