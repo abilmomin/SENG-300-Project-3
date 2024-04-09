@@ -35,6 +35,7 @@ import java.math.BigDecimal;
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.Product;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.funds.FundsObserver;
@@ -51,6 +52,7 @@ public class SelfCheckoutCoordinator implements FundsObserver, ProductsListener 
     Funds funds;
     Products products;
     CustomerStation gui;
+	private AttendantPageGUI Agui;
 
     /**
      * Constructor for SelfCheckoutCoordinator class
@@ -145,7 +147,7 @@ public class SelfCheckoutCoordinator implements FundsObserver, ProductsListener 
     public void fundsPaidInFull(Funds fundsFacade, BigDecimal changeReturned) {
         if(gui != null) {
 			gui.setPaymentSuccesful(changeReturned.doubleValue());
-			gui.getPaymentWindow().closePanel();
+			//gui.getPaymentWindow().closePanel();
         }
     }
 
@@ -210,4 +212,9 @@ public class SelfCheckoutCoordinator implements FundsObserver, ProductsListener 
     	if(gui != null)
     		gui.addProductToCart("Reusable Bag", totalCost);
     }
+
+	public void setAGUI(AttendantPageGUI gui2) {
+		Agui = gui2;
+		
+	}
 }

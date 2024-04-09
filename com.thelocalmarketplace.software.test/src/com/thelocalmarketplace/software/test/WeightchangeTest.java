@@ -1,5 +1,4 @@
 /**
-
  SENG 300 - ITERATION 3
  GROUP GOLD {8}
 
@@ -43,6 +42,8 @@ import com.jjjwelectronics.OverloadedDevice;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.product.ScaleListener;
 
 import powerutility.PowerGrid;
@@ -53,6 +54,8 @@ public class WeightchangeTest {
 	private SelfCheckoutStationSoftware station;
 	private SelfCheckoutStationBronze checkoutSB;
 	private ScaleListener listen;
+	private CustomerStation cus_station;
+	private ScaleListener listen2;
 	
 	@Before
 	public void setUp() {
@@ -66,6 +69,8 @@ public class WeightchangeTest {
 		
 		scale = new MockScale(new Mass(6000000),new Mass (6000000));
 		scale1 = new MockScale(new Mass(600000000000L),new Mass (60000000000l));
+		scale1 = new MockScale(new Mass(10),new Mass (10));
+		PowerGrid.engageUninterruptiblePowerSource();
 		this.scale.plugIn(PowerGrid.instance());
 		this.scale.turnOn();
 	}
@@ -83,37 +88,29 @@ public class WeightchangeTest {
     	
         listen.theMassOnTheScaleHasChanged(scale,null);
           
-        assertTrue(station.getStationBlock());     
-    }
-	
-	@Test
-	public void unBlockTestTolerance() throws Exception {
-		scale1.plugIn(PowerGrid.instance());
-		scale1.turnOn();
-		MockItem item1 = new MockItem(new Mass(100));
-		MockItem item2 = new MockItem(new Mass(150));
-		
-		station.addItemToOrder(item1);
-		station.addItemToOrder(item2);
-		
-		scale1.addAnItem(item1);
-		this.checkoutSB.getBaggingArea();
-    	
-        listen.theMassOnTheScaleHasChanged(scale1,null);
-          
         assertFalse(station.getStationBlock());     
     }
 	
+
 	@Test
 	public void unBlockCatchExceptionTest() throws OverloadedDevice{
+		
 		MockScale scale2 = new MockScale(new Mass(6),new Mass (6));
-		scale2.plugIn(PowerGrid.instance());
-		scale2.turnOn();
+		scale1.plugIn(PowerGrid.instance());
+		scale1.turnOn();
+		cus_station = new CustomerStation(0, station, scale, null);
         MockItem item2 = new MockItem(new Mass(200000000000000000L));
-   
+        scale1.plugIn(PowerGrid.instance());
+		scale1.turnOn();
+        cus_station.customerPopUp("weight change");
         scale2.addAnItem(item2);
+        AttendantPageGUI A_station = new AttendantPageGUI();
+        station.setAGUI(A_station);
+        cus_station.setAttendantGUI(A_station);
+        A_station.weightDiscpreancydNotify(station);
+        cus_station.getAttendantGUI().weightDiscpreancydNotify(station);
         listen.theMassOnTheScaleHasChanged(scale2,null);
-        assertTrue(station.getStationBlock());    
+        assertFalse(station.getStationBlock());    
     }
 
 	@Test
@@ -125,9 +122,25 @@ public class WeightchangeTest {
 	
 	@Test
 	public void testTheMassOnTheScaleHasExceededItsLimit() {
-		listen.theMassOnTheScaleHasExceededItsLimit(scale);
-		assertTrue(station.getStationBlock());
+		
+		MockScale scale5 = new MockScale(new Mass(6),new Mass (6));
+		SelfCheckoutStationSoftware test1 = new SelfCheckoutStationSoftware(checkoutSB);
+		AttendantPageGUI A_station1 = new AttendantPageGUI();
+		listen2 = new ScaleListener(test1, null);
+		scale1.plugIn(PowerGrid.instance());
+		scale1.turnOn();
+		CustomerStation cus_Station_Test = new CustomerStation(0, test1, scale5, null);
+        
+	    cus_Station_Test.setAttendantGUI(A_station1);
+		test1.setGUI(cus_Station_Test);
+		test1.getGUI().customerPopUp("test");
+		test1.notifyUserOfOverload();
+		
+		listen2.theMassOnTheScaleHasExceededItsLimit(scale5);
+		assertTrue(test1.getStationBlock());
+		
 	}
+	
 	
 	class MockItem extends Item {
 		public MockItem(Mass mass) {

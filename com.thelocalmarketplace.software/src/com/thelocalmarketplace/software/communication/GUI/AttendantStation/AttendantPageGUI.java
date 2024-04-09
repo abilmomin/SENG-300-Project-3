@@ -188,7 +188,7 @@ public class AttendantPageGUI extends JFrame {
         refillReceiptInk.addActionListener(attendantListeners.getRefillReceiptInkServiceButtonListener());
         emptyCoins.addActionListener(attendantListeners.getEmptyCoinServiceButtonListener());
         emptyBanknotes.addActionListener(attendantListeners.getEmptyBanknotesServiceButtonListener());
-        
+
         stationServicesPanel.add(startStation);
         stationServicesPanel.add(closeStation);
 
