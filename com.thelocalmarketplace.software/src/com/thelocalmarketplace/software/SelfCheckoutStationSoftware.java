@@ -45,6 +45,7 @@ import com.thelocalmarketplace.software.funds.Receipt;
 import com.thelocalmarketplace.software.product.Products;
 import com.thelocalmarketplace.hardware.external.CardIssuer;
 import com.jjjwelectronics.card.Card;
+import com.jjjwelectronics.scale.IElectronicScale;
 
 /**
  * This class acts as the central unit that communicates with 
@@ -118,8 +119,6 @@ public class SelfCheckoutStationSoftware {
 	public CustomerStation getGUI() {
 		return gui;
 	}
-
-	////////////////////
 	  
 	/** 
 	 * Set the GUI for the station and for coordination.
@@ -140,10 +139,6 @@ public class SelfCheckoutStationSoftware {
 	public AttendantPageGUI getAGUI() {
 		return Agui;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * Get the funds facade for the station.
@@ -223,14 +218,30 @@ public class SelfCheckoutStationSoftware {
 		return funds.receipt;
 	}
 	
-	/**
-	 * Resets the current order monitored by the software.
-	 */
-	public void resetOrder() {
-		this.order = new ArrayList<Item>();
-		this.totalOrderWeight = 0;
-		this.totalOrderPrice = 0;
-	}
+    /**
+     * Resets the current order monitored by the software.
+     */
+    public void resetOrder() {
+        removeAllItemsFromScale();
+        
+        this.order = new ArrayList<Item>();
+        this.totalOrderWeight = 0;
+        this.totalOrderPrice = 0;
+    }
+    
+    private void removeAllItemsFromScale() {
+        IElectronicScale baggingArea = station.getBaggingArea();
+        
+        ArrayList<Item> itemsToRemove = new ArrayList<>();
+                
+        for (Item item : order) 
+            itemsToRemove.add(item);
+            
+        for (Item item : itemsToRemove) {
+            products.removeItemFromOrder(item);
+            baggingArea.removeAnItem(item);
+        }
+    }
 	
 	/**
 	 * Adds an item to the order.
