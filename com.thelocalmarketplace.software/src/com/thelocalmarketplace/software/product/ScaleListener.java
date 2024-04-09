@@ -136,7 +136,6 @@ public class ScaleListener implements ElectronicScaleListener {
 	@Override
 	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
-		
 	}
 
 
@@ -150,7 +149,6 @@ public class ScaleListener implements ElectronicScaleListener {
 	@Override
 	public void aDeviceHasBeenDisabled(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
-		
 	}
 
 
@@ -164,7 +162,6 @@ public class ScaleListener implements ElectronicScaleListener {
 	@Override
 	public void aDeviceHasBeenTurnedOn(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
-		
 	}
 
 
@@ -178,6 +175,5 @@ public class ScaleListener implements ElectronicScaleListener {
 	@Override
 	public void aDeviceHasBeenTurnedOff(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
-		
 	}
 }

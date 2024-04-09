@@ -77,7 +77,6 @@ public class ScannerListener implements BarcodeScannerListener {
 	@Override
 	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	/**
@@ -89,7 +88,6 @@ public class ScannerListener implements BarcodeScannerListener {
 	@Override
 	public void aDeviceHasBeenDisabled(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	/**
@@ -101,7 +99,6 @@ public class ScannerListener implements BarcodeScannerListener {
 	@Override
 	public void aDeviceHasBeenTurnedOn(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	/**
@@ -113,6 +110,5 @@ public class ScannerListener implements BarcodeScannerListener {
 	@Override
 	public void aDeviceHasBeenTurnedOff(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
-		
 	}
 }
