@@ -28,8 +28,8 @@
  Nami Marwah              30178528
 
  */
-package com.thelocalmarketplace.software.product;
 
+package com.thelocalmarketplace.software.product;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -45,13 +45,12 @@ import com.thelocalmarketplace.software.communication.GUI.AttendantStation.Atten
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 
 
+/**
+ * The AddOwnBag class allows for the customer to add their own bags 
+ * Ensures they are of an acceptable weight, and calls for attendant if not
+ */
 public class AddOwnBag implements ElectronicScaleListener {
-	
-	/**
-	 * The AddOwnBag class allows for the customer to add their own bags 
-	 * Ensures they are of an acceptable weight, and calls for attendant if not
-	 */
-	
+		
 	private SelfCheckoutStationSoftware stationHardware;
     private AbstractElectronicScale scale1;
     private Mass massTest;
@@ -60,16 +59,16 @@ public class AddOwnBag implements ElectronicScaleListener {
     private AttendantPageGUI attendantGUI;
     
 	/**
-	 * Constructor for AddOwnBag
+	 * Constructor for AddOwnBag.
 	 * 
 	 * @param stationHardware
-	 * 			The self checkout station hardware
+	 * 				The self checkout station hardware
 	 * @param scale1
-	 * 			The associated scale
+	 * 				The associated scale
 	 * @param customerStation
-	 * 			The customer self checkout station
+	 * 				The customer self checkout station
 	 * @param attendantGUI
-	 * 			The attendant station gui
+	 * 				The attendant station GUI
 	 */
 	public AddOwnBag(SelfCheckoutStationSoftware stationHardware, AbstractElectronicScale scale1, CustomerStation customerStation, AttendantPageGUI attendantGUI) {
 		this.stationHardware = stationHardware;
@@ -80,8 +79,8 @@ public class AddOwnBag implements ElectronicScaleListener {
 	}
 			
 	/**
-	 * Override of theMassOnTheScaleHasChanged from ElectronicScaleListener
-	 * Notifies that a bag has been added to the scale
+	 * Override of theMassOnTheScaleHasChanged from ElectronicScaleListener.
+	 * Notifies that a bag has been added to the scale.
 	 */
 	@Override
 	public void theMassOnTheScaleHasChanged(IElectronicScale scale, Mass mass) {
@@ -90,18 +89,22 @@ public class AddOwnBag implements ElectronicScaleListener {
 		}
 		
 	
-	/** in this method order and scale are passed in, we get the total order weight convert to a big decimal
-	 *  next we get the scale weight and we compare the order weight and the scale weight
-	 *  subtract the two values, that value will equal the bag weight, if any errors catch and print message to console, and return bag weight
-	 * @return
+	/**
+	 * Calculates the weight of the bag by subtracting the order weight from the scale weight.
+	 * 
+	 * @param software 
+	 * 				The SelfCheckoutStationSoftware instance.
+	 * @param electronicScale 
+	 * 				The AbstractElectronicScale instance.
+	 * @return The weight of the bag.
 	 */
-	public double getBagWeight(SelfCheckoutStationSoftware p1, AbstractElectronicScale p2 ) {  
+	public double getBagWeight(SelfCheckoutStationSoftware software, AbstractElectronicScale electronicScale) {  
 		double orderWeight = stationHardware.getTotalOrderWeightInGrams(); 
 		double bagWeight = 0;
 		BigDecimal orderWeightDouble = new BigDecimal(Double.toString(orderWeight));
 		BigDecimal scaleWeight;
 		try {
-			Mass getMass = p2.getCurrentMassOnTheScale();
+			Mass getMass = electronicScale.getCurrentMassOnTheScale();
 			scaleWeight = getMass.inGrams();
 			BigDecimal bagWeightGrams = scaleWeight.subtract(orderWeightDouble);
 			bagWeight = bagWeightGrams.doubleValue();  
@@ -112,16 +115,19 @@ public class AddOwnBag implements ElectronicScaleListener {
 		return bagWeight;
 	}
 	
-	
-	/** In add bag weight, we pass in order, scale, and weight of bag, we first determine the mass limit
-	 * and we compare the current mass on the scale to this limit, if there is a difference 
-	 * print out bag to heavy and block the station, we then call attendant to deal with the problem, the attendant will fix it 
-	 * next if there is no difference, we set station block to false add weight to order and print you may now continue
-	 * if any exceptions are called catch and print message
-	 * @param scale
-	 * @param weightOfBag
+	/**
+	 * Adds the weight of the bag to the total order weight and handles station blocking if necessary.
+	 * 
+	 * @param software 
+	 * 				The SelfCheckoutStationSoftware instance.
+	 * @param scale 
+	 * 				The AbstractElectronicScale instance.
+	 * @param weightOfBag 
+	 * 				The weight of the bag.
+	 * @param stationNum 
+	 * 				The station number.
 	 */
-	public void addBagWeight(SelfCheckoutStationSoftware p1, AbstractElectronicScale scale, double weightOfBag, int stationNum) {		
+	public void addBagWeight(SelfCheckoutStationSoftware software, AbstractElectronicScale scale, double weightOfBag, int stationNum) {		
 		BigInteger threshold = scale.getMassLimit().inMicrograms();
 		
 		try {
@@ -183,7 +189,4 @@ public class AddOwnBag implements ElectronicScaleListener {
 		// TODO Auto-generated method stub
 		
 	}
-		
-			
-	
 }
