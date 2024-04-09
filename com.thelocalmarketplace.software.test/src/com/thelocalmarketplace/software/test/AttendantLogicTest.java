@@ -190,6 +190,11 @@ public class AttendantLogicTest {
 	public void testRefillInkWhenLow() throws OverloadedDevice {
 		aLogic.refillPrinterInkWhenLow(station);
 	}
+	
+	/**
+	 * Test that checks if the station has been correctly enabled. 
+	 * The station should initially be blocked then after calling function,unblocked.
+	 */
 
 	@Test
 	public void testEnableStation_StationNotSelected() {
@@ -209,6 +214,10 @@ public class AttendantLogicTest {
 		assertFalse(stationSoftwareInstances[1].getStationBlock());
 	}
 	
+	/**
+	 * Test that the station has been correctly disabled. Station should not be blocked should be active before calling function.
+	 * After calling function, station should be blocked and a pop-up should appear.
+	 */
 	@Test
 	public void testDisableStation_StationNotSelected() {
 		AttendantLogic logic = new AttendantLogic();
@@ -227,6 +236,29 @@ public class AttendantLogicTest {
 		assertTrue(stationSoftwareInstances[1].getStationBlock());	
 		boolean result = logic.DisableStation(selectedStation, customerStations, stationSoftwareInstances, bronzeS, startSessions);  
 		assertFalse(result);
+	}
+	
+	/**
+	 * Test that the attentand is alerted if customer runs into issue.
+	 * Station should be blocked and after Attendant clears error, station should unblock and pop-up should appear.
+	 */
+	@Test
+	public void test_Alertattendant() {
+		AttendantLogic logic = new AttendantLogic();
+		int selectedStation = 1;
+		SelfCheckoutStationBronze bronzeS = new SelfCheckoutStationBronze();
+		startSessions = new StartSession[5];
+		startSessions[1] = new StartSession(selectedStation, station, null);
+		PowerGrid.engageUninterruptiblePowerSource();
+        bronzeS.plugIn(PowerGrid.instance());
+        bronzeS.turnOn();
+        stationSoftwareInstances = new SelfCheckoutStationSoftware[5];
+		stationSoftwareInstances[selectedStation] = new SelfCheckoutStationSoftware(bronzeS);
+		stationSoftwareInstances[selectedStation].setStationBlock();
+		assertTrue(stationSoftwareInstances[1].getStationBlock());
+		logic.AlertAttendant(selectedStation, customerStations, stationSoftwareInstances, bronzeS, startSessions);
+		assertFalse(stationSoftwareInstances[1].getStationBlock());
+		
 	}
 }
 	  
