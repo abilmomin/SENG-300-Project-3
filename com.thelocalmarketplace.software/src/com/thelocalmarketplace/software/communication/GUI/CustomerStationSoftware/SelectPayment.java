@@ -198,11 +198,25 @@ public class SelectPayment extends JFrame {
         
     }
     
+    
+    /**
+     * Updates the displayed values in the GUI panels and variables.
+     * This method updates the total paid value and the amount owing value labels
+     * based on the current values of 'totalPaid' and 'totalPrice'.
+     */
     private void updatePanelsAndVariables() {
         totalPaidValueLabel.setText("$" + String.format("%.2f", totalPaid));
         amountOwingValueLabel.setText("$" + String.format("%.2f", (totalPrice - totalPaid)));
     }
 
+    
+    /**
+     * Creates a JButton with the specified text and background color.
+     *
+     * @param text  The text to be displayed on the button.
+     * @param color The background color of the button.
+     * @return The created JButton with the specified properties.
+     */
     private JButton createColoredButton(String text, Color color) {
         JButton button = new JButton(text);
         button.setBackground(color);
@@ -212,6 +226,14 @@ public class SelectPayment extends JFrame {
         return button;
     }
     
+    
+    /**
+     * Processes window events for the GUI window.
+     * Overrides the default behavior to ensure proper disposal of the window
+     * when the close button is clicked.
+     *
+     * @param e The WindowEvent to be processed.
+     */
     @Override
     protected void processWindowEvent(WindowEvent e) {
         if (e.getID() == WindowEvent.WINDOW_CLOSING) {
