@@ -33,7 +33,6 @@
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
 
 import javax.swing.*;
-
 import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.Item;
 import com.jjjwelectronics.Mass;
@@ -59,6 +58,11 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+/**
+ * This class represents the graphical user interface (GUI) for a self-checkout station designed for customers,
+ * providing functionalities such as scanning barcodes, entering PLU codes, managing the cart, and making payments.
+*/
 @SuppressWarnings("serial")
 public class CustomerStation extends JFrame {
 
@@ -80,17 +84,19 @@ public class CustomerStation extends JFrame {
     private BaggingArea baggingArea;
     private SettingsPanel settingsPanel;
     private ArrayList<JButton> cartItemButtons;
-
-    private JButton selectedCartItemButton = null; 						// Variable to track the selected cart item button
-    
+    private JButton selectedCartItemButton = null;
     
     /**
      * Constructs a new CustomerStation object representing a self-checkout station for customers.
      * 
-     * @param selectedStation          the identifier of the selected self-checkout station
-     * @param stationSoftwareInstance  the instance of the self-checkout station's software
-     * @param scale                    the electronic scale used in the station
-     * @param attendantGUI             the graphical user interface for attendant interactions
+     * @param selectedStation          
+     * 			The identifier of the selected self-checkout station.
+     * @param stationSoftwareInstance  
+     * 			The instance of the self-checkout station's software.
+     * @param scale                    
+     * 			The electronic scale used in the station.
+     * @param attendantGUI             
+     * 			The graphical user interface for attendant interactions.
      */
     public CustomerStation(int selectedStation, SelfCheckoutStationSoftware stationSoftwareInstance, AbstractElectronicScale scale, 
     						AttendantPageGUI attendantGUI) {
@@ -176,19 +182,17 @@ public class CustomerStation extends JFrame {
         menuPanel.add(viewBaggingAreaBtn);
         menuPanel.add(helpBtn);
         
-        
-         addItemBtnPanel = new JPanel(new GridLayout(2, 2,10,10));
-         addItemBtnPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        addItemBtnPanel = new JPanel(new GridLayout(2, 2,10,10));
+        addItemBtnPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
          
-         addItemBtnPanel.add(scanBarcodeBtn);
-         addItemBtnPanel.add(enterPLUBtn);
-         addItemBtnPanel.add(searchProductBtn);
-         addItemBtnPanel.add(backBtn);
+        addItemBtnPanel.add(scanBarcodeBtn);
+        addItemBtnPanel.add(enterPLUBtn);
+        addItemBtnPanel.add(searchProductBtn);
+        addItemBtnPanel.add(backBtn);
          
         // Cart panel
         cartPanel = new JPanel(new BorderLayout());
         cartPanel.setBorder(BorderFactory.createTitledBorder("Cart"));
-
 
         // Total price label
         totalPriceLabel = new JLabel("Total Price: $0.00");
@@ -259,13 +263,12 @@ public class CustomerStation extends JFrame {
     /**
      * Updates the display to reflect the amount of money paid by the customer.
      * 
-     * @param addedFunds  the amount of money added by the customer
+     * @param addedFunds  
+     * 			The amount of money added by the customer.
      */
     public void updatePaidDisplay(double addedFunds) {
     	paymentWindow.updateTotalPaidValueLabel(addedFunds);
-    }
-    
-    
+    }    
 
 	/**
 	 * Updates the display to reflect the current status of the self-checkout station.
@@ -274,14 +277,12 @@ public class CustomerStation extends JFrame {
     	settingsPanel.updateStatus();
     }
     
-    
     /**
      * Updates the display to reflect the total amount owed for the items in the cart.
      */
     public void updateTotalOwedDisplay() {
     	paymentWindow.updatePanel();
     }
-    
     
     /**
      * Handles the action of scanning a barcode to add an item to the cart.
@@ -312,13 +313,11 @@ public class CustomerStation extends JFrame {
             new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
         }
     }
-    
-    
+
     /**
      * Handles the action of using own bags by the customer.
      */
 	private void handleUseOwnBags() {
-        // Display a message dialog to prompt the user
         int option = JOptionPane.showConfirmDialog(this, "Please add your bags now, click OK when complete.", "Add Bags", 
         		JOptionPane.OK_CANCEL_OPTION);
         
@@ -330,7 +329,6 @@ public class CustomerStation extends JFrame {
         	 this.dispose();
         }
     }
-	
 	
 	/**
 	 * Handles the action of purchasing bags by the customer.
@@ -351,62 +349,55 @@ public class CustomerStation extends JFrame {
 			} catch (OverloadedDevice | EmptyDevice e) {
 				e.printStackTrace(); 
 			}
-			
 	        JOptionPane.showMessageDialog(this, numOfBags + " bags have been added to your purchase.", "Bags Purchased", 
 	        		JOptionPane.INFORMATION_MESSAGE);
 	    }
 	}
 	
-	
 	/**
 	 * Sets the payment as successful and closes the current window.
 	 * 
-	 * @param change  the change to be returned to the customer
+	 * @param change  
+	 * 			The change to be returned to the customer.
 	 */
     public void setPaymentSuccesful(double change) {
         this.dispose();
         new PaymentSuccess(change, stationSoftwareInstance, attendantGUI);
     }
-
     
     /**
      * Extracts the product name from the text of a cart item button.
      * 
-     * @param buttonText  the text of the cart item button
-     * @return            the extracted product name
+     * @param buttonText  
+     * 			The text of the cart item button.
+     * @return the extracted product name.
      */
     private String extractProductName(String buttonText) {
-        
-    	// Define the regex pattern
         String regex = "^(.*?)\\s-\\s\\$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(buttonText);
 
         if (matcher.find()) {
-            // Return the first capturing group, which contains the product name
             return matcher.group(1);
         }
-
-        // Return an empty string or a default value if the pattern does not match
         return "";
     }
-    
     
     /**
      * Adds a product to the cart and updates the display accordingly.
      * 
-     * @param productName  the name of the product to be added
-     * @param price        the price of the product
+     * @param productName  
+     * 				The name of the product to be added.
+     * @param price        
+     * 				The price of the product.
      */
     public void addProductToCart(String productName, double price) {
         JButton itemButton = new JButton(productName + " - $" + String.format("%.2f", price));
         itemButton.addActionListener(e -> {
             if (selectedCartItemButton != null) {
-                // Optionally reset the visual state of the previously selected button
                 selectedCartItemButton.setBackground(null);
             }
             selectedCartItemButton = itemButton; // Update the selected item button
-            // Optionally update the visual state of the selected button
             itemButton.setBackground(Color.LIGHT_GRAY);
         });
         cartItemsPanel.add(itemButton);
@@ -415,7 +406,6 @@ public class CustomerStation extends JFrame {
 
         double totalPrice = stationSoftwareInstance.getTotalOrderPrice();
         totalPriceLabel.setText("Total Price: $" + String.format("%.2f", totalPrice));
-
     }
     
     
@@ -425,9 +415,8 @@ public class CustomerStation extends JFrame {
     public void handleRemoveItem() {
         if (selectedCartItemButton != null) {
         	boolean itemRemoved = false;
-        	
-            
             ArrayList<Item> listOfOrders = stationSoftwareInstance.getOrder();
+            
             for (Item item : listOfOrders) {
                 if (item instanceof PLUCodedItem) {
                     PLUCodedItem pluItem = (PLUCodedItem) item;
@@ -470,40 +459,37 @@ public class CustomerStation extends JFrame {
                     }
                 }
             }
-            
-            if (!itemRemoved) {
+            if (!itemRemoved)
             	stationSoftwareInstance.addTotalOrderPrice(-1);
-            }
             
             cartItemsPanel.remove(selectedCartItemButton); 
-            selectedCartItemButton = null; 											// Clear the selected item
-            refreshCartPanel(); 													// Refresh the UI to reflect the removal
+            selectedCartItemButton = null;
+            refreshCartPanel();
 
             double totalPrice = stationSoftwareInstance.getTotalOrderPrice();
 
             totalPriceLabel.setText("Total Price: $" + String.format("%.2f", totalPrice));
         } else {
-            JOptionPane.showMessageDialog(this, "Please select an item to remove."); // Prompt if no item is selected
+            JOptionPane.showMessageDialog(this, "Please select an item to remove.");
         }
-    }
-
-   
+    }   
     
     /**
      * Refreshes the cart panel to reflect changes in the cart items.
      */
     private void refreshCartPanel() {
         cartItemsPanel.revalidate();
-        cartItemsPanel.repaint();
-        
+        cartItemsPanel.repaint();     
     }
     
     /**
      * Creates a button with the specified text and action listener.
      * 
-     * @param text            the text to be displayed on the button
-     * @param actionListener the action listener for the button
-     * @return                the created button
+     * @param text            
+     * 				The text to be displayed on the button.
+     * @param actionListener 
+     * 				The action listener for the button.
+     * @return the created button.
      */
     private JButton createButton(String text, ActionListener actionListener) {
         JButton button = new JButton("<html><center>" + text + "</center></html>");
@@ -517,7 +503,7 @@ public class CustomerStation extends JFrame {
     /**
      * Creates the keypad panel for entering PLU codes.
      * 
-     * @return  the created keypad panel
+     * @return the created keypad panel.
      */
     public JPanel createKeypadPanel() {
     	JPanel keypadPanel = new JPanel();
@@ -580,10 +566,8 @@ public class CustomerStation extends JFrame {
                 JOptionPane.showMessageDialog(this, "PLU code must be 4 digits.");
     	    }
     	});
-
     	 return keypadPanel;
     }
-   
     
     /**
      * Handles the action of adding a digit to the PLU code screen.
@@ -591,26 +575,25 @@ public class CustomerStation extends JFrame {
     ActionListener addNum = e -> {
         JButton button = (JButton) e.getSource();
         String digit = button.getText();
-        String current = screenTextField.getText(); 								// Append the digit to the screen
+        String current = screenTextField.getText();
         String newText = current + digit;
         
         Font currentFont = screenTextField.getFont();
-        Font newFont = new Font(currentFont.getName(), currentFont.getStyle(), 24); // Adjust the font size as needed
+        Font newFont = new Font(currentFont.getName(), currentFont.getStyle(), 24);
         screenTextField.setFont(newFont);
         
         screenTextField.setText(newText);
     };
     
-    
     /**
      * Creates the screen panel for displaying PLU codes.
      * 
-     * @return  the created screen panel
+     * @return the created screen panel.
      */
     public JPanel createScreenPanel() {
     	JPanel screenPanel = new JPanel(new BorderLayout());
-        screenTextField = new JTextField(); 										// Initialize the screen text field
-        screenTextField.setEditable(false); 										// Make it read-only
+        screenTextField = new JTextField();
+        screenTextField.setEditable(false);
         screenTextField.setBackground(Color.WHITE);
         screenTextField.setHorizontalAlignment(JTextField.CENTER);
         screenPanel.add(screenTextField, BorderLayout.CENTER);
@@ -618,14 +601,12 @@ public class CustomerStation extends JFrame {
         screenTextField.setPreferredSize(new Dimension(100, 50));
         
         return screenPanel;
-    }
-    
+    } 
     
     /**
      * Replaces the cart panel with the PLU code entry panel.
      */
     private void replaceCartPanelWithKeypadPanel() {
-        // Remove cart panel
     	if (cartPanel.isVisible()) {
     		cartPanel.setVisible(false);
     		getContentPane().add(PLUPanel, BorderLayout.EAST);
@@ -635,19 +616,15 @@ public class CustomerStation extends JFrame {
             revalidate();
             repaint();
     	} else {
-    		if (!PLUPanel.isVisible()) {
+    		if (!PLUPanel.isVisible())
     			cartPanel.setVisible(true);
-
-    		} 
     	}
     }
-    
     
     /**
      * Replaces the menu panel with the add item button panel or vice versa.
      */
     private void replaceGrids() {
-       
         mainPanel.remove(menuPanel);
         mainPanel.remove(addItemBtnPanel);
 
@@ -657,15 +634,13 @@ public class CustomerStation extends JFrame {
             addItemBtnPanel.setVisible(true);
             
             PLUPanel.setVisible(false);
-
+            
         } else {
-           
             addItemBtnPanel.setVisible(false);
             menuPanel.setVisible(true);
             PLUPanel.setVisible(false);
             cartPanel.setVisible(true);
         }
-
         // Add the panels back to mainPanel with the same constraints
         mainPanel.add(menuPanel, BorderLayout.CENTER);
         mainPanel.add(addItemBtnPanel, BorderLayout.CENTER);
@@ -678,24 +653,24 @@ public class CustomerStation extends JFrame {
     /**
      * Displays a popup message to the customer.
      * 
-     * @param message  the message to be displayed
+     * @param message  
+     * 				The message to be displayed.
      */
     public void customerPopUp(String message) {
         JOptionPane.showMessageDialog(this, message);
     }
     
-    
     /**
      * Displays a popup for adding an item to the bagging area.
      * 
-     * @param product  the product to be added to the bagging area
+     * @param product  
+     * 				The product to be added to the bagging area.
      */
     public void customerBaggingAreaPopUp(Product product) {
         new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
     }
     
     public boolean canMakePopUp = true;
-    
     
     /**
      * Initiates a popup request for removing an item from the cart.
@@ -716,22 +691,20 @@ public class CustomerStation extends JFrame {
             new RemoveItemRequest(itemName, stationSoftwareInstance, attendantGUI);
         }
     }
-
-    
+ 
     /**
      * Handles the action of requesting assistance from an attendant.
      */
     public void handleRequestAssistance() {
         needsAssistance = true;
         attendantGUI.setStationAssistanceRequested(selectedStation - 1, true);
-
     }
-    
     
     /**
      * Displays a popup message to inform the customer about the amount due for payment.
      * 
-     * @param amountDue  the amount due for payment
+     * @param amountDue  
+     * 				The amount due for payment.
      */
     public void displayAmountDuePopup(BigDecimal amountDue) {
     	attendantGUI.warnForChange(amountDue);
@@ -742,24 +715,22 @@ public class CustomerStation extends JFrame {
      */
     public void clearSignal() {
         needsAssistance = false;
-        attendantGUI.setStationAssistanceRequested(selectedStation - 1, false);}
-    
+        attendantGUI.setStationAssistanceRequested(selectedStation - 1, false);
+    }
 	    
 	/**
 	 * Retrieves the signal indicating if assistance is requested by the customer.
 	 * 
-	 * @return  true if assistance is requested, otherwise false
+	 * @return true if assistance is requested, otherwise false.
 	 */
     public boolean getSignal() {
         return needsAssistance;
     }
-    
-    
 
 	/**
 	 * Retrieves the attendant GUI associated with the self-checkout station.
 	 * 
-	 * @return  the attendant GUI
+	 * @return the attendant GUI.
 	 */
     public AttendantPageGUI getAttendantGUI() {
     	return attendantGUI;

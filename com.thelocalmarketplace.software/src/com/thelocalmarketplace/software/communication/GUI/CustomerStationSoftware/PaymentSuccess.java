@@ -37,7 +37,6 @@ import java.awt.Font;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
@@ -45,7 +44,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
 import com.jjjwelectronics.EmptyDevice;
 import com.jjjwelectronics.OverloadedDevice;
 import com.jjjwelectronics.scale.AbstractElectronicScale;
@@ -60,18 +58,18 @@ import com.thelocalmarketplace.software.funds.Receipt;
  */
 @SuppressWarnings("serial")
 public class PaymentSuccess extends JFrame {
-	
-	
 	@SuppressWarnings("unused")
 	private SelectPayment paymentWindow;
-	
 	
 	/**
 	 * Constructs a new PaymentSuccess dialog window.
 	 * 
-	 * @param change The amount of change returned.
-	 * @param stationSoftware The SelfCheckoutStationSoftware instance managing the transaction.
-	 * @param attendantGUI The AttendantPageGUI instance.
+	 * @param change 
+	 * 				The amount of change returned.
+	 * @param stationSoftware 
+	 * 				The SelfCheckoutStationSoftware instance managing the transaction.
+	 * @param attendantGUI 
+	 * 				The AttendantPageGUI instance.
 	 */
 	public PaymentSuccess(double change, SelfCheckoutStationSoftware stationSoftware, AttendantPageGUI attendantGUI) {
 		paymentWindow = new SelectPayment(stationSoftware);
@@ -106,13 +104,12 @@ public class PaymentSuccess extends JFrame {
 		JCheckBox ck1 = new JCheckBox("Yes");
 		ck1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		ck1.addActionListener(new ActionListener() {
-			
-			
 			 /**
 	         * Invoked when the "Yes" checkbox is selected.
 	         * Prints the receipt and continues the transaction.
 	         * 
-	         * @param e The action event.
+	         * @param e 
+	         * 			The action event.
 	         */
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -127,16 +124,17 @@ public class PaymentSuccess extends JFrame {
 				}
 			}
 		});
+		
 		JCheckBox ck2 = new JCheckBox("No");
 		ck2.setAlignmentX(Component.CENTER_ALIGNMENT);
 		ck2.addActionListener(new ActionListener() {
-			
-		
+
 			/**
 	         * Invoked when the "No" checkbox is selected.
 	         * Closes the dialog and starts a new session.
 	         * 
-	         * @param e The action event.
+	         * @param e 
+	         * 			The action event.
 	         */
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -148,14 +146,14 @@ public class PaymentSuccess extends JFrame {
 
 		mainPanel.add(Box.createVerticalGlue());
 		mainPanel.add(bigTextLabel);
-		mainPanel.add(Box.createRigidArea(new Dimension(0, 5))); // text decoration
+		mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 		mainPanel.add(mediumTextLabel);
 		mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 		mainPanel.add(smallTextLabel);
 		mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
 		mainPanel.add(receiptQuestion);
-		mainPanel.add(Box.createRigidArea(new Dimension(0, 5))); // text decoration
+		mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 		mainPanel.add(ck1);
 		mainPanel.add(Box.createRigidArea(new Dimension(0, 5)));
 		mainPanel.add(ck2);

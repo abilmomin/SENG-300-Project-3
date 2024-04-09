@@ -34,35 +34,24 @@ package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftwa
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
 import com.jjjwelectronics.Item;
 import com.jjjwelectronics.scale.IElectronicScale;
 import com.jjjwelectronics.scanner.Barcode;
 import com.jjjwelectronics.scanner.BarcodedItem;
-
 import com.thelocalmarketplace.hardware.BarcodedProduct;
 import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
-
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.BaggingArea;
-
-
-/* GENERAL LAYOUT
- * Box layout is used to arrange items vertically or horizontally
- * Glue is like a spring << add on before and after box components to squish them to the middle
- */
-
 
 
 @SuppressWarnings("serial")
@@ -75,10 +64,14 @@ public class RemoveFromBagging extends JFrame {
     /**
      * Initializes a new instance of the RemoveFromBagging class.
      * 
-     * @param item                 The item to be removed from the bagging area.
-     * @param stationSoftwareInstance The instance of the self-checkout station software.
-     * @param attendantGUI         The GUI instance for the attendant page.
-     * @param baggingArea          The bagging area from which the item needs to be removed.
+     * @param item                 
+     * 				The item to be removed from the bagging area.
+     * @param stationSoftwareInstance 
+     * 				The instance of the self-checkout station software.
+     * @param attendantGUI         
+     * 				The GUI instance for the attendant page.
+     * @param baggingArea          
+     * 				The bagging area from which the item needs to be removed.
      */
     public RemoveFromBagging(Item item, SelfCheckoutStationSoftware stationSoftwareInstance, AttendantPageGUI attendantGUI, 
     						BaggingArea baggingArea) {

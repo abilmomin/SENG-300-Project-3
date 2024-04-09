@@ -34,7 +34,6 @@ package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftwa
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -55,17 +54,16 @@ public class MembershipNumberInput extends JDialog {
 	private JPanel membershipPanel;
 	private SelectPayment parent;
 	
-	
 	/**
      * Constructs a MembershipNumberInput dialog with the specified parent frame.
      * 
-     * @param parent The parent frame of the dialog.
+     * @param parent 
+     * 			The parent frame of the dialog.
      */
 	public MembershipNumberInput(Frame parent) {
 		super(parent, "Membership Number", true);
 		this.parent = (SelectPayment) parent;
 	}
-	
 	
 	/**
      * Initializes the frame components and layout.
@@ -88,8 +86,7 @@ public class MembershipNumberInput extends JDialog {
 		pack();
 		setLocationRelativeTo(getParent());
 	}
-	
-	
+		
 	/**
 	 * Displays options for entering a membership number, such as manual entry, scanning, swiping, or creating a new account.
 	 */
@@ -134,22 +131,18 @@ public class MembershipNumberInput extends JDialog {
 	/**
 	 * Initiates the action of swiping a membership card.
 	 */
-    private void swipeCard() {
-		
-	}
+    private void swipeCard() {}
     
     /**
      * Initiates the action of scanning a membership card.
      */
-	private void scanCard() {
-		
-	}
-	
+	private void scanCard() {}
 	
 	/**
 	 * Validates the entered membership number.
 	 * 
-	 * @param membershipNumber The membership number to be validated.
+	 * @param membershipNumber 
+	 * 				The membership number to be validated.
 	 */
 	public void checkMembershipNumber(String membershipNumber) {
 		MembershipCard membershipCard = new MembershipCard();
@@ -162,8 +155,7 @@ public class MembershipNumberInput extends JDialog {
         } else {
             JOptionPane.showMessageDialog(this, "No membership number entered.");
         }
-    }
-	
+    }	
 	
 	/**
 	 * Displays options when an invalid membership number is entered.
@@ -197,7 +189,6 @@ public class MembershipNumberInput extends JDialog {
     	}
     }
 	
-	
 	/**
 	 * Creates a new membership account.
 	 */
@@ -211,7 +202,6 @@ public class MembershipNumberInput extends JDialog {
             JOptionPane.showMessageDialog(this, "You must enter a name to create a membership account.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-	
 	
 	/**
 	 * Adds a virtual number keyboard to the dialog.
@@ -244,7 +234,6 @@ public class MembershipNumberInput extends JDialog {
         
         membershipPanel.add(keyboardPanel, BorderLayout.SOUTH);
 	}
-	
 	
 	/**
 	 * Retrieves the membership number text field.

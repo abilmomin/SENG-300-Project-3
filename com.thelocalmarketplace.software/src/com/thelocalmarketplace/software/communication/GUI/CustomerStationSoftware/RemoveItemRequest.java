@@ -34,16 +34,13 @@ package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftwa
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
-
 import ca.ucalgary.seng300.simulation.InvalidArgumentSimulationException;
 
 
@@ -53,18 +50,17 @@ import ca.ucalgary.seng300.simulation.InvalidArgumentSimulationException;
 @SuppressWarnings("serial")
 public class RemoveItemRequest extends JFrame {
 	
-	
 	/**
      * Initializes a new instance of the RemoveItemRequest class.
      * 
      * @param itemName              
-     * 						The name of the item to be removed.
+     * 				The name of the item to be removed.
      * 
      * @param stationSoftwareInstance 
-     * 						The instance of the self-checkout station software.
+     * 				The instance of the self-checkout station software.
      * 
      * @param attendantGUI          
-     * 						The GUI instance for the attendant page.
+     * 				The GUI instance for the attendant page.
      */
     public RemoveItemRequest(String itemName, SelfCheckoutStationSoftware stationSoftwareInstance, AttendantPageGUI attendantGUI) {
         setTitle("Item Removed");
