@@ -63,10 +63,13 @@ public class AddOwnBag implements ElectronicScaleListener {
 	 * 
 	 * @param stationHardware
 	 * 				The self checkout station hardware
+	 * 
 	 * @param scale1
 	 * 				The associated scale
+	 * 
 	 * @param customerStation
 	 * 				The customer self checkout station
+	 * 
 	 * @param attendantGUI
 	 * 				The attendant station GUI
 	 */
@@ -94,8 +97,10 @@ public class AddOwnBag implements ElectronicScaleListener {
 	 * 
 	 * @param software 
 	 * 				The SelfCheckoutStationSoftware instance.
+	 * 
 	 * @param electronicScale 
 	 * 				The AbstractElectronicScale instance.
+	 * 
 	 * @return The weight of the bag.
 	 */
 	public double getBagWeight(SelfCheckoutStationSoftware software, AbstractElectronicScale electronicScale) {  
@@ -120,10 +125,13 @@ public class AddOwnBag implements ElectronicScaleListener {
 	 * 
 	 * @param software 
 	 * 				The SelfCheckoutStationSoftware instance.
+	 * 
 	 * @param scale 
 	 * 				The AbstractElectronicScale instance.
+	 * 
 	 * @param weightOfBag 
 	 * 				The weight of the bag.
+	 * 
 	 * @param stationNum 
 	 * 				The station number.
 	 */
@@ -149,41 +157,79 @@ public class AddOwnBag implements ElectronicScaleListener {
 			e.printStackTrace();
 		}	
 	}  
-
+	
+	/**
+	 * Notifies when a device has been enabled.
+	 * This method is invoked when a device has been enabled.
+	 * 
+	 * @param device 
+	 * 			The device that has been enabled.
+	 */
 	@Override
 	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
 		
 	}
 
-
+	/**
+	 * Notifies when a device has been disabled.
+	 * This method is invoked when a device has been disabled.
+	 * 
+	 * @param device 
+	 * 			The device that has been disabled.
+	 */
 	@Override
 	public void aDeviceHasBeenDisabled(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
 		
 	}
 
-
+	/**
+	 * Notifies when a device has been turned on.
+	 * This method is invoked when a device has been turned on.
+	 * 
+	 * @param device 
+	 * 			The device that has been turned on.
+	 */
 	@Override
 	public void aDeviceHasBeenTurnedOn(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
 		
 	}
 
-
+	/**
+	 * Notifies when a device has been turned off.
+	 * This method is invoked when a device has been turned off.
+	 * 
+	 * @param device 
+	 * 			The device that has been turned off.
+	 */
 	@Override
 	public void aDeviceHasBeenTurnedOff(IDevice<? extends IDeviceListener> device) {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
+	/**
+	 * Notifies when the mass on the scale has exceeded its limit.
+	 * This method is invoked when the mass on the scale has exceeded its limit.
+	 * 
+	 * @param scale 
+	 * 			The electronic scale.
+	 */
 	@Override
 	public void theMassOnTheScaleHasExceededItsLimit(IElectronicScale scale) {
 		// TODO Auto-generated method stub
 		
 	}
 
-
+	/**
+	 * Notifies when the mass on the scale no longer exceeds its limit.
+	 * This method is invoked when the mass on the scale no longer exceeds its limit.
+	 * 
+	 * @param scale 
+	 * 			The electronic scale.
+	 */
 	@Override
 	public void theMassOnTheScaleNoLongerExceedsItsLimit(IElectronicScale scale) {
 		// TODO Auto-generated method stub
