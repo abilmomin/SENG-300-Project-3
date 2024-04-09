@@ -34,10 +34,13 @@ package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftwa
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.PayWithCoins;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.PayWithBanknotes;
-
 import javax.swing.*;
 import java.awt.*;
 
+
+/**
+ * JFrame for selecting a payment method during the checkout process.
+ */
 @SuppressWarnings("serial")
 public class SelectPayment extends JFrame {
 	
@@ -52,6 +55,12 @@ public class SelectPayment extends JFrame {
 	private PayWithBanknotes banknoteWindow;
 	private PayWithCoins coinWindow;
 	
+	/**
+	 * Constructs the JFrame
+	 * 
+	 * @param software
+	 * 			The instance of the self checkout station software.
+	 */
 	public SelectPayment(SelfCheckoutStationSoftware software) {
     	this.software = software;
     	this.debitWindow = new CardPayment(software, "debit");
@@ -145,36 +154,51 @@ public class SelectPayment extends JFrame {
         setVisible(false);
     }
     
-	void returnToCheckout() {
+	/**
+	 * Hides the Select Payment window and returns to the checkout process.
+	 */
+	public void returnToCheckout() {
 		this.setVisible(false);
 	}
 
-	void showMembershipInputDialog() {
+	/**
+	 * Displays the membership number input dialog.
+	 */
+	public void showMembershipInputDialog() {
     	MembershipNumberInput dialog = new MembershipNumberInput(this);
     	dialog.frameInit();
 	}
 
-	// Method to update totalPaidValueLabel
+	/**
+	 * Method to update totalPaidValueLabel.
+	 * 
+	 * @param addedFunds
+	 * 				The amount of funds to add to the total paid.
+	 */
     public void updateTotalPaidValueLabel(double addedFunds) {
     	totalPaid += addedFunds;
     	updatePanelsAndVariables();
     }
     
-    // Method to make the panel visible
+    /**
+     * Method to make the panel visible.
+     */
     public void updatePanel() {
     	totalPrice = software.getTotalOrderPrice();
-        billTotalValueLabel.setText("$" + String.format("%.2f", totalPrice)); // Update text of existing label
+        billTotalValueLabel.setText("$" + String.format("%.2f", totalPrice));
     	updatePanelsAndVariables();
     }
 
-    // Method to close the panel
+    /**
+     * Method to close the panel.
+     */
     public void closePanel() {
         setVisible(false);
     }
     
     private void updatePanelsAndVariables() {
-        totalPaidValueLabel.setText("$" + String.format("%.2f", totalPaid)); // Update text of existing label
-        amountOwingValueLabel.setText("$" + String.format("%.2f", (totalPrice - totalPaid))); // Update text of existing label
+        totalPaidValueLabel.setText("$" + String.format("%.2f", totalPaid));
+        amountOwingValueLabel.setText("$" + String.format("%.2f", (totalPrice - totalPaid)));
     }
 
     private JButton createColoredButton(String text, Color color) {

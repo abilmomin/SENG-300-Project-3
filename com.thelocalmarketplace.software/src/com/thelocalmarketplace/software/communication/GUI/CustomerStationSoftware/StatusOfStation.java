@@ -32,23 +32,21 @@
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
 
 import javax.swing.*;
-
 import com.jjjwelectronics.printer.IReceiptPrinter;
-
 import com.tdc.banknote.IBanknoteDispenser;
 import com.tdc.coin.ICoinDispenser;
-
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
-
 import java.awt.*;
 import java.awt.event.WindowEvent;
-
 import java.math.BigDecimal;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * Provides a GUI representation of the status of the self-checkout station.
+ */
 @SuppressWarnings("serial")
 public class StatusOfStation extends JFrame {
 
@@ -60,18 +58,24 @@ public class StatusOfStation extends JFrame {
     private Map<BigDecimal, JLabel> coinDenominationLabels;
     private Map<BigDecimal, JLabel> banknoteDenominationLabels;
 
+    /**
+     * Constructor.
+     * 
+     * @param software
+     * 				The instance of the self-checkout station software.
+     */
     public StatusOfStation(SelfCheckoutStationSoftware software) {
         this.software = software;
         this.coinDenominationLabels = new HashMap<>();
         this.banknoteDenominationLabels = new HashMap<>();
 
         setTitle("Status of Station");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Set to dispose on close
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(300, 400);
         setLocationRelativeTo(null);
 
-        JPanel mainPanel = new JPanel(new GridLayout(0, 1)); // Vertical layout
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add padding to the main panel
+        JPanel mainPanel = new JPanel(new GridLayout(0, 1));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // Ink remaining
         inkLabel = new JLabel();
@@ -87,22 +91,22 @@ public class StatusOfStation extends JFrame {
 
         // Coin denominations
         JLabel coinLabel = new JLabel("Coin Denominations:");
-        JPanel coinPanel = new JPanel(new BorderLayout()); // Use BorderLayout for tabbed style
+        JPanel coinPanel = new JPanel(new BorderLayout());
         coinPanel.add(coinLabel, BorderLayout.NORTH);
-        coinPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
-
-        coinDenominationPanel = new JPanel(new GridLayout(0, 1)); // Vertical layout for stacked denominations
-        coinPanel.add(coinDenominationPanel, BorderLayout.CENTER); // Add stacked denominations
+        coinPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        
+        coinDenominationPanel = new JPanel(new GridLayout(0, 1));
+        coinPanel.add(coinDenominationPanel, BorderLayout.CENTER);
         mainPanel.add(coinPanel);
 
         // Banknote denominations
         JLabel banknoteLabel = new JLabel("Banknote Denominations:");
-        JPanel banknotePanel = new JPanel(new BorderLayout()); // Use BorderLayout for tabbed style
+        JPanel banknotePanel = new JPanel(new BorderLayout());
         banknotePanel.add(banknoteLabel, BorderLayout.NORTH);
-        banknotePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Add padding
+        banknotePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        banknoteDenominationPanel = new JPanel(new GridLayout(0, 1)); // Vertical layout for stacked denominations
-        banknotePanel.add(banknoteDenominationPanel, BorderLayout.CENTER); // Add stacked denominations
+        banknoteDenominationPanel = new JPanel(new GridLayout(0, 1));
+        banknotePanel.add(banknoteDenominationPanel, BorderLayout.CENTER);
         mainPanel.add(banknotePanel);
 
         add(mainPanel);
@@ -112,6 +116,9 @@ public class StatusOfStation extends JFrame {
         setVisible(false);
     }
 
+    /**
+     * Updates the displayed labels for ink and paper levels, coin and banknote denominations.
+     */
     public void updateLabels() {
         IReceiptPrinter printer = software.station.getPrinter();
 

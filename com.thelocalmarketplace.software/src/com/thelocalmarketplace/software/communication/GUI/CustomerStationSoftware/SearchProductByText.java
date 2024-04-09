@@ -31,14 +31,12 @@ package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftwa
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
 import com.jjjwelectronics.Mass;
 import com.thelocalmarketplace.hardware.PLUCodedItem;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.BaggingArea;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,6 +44,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * This class represents a graphical user interface for searching products by text input.
+*/
+@SuppressWarnings("serial")
 public class SearchProductByText extends JFrame {
     private JTextField searchField;
     private JTextField filterField;
@@ -56,6 +59,16 @@ public class SearchProductByText extends JFrame {
     private CustomKeyboard keyboard;
     BaggingArea baggingArea;
 
+    /**
+     * Constructs a SearchProductByText instance.
+     * 
+     * @param software 
+     * 			The instance of SelfCheckoutStationSoftware used for product handling.
+     * @param attendantGUI 
+     * 			The AttendantPageGUI instance.
+     * @param baggingArea 
+     * 			The BaggingArea instance representing the area where scanned items are placed.
+     */
     public SearchProductByText(SelfCheckoutStationSoftware software, AttendantPageGUI attendantGUI, BaggingArea baggingArea) {
         setTitle("Product Search");
         setSize(600, 400);
@@ -141,14 +154,9 @@ public class SearchProductByText extends JFrame {
         setVisible(false);
     }
 
-//    public static void main(String[] args) {
-//    	//for testing, delete main when integrating all of gui together
-//        SwingUtilities.invokeLater(() -> {
-//            SearchProductByText app = new SearchProductByText();
-//            app.setVisible(true);
-//        });
-//    }
-
+    /**
+     * This class implements a DocumentListener to update the search results based on the text entered in the search field.
+     */
     class FilterDocumentListener implements DocumentListener {
         public void insertUpdate(DocumentEvent e) {
             updateFilter();
@@ -175,6 +183,9 @@ public class SearchProductByText extends JFrame {
         }
     }
 
+    /**
+     * This class implements a custom virtual keyboard for a JTextField, providing functionality for entering text using buttons.
+     */
     class CustomKeyboard extends JPanel {
         private JTextField textField;
 
@@ -233,6 +244,9 @@ public class SearchProductByText extends JFrame {
         }
     }
 
+    /**
+     * Represents a product with a name and an image.
+     */
     class Product {
         private String name;
         private ImageIcon image;
@@ -256,6 +270,9 @@ public class SearchProductByText extends JFrame {
         }
     }
 
+    /**
+     * Custom renderer for displaying products in a list.
+     */
     class ProductListCellRenderer extends JLabel implements ListCellRenderer<Product> {
         public Component getListCellRendererComponent(JList<? extends Product> list, Product value, int index,
                                                       boolean isSelected, boolean cellHasFocus) {
@@ -273,6 +290,17 @@ public class SearchProductByText extends JFrame {
         }
     }
 
+    /**
+     * Resizes an image located at the specified path to the given width and height.
+     * 
+     * @param path   
+     * 			The path to the image file.
+     * @param width  
+     * 			The desired width of the resized image.
+     * @param height 
+     * 			The desired height of the resized image.
+     * @return An ImageIcon object representing the resized image, or null if the image file is not found.
+     */
     private ImageIcon resizeImage(String path, int width, int height) {
         URL imgURL = getClass().getResource(path);
         if (imgURL != null) {

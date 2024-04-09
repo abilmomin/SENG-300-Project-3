@@ -32,23 +32,30 @@
 package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware;
 
 import javax.swing.*;
-
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+
+/**
+ * Panel for displaying and adjusting settings related to language and accessibility.
+ * Allows users to view the status of the station.
+ */
 @SuppressWarnings("serial")
 public class SettingsPanel extends JPanel {
     private JComboBox<String> languageDropdown;
     private JComboBox<String> accessibilityDropdown;
-
     private String[] languages = {"English"};
     private String[] accessibilitySettings = {"Default"};
-    
     private StatusOfStation status;
 
+    /**
+     * Constructor.
+     * 
+     * @param software
+     * 			The instance of the self checkout station software.
+     */
     public SettingsPanel(SelfCheckoutStationSoftware software) {
     	if(software != null) 
     		this.status = new StatusOfStation(software);
@@ -84,6 +91,9 @@ public class SettingsPanel extends JPanel {
         setVisible(true);
     }
 
+    /**
+     * Updates the status information displayed in the settings panel.
+     */
     public void updateStatus() {
     	status.updateLabels();
     }
