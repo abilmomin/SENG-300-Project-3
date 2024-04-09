@@ -38,6 +38,7 @@ import com.thelocalmarketplace.hardware.ISelfCheckoutStation;
 import com.thelocalmarketplace.hardware.PLUCodedProduct;
 import com.thelocalmarketplace.hardware.PriceLookUpCode;
 import com.thelocalmarketplace.hardware.external.ProductDatabases;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.funds.Funds;
 import com.thelocalmarketplace.software.funds.Receipt;
@@ -69,6 +70,7 @@ public class SelfCheckoutStationSoftware {
 	private Funds funds;
 	private Products products;
 	private SelfCheckoutCoordinator selfCheckoutCoordinator;
+	private AttendantPageGUI Agui;
 
 	/**
 	 * Creates an instance of the software for a self-checkout station.
@@ -117,6 +119,32 @@ public class SelfCheckoutStationSoftware {
 		return gui;
 	}
 
+	////////////////////
+	  
+	/** 
+	 * Set the GUI for the station and for coordination.
+	 * 
+	 * @param gui
+	 * 			The GUI for the self checkout station.
+	 */
+	public void setAGUI(AttendantPageGUI gui) {
+		this.Agui = gui;
+		selfCheckoutCoordinator.setAGUI(gui);
+	}
+	
+	/**
+	 * Get the GUI for the station
+	 * 
+	 * @return The GUI for the self checkout station.
+	 */
+	public AttendantPageGUI getAGUI() {
+		return Agui;
+	}
+	
+	
+	
+	
+	
 	/**
 	 * Get the funds facade for the station.
 	 * 
@@ -292,8 +320,7 @@ public class SelfCheckoutStationSoftware {
 	 * Calls the GUI to create a pop-up to notify the customer of the overload.
 	 */
 	public void notifyUserOfOverload() {
-		gui.customerRemoveItemPopUp();
-	}
+		gui.customerPopUp("Overload");}
 
 	/**
 	 * Checks whether the order is empty or not.
