@@ -228,6 +228,25 @@ public class AttendantLogicTest {
 		boolean result = logic.DisableStation(selectedStation, customerStations, stationSoftwareInstances, bronzeS, startSessions);  
 		assertFalse(result);
 	}
+	
+	@Test
+	public void test_Alertattendant() {
+		AttendantLogic logic = new AttendantLogic();
+		int selectedStation = 1;
+		SelfCheckoutStationBronze bronzeS = new SelfCheckoutStationBronze();
+		startSessions = new StartSession[5];
+		startSessions[1] = new StartSession(selectedStation, station, null);
+		PowerGrid.engageUninterruptiblePowerSource();
+        bronzeS.plugIn(PowerGrid.instance());
+        bronzeS.turnOn();
+        stationSoftwareInstances = new SelfCheckoutStationSoftware[5];
+		stationSoftwareInstances[selectedStation] = new SelfCheckoutStationSoftware(bronzeS);
+		stationSoftwareInstances[selectedStation].setStationBlock();
+		assertTrue(stationSoftwareInstances[1].getStationBlock());
+		logic.AlertAttendant(selectedStation, customerStations, stationSoftwareInstances, bronzeS, startSessions);
+		assertFalse(stationSoftwareInstances[1].getStationBlock());
+		
+	}
 }
 	  
 	

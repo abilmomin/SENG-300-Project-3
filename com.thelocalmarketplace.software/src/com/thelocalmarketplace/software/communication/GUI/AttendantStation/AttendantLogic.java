@@ -281,4 +281,21 @@ public class AttendantLogic {
         	return false;		
         }
 	}
+	
+	/**
+	 * After customer requires attendant help, ensure that thier station is blocked, then attendant unblocks it and pop up continue.
+	 * @param selectedStation
+	 * @param customerStation
+	 * @param stationSoftwareInstances
+	 * @param checkoutStation
+	 * @param startSessions
+	 */
+	public void AlertAttendant(int selectedStation,CustomerStation[] customerStation, SelfCheckoutStationSoftware[] stationSoftwareInstances,AbstractSelfCheckoutStation checkoutStation, StartSession[] startSessions)  {
+		AttendantPageGUI attendantPopup = new AttendantPageGUI();
+		if (stationSoftwareInstances[selectedStation].getStationBlock()== true) {
+			stationSoftwareInstances[selectedStation].setStationUnblock();
+			attendantPopup.bulkItemRequest("fixed error, continue");	
+		}	
+		
+	}
 }
