@@ -3,29 +3,30 @@
  SENG 300 - ITERATION 3
  GROUP GOLD {8}
 
-Name                      UCID
+ Name                      UCID
 
-Yotam Rojnov             30173949
-Duncan McKay             30177857
-Mahfuz Alam              30142265
-Luis Trigueros Granillo  30167989
-Lilia Skumatova          30187339
-Abdelrahman Abbas        30110374
-Talaal Irtija            30169780
-Alejandro Cardona        30178941
-Alexandre Duteau         30192082
-Grace Johnson            30149693
-Abil Momin               30154771
-Tara Ghasemi M. Rad      30171212
-Izabella Mawani          30179738
-Binish Khalid            30061367
-Fatima Khalid            30140757
-Lucas Kasdorf            30173922
-Emily Garcia-Volk        30140791
-Yuinikoru Futamata       30173228
-Joseph Tandyo            30182561
-Syed Haider              30143096
-Nami Marwah              30178528
+ Yotam Rojnov             30173949
+ Duncan McKay             30177857
+ Mahfuz Alam              30142265
+ Luis Trigueros Granillo  30167989
+ Lilia Skumatova          30187339
+ Abdelrahman Abbas        30110374
+ Talaal Irtija            30169780
+ Alejandro Cardona        30178941
+ Alexandre Duteau         30192082
+ Grace Johnson            30149693
+ Abil Momin               30154771
+ Tara Ghasemi M. Rad      30171212
+ Izabella Mawani          30179738
+ Binish Khalid            30061367
+ Fatima Khalid            30140757
+ Lucas Kasdorf            30173922
+ Emily Garcia-Volk        30140791
+ Yuinikoru Futamata       30173228
+ Joseph Tandyo            30182561
+ Syed Haider              30143096
+ Nami Marwah              30178528
+
  */
 
 package com.thelocalmarketplace.software.funds;
@@ -227,32 +228,76 @@ public class CoinHandler implements CoinValidatorObserver, CoinDispenserObserver
 		if (unit.getCapacity() - unit.getCoinCount() < 5)
         	this.fundController.notifyCoinsHigh(unit);
 	}
-   
+	
+	/**
+	 * Called when a component is enabled.
+	 * This method is invoked when a component is enabled.
+	 * 
+	 * @param component 
+	 * 				The component that has been enabled.
+	 */
     @Override
     public void enabled(IComponent<? extends IComponentObserver> component) {
         // TODO Auto-generated method stub
     }
-
+    
+    
+    /**
+     * Called when a component is disabled.
+     * This method is invoked when a component is disabled.
+     * 
+     * @param component 
+     * 				The component that has been disabled.
+     */
     @Override
     public void disabled(IComponent<? extends IComponentObserver> component) {
         // TODO Auto-generated method stub
     }
-
+    
+    
+    /**
+     * Called when a component is turned on.
+     * This method is invoked when a component is turned on.
+     * 
+     * @param component 
+     * 				The component that has been turned on.
+     */
     @Override
     public void turnedOn(IComponent<? extends IComponentObserver> component) {
         // TODO Auto-generated method stub
     }
-
+    
+    
+    /**
+     * Called when a component is turned off.
+     * This method is invoked when a component is turned off.
+     * 
+     * @param component 
+     * 				The component that has been turned off.
+     */
     @Override
     public void turnedOff(IComponent<? extends IComponentObserver> component) {
         // TODO Auto-generated method stub    
     }
 
+    
+    /**
+     * This method is not utilized in the current implementation.
+     * 
+     * @param dispenser 
+     * 				The coin dispenser.
+     */
     @Override
     public void coinsFull(ICoinDispenser dispenser) {
         // TODO Auto-generated method stub
     }
-
+    
+    
+    /**
+     * This method is not utilized in the current implementation.
+     * 
+     * @param unit The coin storage unit.
+     */
 	@Override
 	public void coinsUnloaded(CoinStorageUnit unit) {
 		// TODO Auto-generated method stub
