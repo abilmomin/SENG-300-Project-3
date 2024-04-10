@@ -51,10 +51,11 @@ public class SelectPayment extends JFrame {
 	private JLabel totalPaidValueLabel;
 	private JLabel amountOwingValueLabel;
 	private JLabel billTotalValueLabel;
-	private CardPayment debitWindow;
-	private CardPayment creditWindow;
+	public CardPayment debitWindow;
+	public CardPayment creditWindow;
 	private PayWithBanknotes banknoteWindow;
 	private PayWithCoins coinWindow;
+	public JPanel buttonPanel;
 	
 	/**
 	 * Constructs the JFrame
@@ -105,7 +106,7 @@ public class SelectPayment extends JFrame {
         topPanel.add(valuesPanel, BorderLayout.EAST);
 
         // Buttons panel for payment methods
-        JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+        buttonPanel = new JPanel(new GridLayout(2, 2, 10, 10));
         JButton debitButton = createColoredButton("Debit", new Color(173, 216, 230));
         JButton creditButton = createColoredButton("Credit", new Color(255, 182, 193));
         JButton coinButton = createColoredButton("Coin", new Color(255, 255, 224));
