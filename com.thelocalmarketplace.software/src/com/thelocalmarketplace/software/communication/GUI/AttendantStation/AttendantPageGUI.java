@@ -249,7 +249,6 @@ public class AttendantPageGUI extends JFrame {
     public void waitForSessionCompletion(int stationNumber) {
         try {
             while (stationSoftwareInstances[stationNumber].getStationActive()) {
-                
                 Thread.sleep(5000); 
             }
             // Once the session is complete, disable the station
@@ -427,6 +426,18 @@ public class AttendantPageGUI extends JFrame {
         dialog.pack();
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
+    }
+
+    public CustomerStation[] getCustomerStations() {
+        return customerStation;
+    }
+
+    public SelfCheckoutStationSoftware[] getStationSoftwareInstances() {
+        return stationSoftwareInstances;
+    }
+
+    public JPanel getStationStartPanel() {
+        return stationStartPanel;
     }
     
     /**
