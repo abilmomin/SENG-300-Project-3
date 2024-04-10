@@ -72,28 +72,6 @@ public class AttendantPageGUITest {
 	    return null;
     }
 
-    // Method to simulate mouse click
-    private void simulateMouseClick(Component component) {
-        Point center = new Point(component.getWidth() / 2, component.getHeight() / 2);
-        SwingUtilities.convertPointToScreen(center, component);
-        MouseEvent event = new MouseEvent(component, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, center.x, center.y, 1, false);
-        for (MouseListener listener : component.getMouseListeners()) {
-            listener.mouseClicked(event);
-        }
-    }
-
-    private JPanel findPanelByText(String text) {
-        for (int i = 0; i < session.getContentPane().getComponentCount(); i++) {
-            if (session.getContentPane().getComponent(i) instanceof JPanel) {
-                JPanel panel = (JPanel) session.getContentPane().getComponent(i);
-                if (panel.getName().equals(text)) {
-                    return panel;
-                }
-            }
-        }
-        return null;
-    }
-
     @Before
     public void setUp() {
         // Initialize the objects
