@@ -34,11 +34,8 @@ package com.thelocalmarketplace.software.test;
 import javax.swing.*;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +45,6 @@ import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
-import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
 
 import powerutility.PowerGrid;
 
@@ -60,7 +56,6 @@ public class AttendantPageGUITest {
 	private AbstractElectronicScale scale;
 	private AttendantPageGUI attendantGUI;
 	private SelfCheckoutStationGold station;
-    private StartSession session;
 
 	public JButton findButton(JPanel container, String labelName) {
 	    for (Component comp : container.getComponents()) {
@@ -84,7 +79,6 @@ public class AttendantPageGUITest {
         scale = (AbstractElectronicScale) stationSoftwareInstance.station.getBaggingArea();
         attendantGUI = new AttendantPageGUI();
         customerStation = new CustomerStation(1, stationSoftwareInstance, scale, attendantGUI);
-        session = new StartSession(1, stationSoftwareInstance, (AbstractElectronicScale) stationSoftwareInstance.getStationHardware().getBaggingArea());
     }
 
     @Test
