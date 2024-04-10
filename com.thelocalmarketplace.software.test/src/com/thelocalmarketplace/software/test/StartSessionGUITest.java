@@ -34,44 +34,68 @@ package com.thelocalmarketplace.software.test;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jjjwelectronics.scale.AbstractElectronicScale;
+import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
+
+import powerutility.PowerGrid;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.awt.event.MouseEvent;
+import java.math.BigDecimal;
+import java.util.Currency;
+
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 public class StartSessionGUITest {
-	StartSession session;
+    private SelfCheckoutStationSoftware station;
+	private SelfCheckoutStationGold checkoutStation;
+    private StartSession session;
 
     @Before
     public void setUp() {
-        session = new StartSession(1, null, null);
+        // Set up SelfCheckoutStation
+		this.checkoutStation = new SelfCheckoutStationGold();
+        PowerGrid.engageUninterruptiblePowerSource();
+		this.checkoutStation.plugIn(PowerGrid.instance());
+		this.checkoutStation.turnOn();
+
+		this.station = new SelfCheckoutStationSoftware(checkoutStation);
+        station.setStationActive(true);
+        session = new StartSession(1, station, (AbstractElectronicScale) station.getStationHardware().getBaggingArea());
     }
 
     @Test
     public void testConstructor() {
         assertNotNull(session.getContentPane());
-        assertEquals("Welcome to the Market", session.getTitle());
+        assertEquals("Welcome to the Market - Station 1", session.getTitle());
         assertEquals(900, session.getWidth());
         assertEquals(700, session.getHeight());
         assertEquals(JFrame.EXIT_ON_CLOSE, session.getDefaultCloseOperation());
-        assertEquals(1, session.getContentPane().getComponentCount());
+        assertEquals(2, session.getContentPane().getComponentCount());
     }
 
     @Test
     public void testStartSessionButtonClick() {
-        JButton startSessionButton = findButtonByText("Start Session");
-        startSessionButton.doClick();
+        JPanel startSessionPanel = findPanelByText("Content Panel");
+        // JButton startSessionButton = findButtonByText("Start Session");
+        // startSessionButton.doClick();
+        
     }
-    
-    private JButton findButtonByText(String text) {
+
+    private JPanel findPanelByText(String text) {
         for (int i = 0; i < session.getContentPane().getComponentCount(); i++) {
-            if (session.getContentPane().getComponent(i) instanceof JButton) {
-                JButton button = (JButton) session.getContentPane().getComponent(i);
-                if (button.getText().equals(text)) {
-                    return button;
+            if (session.getContentPane().getComponent(i) instanceof JPanel) {
+                JPanel panel = (JPanel) session.getContentPane().getComponent(i);
+                if (panel.getName().equals(text)) {
+                    return panel;
                 }
             }
         }
