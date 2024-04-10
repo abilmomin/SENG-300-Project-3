@@ -84,22 +84,22 @@ public class AttendantPageGUI extends JFrame {
     // Panel for customer services
     private final JPanel customerServicesPanel = new JPanel(new FlowLayout());
     private int selectedStation = -1;
-    private final JButton[] stationStartButtons = new JButton[NUM_STATIONS];
-    private final boolean[] stationEnabled = new boolean[NUM_STATIONS];
+    private final JButton[] stationStartButtons = new JButton[NUM_STATIONS]; 
+    private final StartSession[] startSessions = new StartSession[NUM_STATIONS];
+    private final boolean[] stationEnabled = new boolean[NUM_STATIONS]; 
     private final CustomerStation[] customerStation = new CustomerStation[NUM_STATIONS];
     private final SelfCheckoutStationSoftware[] stationSoftwareInstances = new SelfCheckoutStationSoftware[NUM_STATIONS];
 
     public final boolean[] stationAssistanceRequested = new boolean[NUM_STATIONS]; 
-    private final AttendantListeners attendantListeners;
+    private AttendantListeners attendantListeners;
     
     /**
      * Constructs an instance of the AttendantPageGUI.
      * Initializes the GUI components and sets up the necessary panels and listeners.
      */
     public AttendantPageGUI() {
-        StartSession[] startSessions = new StartSession[NUM_STATIONS];
-        this.attendantListeners = new AttendantListeners(this, selectedStation, stationSoftwareInstances, customerStation,
-                startSessions, stationEnabled);
+        this.attendantListeners = new AttendantListeners(this, selectedStation, stationSoftwareInstances, customerStation, 
+        		startSessions, stationEnabled);
         
         // Initialize the GUI
         setupGUI();
@@ -299,7 +299,16 @@ public class AttendantPageGUI extends JFrame {
         JOptionPane.showMessageDialog(this, message);
         return true;
     }
-
+    /**
+     * Displays a message dialog to notify the attendant
+     * 
+     * @param message 
+     * 			The message to display in the dialog.
+     * @return True if the request is acknowledged.
+     */
+    public void notifyAttendant(String message) {
+        JOptionPane.showMessageDialog(this, message);
+    }
     /**
      * Displays a message dialog to notify about weight discrepancy and handles attendant's action.
      * 
@@ -421,6 +430,10 @@ public class AttendantPageGUI extends JFrame {
 
     public CustomerStation[] getCustomerStations() {
         return customerStation;
+    }
+
+    public SelfCheckoutStationSoftware[] getStationSoftwareInstances() {
+        return stationSoftwareInstances;
     }
 
     public JPanel getStationStartPanel() {
