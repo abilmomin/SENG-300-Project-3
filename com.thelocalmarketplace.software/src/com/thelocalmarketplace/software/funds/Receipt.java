@@ -111,6 +111,7 @@ public class Receipt {
         receiptItems.add("Paid: $" + String.format("%.2f", amountPaid));
         receiptItems.add("Change: $" + String.format("%.2f", changeDue));
 
+        funds.checkoutStationSoftware.resetOrder();
         return receiptItems;
     }
 

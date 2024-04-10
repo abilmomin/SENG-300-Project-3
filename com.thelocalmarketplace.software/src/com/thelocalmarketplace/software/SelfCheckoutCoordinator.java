@@ -148,8 +148,6 @@ public class SelfCheckoutCoordinator implements FundsObserver, ProductsListener 
         if(gui != null) {
             gui.setPaymentSuccesful(changeReturned.doubleValue());
             gui.getPaymentWindow().closePanel();
-            
-            software.resetOrder();
         }
     }
 
