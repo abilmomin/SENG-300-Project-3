@@ -85,9 +85,12 @@ public class StartSessionGUITest {
     @Test
     public void testStartSessionButtonClick() {
         JPanel startSessionPanel = findPanelByText("Content Panel");
-        // JButton startSessionButton = findButtonByText("Start Session");
-        // startSessionButton.doClick();
-        
+        // Check if the panel is not null
+        assertNotNull("Panel not found", startSessionPanel);
+        // Create a MouseEvent to simulate a mouse click
+        MouseEvent click = new MouseEvent(startSessionPanel, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 100, 100, 1, false);
+        // Dispatch the event to the panel
+        startSessionPanel.dispatchEvent(click);
     }
 
     private JPanel findPanelByText(String text) {
