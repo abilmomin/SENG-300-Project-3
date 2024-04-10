@@ -44,6 +44,7 @@ import powerutility.PowerGrid;
 
 import static org.junit.Assert.assertTrue;
 
+
 public class PaymentSuccessTest {
     private CustomerStation customerStation;
     private SelfCheckoutStationSoftware stationSoftwareInstance;
@@ -51,6 +52,8 @@ public class PaymentSuccessTest {
     private AttendantPageGUI attendantGUI;
     private SelfCheckoutStationGold station;
     private SelectPayment paymentWindow;
+    private PaymentSuccess paymentSuccess;
+    
 
     @Before
     public void setUp() {
