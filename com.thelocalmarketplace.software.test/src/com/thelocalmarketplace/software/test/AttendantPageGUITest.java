@@ -34,8 +34,10 @@ package com.thelocalmarketplace.software.test;
 import javax.swing.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.awt.*;
+import java.math.BigDecimal;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -88,9 +90,34 @@ public class AttendantPageGUITest {
     }
 
     @Test
+    public void testWaitForSessionCompletion() {
+        customerStation.displayAmountDuePopup(BigDecimal.ONE);
+    }
+
+    @Test
     public void testGetCurrentStationNumber() {
         JButton selectButton = findButton(attendantGUI.getStationStartPanel(), "Checkout Station 1 (Gold)");
         selectButton.doClick();
         assertEquals(1, attendantGUI.getCurrentStationNumber());
+    }
+
+    @Test
+    public void testNotifyAttendant() {
+        attendantGUI.notifyAttendant("Assitance Requested");
+    }
+
+    @Test
+    public void testHighlightSelectedStation() {
+        attendantGUI.highlightSelectedStation(1);
+    }
+
+    @Test
+    public void testRevertHighlight() {
+        attendantGUI.revertHighlight();
+    }
+
+    @Test
+    public void testWarnForChange() {
+        attendantGUI.warnForChange(BigDecimal.ONE);
     }
 }
