@@ -53,19 +53,17 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 public class StartSessionGUITest {
-    private SelfCheckoutStationSoftware station;
-	private SelfCheckoutStationGold checkoutStation;
     private StartSession session;
 
     @Before
     public void setUp() {
         // Set up SelfCheckoutStation
-		this.checkoutStation = new SelfCheckoutStationGold();
+        SelfCheckoutStationGold checkoutStation = new SelfCheckoutStationGold();
         PowerGrid.engageUninterruptiblePowerSource();
-		this.checkoutStation.plugIn(PowerGrid.instance());
-		this.checkoutStation.turnOn();
+		checkoutStation.plugIn(PowerGrid.instance());
+		checkoutStation.turnOn();
 
-		this.station = new SelfCheckoutStationSoftware(checkoutStation);
+        SelfCheckoutStationSoftware station = new SelfCheckoutStationSoftware(checkoutStation);
         station.setStationActive(true);
         session = new StartSession(1, station, (AbstractElectronicScale) station.getStationHardware().getBaggingArea());
     }
@@ -82,15 +80,15 @@ public class StartSessionGUITest {
 
     @Test
     public void testStartSessionButtonClick() {
-        JPanel startSessionPanel = findPanelByText("Content Panel");
+        JPanel startSessionPanel = findPanelByText();
+        assert startSessionPanel != null;
         simulateMouseClick(startSessionPanel);
     }
 
-    private JPanel findPanelByText(String text) {
+    private JPanel findPanelByText() {
         for (int i = 0; i < session.getContentPane().getComponentCount(); i++) {
-            if (session.getContentPane().getComponent(i) instanceof JPanel) {
-                JPanel panel = (JPanel) session.getContentPane().getComponent(i);
-                if (panel.getName().equals(text)) {
+            if (session.getContentPane().getComponent(i) instanceof JPanel panel) {
+                if (panel.getName().equals("Content Panel")) {
                     return panel;
                 }
             }

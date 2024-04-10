@@ -62,7 +62,6 @@ import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantLogic;
 
-import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
@@ -256,7 +255,7 @@ public class AttendantLogicTest {
 		stationSoftwareInstances[selectedStation] = new SelfCheckoutStationSoftware(bronzeS);
 		stationSoftwareInstances[selectedStation].setStationBlock();
 		assertTrue(stationSoftwareInstances[1].getStationBlock());
-		logic.AlertAttendant(selectedStation, customerStations, stationSoftwareInstances, bronzeS, startSessions);
+		logic.AlertAttendant(selectedStation, stationSoftwareInstances);
 		assertFalse(stationSoftwareInstances[1].getStationBlock());
 		
 	}

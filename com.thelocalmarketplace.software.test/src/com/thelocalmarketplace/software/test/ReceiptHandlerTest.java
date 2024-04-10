@@ -46,21 +46,17 @@ import com.thelocalmarketplace.software.funds.ReceiptHandler;
 
 public class ReceiptHandlerTest {
     private ReceiptHandler handler;
-    private Funds funds;
-    private SelfCheckoutStationSoftware station;
-    private IReceiptPrinter printer;
-    private Receipt receipt;
     private mockReceiptObserver observer;
 
     @Before
     public void setUp() {
-        this.station = new SelfCheckoutStationSoftware(new SelfCheckoutStationBronze());
-        this.funds = new Funds(this.station);
-        this.printer = this.station.getStationHardware().getPrinter();
-        this.receipt = new Receipt(printer, funds);
-        this.handler = new ReceiptHandler(this.receipt);
+        SelfCheckoutStationSoftware station = new SelfCheckoutStationSoftware(new SelfCheckoutStationBronze());
+        Funds funds = new Funds(station);
+        IReceiptPrinter printer = station.getStationHardware().getPrinter();
+        Receipt receipt = new Receipt(printer, funds);
+        this.handler = new ReceiptHandler(receipt);
         this.observer = new mockReceiptObserver();
-        this.receipt.register(observer);
+        receipt.register(observer);
     }
 
     @Test
