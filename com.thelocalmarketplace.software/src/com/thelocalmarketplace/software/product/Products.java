@@ -176,7 +176,8 @@ public class Products {
 		software.addTotalOrderPrice(-productPrice);
 		notifyProductRemoved(product);
     }
-    
+
+
     /**
      * Removes a PLU coded item from the order.
      * 
@@ -186,20 +187,23 @@ public class Products {
     public void removePLUCodedItemFromOrder(Item item) {
     	PriceLookUpCode PLUCode = ((PLUCodedItem) item).getPLUCode();
         PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
-        if (product != null) {
-            Mass itemMass = item.getMass();
-            double productWeight = itemMass.inGrams().doubleValue();
-            long productPrice = product.getPrice();
-            
-            if (!bulkyItems.contains(item))
-                software.addTotalOrderWeightInGrams(-productWeight);
-            
-            software.addTotalOrderPrice(-productPrice);
-            
-            notifyProductRemoved(product);
-        }
+
+		if (product == null)
+			return;
+
+		Mass itemMass = item.getMass();
+		double productWeight = itemMass.inGrams().doubleValue();
+		long productPrice = product.getPrice();
+
+		if (!bulkyItems.contains(item))
+			software.addTotalOrderWeightInGrams(-productWeight);
+
+		software.addTotalOrderPrice(-productPrice);
+
+		notifyProductRemoved(product);
     }
-	
+
+
 	/**
 	 * 
 	 * Adds a price look-up coded item to the order.
@@ -208,29 +212,27 @@ public class Products {
 	 * 				The PLU item being added to the order.			
 	 */
 	public boolean addItemByPLUCode(PLUCodedItem pluItem) {
-		if (software.getStationActive() && !software.getStationBlock()) {
-			software.setStationBlock();
-
-			BigDecimal itemWeightInGrams = pluItem.getMass().inGrams();
-			double itemWeight = itemWeightInGrams.doubleValue();
-			PriceLookUpCode PLUCode = pluItem.getPLUCode();
-			PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
-
-			if(product != null) {
-				long productPrice = product.getPrice();
-
-				software.addTotalOrderWeightInGrams(itemWeight);
-				software.addTotalOrderPrice(productPrice);
-				software.addItemToOrder(pluItem);	
-				
-				notifyProductAdded(product);
-			}
-			return true;
-		} else {
+		if (!software.getStationActive() || software.getStationBlock())
 			return false;
-		}
+
+		software.setStationBlock();
+
+		double itemWeightInGrams = pluItem.getMass().inGrams().doubleValue();
+		PriceLookUpCode PLUCode = pluItem.getPLUCode();
+		PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
+
+		if (product == null)
+			return true;
+
+		long productPrice = product.getPrice();
+		software.addTotalOrderWeightInGrams(itemWeightInGrams);
+		software.addTotalOrderPrice(productPrice);
+		software.addItemToOrder(pluItem);
+		notifyProductAdded(product);
+		return true;
 	}
-	
+
+
 	/**
 	 * Adds item to order via a barcode input.
 	 * 
@@ -238,27 +240,27 @@ public class Products {
 	 * 				The barcode that got scanned.
 	 */
 	public void addItemViaBarcodeScan(Barcode barcode) {
-		if (software.getStationActive() && !software.getStationBlock()) {
-			software.setStationBlock();
-			
-			BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
-			
-			if (product != null) {
-				double productWeight = product.getExpectedWeight(); 
-				long productPrice = product.getPrice();
+		if (!software.getStationActive() || software.getStationBlock())
+			return;
 
-				software.addTotalOrderWeightInGrams(productWeight); 
-				software.addTotalOrderPrice(productPrice); 
+		software.setStationBlock();
 
-				Mass mass = new Mass(productWeight);
-				BarcodedItem barcodedItem = new BarcodedItem(barcode, mass);
-				
-				software.addItemToOrder(barcodedItem);
-				
-				notifyProductAdded(product);
-			}
-		}
-	} 
+		BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+		if (product == null)
+			return;
+
+		double productWeight = product.getExpectedWeight();
+		long productPrice = product.getPrice();
+
+		software.addTotalOrderWeightInGrams(productWeight);
+		software.addTotalOrderPrice(productPrice);
+
+		Mass mass = new Mass(productWeight);
+		BarcodedItem barcodedItem = new BarcodedItem(barcode, mass);
+		software.addItemToOrder(barcodedItem);
+		notifyProductAdded(product);
+	}
+
 	
 	/**
      * Adds an item to the customer's order by text search.
