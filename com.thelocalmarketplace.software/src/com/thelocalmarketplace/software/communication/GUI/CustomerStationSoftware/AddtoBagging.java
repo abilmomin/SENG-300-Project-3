@@ -66,6 +66,8 @@ public class AddtoBagging extends JFrame {
     SelfCheckoutStationSoftware stationSoftwareInstance;
     AttendantPageGUI attendantGUI;
     BaggingArea baggingArea;
+    public JPanel mainPanel;
+    public JPanel buttonPanel;
     
     /**
      * Constructor that creates a panel for adding items to the bagging area.
@@ -101,7 +103,7 @@ public class AddtoBagging extends JFrame {
         setLocationRelativeTo(null);
 
         // Main panel with BoxLayout for vertical alignment
-        JPanel mainPanel = new JPanel();
+        mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         
         String item = "Item";
@@ -145,7 +147,7 @@ public class AddtoBagging extends JFrame {
      * @return The configured button panel.
      */
     private JPanel createButtonPanel(Product product) {
-        JPanel buttonPanel = new JPanel();
+        buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 
         JButton placeItemButton = new JButton("Place Item in Bagging Area");

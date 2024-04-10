@@ -47,9 +47,10 @@ import javax.swing.JTextField;
 /**
  * A dialog window for purchasing bags.
  */
-@SuppressWarnings("serial")
 public class BagPurchaseInput extends JDialog {
     private int numOfBags = 0;
+    public JPanel keypadPanel;
+    public JPanel confirmPanel;
     
     /**
      * Constructs a dialog window for purchasing bags.
@@ -75,7 +76,7 @@ public class BagPurchaseInput extends JDialog {
         inputField.setHorizontalAlignment(JTextField.CENTER);
         add(inputField, BorderLayout.NORTH);
 
-        JPanel keypadPanel = new JPanel(new GridLayout(4, 3));
+        keypadPanel = new JPanel(new GridLayout(4, 3));
         ActionListener numPadActionListener = e -> inputField.setText(inputField.getText() + e.getActionCommand());
 
         for (int i = 1; i <= 9; i++) {
@@ -92,7 +93,7 @@ public class BagPurchaseInput extends JDialog {
 
         add(keypadPanel, BorderLayout.CENTER);
 
-        JPanel confirmPanel = new JPanel(new FlowLayout());
+        confirmPanel = new JPanel(new FlowLayout());
         JButton okButton = new JButton("OK");
         okButton.addActionListener(e -> {
             String input = inputField.getText();

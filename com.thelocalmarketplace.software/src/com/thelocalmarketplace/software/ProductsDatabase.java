@@ -84,7 +84,7 @@ public class ProductsDatabase {
 		productDatabase.put(barcode3, sushi);
 	}
 
-	/**
+	/** 
 	 * Initialize PLU codes and assign them to products and
 	 * adds the PLU-coded products to the PLU database. 
 	 */

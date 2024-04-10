@@ -67,25 +67,28 @@ import java.util.regex.Pattern;
 @SuppressWarnings("serial")
 public class CustomerStation extends JFrame {
 
-    private JPanel cartItemsPanel;
-    private JLabel totalPriceLabel;
-    private JPanel menuPanel;
-    private JPanel mainPanel;
-    private JPanel cartPanel;
-    private JPanel PLUPanel;
-    private JPanel payButtonPanel;
-    private JTextField screenTextField;
-    private JPanel addItemBtnPanel;
-    private SelfCheckoutStationSoftware stationSoftwareInstance;
-    private AttendantPageGUI attendantGUI;
-    private boolean needsAssistance = false;
-    private int selectedStation;
-    private SelectPayment paymentWindow;
-    private SearchProductByText searchProductByText;
-    private BaggingArea baggingArea;
-    private SettingsPanel settingsPanel;
-    private ArrayList<JButton> cartItemButtons;
-    private JButton selectedCartItemButton = null;
+	public JPanel cartItemsPanel;
+    public JLabel totalPriceLabel;
+    public JPanel menuPanel;
+    public JPanel mainPanel;
+    public JPanel cartPanel;
+    public JPanel PLUPanel;
+    public JPanel payButtonPanel;
+    public JTextField screenTextField;
+    public JPanel addItemBtnPanel;
+    public SelfCheckoutStationSoftware stationSoftwareInstance;
+    public AttendantPageGUI attendantGUI;
+    public boolean needsAssistance = false;
+    public int selectedStation;
+    public SelectPayment paymentWindow;
+    public SearchProductByText searchProductByText;
+    public BaggingArea baggingArea;
+    public SettingsPanel settingsPanel;
+    public ArrayList<JButton> cartItemButtons;
+    public JButton selectedCartItemButton = null;
+    public AddtoBagging addToBagPopUp;
+    public JPanel keypadPanel;
+    public BagPurchaseInput bagPurchasePanel;
     
     /**
      * Constructs a new CustomerStation object representing a self-checkout station for customers.
@@ -229,7 +232,7 @@ public class CustomerStation extends JFrame {
         PLUPanel = new JPanel(new BorderLayout());
         
         // PLU code keypad
-        JPanel keypadPanel = createKeypadPanel();
+        keypadPanel = createKeypadPanel();
         
         // PLU code screen
         JPanel screenPanel = createScreenPanel();
@@ -316,7 +319,7 @@ public class CustomerStation extends JFrame {
         if (newOrderSize > initialOrderSize) {
             BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
             
-            new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
+            addToBagPopUp = new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
         }
     }
 
@@ -340,10 +343,10 @@ public class CustomerStation extends JFrame {
 	 * Handles the action of purchasing bags by the customer.
 	 */
 	private void handlePurchaseBags() {
-	    BagPurchaseInput dialog = new BagPurchaseInput(this);
-	    dialog.setVisible(true);
+	    bagPurchasePanel = new BagPurchaseInput(this);
+	    bagPurchasePanel.setVisible(true);
 	    
-	    int numOfBags = dialog.getNumOfBags();
+	    int numOfBags = bagPurchasePanel.getNumOfBags();
 	    if (numOfBags > 0) {
 			ReusableBag[] bags = new ReusableBag[numOfBags];
 			
