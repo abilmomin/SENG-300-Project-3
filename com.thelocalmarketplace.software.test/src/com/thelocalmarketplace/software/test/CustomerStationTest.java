@@ -24,8 +24,9 @@ public class CustomerStationTest {
 	    private AttendantPageGUI attendantGUI;
 	    private SelfCheckoutStationGold station;
 
-	    public JButton findButton(JPanel container, String labelName) {
+	    public JButton findButton(JPanel container, CharSequence labelName) {
 	    	for (Component comp : container.getComponents()) {
+	    		System.out.println(comp);
 	            if (comp instanceof JButton) {
 	                System.out.println(((JButton) comp).getText());
 	                if(((JButton) comp).getText().contains(labelName)) return (JButton) comp;
@@ -88,7 +89,7 @@ public class CustomerStationTest {
 	    }
 	    
 	    @Test
-	    public void testRemoveProductFromCart() {
+	    public void testRemoveBarcodedProductFromCart() {
 	        customerStation = new CustomerStation(1, stationSoftwareInstance, scale, attendantGUI);
 	    	JButton addItem = (JButton) findButton(customerStation.menuPanel, "Add Item");
 	    	
@@ -111,20 +112,73 @@ public class CustomerStationTest {
 	    }
 	    
 	    @Test
-	    public void testPurchaseBags() {
+	    public void testRemovePLUProductFromCart() {
 	        customerStation = new CustomerStation(1, stationSoftwareInstance, scale, attendantGUI);
-	    	JButton addBag = (JButton) findButton(customerStation.menuPanel, "Purchase Bags");
-	        if(addBag != null) addBag.doClick();
+	    	JButton addItem = (JButton) findButton(customerStation.menuPanel, "Add Item");
+	        if(addItem != null) addItem.doClick();
 	        
-	        JButton add3Bags = (JButton) findButton(customerStation.bagPurchasePanel.keypadPanel, "3");
-	        System.out.println(add3Bags);
-	        if(add3Bags != null) add3Bags.doClick();
-//	        
-//	        JButton bagsOk = (JButton) findButton(customerStation.bagPurchasePanel.confirmPanel, "OK");
-//	        if(bagsOk != null) bagsOk.doClick();
-//
-//	        // Check if the product was added to the cart
-//	        assertTrue(stationSoftwareInstance.getOrder().size() == 0);
+	        JButton addPLU = (JButton) findButton(customerStation.addItemBtnPanel, "Enter PLU Code");
+	        if(addPLU != null) addPLU.doClick();
+	        
+	        JButton PLU1 = (JButton) findButton(customerStation.keypadPanel, "1");
+	        if(PLU1 != null) PLU1.doClick();
+	        JButton PLU2 = (JButton) findButton(customerStation.keypadPanel, "2");
+	        if(PLU2 != null) PLU2.doClick();
+	        JButton PLU3 = (JButton) findButton(customerStation.keypadPanel, "3");
+	        if(PLU3 != null) PLU3.doClick();
+	        JButton PLU4 = (JButton) findButton(customerStation.keypadPanel, "4");
+	        if(PLU4 != null) PLU4.doClick();
+	        JButton PLUEnter = (JButton) findButton(customerStation.keypadPanel, "Enter");
+	        if(PLUEnter != null) PLUEnter.doClick();
+	        
+	    	JButton bagItem = (JButton) findButton(customerStation.addToBagPopUp.buttonPanel, "Place Item in Bagging Area");
+	        if(bagItem != null) bagItem.doClick();
+	        
+	        customerStation.cartItemButtons.get(0).doClick();
+	        
+	        JButton removeItem = (JButton) findButton(customerStation.menuPanel, "Remove Item");
+	        if(removeItem != null) removeItem.doClick();
+	        
+	        // Check if the product was added to the cart
+	        assertTrue(stationSoftwareInstance.getOrder().size() == 0);
 	        customerStation.getDefaultCloseOperation();
 	    }
+	    
+	    @Test
+	    public void testPurchaseBags() throws Exception {
+	        customerStation = new CustomerStation(1, stationSoftwareInstance, scale, attendantGUI);
+	        JButton addBag = (JButton) findButton(customerStation.menuPanel, "Purchase Bags");
+	        if(addBag != null) addBag.doClick();
+
+	        Thread.sleep(2000);
+	        System.out.println(customerStation.bagPurchasePanel.keypadPanel);
+            JButton add3Bags = (JButton) findButton(customerStation.bagPurchasePanel.keypadPanel, "3");
+            if(add3Bags != null) add3Bags.doClick();
+            
+            JButton bagsOk = (JButton) findButton(customerStation.bagPurchasePanel.confirmPanel, "OK");
+	        if(bagsOk != null) bagsOk.doClick();
+
+	        System.out.println(stationSoftwareInstance.getOrder().size());
+	        // Check if the product was added to the cart
+	        assertTrue(stationSoftwareInstance.getOrder().size() == 3);
+	        customerStation.getDefaultCloseOperation();
+	    }
+
+	    @Test
+	    public void testAddItemVisually() {
+	    	customerStation = new CustomerStation(1, stationSoftwareInstance, scale, attendantGUI);
+	        JButton addItem = (JButton) findButton(customerStation.menuPanel, "Add Item");
+	        if(addItem != null) addItem.doClick();
+	        
+	        JButton addVisual = (JButton) findButton(customerStation.addItemBtnPanel, "Search Product");
+	        if(addVisual != null) addVisual.doClick();
+	        
+	        customerStation.searchProductByText.searchResults.setSelectedIndex(0);
+	        customerStation.searchProductByText.submitButton.doClick();
+	        
+	        // Check if the product was added to the cart
+	        assertTrue(stationSoftwareInstance.getOrder().size() == 1);
+	        customerStation.getDefaultCloseOperation();
+	    }
+	    
 }

@@ -117,7 +117,6 @@ public class CustomerStation extends JFrame {
     	
         setTitle("Self-Checkout Station " + selectedStation);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 700);
         setLocationRelativeTo(null);
 
@@ -343,27 +342,27 @@ public class CustomerStation extends JFrame {
 	 * Handles the action of purchasing bags by the customer.
 	 */
 	private void handlePurchaseBags() {
-	    bagPurchasePanel = new BagPurchaseInput(this);
+	    
+	    ActionListener addBagsCallback = e -> {
+	    	int numOfBags = bagPurchasePanel.getNumOfBags();
+		    if (numOfBags > 0) {
+				ReusableBag[] bags = new ReusableBag[numOfBags];
+				
+				for (int i = 0; i < numOfBags; i++)
+					bags[i] = new ReusableBag();
+				
+				try {
+					stationSoftwareInstance.getProductHandler().purchaseBags(bags);
+					updateTotalOwedDisplay();
+				} catch (OverloadedDevice | EmptyDevice e1) {
+					e1.printStackTrace();
+				}
+		    }
+	    };
+	    
+	    bagPurchasePanel = new BagPurchaseInput(addBagsCallback);
 	    bagPurchasePanel.setVisible(true);
 	    
-	    int numOfBags = bagPurchasePanel.getNumOfBags();
-	    if (numOfBags > 0) {
-			ReusableBag[] bags = new ReusableBag[numOfBags];
-			
-			for (int i = 0; i < numOfBags; i++)
-				bags[i] = new ReusableBag();
-			
-			try {
-				stationSoftwareInstance.getProductHandler().purchaseBags(bags);
-				updateTotalOwedDisplay();
-                JOptionPane.showMessageDialog(this, numOfBags + " bags have been added to your purchase.",
-                        "Bags Purchased", JOptionPane.INFORMATION_MESSAGE);
-			} catch (OverloadedDevice | EmptyDevice e) {
-				e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Unable to add" + numOfBags + " bags.",
-                        "Bags Not Purchased", JOptionPane.INFORMATION_MESSAGE);
-			}
-	    }
 	}
 	
 	/**
@@ -566,8 +565,8 @@ public class CustomerStation extends JFrame {
 
                     stationSoftwareInstance.getProductHandler().addItemByPLUCode(pluItem);
 
-            	    AddtoBagging popup = new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
-        			popup.setVisible(true);
+                    addToBagPopUp = new AddtoBagging(product, stationSoftwareInstance, attendantGUI, baggingArea);
+                    addToBagPopUp.setVisible(true);
             	    screenTextField.setText("");
 
             	    replaceCartPanelWithKeypadPanel();

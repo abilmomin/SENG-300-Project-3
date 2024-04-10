@@ -55,9 +55,9 @@ import java.util.List;
 public class SearchProductByText extends JFrame {
     private JTextField searchField;
     private JTextField filterField;
-    private JButton submitButton;
+    public JButton submitButton;
     private JButton returnButton;
-    private JList<Product> searchResults;
+    public JList<Product> searchResults;
     private DefaultListModel<Product> listModel;
     private CustomKeyboard keyboard;
     BaggingArea baggingArea;

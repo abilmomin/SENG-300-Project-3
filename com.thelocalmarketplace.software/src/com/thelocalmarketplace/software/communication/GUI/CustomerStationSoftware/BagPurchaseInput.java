@@ -33,11 +33,15 @@ package com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftwa
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+
+import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -47,7 +51,7 @@ import javax.swing.JTextField;
 /**
  * A dialog window for purchasing bags.
  */
-public class BagPurchaseInput extends JDialog {
+public class BagPurchaseInput extends JFrame {
     private int numOfBags = 0;
     public JPanel keypadPanel;
     public JPanel confirmPanel;
@@ -58,17 +62,17 @@ public class BagPurchaseInput extends JDialog {
      * @param owner 
      * 			The Frame from which the dialog is displayed.
      */
-    public BagPurchaseInput(Frame owner) {
-        super(owner, "Purchase Bags", true);
-        initializeUI();
+    public BagPurchaseInput(ActionListener callback) {
+        setTitle("Purchase Bags");
+        initializeUI(callback);
     }
     
     /**
      * Initializes the user interface components.
      */
-    private void initializeUI() {
+    private void initializeUI(ActionListener callback) {
         setSize(300, 300);
-        setLocationRelativeTo(getOwner());
+        setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
         JTextField inputField = new JTextField();
@@ -77,12 +81,13 @@ public class BagPurchaseInput extends JDialog {
         add(inputField, BorderLayout.NORTH);
 
         keypadPanel = new JPanel(new GridLayout(4, 3));
-        ActionListener numPadActionListener = e -> inputField.setText(inputField.getText() + e.getActionCommand());
+        ActionListener numPadActionListener = e -> { inputField.setText(inputField.getText() + ((AbstractButton) e.getSource()).getText()); };
 
         for (int i = 1; i <= 9; i++) {
             JButton button = new JButton(Integer.toString(i));
-            button.addActionListener(numPadActionListener);
+            button.setFont(new Font("Arial", Font.PLAIN, 16));
             keypadPanel.add(button);
+            button.addActionListener(numPadActionListener);
         }
 
         keypadPanel.add(new JLabel(""));
@@ -100,7 +105,8 @@ public class BagPurchaseInput extends JDialog {
             if (!input.isEmpty()) {
                 try {
                     numOfBags = Integer.parseInt(input);
-                    dispose(); 
+                    callback.actionPerformed(e);
+                    getDefaultCloseOperation();
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(this, "Invalid number. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
