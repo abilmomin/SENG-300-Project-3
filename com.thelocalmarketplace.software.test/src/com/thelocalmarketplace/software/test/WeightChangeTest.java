@@ -38,7 +38,6 @@ import org.junit.Test;
 
 import com.jjjwelectronics.Item;
 import com.jjjwelectronics.Mass;
-import com.jjjwelectronics.OverloadedDevice;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationBronze;
 
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
@@ -54,9 +53,7 @@ public class WeightChangeTest {
 	private SelfCheckoutStationSoftware station;
 	private SelfCheckoutStationBronze checkoutSB;
 	private ScaleListener listen;
-	private CustomerStation cus_station;
-	private ScaleListener listen2;
-	
+
 	/**
 	 * Create set up that will be called before every test, intalize selfcheckoutstationbronze and turn it on.
 	 * Initialze scalelistener and mockscale and turn these on. 
@@ -71,7 +68,7 @@ public class WeightChangeTest {
 		this.station = new SelfCheckoutStationSoftware(checkoutSB);
 		listen = new ScaleListener(station);
 		scale = new MockScale(new Mass(6000000),new Mass (6000000));
-		scale1 = new MockScale(new Mass(600000000000L),new Mass (60000000000l));
+		scale1 = new MockScale(new Mass(600000000000L),new Mass (60000000000L));
 		scale1 = new MockScale(new Mass(10),new Mass (10));
 		PowerGrid.engageUninterruptiblePowerSource();
 		this.scale.plugIn(PowerGrid.instance());
@@ -79,12 +76,11 @@ public class WeightChangeTest {
 	}
 	
 	/**
-	 * Create test thats adds 2 items to the scale but only one to the order, throws exception.
-	 * @throws Exception
+	 * Create test that's adds 2 items to the scale but only one to the order, throws exception.
 	 */
 
 	@Test
-	public void unBlockTest() throws Exception {
+	public void unBlockTest() {
 		MockItem item1 = new MockItem(new Mass(100));
 		MockItem item2 = new MockItem(new Mass(150));
 		
@@ -92,8 +88,7 @@ public class WeightChangeTest {
 		station.addItemToOrder(item2);
 		
 		scale.addAnItem(item1);
-		this.checkoutSB.getBaggingArea();
-    	
+
         listen.theMassOnTheScaleHasChanged(scale,null);
           
         assertFalse(station.getStationBlock());     
@@ -103,16 +98,15 @@ public class WeightChangeTest {
 	/**
 	 * create test that has a very low scale limit and sensitivty then add item that is much larger.
 	 * Causes weight discrepancy and throws OverloadedDevice error.
-	 * @throws OverloadedDevice
 	 */
 
 	@Test
-	public void unBlockCatchExceptionTest() throws OverloadedDevice{
+	public void unBlockCatchExceptionTest() {
 		
 		MockScale scale2 = new MockScale(new Mass(6),new Mass (6));
 		scale1.plugIn(PowerGrid.instance());
 		scale1.turnOn();
-		cus_station = new CustomerStation(0, station, scale, null);
+		CustomerStation cus_station = new CustomerStation(0, station, scale, null);
         MockItem item2 = new MockItem(new Mass(200000000000000000L));
         scale1.plugIn(PowerGrid.instance());
 		scale1.turnOn();
@@ -148,7 +142,7 @@ public class WeightChangeTest {
 		MockScale scale5 = new MockScale(new Mass(6),new Mass (6));
 		SelfCheckoutStationSoftware test1 = new SelfCheckoutStationSoftware(checkoutSB);
 		AttendantPageGUI A_station1 = new AttendantPageGUI();
-		listen2 = new ScaleListener(test1);
+		ScaleListener listen2 = new ScaleListener(test1);
 		scale1.plugIn(PowerGrid.instance());
 		scale1.turnOn();
 		CustomerStation cus_Station_Test = new CustomerStation(0, test1, scale5, null);
@@ -165,7 +159,7 @@ public class WeightChangeTest {
 	 * MockItem class created to be used in the tests.
 	 */
 
-	class MockItem extends Item {
+	static class MockItem extends Item {
 		public MockItem(Mass mass) {
 			super(mass);
 		}

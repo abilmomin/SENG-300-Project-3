@@ -65,14 +65,9 @@ import powerutility.PowerGrid;
 
 public class ReceiptTest {
     private Receipt receipt;
-    public ReceiptObserver rO;
 
     private Funds funds;
     private SelfCheckoutStationSoftware station;
-    private BarcodedItem barcodedItem;
-    private BarcodedProduct barcodedProduct;
-    private PLUCodedItem pluCodeItem;
-    private PLUCodedProduct pluProduct;
     private IReceiptPrinter printer;
 
     @Before
@@ -91,13 +86,13 @@ public class ReceiptTest {
         Numeral[] barcodeDigits = {Numeral.one, Numeral.two, Numeral.three, Numeral.four, Numeral.five};
         Barcode barcode = new Barcode(barcodeDigits);
         Mass itemMass = new Mass(1000000000); // 1kg in micrograms
-        barcodedItem = new BarcodedItem(barcode, itemMass);
+        BarcodedItem barcodedItem = new BarcodedItem(barcode, itemMass);
 
         // Initializing mock product (using same barcode as the barcoded item)
         String barcodeProductDescription = "banana";
         long barcodeProductPrice = 5;
         double barcodeProductWeightInGrams = 1000;
-        barcodedProduct = new BarcodedProduct(barcode, barcodeProductDescription, barcodeProductPrice, barcodeProductWeightInGrams);
+        BarcodedProduct barcodedProduct = new BarcodedProduct(barcode, barcodeProductDescription, barcodeProductPrice, barcodeProductWeightInGrams);
 
         // Adding mock product into product database
         ProductDatabases.BARCODED_PRODUCT_DATABASE.put(barcode, barcodedProduct);
@@ -117,13 +112,13 @@ public class ReceiptTest {
         String pluDigits = "0001";
         PriceLookUpCode pluCode = new PriceLookUpCode(pluDigits);
         Mass mass = new Mass(1000000000); // Converts the weight of the product to a mass
-        pluCodeItem = new PLUCodedItem(pluCode, mass);
+        PLUCodedItem pluCodeItem = new PLUCodedItem(pluCode, mass);
 
 
         String pluCodeProductDescription = "orange";
         long pluCodeProductPrice = 10;
 
-        pluProduct = new PLUCodedProduct(pluCode, pluCodeProductDescription, pluCodeProductPrice);
+        PLUCodedProduct pluProduct = new PLUCodedProduct(pluCode, pluCodeProductDescription, pluCodeProductPrice);
 
         ProductDatabases.PLU_PRODUCT_DATABASE.put(pluCode, pluProduct);
 
