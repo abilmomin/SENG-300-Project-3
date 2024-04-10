@@ -45,7 +45,10 @@ import powerutility.PowerGrid;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.math.BigDecimal;
 import java.util.Currency;
 
@@ -53,6 +56,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 public class StartSessionGUITest {
     private SelfCheckoutStationSoftware station;
@@ -85,6 +89,7 @@ public class StartSessionGUITest {
     @Test
     public void testStartSessionButtonClick() {
         JPanel startSessionPanel = findPanelByText("Content Panel");
+        simulateMouseClick(startSessionPanel);
         // JButton startSessionButton = findButtonByText("Start Session");
         // startSessionButton.doClick();
         
@@ -100,5 +105,15 @@ public class StartSessionGUITest {
             }
         }
         return null;
+    }
+
+    // Method to simulate mouse click
+    private void simulateMouseClick(Component component) {
+        Point center = new Point(component.getWidth() / 2, component.getHeight() / 2);
+        SwingUtilities.convertPointToScreen(center, component);
+        MouseEvent event = new MouseEvent(component, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, center.x, center.y, 1, false);
+        for (MouseListener listener : component.getMouseListeners()) {
+            listener.mouseClicked(event);
+        }
     }
 }

@@ -38,7 +38,6 @@ import com.thelocalmarketplace.software.communication.GUI.AttendantStation.Atten
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
 import org.junit.After;
 
 public class AttendantPageGUITest {
@@ -46,7 +45,17 @@ public class AttendantPageGUITest {
 
     @Before
     public void setUp() {
+        // Initialize the objects
+        station = new SelfCheckoutStationGold();
+        PowerGrid.engageUninterruptiblePowerSource();
+        station.plugIn(PowerGrid.instance());
+        station.turnOn();
         
+        stationSoftwareInstance = new SelfCheckoutStationSoftware(station);
+        stationSoftwareInstance.setStationActive(true);
+        scale = (AbstractElectronicScale) stationSoftwareInstance.station.getBaggingArea();
+        attendantGUI = new AttendantPageGUI();
+        customerStation = new CustomerStation(1, stationSoftwareInstance, scale, attendantGUI);
     }
 
     @Test
