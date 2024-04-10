@@ -116,6 +116,7 @@ public class PaymentSuccess extends JFrame {
 				Receipt rec = new Receipt(stationSoftware.getStationHardware().getPrinter(), stationSoftware.getFunds()); 
 				try {
 					JOptionPane.showMessageDialog(PaymentSuccess.this, rec.printReceipt());
+					stationSoftware.resetOrder();
 					dispose();
 					JOptionPane.showMessageDialog(PaymentSuccess.this, "Thank you for shopping with us! We hope to see you again!");
 					new StartSession(attendantGUI.getCurrentStationNumber(), stationSoftware, scale);

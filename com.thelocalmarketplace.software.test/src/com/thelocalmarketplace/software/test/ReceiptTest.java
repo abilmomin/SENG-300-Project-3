@@ -132,7 +132,7 @@ public class ReceiptTest {
         this.receipt.printReceipt();
     }
 
-    @Test (expected = NullPointerException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void testReceiptPrinterWithUnsupportedProduct() throws EmptyDevice, OverloadedDevice {
         this.station.addItemToOrder(null);
 
