@@ -199,7 +199,7 @@ public class AttendantLogic {
 			for (int i = 0; i < ReceiptPrinterBronze.MAXIMUM_PAPER; i++) {
 				try {
 					printer.print('c');
-				} catch (EmptyDevice x) { }
+				} catch (EmptyDevice ignored) { }
 			}
 			printer.addPaper(ReceiptPrinterBronze.MAXIMUM_PAPER);
 		}
@@ -225,7 +225,7 @@ public class AttendantLogic {
 			for (int i = 0; i < ReceiptPrinterBronze.MAXIMUM_INK; i++) {
 				try {
 					printer.print('c');
-				} catch (EmptyDevice x) { }
+				} catch (EmptyDevice ignored) { }
 			}
 			printer.addInk(ReceiptPrinterBronze.MAXIMUM_INK);
 		}
@@ -247,7 +247,7 @@ public class AttendantLogic {
      * 			Array of start session instances.
      */
 	public void EnableStation(int selectedStation,CustomerStation[] customerStation, SelfCheckoutStationSoftware[] stationSoftwareInstances,AbstractSelfCheckoutStation checkoutStation, StartSession[] startSessions )  {
-		if (stationSoftwareInstances[selectedStation].getStationBlock()== true) {
+		if (stationSoftwareInstances[selectedStation].getStationBlock()) {
 			stationSoftwareInstances[selectedStation].setStationUnblock();	
 		}		
 		startSessions[selectedStation].enableMouseListener();
@@ -269,8 +269,8 @@ public class AttendantLogic {
      * @return True if the station is successfully disabled, otherwise false.
      */
 	public boolean DisableStation(int selectedStation,CustomerStation[] customerStation, SelfCheckoutStationSoftware[] stationSoftwareInstances,AbstractSelfCheckoutStation checkoutStation, StartSession[] startSessions) {
-        if (stationSoftwareInstances[selectedStation].getStationBlock() == false) {
-        	if (stationSoftwareInstances[selectedStation].getStationActive() == false) {
+        if (!stationSoftwareInstances[selectedStation].getStationBlock()) {
+        	if (!stationSoftwareInstances[selectedStation].getStationActive()) {
         		stationSoftwareInstances[selectedStation].setStationBlock();
         		startSessions[selectedStation].disableMouseListener();
         		startSessions[selectedStation].sessionPopUp("Out of order");
@@ -283,16 +283,13 @@ public class AttendantLogic {
 	}
 	
 	/**
-	 * After customer requires attendant help, ensure that thier station is blocked, then attendant unblocks it and pop up continue.
+	 * After customer requires attendant help, ensure that their station is blocked, then attendant unblocks it and pop up continue.
 	 * @param selectedStation
-	 * @param customerStation
 	 * @param stationSoftwareInstances
-	 * @param checkoutStation
-	 * @param startSessions
 	 */
-	public void AlertAttendant(int selectedStation,CustomerStation[] customerStation, SelfCheckoutStationSoftware[] stationSoftwareInstances,AbstractSelfCheckoutStation checkoutStation, StartSession[] startSessions)  {
+	public void AlertAttendant(int selectedStation, SelfCheckoutStationSoftware[] stationSoftwareInstances)  {
 		AttendantPageGUI attendantPopup = new AttendantPageGUI();
-		if (stationSoftwareInstances[selectedStation].getStationBlock()== true) {
+		if (stationSoftwareInstances[selectedStation].getStationBlock()) {
 			stationSoftwareInstances[selectedStation].setStationUnblock();
 			attendantPopup.bulkItemRequest("fixed error, continue");	
 		}	

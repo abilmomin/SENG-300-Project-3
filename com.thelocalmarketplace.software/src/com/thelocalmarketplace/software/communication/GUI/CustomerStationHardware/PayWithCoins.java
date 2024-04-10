@@ -60,9 +60,9 @@ import javax.swing.SwingConstants;
 @SuppressWarnings("serial")
 public class PayWithCoins extends JFrame {
 
-    private JLabel coinTotalLabel;
+    private final JLabel coinTotalLabel;
     private BigDecimal totalCount = BigDecimal.ZERO;
-    private SelfCheckoutStationSoftware software;
+    private final SelfCheckoutStationSoftware software;
     
     /**
      * Constructor that creates a panel containing coin information and options.
