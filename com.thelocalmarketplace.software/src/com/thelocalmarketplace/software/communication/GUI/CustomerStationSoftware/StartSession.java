@@ -105,6 +105,7 @@ public class StartSession extends JFrame {
 
         // Content panel for the main content
         JPanel contentPanel = new JPanel(new GridBagLayout());
+        contentPanel.setName("Content Panel");
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
