@@ -417,6 +417,7 @@ public class Products {
 			reusableBagWeight = bag.getMass().inGrams().doubleValue();
 			software.addTotalOrderPrice(reusableBagPrice);
 			software.addTotalOrderWeightInGrams(reusableBagWeight);
+			software.addItemToOrder(bag);
 			notifyBagsPurchased(reusableBagPrice);
 			software.getStationHardware().getBaggingArea().addAnItem(bag);
 		}
