@@ -351,13 +351,15 @@ public class CustomerStation extends JFrame {
 				bags[i] = new ReusableBag();
 			
 			try {
-				stationSoftwareInstance.getProductHandler().PurchaseBags(bags);
+				stationSoftwareInstance.getProductHandler().purchaseBags(bags);
 				updateTotalOwedDisplay();
+                JOptionPane.showMessageDialog(this, numOfBags + " bags have been added to your purchase.",
+                        "Bags Purchased", JOptionPane.INFORMATION_MESSAGE);
 			} catch (OverloadedDevice | EmptyDevice e) {
-				e.printStackTrace(); 
+				e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Unable to add" + numOfBags + " bags.",
+                        "Bags Not Purchased", JOptionPane.INFORMATION_MESSAGE);
 			}
-	        JOptionPane.showMessageDialog(this, numOfBags + " bags have been added to your purchase.", "Bags Purchased", 
-	        		JOptionPane.INFORMATION_MESSAGE);
 	    }
 	}
 	
