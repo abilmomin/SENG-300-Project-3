@@ -126,7 +126,7 @@ public class BaggingArea extends JFrame {
         scrollPane = new JScrollPane(productList);
         baggingAreaPanel.add(scrollPane);
 
-        returnToCheckoutButton = createStyledButton("Return to Checkout");
+        returnToCheckoutButton = createStyledButton();
         returnToCheckoutButton.addActionListener(e -> baggingAreaFrame.dispose());
         baggingAreaPanel.add(returnToCheckoutButton);
 
@@ -139,13 +139,11 @@ public class BaggingArea extends JFrame {
     
     /**
      * Creates a styled JButton with the specified text.
-     * 
-     * @param text 
-     * 			The text to be displayed on the button.
+     *
      * @return A styled JButton with the specified text.
      */
-    private JButton createStyledButton(String text) {
-        JButton button = new JButton(text);
+    private JButton createStyledButton() {
+        JButton button = new JButton("Return to Checkout");
         button.setPreferredSize(new Dimension(150, 50));
         button.setFont(new Font("Arial", Font.BOLD, 14));
         button.setBackground(Color.LIGHT_GRAY);

@@ -65,13 +65,13 @@ import javax.swing.SwingUtilities;
 public class AttendantListeners {
 	
 	
-    private AttendantPageGUI gui;
+    private final AttendantPageGUI gui;
     private int selectedStation;
-    private SelfCheckoutStationSoftware[] stationSoftwareInstances;
-    private CustomerStation[] customerStation;
-    private StartSession[] startSessions;
-    private boolean[] stationEnabled;
-    private AttendantLogic logic;
+    private final SelfCheckoutStationSoftware[] stationSoftwareInstances;
+    private final CustomerStation[] customerStation;
+    private final StartSession[] startSessions;
+    private final boolean[] stationEnabled;
+    private final AttendantLogic logic;
     private AbstractSelfCheckoutStation checkoutStation;
     private AbstractElectronicScale scale;
     
@@ -235,7 +235,7 @@ public class AttendantListeners {
      * Stores the selected station number and highlights it in the GUI.
      */
     private class StationButtonListener implements ActionListener {
-        private int stationNumber;
+        private final int stationNumber;
 
         public StationButtonListener(int stationNumber) {
             this.stationNumber = stationNumber;
@@ -456,7 +456,7 @@ public class AttendantListeners {
         @Override 
         public void actionPerformed(ActionEvent e) {
             if (selectedStation != -1) {
-                if (logic.DisableStation(selectedStation, customerStation, stationSoftwareInstances, checkoutStation,startSessions)==true) {
+                if (logic.DisableStation(selectedStation, customerStation, stationSoftwareInstances, checkoutStation, startSessions)) {
                 	
                 	@SuppressWarnings("unused")
 					boolean notactive_notnull = true;

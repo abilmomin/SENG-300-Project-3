@@ -62,7 +62,9 @@ import java.awt.event.WindowEvent;
 public class CardPayment extends JDialog {
     private int paymentType = 0; 					// 1 for Swipe, 2 for Tap, 3 for Insert with PIN
     private JTextField pinTextField; 				// Text field for PIN input
-    private String pinInput;
+    public String pinInput;
+    public JPanel keypadPanel;
+    public JPanel radioPanel;
     
     /**
      * Constructs a new CardPayment dialog.
@@ -99,7 +101,7 @@ public class CardPayment extends JDialog {
         group.add(tapButton);
         group.add(insertButton);
 
-        JPanel radioPanel = new JPanel(new GridLayout(0, 1));
+        radioPanel = new JPanel(new GridLayout(0, 1));
         radioPanel.add(swipeButton);
         radioPanel.add(tapButton);
         radioPanel.add(insertButton);
@@ -125,25 +127,24 @@ public class CardPayment extends JDialog {
      * 			The type of card being used for payment.
      */
     private void openPinPanel(SelfCheckoutStationSoftware software, String typeOfCard) {
-    	
-    	 JFrame pinFrame = new JFrame("Pin Panel");
-    	    pinFrame.setLocationRelativeTo(null);
-    	    pinFrame.setSize(380, 350);
+    	JFrame pinFrame = new JFrame("Pin Panel");
+	    pinFrame.setLocationRelativeTo(null);
+	    pinFrame.setSize(380, 350);
 
-    	    JPanel pinPanel = new JPanel();
-    	    pinPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+	    JPanel pinPanel = new JPanel();
+	    pinPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-    	    pinTextField = new JTextField(); // Initialize the screen text field
-    	    pinTextField.setEditable(false); // Make it read-only
-    	    pinTextField.setBackground(Color.WHITE);
-    	    pinTextField.setHorizontalAlignment(JTextField.CENTER);
-    	    pinPanel.add(pinTextField, BorderLayout.CENTER);
-    	    pinTextField.setPreferredSize(new Dimension(300, 75));
+	    pinTextField = new JTextField(); // Initialize the screen text field
+	    pinTextField.setEditable(false); // Make it read-only
+	    pinTextField.setBackground(Color.WHITE);
+	    pinTextField.setHorizontalAlignment(JTextField.CENTER);
+	    pinPanel.add(pinTextField, BorderLayout.CENTER);
+	    pinTextField.setPreferredSize(new Dimension(300, 75));
 
-    	    JPanel keypadPanel = createPinPanel(pinFrame);
-    	    pinPanel.add(keypadPanel);
-    	    pinFrame.add(pinPanel);
-    	    pinFrame.setVisible(true);
+	    JPanel keypadPanel = createPinPanel(pinFrame);
+	    pinPanel.add(keypadPanel);
+	    pinFrame.add(pinPanel);
+	    pinFrame.setVisible(true);
     }
 
     /**
@@ -157,11 +158,11 @@ public class CardPayment extends JDialog {
     private void processPayment(SelfCheckoutStationSoftware software, String typeOfCard) {
     	 try {
     		 switch (paymentType) {
-	            case 1 :
+	            case 1:
 	                software.getStationHardware().getCardReader().swipe(software.getCard(typeOfCard));
 	                dispose();
 	                break;
-	            case 2 :
+	            case 2:
 	                software.getStationHardware().getCardReader().tap(software.getCard(typeOfCard));
 	                dispose();
 	                break;
@@ -169,11 +170,11 @@ public class CardPayment extends JDialog {
 	                software.getStationHardware().getCardReader().insert(software.getCard(typeOfCard), pinInput);
 	                dispose();
 	                break;
-	            default :
+	            default:
 	                JOptionPane.showMessageDialog(this, "Please select a payment method.", "Payment", JOptionPane.INFORMATION_MESSAGE);
 	                dispose();
 	                break;
-    		 	}
+		 	}
 	    } catch (IOException ex) {
 	        ex.printStackTrace();
 	        
@@ -200,7 +201,7 @@ public class CardPayment extends JDialog {
      * @return The JPanel containing the PIN entry keypad.
      */
     public JPanel createPinPanel(JFrame pinPanel) {
-    	JPanel keypadPanel = new JPanel();
+    	keypadPanel = new JPanel();
     	keypadPanel.setLayout(new GridLayout(4,4,10,10));
     	keypadPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
     	

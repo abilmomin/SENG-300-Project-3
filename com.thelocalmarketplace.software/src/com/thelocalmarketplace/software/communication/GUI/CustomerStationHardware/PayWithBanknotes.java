@@ -59,9 +59,9 @@ import javax.swing.SwingConstants;
 @SuppressWarnings("serial")
 public class PayWithBanknotes extends JFrame {
 
-    private JLabel totalLabel;
+    private final JLabel totalLabel;
     private BigDecimal totalCount = BigDecimal.ZERO;
-    private SelfCheckoutStationSoftware software;
+    private final SelfCheckoutStationSoftware software;
 
     /**
      * Constructor that creates a panel containing banknote information and options.

@@ -37,7 +37,6 @@ import org.junit.Test;
 import com.jjjwelectronics.scale.AbstractElectronicScale;
 import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
-import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.StartSession;
 
 import powerutility.PowerGrid;
@@ -49,11 +48,6 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.math.BigDecimal;
-import java.util.Currency;
-
-import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -90,9 +84,6 @@ public class StartSessionGUITest {
     public void testStartSessionButtonClick() {
         JPanel startSessionPanel = findPanelByText("Content Panel");
         simulateMouseClick(startSessionPanel);
-        // JButton startSessionButton = findButtonByText("Start Session");
-        // startSessionButton.doClick();
-        
     }
 
     private JPanel findPanelByText(String text) {

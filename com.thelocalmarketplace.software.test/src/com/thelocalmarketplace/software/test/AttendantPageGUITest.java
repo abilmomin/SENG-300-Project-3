@@ -29,19 +29,43 @@
 
  */
 
-package com.thelocalmarketplace;
+package com.thelocalmarketplace.software.test;
+
+import javax.swing.*;
+
+import static org.junit.Assert.assertEquals;
+
+import java.awt.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jjjwelectronics.scale.AbstractElectronicScale;
+import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import org.junit.After;
+import powerutility.PowerGrid;
 
 public class AttendantPageGUITest {
     AttendantPageGUI attendantPageGUI;
+
+    private CustomerStation customerStation;
+	private SelfCheckoutStationSoftware stationSoftwareInstance;
+	private AbstractElectronicScale scale;
+	private AttendantPageGUI attendantGUI;
+	private SelfCheckoutStationGold station;
+
+	public JButton findButton(JPanel container, String labelName) {
+	    for (Component comp : container.getComponents()) {
+	        if (comp instanceof JButton) {
+	            System.out.println(((JButton) comp).getText());
+	            if(((JButton) comp).getText().contains(labelName)) return (JButton) comp;
+	        }
+	    }	
+	    return null;
+    }
 
     @Before
     public void setUp() {
@@ -50,7 +74,6 @@ public class AttendantPageGUITest {
         PowerGrid.engageUninterruptiblePowerSource();
         station.plugIn(PowerGrid.instance());
         station.turnOn();
-        
         stationSoftwareInstance = new SelfCheckoutStationSoftware(station);
         stationSoftwareInstance.setStationActive(true);
         scale = (AbstractElectronicScale) stationSoftwareInstance.station.getBaggingArea();
@@ -59,11 +82,15 @@ public class AttendantPageGUITest {
     }
 
     @Test
-    public void testConstructor() {
-        
+    public void testUpdateCustomerStation() {
+        attendantGUI.updateCustomerStation(1, customerStation);
+        assertEquals(attendantGUI.getCustomerStations()[0], customerStation);
     }
 
-
-
-
+    @Test
+    public void testGetCurrentStationNumber() {
+        JButton selectButton = findButton(attendantGUI.getStationStartPanel(), "Checkout Station 1 (Gold)");
+        selectButton.doClick();
+        assertEquals(1, attendantGUI.getCurrentStationNumber());
+    }
 }
