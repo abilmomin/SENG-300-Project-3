@@ -50,24 +50,22 @@ import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftwar
  * Ensures they are of an acceptable weight, and calls for attendant if not
  */
 public class PersonalBag implements ElectronicScaleListener {
-	private SelfCheckoutStationSoftware stationHardware;
-    private AbstractElectronicScale electronicScale;
-    private Mass massTest;
-    private int stationNumber;
-    private CustomerStation customerStation;
-    private AttendantPageGUI attendantGUI;
+	private final SelfCheckoutStationSoftware stationHardware;
+    private final AbstractElectronicScale electronicScale;
+    private final CustomerStation customerStation;
+    private final AttendantPageGUI attendantGUI;
     
 	/**
 	 * Constructor for PersonalBag.
 	 * 
 	 * @param stationHardware
-	 * 				The self checkout station hardware
+	 * 				The self-checkout station hardware
 	 * 
 	 * @param electronicScale
 	 * 				The associated scale
 	 * 
 	 * @param customerStation
-	 * 				The customer self checkout station
+	 * 				The customer self-checkout station
 	 * 
 	 * @param attendantGUI
 	 * 				The attendant station GUI
@@ -77,7 +75,7 @@ public class PersonalBag implements ElectronicScaleListener {
 		this.electronicScale = electronicScale;
 		this.customerStation = customerStation;
 		this.attendantGUI = attendantGUI;
-        theMassOnTheScaleHasChanged(electronicScale, massTest);
+        theMassOnTheScaleHasChanged(electronicScale, null);
 	}
 			
 	/**
@@ -86,23 +84,20 @@ public class PersonalBag implements ElectronicScaleListener {
 	 */
 	@Override
 	public void theMassOnTheScaleHasChanged(IElectronicScale scale, Mass mass) {
-		double bag_grams = getBagWeight(stationHardware, electronicScale); 
-		addBagWeight(stationHardware, electronicScale, bag_grams,stationNumber); 
+		double bag_grams = getBagWeight(electronicScale);
+		addBagWeight(electronicScale, bag_grams);
 	}
 		
 	
 	/**
 	 * Calculates the weight of the bag by subtracting the order weight from the scale weight.
 	 * 
-	 * @param software 
-	 * 				The SelfCheckoutStationSoftware instance.
-	 * 
-	 * @param electronicScale 
+	 * @param electronicScale
 	 * 				The AbstractElectronicScale instance.
 	 * 
 	 * @return The weight of the bag.
 	 */
-	public double getBagWeight(SelfCheckoutStationSoftware software, AbstractElectronicScale electronicScale) {  
+	public double getBagWeight(AbstractElectronicScale electronicScale) {
 		double orderWeight = stationHardware.getTotalOrderWeightInGrams(); 
 		double bagWeight = 0;
 		BigDecimal orderWeightDouble = new BigDecimal(Double.toString(orderWeight));
@@ -122,36 +117,28 @@ public class PersonalBag implements ElectronicScaleListener {
 	/**
 	 * Adds the weight of the bag to the total order weight and handles station blocking if necessary.
 	 * 
-	 * @param software 
-	 * 				The SelfCheckoutStationSoftware instance.
-	 * 
-	 * @param scale 
+	 * @param scale
 	 * 				The AbstractElectronicScale instance.
 	 * 
 	 * @param weightOfBag 
 	 * 				The weight of the bag.
-	 * 
-	 * @param stationNum 
-	 * 				The station number.
+	 *
 	 */
-	public void addBagWeight(SelfCheckoutStationSoftware software, AbstractElectronicScale scale, double weightOfBag, int stationNum) {		
+	public void addBagWeight(AbstractElectronicScale scale, double weightOfBag) {
 		BigInteger threshold = scale.getMassLimit().inMicrograms();
-		
 		try {
 			int compareToThreshold = scale.getCurrentMassOnTheScale().compareTo(new Mass(threshold));
 			
-			if (compareToThreshold>=0) {
+			if (compareToThreshold >= 0) {
 				this.customerStation.customerPopUp("Bags too heavy, please wait for attendant.");
 				stationHardware.setStationBlock();
 				this.attendantGUI.bagdiscpreancydectected(stationHardware,this.customerStation);
-				
 			}
 			else {
 				stationHardware.setStationUnblock();  
 				stationHardware.addTotalOrderWeightInGrams(weightOfBag);
 				this.customerStation.customerPopUp("You may now continue");
 			}
-
 		} catch (OverloadedDevice e) {
 			e.printStackTrace();
 		}	
