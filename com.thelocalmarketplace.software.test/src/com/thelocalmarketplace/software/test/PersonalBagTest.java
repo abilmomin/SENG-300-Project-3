@@ -100,7 +100,7 @@ public class PersonalBagTest {
         scale.addAnItem(item);
         PersonalBag personalBag = new PersonalBag(station, scale, customerStation, attendantGUI);
 		//bag weight being calculated
-		personalBag.addBagWeight(station, scaleOverLimit, 1000000, 1);
+		personalBag.addBagWeight(scaleOverLimit, 1000000);
         assertFalse(station.getStationBlock());	
 	}
 	
@@ -118,7 +118,7 @@ public class PersonalBagTest {
 		scale.addAnItem(item);
 		
 		PersonalBag personalBag = new PersonalBag(station, scale, customerStation, attendantGUI);
-		personalBag.addBagWeight(station, scaleInLimit, 1000000, 1);
+		personalBag.addBagWeight(scaleInLimit, 1000000);
 		assertFalse(station.getStationBlock()); 
 	}
 	
@@ -131,7 +131,7 @@ public class PersonalBagTest {
 	public void testGetBagWeight_noBagAdded() throws OverloadedDevice {
 		MockScale orderNoBagScale = new MockScale(new Mass(4000000), new Mass (4000000));
 		PersonalBag personalBag = new PersonalBag(station, orderNoBagScale, customerStation, attendantGUI);
-		double bagWeight = personalBag.getBagWeight(station, orderNoBagScale);
+		double bagWeight = personalBag.getBagWeight(orderNoBagScale);
 		assertEquals(0.0, bagWeight, 0.0); //120.0? 
 	}
 	
@@ -146,7 +146,7 @@ public class PersonalBagTest {
 		MockScale orderAndBagScale = new MockScale(new Mass(50000000), new Mass(50000000)); 
 		//adding bag (1 gram) to the over limit scale 
 		PersonalBag personalBag = new PersonalBag(station, orderAndBagScale, customerStation, attendantGUI); 
-		double bagWeight = personalBag.getBagWeight(station, orderAndBagScale); 
+		double bagWeight = personalBag.getBagWeight(orderAndBagScale);
 		assertEquals(10.0, bagWeight, 10.0); //there should be weight becasue the bag has been added
 	}
 	
@@ -160,7 +160,7 @@ public class PersonalBagTest {
 			}
 		};
 		PersonalBag personalBag = new PersonalBag(station,scale, customerStation, attendantGUI); 
-		double bagWeight = personalBag.getBagWeight(station, scale); 
+		double bagWeight = personalBag.getBagWeight(scale);
 		Assert.assertEquals(0.0, bagWeight, 0.001);
 	}
 
@@ -181,7 +181,7 @@ public class PersonalBagTest {
 		};
 		double weightOfBag = 50.0;
 		PersonalBag personalBag = new PersonalBag(station, scale, customerStation, attendantGUI);
-		personalBag.addBagWeight(station, scale, weightOfBag, 1);
+		personalBag.addBagWeight(scale, weightOfBag);
 			assertFalse(false); 
 	}
 	
