@@ -29,5 +29,67 @@
 
  */
 
-package com.thelocalmarketplace.software.test;public class PaymentSuccessTest {
+package com.thelocalmarketplace.software.test;
+
+import com.jjjwelectronics.scale.AbstractElectronicScale;
+import com.thelocalmarketplace.hardware.SelfCheckoutStationGold;
+import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
+import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.CustomerStation;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.PaymentSuccess;
+import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftware.SelectPayment;
+import org.junit.Before;
+import org.junit.Test;
+import powerutility.PowerGrid;
+
+import static org.junit.Assert.assertTrue;
+
+public class PaymentSuccessTest {
+    private CustomerStation customerStation;
+    private SelfCheckoutStationSoftware stationSoftwareInstance;
+    private AbstractElectronicScale scale;
+    private AttendantPageGUI attendantGUI;
+    private SelfCheckoutStationGold station;
+    private SelectPayment paymentWindow;
+
+    @Before
+    public void setUp() {
+        // Initialize the objects
+        station = new SelfCheckoutStationGold();
+        PowerGrid.engageUninterruptiblePowerSource();
+        station.plugIn(PowerGrid.instance());
+        station.turnOn();
+
+        stationSoftwareInstance = new SelfCheckoutStationSoftware(station);
+        stationSoftwareInstance.setStationActive(true);
+        scale = (AbstractElectronicScale) stationSoftwareInstance.station.getBaggingArea();
+        attendantGUI = new AttendantPageGUI();
+        customerStation = new CustomerStation(1, stationSoftwareInstance, scale, attendantGUI);
+
+        paymentWindow = new SelectPayment(stationSoftwareInstance);
+
+    }
+
+    @Test
+    public void testPaymentSuccess() {
+        customerStation = new CustomerStation(1, stationSoftwareInstance, scale, attendantGUI);
+        paymentWindow = new SelectPayment(stationSoftwareInstance);
+
+        try{
+            PaymentSuccess paymentSuccess = new PaymentSuccess(0.0, stationSoftwareInstance, attendantGUI);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void paymentSuccessLabelTest(){
+        customerStation = new CustomerStation(1, stationSoftwareInstance, scale, attendantGUI);
+        paymentWindow = new SelectPayment(stationSoftwareInstance);
+
+        PaymentSuccess paymentSuccess = new PaymentSuccess(0.0, stationSoftwareInstance, attendantGUI);
+        paymentSuccess.setVisible(true);
+
+        assertTrue(paymentSuccess.getTitle().equals("Payment successful!"));
+    }
 }
