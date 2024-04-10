@@ -90,6 +90,6 @@ public class PaymentSuccessTest {
         PaymentSuccess paymentSuccess = new PaymentSuccess(0.0, stationSoftwareInstance, attendantGUI);
         paymentSuccess.setVisible(true);
 
-        assertTrue(paymentSuccess.getTitle().equals("Payment successful!"));
+        assertTrue(paymentSuccess.getTitle().equals("Thank you!"));
     }
 }
