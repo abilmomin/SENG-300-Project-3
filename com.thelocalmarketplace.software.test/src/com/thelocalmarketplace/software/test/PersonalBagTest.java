@@ -31,13 +31,10 @@
 
 package com.thelocalmarketplace.software.test;
 
-import com.thelocalmarketplace.software.product.AddOwnBag;
+import com.thelocalmarketplace.software.product.PersonalBag;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 
 import java.math.BigInteger;
 
@@ -58,7 +55,7 @@ import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftwar
 
 import powerutility.PowerGrid;
 
-public class AddOwnBagTest {
+public class PersonalBagTest {
 	PowerGrid grid;
 	private SelfCheckoutStationSoftware station; 
 	private SelfCheckoutStationBronze checkoutStationBronze;
@@ -101,9 +98,9 @@ public class AddOwnBagTest {
 		//adding a new item to exceed the mass limit 
 		station.addItemToOrder(item);
         scale.addAnItem(item);
-        AddOwnBag addownBag = new AddOwnBag(station, scale, customerStation, attendantGUI);
+        PersonalBag personalBag = new PersonalBag(station, scale, customerStation, attendantGUI);
 		//bag weight being calculated
-		addownBag.addBagWeight(station, scaleOverLimit, 1000000, 1);
+		personalBag.addBagWeight(scaleOverLimit, 1000000);
         assertFalse(station.getStationBlock());	
 	}
 	
@@ -120,8 +117,8 @@ public class AddOwnBagTest {
 		station.addItemToOrder(item);
 		scale.addAnItem(item);
 		
-		AddOwnBag addownBag = new AddOwnBag(station, scale, customerStation, attendantGUI);
-		addownBag.addBagWeight(station, scaleInLimit, 1000000, 1);
+		PersonalBag personalBag = new PersonalBag(station, scale, customerStation, attendantGUI);
+		personalBag.addBagWeight(scaleInLimit, 1000000);
 		assertFalse(station.getStationBlock()); 
 	}
 	
@@ -133,8 +130,8 @@ public class AddOwnBagTest {
 	@Test 
 	public void testGetBagWeight_noBagAdded() throws OverloadedDevice {
 		MockScale orderNoBagScale = new MockScale(new Mass(4000000), new Mass (4000000));
-		AddOwnBag addOwnBag = new AddOwnBag(station, orderNoBagScale, customerStation, attendantGUI);
-		double bagWeight = addOwnBag.getBagWeight(station, orderNoBagScale);
+		PersonalBag personalBag = new PersonalBag(station, orderNoBagScale, customerStation, attendantGUI);
+		double bagWeight = personalBag.getBagWeight(orderNoBagScale);
 		assertEquals(0.0, bagWeight, 0.0); //120.0? 
 	}
 	
@@ -148,8 +145,8 @@ public class AddOwnBagTest {
 	public void testGetBagWeight_BagAdded () throws OverloadedDevice {
 		MockScale orderAndBagScale = new MockScale(new Mass(50000000), new Mass(50000000)); 
 		//adding bag (1 gram) to the over limit scale 
-		AddOwnBag addownBag = new AddOwnBag(station, orderAndBagScale, customerStation, attendantGUI); 
-		double bagWeight = addownBag.getBagWeight(station, orderAndBagScale); 
+		PersonalBag personalBag = new PersonalBag(station, orderAndBagScale, customerStation, attendantGUI); 
+		double bagWeight = personalBag.getBagWeight(orderAndBagScale);
 		assertEquals(10.0, bagWeight, 10.0); //there should be weight becasue the bag has been added
 	}
 	
@@ -162,8 +159,8 @@ public class AddOwnBagTest {
 				throw new OverloadedDevice(); 
 			}
 		};
-		AddOwnBag addownBag = new AddOwnBag(station,scale, customerStation, attendantGUI); 
-		double bagWeight = addownBag.getBagWeight(station, scale); 
+		PersonalBag personalBag = new PersonalBag(station,scale, customerStation, attendantGUI); 
+		double bagWeight = personalBag.getBagWeight(scale);
 		Assert.assertEquals(0.0, bagWeight, 0.001);
 	}
 
@@ -183,8 +180,8 @@ public class AddOwnBagTest {
 			}
 		};
 		double weightOfBag = 50.0;
-		AddOwnBag addownBag = new AddOwnBag(station, scale, customerStation, attendantGUI);
-		addownBag.addBagWeight(station, scale, weightOfBag, 1);
+		PersonalBag personalBag = new PersonalBag(station, scale, customerStation, attendantGUI);
+		personalBag.addBagWeight(scale, weightOfBag);
 			assertFalse(false); 
 	}
 	

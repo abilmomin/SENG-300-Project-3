@@ -46,39 +46,36 @@ import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftwar
 
 
 /**
- * The AddOwnBag class allows for the customer to add their own bags 
+ * The PersonalBag class allows for the customer to add their own bags 
  * Ensures they are of an acceptable weight, and calls for attendant if not
  */
-public class AddOwnBag implements ElectronicScaleListener {
-		
-	private SelfCheckoutStationSoftware stationHardware;
-    private AbstractElectronicScale scale1;
-    private Mass massTest;
-    private int stationNumber;
-    private CustomerStation customerStation;
-    private AttendantPageGUI attendantGUI;
+public class PersonalBag implements ElectronicScaleListener {
+	private final SelfCheckoutStationSoftware stationHardware;
+    private final AbstractElectronicScale electronicScale;
+    private final CustomerStation customerStation;
+    private final AttendantPageGUI attendantGUI;
     
 	/**
-	 * Constructor for AddOwnBag.
+	 * Constructor for PersonalBag.
 	 * 
 	 * @param stationHardware
-	 * 				The self checkout station hardware
+	 * 				The self-checkout station hardware
 	 * 
-	 * @param scale1
+	 * @param electronicScale
 	 * 				The associated scale
 	 * 
 	 * @param customerStation
-	 * 				The customer self checkout station
+	 * 				The customer self-checkout station
 	 * 
 	 * @param attendantGUI
 	 * 				The attendant station GUI
 	 */
-	public AddOwnBag(SelfCheckoutStationSoftware stationHardware, AbstractElectronicScale scale1, CustomerStation customerStation, AttendantPageGUI attendantGUI) {
+	public PersonalBag(SelfCheckoutStationSoftware stationHardware, AbstractElectronicScale electronicScale, CustomerStation customerStation, AttendantPageGUI attendantGUI) {
 		this.stationHardware = stationHardware;
-		this.scale1 = scale1;
+		this.electronicScale = electronicScale;
 		this.customerStation = customerStation;
 		this.attendantGUI = attendantGUI;
-        theMassOnTheScaleHasChanged(scale1, massTest);
+        theMassOnTheScaleHasChanged(electronicScale, null);
 	}
 			
 	/**
@@ -87,23 +84,20 @@ public class AddOwnBag implements ElectronicScaleListener {
 	 */
 	@Override
 	public void theMassOnTheScaleHasChanged(IElectronicScale scale, Mass mass) {
-		double bag_grams = getBagWeight(stationHardware, scale1); 
-		addBagWeight(stationHardware, scale1, bag_grams,stationNumber); 
+		double bag_grams = getBagWeight(electronicScale);
+		addBagWeight(electronicScale, bag_grams);
 	}
 		
 	
 	/**
 	 * Calculates the weight of the bag by subtracting the order weight from the scale weight.
 	 * 
-	 * @param software 
-	 * 				The SelfCheckoutStationSoftware instance.
-	 * 
-	 * @param electronicScale 
+	 * @param electronicScale
 	 * 				The AbstractElectronicScale instance.
 	 * 
 	 * @return The weight of the bag.
 	 */
-	public double getBagWeight(SelfCheckoutStationSoftware software, AbstractElectronicScale electronicScale) {  
+	public double getBagWeight(AbstractElectronicScale electronicScale) {
 		double orderWeight = stationHardware.getTotalOrderWeightInGrams(); 
 		double bagWeight = 0;
 		BigDecimal orderWeightDouble = new BigDecimal(Double.toString(orderWeight));
@@ -123,36 +117,28 @@ public class AddOwnBag implements ElectronicScaleListener {
 	/**
 	 * Adds the weight of the bag to the total order weight and handles station blocking if necessary.
 	 * 
-	 * @param software 
-	 * 				The SelfCheckoutStationSoftware instance.
-	 * 
-	 * @param scale 
+	 * @param scale
 	 * 				The AbstractElectronicScale instance.
 	 * 
 	 * @param weightOfBag 
 	 * 				The weight of the bag.
-	 * 
-	 * @param stationNum 
-	 * 				The station number.
+	 *
 	 */
-	public void addBagWeight(SelfCheckoutStationSoftware software, AbstractElectronicScale scale, double weightOfBag, int stationNum) {		
+	public void addBagWeight(AbstractElectronicScale scale, double weightOfBag) {
 		BigInteger threshold = scale.getMassLimit().inMicrograms();
-		
 		try {
 			int compareToThreshold = scale.getCurrentMassOnTheScale().compareTo(new Mass(threshold));
 			
-			if (compareToThreshold>=0) {
+			if (compareToThreshold >= 0) {
 				this.customerStation.customerPopUp("Bags too heavy, please wait for attendant.");
 				stationHardware.setStationBlock();
 				this.attendantGUI.bagdiscpreancydectected(stationHardware,this.customerStation);
-				
 			}
 			else {
 				stationHardware.setStationUnblock();  
 				stationHardware.addTotalOrderWeightInGrams(weightOfBag);
 				this.customerStation.customerPopUp("You may now continue");
 			}
-
 		} catch (OverloadedDevice e) {
 			e.printStackTrace();
 		}	
@@ -161,38 +147,20 @@ public class AddOwnBag implements ElectronicScaleListener {
 	// The below methods are unused, therefore have no JavaDoc.
 	
 	@Override
-	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {}
 
 	@Override
-	public void aDeviceHasBeenDisabled(IDevice<? extends IDeviceListener> device) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void aDeviceHasBeenDisabled(IDevice<? extends IDeviceListener> device) {}
 
 	@Override
-	public void aDeviceHasBeenTurnedOn(IDevice<? extends IDeviceListener> device) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void aDeviceHasBeenTurnedOn(IDevice<? extends IDeviceListener> device) {}
 
 	@Override
-	public void aDeviceHasBeenTurnedOff(IDevice<? extends IDeviceListener> device) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void aDeviceHasBeenTurnedOff(IDevice<? extends IDeviceListener> device) {}
 	
 	@Override
-	public void theMassOnTheScaleHasExceededItsLimit(IElectronicScale scale) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void theMassOnTheScaleHasExceededItsLimit(IElectronicScale scale) {}
 
 	@Override
-	public void theMassOnTheScaleNoLongerExceedsItsLimit(IElectronicScale scale) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void theMassOnTheScaleNoLongerExceedsItsLimit(IElectronicScale scale) {}
 }

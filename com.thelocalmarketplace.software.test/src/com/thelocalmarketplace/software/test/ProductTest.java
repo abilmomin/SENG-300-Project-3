@@ -311,7 +311,7 @@ public class ProductTest {
         ReusableBag bag3 = new ReusableBag();
         ReusableBag[] bags = {bag1, bag2, bag3}; 
         // trying to purchase 3 bags when there is only 1 in the dispenser
-        testProducts.PurchaseBags(bags);  
+        testProducts.purchaseBags(bags);
        //should be true tho
         //assertFalse(station.getStationBlock()); 
 	}
@@ -324,7 +324,7 @@ public class ProductTest {
         ReusableBag[] bags = {bag1, bag2}; 
         //the system will load these bags to the dispenser so there will now be 4 bags 
         //purchasing the 2 bags, 2 bags will be dispensed 
-        testProducts.PurchaseBags(bags);
+        testProducts.purchaseBags(bags);
         assertEquals(2, dispenser.getQuantityRemaining());
 	}
 		
@@ -338,7 +338,7 @@ public class ProductTest {
         dispenser.load(bags);
 	    // 2 bags in the dispenser 
         //purchasing  2 bags 
-        testProducts.PurchaseBags(bags);
+        testProducts.purchaseBags(bags);
 	    assertEquals(0.0, dispenser.getQuantityRemaining(), 0.0);
 	}
 
