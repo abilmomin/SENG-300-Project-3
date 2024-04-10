@@ -46,25 +46,24 @@ import com.thelocalmarketplace.software.communication.GUI.CustomerStationSoftwar
 
 
 /**
- * The AddOwnBag class allows for the customer to add their own bags 
+ * The PersonalBag class allows for the customer to add their own bags 
  * Ensures they are of an acceptable weight, and calls for attendant if not
  */
-public class AddOwnBag implements ElectronicScaleListener {
-		
+public class PersonalBag implements ElectronicScaleListener {
 	private SelfCheckoutStationSoftware stationHardware;
-    private AbstractElectronicScale scale1;
+    private AbstractElectronicScale electronicScale;
     private Mass massTest;
     private int stationNumber;
     private CustomerStation customerStation;
     private AttendantPageGUI attendantGUI;
     
 	/**
-	 * Constructor for AddOwnBag.
+	 * Constructor for PersonalBag.
 	 * 
 	 * @param stationHardware
 	 * 				The self checkout station hardware
 	 * 
-	 * @param scale1
+	 * @param electronicScale
 	 * 				The associated scale
 	 * 
 	 * @param customerStation
@@ -73,12 +72,12 @@ public class AddOwnBag implements ElectronicScaleListener {
 	 * @param attendantGUI
 	 * 				The attendant station GUI
 	 */
-	public AddOwnBag(SelfCheckoutStationSoftware stationHardware, AbstractElectronicScale scale1, CustomerStation customerStation, AttendantPageGUI attendantGUI) {
+	public PersonalBag(SelfCheckoutStationSoftware stationHardware, AbstractElectronicScale electronicScale, CustomerStation customerStation, AttendantPageGUI attendantGUI) {
 		this.stationHardware = stationHardware;
-		this.scale1 = scale1;
+		this.electronicScale = electronicScale;
 		this.customerStation = customerStation;
 		this.attendantGUI = attendantGUI;
-        theMassOnTheScaleHasChanged(scale1, massTest);
+        theMassOnTheScaleHasChanged(electronicScale, massTest);
 	}
 			
 	/**
@@ -87,8 +86,8 @@ public class AddOwnBag implements ElectronicScaleListener {
 	 */
 	@Override
 	public void theMassOnTheScaleHasChanged(IElectronicScale scale, Mass mass) {
-		double bag_grams = getBagWeight(stationHardware, scale1); 
-		addBagWeight(stationHardware, scale1, bag_grams,stationNumber); 
+		double bag_grams = getBagWeight(stationHardware, electronicScale); 
+		addBagWeight(stationHardware, electronicScale, bag_grams,stationNumber); 
 	}
 		
 	
@@ -161,38 +160,20 @@ public class AddOwnBag implements ElectronicScaleListener {
 	// The below methods are unused, therefore have no JavaDoc.
 	
 	@Override
-	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void aDeviceHasBeenEnabled(IDevice<? extends IDeviceListener> device) {}
 
 	@Override
-	public void aDeviceHasBeenDisabled(IDevice<? extends IDeviceListener> device) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void aDeviceHasBeenDisabled(IDevice<? extends IDeviceListener> device) {}
 
 	@Override
-	public void aDeviceHasBeenTurnedOn(IDevice<? extends IDeviceListener> device) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void aDeviceHasBeenTurnedOn(IDevice<? extends IDeviceListener> device) {}
 
 	@Override
-	public void aDeviceHasBeenTurnedOff(IDevice<? extends IDeviceListener> device) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void aDeviceHasBeenTurnedOff(IDevice<? extends IDeviceListener> device) {}
 	
 	@Override
-	public void theMassOnTheScaleHasExceededItsLimit(IElectronicScale scale) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void theMassOnTheScaleHasExceededItsLimit(IElectronicScale scale) {}
 
 	@Override
-	public void theMassOnTheScaleNoLongerExceedsItsLimit(IElectronicScale scale) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void theMassOnTheScaleNoLongerExceedsItsLimit(IElectronicScale scale) {}
 }
