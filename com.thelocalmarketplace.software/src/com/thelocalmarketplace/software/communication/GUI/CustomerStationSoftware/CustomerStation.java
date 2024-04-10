@@ -47,7 +47,7 @@ import com.thelocalmarketplace.software.ProductsDatabase;
 import com.thelocalmarketplace.software.communication.GUI.AttendantStation.AttendantPageGUI;
 import com.thelocalmarketplace.software.SelfCheckoutStationSoftware;
 import com.thelocalmarketplace.software.communication.GUI.CustomerStationHardware.BaggingArea;
-import com.thelocalmarketplace.software.product.AddOwnBag;
+import com.thelocalmarketplace.software.product.PersonalBag;
 import java.awt.event.WindowEvent;
 import com.jjjwelectronics.bag.ReusableBag;
 import java.awt.*;
@@ -330,7 +330,7 @@ public class CustomerStation extends JFrame {
         // Check if the user clicked OK
         if (option == JOptionPane.OK_OPTION) {
             AbstractElectronicScale scale = (AbstractElectronicScale) stationSoftwareInstance.getStationHardware().getBaggingArea();
-            new AddOwnBag(stationSoftwareInstance, scale, this, this.attendantGUI);
+            new PersonalBag(stationSoftwareInstance, scale, this, this.attendantGUI);
         } else {
         	 this.dispose();
         }
