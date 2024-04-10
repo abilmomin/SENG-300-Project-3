@@ -76,22 +76,17 @@ public class Products {
 	public Products(SelfCheckoutStationSoftware software) {
 		this.software = software;
 		this.station = software.getStationHardware();
-
 		this.mainScanner = station.getMainScanner();
 		this.handheldScanner = station.getHandheldScanner();
 		this.baggingArea = station.getBaggingArea();
 		this.reusableBagDispenser = station.getReusableBagDispenser();
-
 		this.scannerListener = new ScannerListener(this);
 		this.scaleListener = new ScaleListener(software);
-
 		mainScanner.register(scannerListener);
 		handheldScanner.register(scannerListener);
 		baggingArea.register(scaleListener);
-		
 		bulkyItems = new ArrayList<Item>();
 	}
-
 
 	/**
 	 * Handles bulky item requests.
@@ -103,11 +98,9 @@ public class Products {
 	 */
     public void handleBulkyItemRequest(double productWeight, AttendantPageGUI attendantGUI) {
         software.setStationBlock();
-        
-         if (attendantGUI.bulkItemRequest("No-bagging request is in progress, approve below"))
-			 handleBulkyItem(productWeight);
+		if (attendantGUI.bulkItemRequest("No-bagging request is in progress, approve below"))
+			handleBulkyItem(productWeight);
     }
-
 
 	/**
 	 * Handles bulky item logic.
@@ -120,32 +113,28 @@ public class Products {
 		double finalWeight = currentWeight-productWeight;
 		if (finalWeight >= 0)
 			software.addTotalOrderWeightInGrams(-productWeight);
-
 		ArrayList<Item> order = software.getOrder();
 		Item item = order.get(order.size() - 1);
 		bulkyItems.add(item);
-
 		software.setStationUnblock();
 	}
-
 
 	/**
 	 * Removes item and updates all order info.
 	 * 
 	 * @param item
 	 * 				The item being removed from the order.
+	 *
+	 * @return true if the item is removed from the order, false otherwise.
 	 */
     public boolean removeItemFromOrder(Item item) {
         if (software.getOrder().contains(item)) {
             software.getOrder().remove(item);
-            
             software.setStationBlock();
-            
             if (item instanceof BarcodedItem) {
             	removeBarcodedItemFromOrder(item);
                 return true;
-            } 
-            
+            }
             if (item instanceof PLUCodedItem) {
                 removePLUCodedItemFromOrder(item);
                 return true;
@@ -153,7 +142,6 @@ public class Products {
         }
         return false;
     }
-
 
     /**
      * Removes a barcoded item from the order.
@@ -166,17 +154,13 @@ public class Products {
         BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
 		if (product == null)
 			return;
-
 		double productWeight = product.getExpectedWeight();
 		long productPrice = product.getPrice();
-
 		if (!bulkyItems.contains(item))
 			software.addTotalOrderWeightInGrams(-productWeight);
-
 		software.addTotalOrderPrice(-productPrice);
 		notifyProductRemoved(product);
     }
-
 
     /**
      * Removes a PLU coded item from the order.
@@ -187,43 +171,35 @@ public class Products {
     public void removePLUCodedItemFromOrder(Item item) {
     	PriceLookUpCode PLUCode = ((PLUCodedItem) item).getPLUCode();
         PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
-
 		if (product == null)
 			return;
-
 		Mass itemMass = item.getMass();
 		double productWeight = itemMass.inGrams().doubleValue();
 		long productPrice = product.getPrice();
-
 		if (!bulkyItems.contains(item))
 			software.addTotalOrderWeightInGrams(-productWeight);
-
 		software.addTotalOrderPrice(-productPrice);
-
 		notifyProductRemoved(product);
     }
-
 
 	/**
 	 * 
 	 * Adds a price look-up coded item to the order.
 	 * 
 	 * @param pluItem
-	 * 				The PLU item being added to the order.			
+	 * 				The PLU item being added to the order.
+	 *
+	 * @return true if the PLU item is added to order, false otherwise.
 	 */
 	public boolean addItemByPLUCode(PLUCodedItem pluItem) {
 		if (!software.getStationActive() || software.getStationBlock())
 			return false;
-
 		software.setStationBlock();
-
 		double itemWeightInGrams = pluItem.getMass().inGrams().doubleValue();
 		PriceLookUpCode PLUCode = pluItem.getPLUCode();
 		PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
-
 		if (product == null)
 			return true;
-
 		long productPrice = product.getPrice();
 		software.addTotalOrderWeightInGrams(itemWeightInGrams);
 		software.addTotalOrderPrice(productPrice);
@@ -231,7 +207,6 @@ public class Products {
 		notifyProductAdded(product);
 		return true;
 	}
-
 
 	/**
 	 * Adds item to order via a barcode input.
@@ -242,25 +217,19 @@ public class Products {
 	public void addItemViaBarcodeScan(Barcode barcode) {
 		if (!software.getStationActive() || software.getStationBlock())
 			return;
-
 		software.setStationBlock();
-
 		BarcodedProduct product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
 		if (product == null)
 			return;
-
 		double productWeight = product.getExpectedWeight();
 		long productPrice = product.getPrice();
-
 		software.addTotalOrderWeightInGrams(productWeight);
 		software.addTotalOrderPrice(productPrice);
-
 		Mass mass = new Mass(productWeight);
 		BarcodedItem barcodedItem = new BarcodedItem(barcode, mass);
 		software.addItemToOrder(barcodedItem);
 		notifyProductAdded(product);
 	}
-
 	
 	/**
      * Adds an item to the customer's order by text search.
@@ -270,23 +239,17 @@ public class Products {
      */
     public void addItemByTextSearch(String searchText) {
         Product product = findProductByTextSearch(searchText);
-
 		if (product == null)
 			return;
-
 		if (!software.getStationActive() || software.getStationBlock())
 			return;
-
 		software.setStationBlock();
-     
 		if (product instanceof BarcodedProduct) {
 			handleAddingTextSearchBarcodedProduct(product);
-                
 		} else {
 			handleAddingTextSearchPLUProduct(product);
 		}
     }
-
 
 	/**
 	 * Handles adding a barcoded product via text search.
@@ -296,22 +259,16 @@ public class Products {
 	 */
 	public void handleAddingTextSearchBarcodedProduct(Product product) {
 		BarcodedProduct barcodedProduct = (BarcodedProduct) product;
-
 		double productWeight = barcodedProduct.getExpectedWeight();
 		long productPrice = product.getPrice();
-
 		software.addTotalOrderWeightInGrams(productWeight);
 		software.addTotalOrderPrice(productPrice);
-
 		Mass mass = new Mass(productWeight);
 		BarcodedItem barcodedItem = new BarcodedItem(barcodedProduct.getBarcode(), mass);
-
 		software.addItemToOrder(barcodedItem);
-
 		notifyProductAdded(product);
 		notifyAddProductToBaggingArea(product);
 	}
-
 
 	/**
 	 * Handles adding a PLU product via text search.
@@ -322,18 +279,13 @@ public class Products {
 	public void handleAddingTextSearchPLUProduct(Product product) {
 		PLUCodedProduct pluProduct = (PLUCodedProduct) product;
 		PLUCodedItem pluItem = new PLUCodedItem(pluProduct.getPLUCode(), new Mass(1.0));
-
 		addItemByPLUCode(pluItem);
-
 		software.addItemToOrder(pluItem);
-
 		software.addTotalOrderWeightInGrams(1);
 		software.addTotalOrderPrice(pluProduct.getPrice());
-
 		notifyProductAdded(product);
 		notifyAddProductToBaggingArea(product);
 	}
-
 
     /**
      * Searches for a product with the provided text to find a match in either barcode or PLU code databases.
@@ -345,25 +297,20 @@ public class Products {
      */
     public Product findProductByTextSearch(String searchText) {
         String[] keywords = searchText.toLowerCase().split("\\s+");
-        
         for (Map.Entry<Barcode, BarcodedProduct> entry : ProductDatabases.BARCODED_PRODUCT_DATABASE.entrySet()) {
             BarcodedProduct product = entry.getValue();
-            
             if (containsAllKeywords(product.getDescription().toLowerCase(), keywords)) {
                 return product;
             }
         }
-        
         for (Map.Entry<PriceLookUpCode, PLUCodedProduct> entry : ProductDatabases.PLU_PRODUCT_DATABASE.entrySet()) {
             PLUCodedProduct product = entry.getValue();
-
             if (containsAllKeywords(product.getDescription().toLowerCase(), keywords)) {
                 return product;
             }
         }
         return null;
     }
-
 
     /**
      * Checks if the product text search contains all the keywords.
@@ -372,6 +319,7 @@ public class Products {
      * 				The text to search in.
      * @param keywords 
      * 				The keywords to search for.
+	 *
      * @return true if all keywords are found in the text, false otherwise.
      */
     private boolean containsAllKeywords(String text, String[] keywords) {
@@ -383,7 +331,6 @@ public class Products {
         return true;
     }
 
-
 	/**
 	 * Adds an item after customer selects it from the visual catalog.
 	 * 
@@ -393,13 +340,10 @@ public class Products {
 	public void addItemByVisualCatalogue(PLUCodedItem visualCatalogueItem) {
 		if (!software.getStationActive() || software.getStationBlock())
 			return;
-
 		software.setStationBlock();
-
 		double itemWeightInGrams = visualCatalogueItem.getMass().inGrams().doubleValue();
 		PriceLookUpCode PLUCode = visualCatalogueItem.getPLUCode();
 		PLUCodedProduct PLUProduct = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUCode);
-
 		if (PLUProduct != null) {
 			long productPrice = PLUProduct.getPrice();
 			software.addTotalOrderWeightInGrams(itemWeightInGrams);
@@ -426,15 +370,12 @@ public class Products {
 		if (!software.getStationActive() || software.getStationBlock())
 			return;
 		software.setStationBlock();
-
 		try {
 			reusableBagDispenser.load(bags);
 			checkIfBagsLoadedIsWithinCapacity();
-
 			reusableBagDispenser.dispense();
 			checkIfCustomerRequiresAllBagsInDispenser();
 			addBagsToOrder(bags);
-
 		} catch (OverloadedDevice | EmptyDevice e) {
 			System.out.println("Unable to add bags: " + e.getMessage());
 			throw e;
@@ -442,7 +383,6 @@ public class Products {
 			software.setStationUnblock();
 		}
 	}
-
 
 	/**
 	 * Checks if the capacity of the dispenser is not surpassed by the loaded bags added
@@ -452,7 +392,6 @@ public class Products {
 			throw new OverloadedDevice();
 		}
 	}
-
 
 	/**
 	 * Checks if the customer requires the exact amount of bags that are in the dispenser
@@ -474,14 +413,11 @@ public class Products {
 	public void addBagsToOrder(ReusableBag...bags) {
 		double reusableBagWeight;
 		long reusableBagPrice = 1;
-
 		for(ReusableBag bag: bags) {
 			reusableBagWeight = bag.getMass().inGrams().doubleValue();
 			software.addTotalOrderPrice(reusableBagPrice);
 			software.addTotalOrderWeightInGrams(reusableBagWeight);
-
 			notifyBagsPurchased(reusableBagPrice);
-
 			software.getStationHardware().getBaggingArea().addAnItem(bag);
 		}
 	}
